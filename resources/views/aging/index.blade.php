@@ -1,0 +1,70 @@
+@extends('template.index')
+@section('content')
+    <div class="container">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 mt-2">
+                <h6 class="m-0 font-weight-bold text-primary">Aging Schedule</h6>
+            </div>
+
+            <form action="" method="get">
+                <div class="form-group col-md-6 ml-2 mt-2">
+                    <select name="id_pelanggan" id="" class="form-control">
+                        @foreach ($pelanggan as $p)
+                            <option value={{ $p->id_pelanggan }}>{{ $p->nama_pelanggan }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <button type=submit name=submit class="btn btn-primary ml-4">submit</button>
+            </form>
+            <div class="card-body">
+                <div class="table-responsive text-center">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <tr>
+                            <td rowspan="2">Custumor</td>
+                            <td rowspan="2">No Transaction</td>
+                            <td rowspan="2">Date</td>
+                            <td rowspan="2">Due Date</td>
+                            <td rowspan="2">Total Receivable</td>
+                            <td colspan="3">Number Days Of Outstanding</td>
+                        </tr>
+
+                        <tr>
+                            <td>0-30</td>
+                            <td>31-60</td>
+                            <td>61-90</td>
+
+                        </tr>
+                        @foreach ($data as $d)
+
+                            <tr>
+                                <td>{{ $d->nama_pelanggan }}</td>
+                                <td>{{ $d->no_tagihan }}</td>
+                                <td style="min-width:120px">{{ $d->tgl_tagihan }}</td>
+                                <td style="min-width:120px">{{ $d->DUE_DATE }}</td>
+                                <td>{{ 'Rp.' . number_format($d->total, 2, ',', '.') }}</td>
+
+
+                                @if ($d->selisih >= 0 && $d->selisih < 30)
+                                    <td>{{ 'Rp.' . number_format($d->total_selisih, 2, ',', '.') }}</td>
+                                    <td>{{" "}}</td>
+                                     <td>{{" "}}</td>
+                                @elseif ($d->selisih >= 31 && $d->selisih <= 60) <td>
+                                     <td>{{" "}}</td>
+                                    <td>{{ 'Rp.' . number_format($d->total_selisih, 2, ',', '.') }}</td>
+                                     <td>{{" "}}</td>
+                                    @elseif ($d->selisih >= 61 && $d->selisih <= 90)
+                                      <td>{{" "}}</td>
+                                      <td>{{" "}}</td>
+                                     <td>{{ 'Rp.' . number_format($d->total_selisih, 2, ',', '.') }}</td>
+
+                                @endif
+
+                            </tr>
+                        @endforeach
+                    </table>
+                    {{-- {{ $data->links() }}S --}}
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection()
