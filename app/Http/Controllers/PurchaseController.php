@@ -83,7 +83,7 @@ class PurchaseController extends Controller
         // Persiapan no penjualan
         $no_pembelian = $this->PurchaseModel->no_pembelian($tgl_pembelian);
         $no_quotation = explode('-', $tgl_pembelian);
-        $no_pembelian = "PSC/$no_pembelian/$no_quotation[0]/$no_quotation[1]/$no_quotation[2]";
+        $no_pembelian = "PO/$no_pembelian/$no_quotation[0]/$no_quotation[1]/$no_quotation[2]";
 
 
 

@@ -73,7 +73,7 @@ class PurchaseModel extends Model
     {
         $no_pembelian =
             DB::table('pembelian')
-            ->selectRaw("ifnull(max(substring(no_pembelian,5,1)),0)+1 as no_pembelian")
+            ->selectRaw("ifnull(max(substring(no_pembelian,4,1)),0)+1 as no_pembelian")
             ->where("tgl_pembelian", "=", $tgl_pembelian)
             ->first();
         $no_pembelian = (int)$no_pembelian->no_pembelian;
