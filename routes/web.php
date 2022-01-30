@@ -38,7 +38,7 @@ Route::resource('quotation', QuotationController::class)->middleware(['auth', 'r
 Route::post('quotation_insert', [QuotationController::class, "insert"]);
 Route::any('show_data', [QuotationController::class, "show_data"]);
 Route::get('deleteq/{id}', [QuotationController::class, "delete"]);
-Route::get('printq/{id}', [QuotationController::class, "print"]);
+Route::get('quotation/print/{id}', [QuotationController::class, "print"]);
 
 Route::resource('sales', SalesController::class)->middleware(['auth', 'revalidate']);
 Route::post('sales_insert', [SalesController::class, "insert"]);
@@ -47,6 +47,7 @@ Route::get('sales/detail/{no_tagihan}', [SalesController::class, "detail"]);
 Route::resource('purchase', PurchaseController::class)->middleware(['auth', 'revalidate']);
 Route::post('purchase_insert', [PurchaseController::class, "insert"]);
 Route::get('purchase/detail/{no_tagihan}', [PurchaseController::class, "detail"]);
+Route::get('purchase/print/{no_tagihan}', [PurchaseController::class, "print"]);
 
 Route::resource('goods', GoodsController::class)->middleware(['auth', 'revalidate']);
 Route::post('goods_insert', [GoodsController::class, "insert"]);

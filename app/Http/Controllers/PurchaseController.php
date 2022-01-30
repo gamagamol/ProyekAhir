@@ -6,6 +6,8 @@ use App\Models\PurchaseModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Terbilang;
+use function app\helper\penyebut;
 
 class PurchaseController extends Controller
 {
@@ -118,5 +120,21 @@ class PurchaseController extends Controller
             'data' => $data
         ];
         return view('purchase.detail', $data);
+    }
+
+
+    public function print($no_transaksi){
+        $total = $this->PurchaseModel->detail(str_replace("-", "/", $no_transaksi));
+      
+        foreach ($total as $t) {
+
+            $total = penyebut($t->total);
+        }
+        $data = [
+            'tittle' => "Print purchase Order",
+            'data' => $this->PurchaseModel->detail(str_replace("-", "/", $no_transaksi)),
+            'total' => $total
+        ];
+        return view('purchase.print', $data);
     }
 }

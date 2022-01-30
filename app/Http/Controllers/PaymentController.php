@@ -18,11 +18,18 @@ class PaymentController extends Controller
     }
     public function index()
     {
-       
+       $serch=request()->get('serch');
+       if ($serch) {
+           $data= $this->model->index($serch);
+       }else {
+            $data = $this->model->index();
+       }
       
+
         $data = [
             'tittle' => 'Payment',
-            'data' => $this->model->index(),
+            'data' => $data,
+            'deta'=> $this->model->index()
 
         ];
         return view('payment.index', $data);

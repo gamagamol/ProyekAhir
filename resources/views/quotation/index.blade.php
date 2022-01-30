@@ -44,7 +44,7 @@
                             <td>customer</td>
                             <td>Prepared</td>
                             <td>Action</td>
-                            {{-- <td>Document</td> --}}
+                            <td>Document</td>
 
 
 
@@ -75,6 +75,9 @@
 
                                     <a href="{{ url('quotation', $d->kode_transaksi) }}" class="btn btn-info mt-1">
                                         Detail </a>
+                                </td>
+                                <td>
+                                    <a href={{url('quotation/print',$d->kode_transaksi)}} class="btn btn-primary"> Print</a>
                                 </td>
 
                             </tr>

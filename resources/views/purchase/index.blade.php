@@ -45,6 +45,7 @@
                             <td>Supplier</td>
                             <td>Prepared</td>
                             <td>Action</td>
+                            <td>Document</td>
 
 
 
@@ -75,6 +76,10 @@
                                      <a href="{{ url('purchase/detail', str_replace('/','-',$d->no_pembelian)) }}" class="btn btn-info mt-1">
                                         Detail </a>
 
+                                </td>
+                                <td>
+                                  <a href="{{ url('purchase/print', str_replace('/','-',$d->no_pembelian)) }}" class="btn btn-primary mt-1">
+                                        Print </a>
                                 </td>
                             </tr>
 

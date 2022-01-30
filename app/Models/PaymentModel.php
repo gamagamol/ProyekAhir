@@ -10,22 +10,38 @@ class PaymentModel extends Model
 {
     use HasFactory;
 
-    public function index()
+    public function index($id=null)
     {
-        return DB::table('transaksi')
-            ->join("pelanggan", "transaksi.id_pelanggan", "=", "pelanggan.id_pelanggan")
-            ->join("pengguna", "transaksi.id", "=", "pengguna.id")
-            ->join('penawaran', "penawaran.id_transaksi", "=", "transaksi.id_transaksi")
-            ->join('pengiriman', "pengiriman.id_transaksi", "=", "transaksi.id_transaksi")
-            ->join('detail_transaksi_pengiriman', "detail_transaksi_pengiriman.id_pengiriman", "=", "pengiriman.id_pengiriman")
-            ->join('detail_transaksi_penawaran', "detail_transaksi_penawaran.id_penawaran", "=", "penawaran.id_penawaran")
-            ->join("produk", "detail_transaksi_pengiriman.id_produk", "=", "produk.id_produk")
-            ->join('pembayaran', "pembayaran.id_transaksi", "=", "transaksi.id_transaksi")
-            ->groupBy("no_pembayaran", "tgl_pembayaran")
-            ->orderBy("tgl_pembayaran", "asc")
+        if ($id) {
+            return DB::table('transaksi')
+                ->join("pelanggan", "transaksi.id_pelanggan", "=", "pelanggan.id_pelanggan")
+                ->join("pengguna", "transaksi.id", "=", "pengguna.id")
+                ->join('penawaran', "penawaran.id_transaksi", "=", "transaksi.id_transaksi")
+                ->join('pengiriman', "pengiriman.id_transaksi", "=", "transaksi.id_transaksi")
+                ->join('detail_transaksi_pengiriman', "detail_transaksi_pengiriman.id_pengiriman", "=", "pengiriman.id_pengiriman")
+                ->join('detail_transaksi_penawaran', "detail_transaksi_penawaran.id_penawaran", "=", "penawaran.id_penawaran")
+                ->join("produk", "detail_transaksi_pengiriman.id_produk", "=", "produk.id_produk")
+                ->join('pembayaran', "pembayaran.id_transaksi", "=", "transaksi.id_transaksi")
+                ->where("no_pembayaran","=",$id)
+                ->paginate(1);
+        }
+        else{
 
-
-            ->paginate(5);
+            return DB::table('transaksi')
+                ->join("pelanggan", "transaksi.id_pelanggan", "=", "pelanggan.id_pelanggan")
+                ->join("pengguna", "transaksi.id", "=", "pengguna.id")
+                ->join('penawaran', "penawaran.id_transaksi", "=", "transaksi.id_transaksi")
+                ->join('pengiriman', "pengiriman.id_transaksi", "=", "transaksi.id_transaksi")
+                ->join('detail_transaksi_pengiriman', "detail_transaksi_pengiriman.id_pengiriman", "=", "pengiriman.id_pengiriman")
+                ->join('detail_transaksi_penawaran', "detail_transaksi_penawaran.id_penawaran", "=", "penawaran.id_penawaran")
+                ->join("produk", "detail_transaksi_pengiriman.id_produk", "=", "produk.id_produk")
+                ->join('pembayaran', "pembayaran.id_transaksi", "=", "transaksi.id_transaksi")
+                ->groupBy("no_pembayaran", "tgl_pembayaran")
+                ->orderBy("tgl_pembayaran", "asc")
+    
+    
+                ->paginate(5);
+        }
     }
 
     public function detail($no_transaksi)

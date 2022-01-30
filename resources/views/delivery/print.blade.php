@@ -73,72 +73,75 @@
 
         <div class="row">
             <div class="col">
-                    <table class="table table-bordered  boder-5 border-dark text-center" id="dataTable" width="100%"
-                        cellspacing="0">
+                <table class="table table-bordered  boder-5 border-dark text-center fw-bold" id="dataTable" width="100%"
+                    cellspacing="0">
+                    <tr>
+                        <td colspan="8">INQUIRY</td>
+                        <td colspan="8">QUOTATION</td>
+                    </tr>
+                    <tr>
+                        <td>No</td>
+                        <td>Job Number</td>
+                        <td>Grade</td>
+                        <td colspan="3">Material Size</td>
+                        <td>QTY</td>
+                        <td>Grade</td>
+                        <td colspan="3">Material Size</td>
+                        <td>QTY</td>
+                        <td>WEIGHT(KG)</td>
+
+
+
+                    </tr>
+                    @foreach ($data as $p)
 
                         <tr>
-                            <td>No</td>
-                            <td>Job Number</td>
-                            <td>Grade</td>
-                            <td colspan="3">Material Size</td>
-                            <td>QTY</td>
-                            <td>Grade</td>
-                            <td colspan="3">Material Size</td>
-                            <td>QTY</td>
-                            <td>WEIGHT(KG)</td>
 
+                            <td style="min-width:120px">
+                                {{ $p->tgl_pengiriman }}
+                            </td>
+                            <td>
+                                {{ $p->nomor_pekerjaan }}
+                            </td>
 
+                            <td>
+                                {{ $p->nama_produk }}
+                            </td>
+                            <td>
+                                {{ $p->tebal_transaksi }}
+                            </td>
+                            <td>
+                                {{ $p->lebar_transaksi }}
+                            </td>
 
+                            <td>
+                                {{ $p->panjang_transaksi }}
+                            </td>
+                            <td>
+                                {{ $p->jumlah }}
+                            </td>
+
+                            <td>
+                                {{ $p->nama_produk }}
+                            </td>
+                            <td>
+                                {{ $p->tebal_penawaran }}
+                            </td>
+                            <td>
+                                {{ $p->lebar_penawaran }}
+                            </td>
+                            <td>
+                                {{ $p->panjang_penawaran }}
+                            </td>
+                            <td>
+                                {{ $p->jumlah }}
+                            </td>
+                            <td>
+                                {{ $p->berat }}
+                            </td>
                         </tr>
-                        @foreach ($data as $p)
-
-                            <tr>
-
-                                <td style="min-width:120px">
-                                    {{ $p->tgl_pengiriman }}
-                                </td>
-                                <td>
-                                    {{ $p->nomor_pekerjaan }}
-                                </td>
-
-                                <td>
-                                    {{ $p->nama_produk }}
-                                </td>
-                                <td>
-                                    {{ $p->tebal_transaksi }}
-                                </td>
-                                <td>
-                                    {{ $p->lebar_transaksi }}
-                                </td>
-
-                                <td>
-                                    {{ $p->panjang_transaksi }}
-                                </td>
-                                <td>
-                                    {{ $p->jumlah }}
-                                </td>
-
-                                <td>
-                                    {{ $p->nama_produk }}
-                                </td>
-                                <td>
-                                    {{ $p->tebal_penawaran }}
-                                </td>
-                                <td>
-                                    {{ $p->lebar_penawaran }}
-                                </td>
-                                <td>
-                                    {{ $p->panjang_penawaran }}
-                                </td>
-                                <td>
-                                    {{ $p->jumlah }}
-                                </td>
-                                <td>
-                                    {{ $p->berat }}
-                                </td>
-                            </tr>
-                        @endforeach
-                    </table>
+                    @endforeach
+                </table>
 
 
             </div>
@@ -150,7 +153,7 @@
             <div class="col ">
                 <h5>
                     Issued by,
-                      <br><br><br><br>
+                    <br><br><br><br>
                     (............)
 
                 </h5>
@@ -165,11 +168,11 @@
                 </h5>
             </div>
             <div class="col">
-               <h5>
+                <h5>
 
-                   Customer,
-                   <br><br><br><br>
-                   (............)
+                    Customer,
+                    <br><br><br><br>
+                    (............)
                 </h5>
             </div>
         </div>

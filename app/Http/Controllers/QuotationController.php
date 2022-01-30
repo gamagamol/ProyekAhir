@@ -327,8 +327,15 @@ class QuotationController extends Controller
         return redirect("quotation/create");
     }
 
-    public function print($kode_transaksi)
+    public function print($no_transaksi)
     {
-        dd($quotation_data = $this->QuotationModel->show($kode_transaksi));
+        
+        $data=[
+            'tittle'=>'print Quotation',
+            'data'=>$this->QuotationModel->show($no_transaksi),
+        ];
+        return view('quotation.print',$data);
+
+
     }
 }

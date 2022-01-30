@@ -7,8 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use NumberFormatter;
+use Symfony\Component\Console\Helper\FormatterHelper;
 use Terbilang;
 
+use function app\helper\penyebut;
 
 class BillPaymentController extends Controller
 {
@@ -131,9 +134,18 @@ class BillPaymentController extends Controller
 
     public function print($no_transaksi){
         $no_transaksi=str_replace('-','/',$no_transaksi);
+        $total= $this->model->detail($no_transaksi);
+        foreach ($total as $t ) {
+            
+           $total=penyebut($t->total);
+         
+        }
+
         $data = [
             'tittle' => "Print INVOICE",
-            'data' => $this->model->detail($no_transaksi)
+            'data' => $this->model->detail($no_transaksi),
+            'total'=>$total
+            
         ];
         return view('bill.print', $data);
     }

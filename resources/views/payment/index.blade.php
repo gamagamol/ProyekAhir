@@ -12,12 +12,21 @@
         <h6 class="m-0 font-weight-bold text-primary">Payment</h6>
     </div>
   
-        <form action="" method="post">
-       <div class="form-group col-md-6 ml-2 mt-2">
-            <input type="text" name='cari' class="form-control " id="formGroupExampleInput" placeholder="Find Your Number Delivery" autocomplete="off" autofocus>
-        </div>
-        <button type=submit name=submit class="btn btn-primary ml-4">submit</button>
-       </form>
+         <div class="container">
+                <div class="row">
+                    <div class="col-md-4 mt-3">
+                        <form action={{ url('payment') }} method="GET" id="serch-form">
+                            <select class="form-control form-select" aria-label="Default select example" name='serch'
+                                id="serch">
+                                @foreach ($deta as $d)
+                                    <option value={{ $d->no_pembayaran }}>{{ $d->no_pembayaran }}</option>
+                                @endforeach
+                            </select>
+                            <button type=submit name=submit class="btn btn-primary mt-3" id="serch-button">submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
     <div class="card-body">
       
        <div class="table-responsive text-center">
