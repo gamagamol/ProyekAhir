@@ -16,7 +16,7 @@
                     <form action="{{ url('quotation') }}" method="POST">
                         @csrf
 
-                        <div class="row" >
+                        <div class="row">
                             <div class="col-md-3 ">
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2">Transaction Date </label>
@@ -25,8 +25,8 @@
                               is-invalid
                           @enderror"
                                         name="tgl_penawaran" id="tgl_penawaran" @if (count($pembantu) > 0)
-                                readonly value={{ $pembantu[0]->tgl_pembantu }} @else value={{ date('Y-m-d') }}
-                                    @endif >
+                                    readonly value={{ $pembantu[0]->tgl_pembantu }} @else value={{date("Y-m-d")}}
+                                    @endif  >
 
                                     @error('tgl_penawaran')
                                         <div class="invalid-feedback">
@@ -35,17 +35,16 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-3 " >
+                            <div class="col-md-3 ">
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2">Transaction Code </label>
                                     <input type="text"
                                         class="form-control @error('kode_transaksi')
                               is-invalid
                           @enderror"
-                                        name="kode_transaksi" id="kode_transaksi" value={{ $kode_transaksi }} readonly
-                                        @if (count($pembantu) > 0)
+                                        name="kode_transaksi" id="kode_transaksi" value={{$kode_transaksi}} readonly @if (count($pembantu) > 0)
                                     readonly value={{ $pembantu[0]->kode_transaksi }}
-
+                                  
                                     @endif >
 
                                     @error('kode_transaksi')
@@ -64,8 +63,7 @@
                                         class="form-control @error('nomor_pekerjaan')
                               is-invalid
                           @enderror"
-                                        name="nomor_pekerjaan" id="nomor_pekerjaan" value={{ old('nomor_pekerjaan') }}
-                                        @if (count($pembantu) > 0)
+                                        name="nomor_pekerjaan" id="nomor_pekerjaan" value={{old('nomor_pekerjaan')}} @if (count($pembantu) > 0)
                                     readonly value={{ $pembantu[0]->nomor_pekerjaan }}
                                     @endif >
                                     @error('nomor_pekerjaan')
@@ -393,7 +391,7 @@
                             <td>
                                 {{ $nama_pelanggan }}
                             </td>
-
+                            
                             <td>
                                 <a href={{ url('deleteq', $p->id_pembantu) }} class="btn btn-danger">Delete</a>
                             </td>
@@ -548,6 +546,7 @@
 
         function drop() {
             // bikin form nya
+            console.log("hello");
             let id_produk = document.getElementById('id_produk').value.split('|');
 
             let bentuk_produk = id_produk[1];

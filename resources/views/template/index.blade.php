@@ -121,6 +121,7 @@
                         <a class="collapse-item" href="{{ url('delivery') }}">Delivery</a>
                         <a class="collapse-item" href="{{ url('bill') }}">Bill Payment</a>
                         <a class="collapse-item" href="{{ url('payment') }}">Payment</a>
+                        <a class="collapse-item" href="{{ url('paymentvendor') }}">Payment to vendor </a>
                     </div>
                 </div>
             </li>

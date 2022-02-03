@@ -19,8 +19,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\GoodsController;
 use App\Http\Controllers\PurchaseReportController;
 use App\Http\Controllers\DashboardController;
-use App\Models\BillPaymentModel;
-
+use App\Http\Controllers\PaymentVendorController;
 // Auth
 Route::get('/', [AuthController::class, 'index'])->name('login')->middleware(['guest', 'revalidate']);
 Route::post('login', [AuthController::class, 'authenticate']);
@@ -66,6 +65,10 @@ Route::get('bill/print/{no_transaksi}',[BillPaymentController::class,'print']);
 Route::resource('payment', PaymentController::class)->middleware(['auth', 'revalidate']);
 Route::get('payment/show/{kode}/{tgl}', [PaymentController::class, "show"]);
 Route::get('payment/detail/{no_pembayaran}',[PaymentController::class,"detail"]);
+
+Route::resource('paymentvendor', PaymentVendorController::class)->middleware(['auth', 'revalidate']);
+Route::get('paymentvendor/show/{kode}/{tgl}', [PaymentVendorController::class, "show"]);
+Route::get('paymentvendor/detail/{no_pembayaran}',[PaymentVendorController::class,"detail"]);
 
 // Laporan
 
