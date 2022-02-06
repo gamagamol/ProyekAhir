@@ -69,6 +69,7 @@ Route::get('payment/detail/{no_pembayaran}',[PaymentController::class,"detail"])
 Route::resource('paymentvendor', PaymentVendorController::class)->middleware(['auth', 'revalidate']);
 Route::get('paymentvendor/show/{kode}/{tgl}', [PaymentVendorController::class, "show"]);
 Route::get('paymentvendor/detail/{no_pembayaran}',[PaymentVendorController::class,"detail"]);
+Route::get('paymentvendor/report/report',[PaymentVendorController::class,"report"]);
 
 // Laporan
 

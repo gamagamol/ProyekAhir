@@ -75,8 +75,9 @@ class QuotationController extends Controller
 
         $transaction_code =
             DB::table('transaksi')
-            ->selectRaw("DISTINCT concat('PJ', ifnull( MAX(substring(kode_transaksi,3,2)),0)+1) as kode_transaksi")
+            ->selectRaw("DISTINCT concat('PJ',ifnull(MAX(cast( substr(kode_transaksi,3,3) AS FLOAT)),0)+1) AS kode_transaksi")
             ->first();
+         
 
         $data = [
             'tittle' => 'ADD Quotation',

@@ -81,7 +81,7 @@ class PaymentVendorController extends Controller
            
         }
        $this->model->insert($data_pembelian);
-        return redirect('paymentvendor')->with('success','Payment to vendor has been success');
+        return redirect('paymentvendor/report/report')->with('success','Payment to vendor has been success');
 
         
     }
@@ -95,5 +95,22 @@ class PaymentVendorController extends Controller
             'data' => $data
         ];
         return view('paymentvendor.detail', $data);
+    }
+
+
+    public function report(){
+
+        $serch = request()->get('serch');
+        if ($serch) {
+            $data = $this->model->report($serch);
+        } else {
+            $data = $this->model->report();
+        }
+        $data = [
+            'tittle' => "Report Payment To Vendor",
+            'data' => $data,
+            'deta'=>$this->model->report(),
+        ];
+        return view('paymentvendor.report', $data);
     }
 }

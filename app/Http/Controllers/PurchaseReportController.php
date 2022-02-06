@@ -11,15 +11,22 @@ class PurchaseReportController extends Controller
     public $model;
     public function __construct()
     {
-        $this->model= new PurchaseReportModel;
+        $this->model = new PurchaseReportModel();
     }
     public function index()
     {
-        $data=[
-            'tittle'=>"Purchase Detail Report",
-            'data'=>$this->model->index(),
-        ];
-        return view('report.purchase',$data);
-    }
+        $serch = request()->get('serch');
+        if ($serch) {
+            $data = $this->model->index($serch);
+        } else {
+            $data = $this->model->index();
+        }
+        $data = [
+            'tittle' => "Purchase Detail Report",
+            'data' => $data,
+            'deta' => $this->model->index(),
 
+        ];
+        return view('report.purchase', $data);
+    }
 }
