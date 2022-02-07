@@ -78,8 +78,12 @@
                                     <td>{{ '' }}</td>
                                     <td>{{ 'Rp.' . number_format($k->nominal, 2, ',', '.') }}</td>
 
-
+                                    @if ($saldo_awal_kas>0)
                                     <?php $total_kas = $saldo_awal_kas - $k->nominal; ?>
+                                    @else
+                                    <?php $total_kas = $total_kas - $k->nominal; ?>
+
+                                    @endif
 
                                     <td>{{ '' }}</td>
                                     <td>{{ 'Rp.' . number_format($total_kas, 2, ',', '.') }}</td>
@@ -231,8 +235,14 @@
                                     <td>{{ 'Rp.' . number_format($k->nominal, 2, ',', '.') }}</td>
                                     <td>{{ '' }}</td>
 
+                                    <?php if($saldo_awal_utang>0): ?>
 
                                     <?php $total_utang = $saldo_awal_utang - $k->nominal; ?>
+                                    <?php else: ?>
+                                    <?php $total_utang = $total_utang - $k->nominal; ?>
+
+                                    <?php endif; ?>
+
 
                                     <td>{{ '' }}</td>
                                     <td>{{ 'Rp.' . number_format($total_utang, 2, ',', '.') }}</td>

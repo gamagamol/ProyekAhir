@@ -75,6 +75,41 @@ class PaymentVendorModel extends Model
     public function insert($data_pembayaran_vendor)
     {
         DB::table('pembayaranvendor')->insert($data_pembayaran_vendor);
+
+        // data transaksi
+        $kode_transaksi = DB::table('transaksi')
+            ->select('kode_transaksi')
+            ->where('id_transaksi', '=', $data_pembayaran_vendor[0]['id_transaksi'])
+            ->first();
+
+        $total = DB::table('transaksi')
+            ->selectRaw('sum(subtotal) as total')
+            ->where('kode_transaksi', '=', $kode_transaksi->kode_transaksi)
+            ->first();
+
+
+
+        $jurnal = [
+            [
+                'id_transaksi' => $data_pembayaran_vendor[0]['id_transaksi'],
+                'kode_akun' => 200,
+                'tgl_jurnal' => $data_pembayaran_vendor[0]['tgl_pembayaran_vendor'],
+                'nominal' => $total->total,
+                'posisi_db_cr' => 'debit',
+
+            ],
+            [
+                'id_transaksi' => $data_pembayaran_vendor[0]['id_transaksi'],
+                'kode_akun' => 111,
+                'tgl_jurnal' => $data_pembayaran_vendor[0]['tgl_pembayaran_vendor'],
+                'nominal' => $total->total,
+                'posisi_db_cr' => 'kredit',
+
+            ],
+        ];
+
+
+        DB::table('jurnal')->insert($jurnal);
     }
 
     public function detail($no_pembelian)
