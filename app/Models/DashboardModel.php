@@ -25,4 +25,21 @@ class DashboardModel extends Model
            
             
     }
+
+    public function persentase_tagihan(){
+        $tagihan=DB::table('tagihan')
+        ->selectRaw('count(id_transaksi) as id')
+        ->whereBetween('tgl_tagihan',['2022-01-01','2022-12-31'])
+        ->first();
+      
+        $pembayaran=DB::table('pembayaran')
+        ->selectRaw('count(id_transaksi) as id')
+        ->whereBetween('tgl_pembayaran',['2022-01-01','2022-12-31'])
+        ->first();
+
+        return (int)$pembayaran->id/$tagihan->id*100;
+
+        
+
+    }
 }
