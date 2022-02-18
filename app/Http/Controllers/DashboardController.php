@@ -69,8 +69,18 @@ class DashboardController extends Controller
             'sales' => $total_sales,
             'recivable' => $total_AR,
             'grafik' => $this->DM->grafik(),
-            'tagihan'=>$this->DM->persentase_tagihan(),
+            'tagihan'=>round($this->DM->persentase_tagihan()),
         ];
         return view("dashboard.index", $data);
     }
+
+    public  function notif(){
+            $array=[
+                'length'=>count($this->DM->notif()),
+                'data'=> $this->DM->notif(),
+            ];
+            return $array; 
+    }
+
+    
 }

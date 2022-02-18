@@ -26,6 +26,7 @@ Route::post('login', [AuthController::class, 'authenticate']);
 Route::any('logout', [AuthController::class, 'logout']);
 
 Route::get('dashboard',[DashboardController::class,'index']);
+Route::get('dashboard/notif',[DashboardController::class,'notif']);
 
 // Materdata
 Route::resource('COA', CoaController::class)->middleware(['auth', 'revalidate']);
@@ -75,6 +76,7 @@ Route::get('paymentvendor/report/report',[PaymentVendorController::class,"report
 
 Route::resource('journal', JurnalController::class)->middleware(['auth', 'revalidate']);
 Route::resource('aging', AgingScheduleController::class)->middleware(['auth', 'revalidate']);
+Route::get('export',[AgingScheduleController::class,'export']);
 Route::resource('ledger', GeneralLadgerController::class)->middleware(['auth', 'revalidate']);
 Route::resource('SDR', ReportDetailSales::class)->middleware(['auth', 'revalidate']);
 Route::resource('PCR', PurchaseReportController::class)->middleware(['auth', 'revalidate']);

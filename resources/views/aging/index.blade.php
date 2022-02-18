@@ -17,10 +17,14 @@
                 <button type=submit name=submit class="btn btn-primary ml-4">submit</button>
             </form>
             <div class="card-body">
+
+
+                <a href="{{url('export')}}" class="btn btn-success my-3" style="margin-left: 90%"> <i class="fas fa-file-excel"></i>
+                    Excel</a>
                 <div class="table-responsive text-center">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <tr>
-                            <td rowspan="2">Custumor</td>
+                            <td rowspan="2">Customer</td>
                             <td rowspan="2">No Transaction</td>
                             <td rowspan="2">Date</td>
                             <td rowspan="2">Due Date</td>
@@ -35,7 +39,6 @@
 
                         </tr>
                         @foreach ($data as $d)
-
                             <tr>
                                 <td>{{ $d->nama_pelanggan }}</td>
                                 <td>{{ $d->no_tagihan }}</td>
@@ -46,17 +49,16 @@
 
                                 @if ($d->selisih >= 0 && $d->selisih < 30)
                                     <td>{{ 'Rp.' . number_format($d->total_selisih, 2, ',', '.') }}</td>
-                                    <td>{{" "}}</td>
-                                     <td>{{" "}}</td>
+                                    <td>{{ ' ' }}</td>
+                                    <td>{{ ' ' }}</td>
                                 @elseif ($d->selisih >= 31 && $d->selisih <= 60) <td>
-                                     <td>{{" "}}</td>
+                                    <td>{{ ' ' }}</td>
                                     <td>{{ 'Rp.' . number_format($d->total_selisih, 2, ',', '.') }}</td>
-                                     <td>{{" "}}</td>
-                                    @elseif ($d->selisih >= 61 && $d->selisih <= 90)
-                                      <td>{{" "}}</td>
-                                      <td>{{" "}}</td>
-                                     <td>{{ 'Rp.' . number_format($d->total_selisih, 2, ',', '.') }}</td>
-
+                                    <td>{{ ' ' }}</td>
+                                @elseif ($d->selisih >= 61 && $d->selisih <= 90)
+                                    <td>{{ ' ' }}</td>
+                                    <td>{{ ' ' }}</td>
+                                    <td>{{ 'Rp.' . number_format($d->total_selisih, 2, ',', '.') }}</td>
                                 @endif
 
                             </tr>

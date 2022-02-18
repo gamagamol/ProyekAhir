@@ -178,6 +178,7 @@ class BillPaymentModel extends Model
             ->join("pelanggan", "transaksi.id_pelanggan", "=", "pelanggan.id_pelanggan")
             ->join("pengguna", "transaksi.id", "=", "pengguna.id")
             ->join('penawaran', "penawaran.id_transaksi", "=", "transaksi.id_transaksi")
+            ->join('pembelian', "pembelian.id_transaksi", "=", "transaksi.id_transaksi")
             ->join('pengiriman', "pengiriman.id_transaksi", "=", "transaksi.id_transaksi")
             ->join('detail_transaksi_pengiriman', "detail_transaksi_pengiriman.id_pengiriman", "=", "pengiriman.id_pengiriman")
             ->join('detail_transaksi_penawaran', "detail_transaksi_penawaran.id_penawaran", "=", "penawaran.id_penawaran")

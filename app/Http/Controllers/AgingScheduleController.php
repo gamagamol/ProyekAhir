@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\AgingScheduleModel;
 use Illuminate\Support\Facades\DB;
-
+use App\Exports\AgingExport;
+use Maatwebsite\Excel\Facades\Excel;
 class AgingScheduleController extends Controller
 {
     public $model;
@@ -38,5 +39,9 @@ class AgingScheduleController extends Controller
 
         ];
         return view('aging.index', $data);
+    }
+
+    public function export(){
+        return Excel::download(new AgingExport, 'AgingScheduleExport.xlsx');
     }
 }
