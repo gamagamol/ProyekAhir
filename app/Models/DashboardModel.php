@@ -41,25 +41,10 @@ class DashboardModel extends Model
 
     public function notif()
     {
-        $ar = DB::table('transaksi')
-            ->selectRaw("tgl_tagihan,nama_pelanggan,no_tagihan,berat,total,layanan,nama_pengguna, DATE_ADD(tgl_tagihan, INTERVAL 31 DAY) AS DUE_DATE,no_pengiriman,kode_transaksi")
-            ->join("pelanggan", "transaksi.id_pelanggan", "=", "pelanggan.id_pelanggan")
-            ->join("pengguna", "transaksi.id", "=", "pengguna.id")
-            ->join('penawaran', "penawaran.id_transaksi", "=", "transaksi.id_transaksi")
-            ->join('pengiriman', "pengiriman.id_transaksi", "=", "transaksi.id_transaksi")
-            ->join('detail_transaksi_pengiriman', "detail_transaksi_pengiriman.id_pengiriman", "=", "pengiriman.id_pengiriman")
-            ->join('detail_transaksi_penawaran', "detail_transaksi_penawaran.id_penawaran", "=", "penawaran.id_penawaran")
-            ->join("produk", "detail_transaksi_pengiriman.id_produk", "=", "produk.id_produk")
-            ->join("tagihan", "tagihan.id_transaksi", "=", "transaksi.id_transaksi")
-            ->where('status_transaksi', "=", "bill")
-            ->groupBy('tgl_tagihan', "no_tagihan")
-            ->orderBy('DUE_DATE', 'asc')
-            ->limit(2)
-            ->get()
-            ->toArray();
+       
         
            $ap = DB::table('transaksi')
-            ->selectRaw('nama_pemasok,no_pembelian,tgl_pembelian, DATE_ADD(tgl_pembelian, INTERVAL 45 DAY) AS DUE_DATE,subtotal')
+            ->selectRaw('Datediff( CURDATE(),tgl_pembelian)  as selisih,no_pembelian as no_transaksi,tgl_pembelian, DATE_ADD(tgl_pembelian, INTERVAL 45 DAY) AS DUE_DATE,subtotal')
             ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
             ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', '=', 'penawaran.id_penawaran')
             ->join("produk", 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')
@@ -72,14 +57,16 @@ class DashboardModel extends Model
                 $query->select('id_pembelian')
                     ->from('pembayaranvendor');
             })
+            ->whereRaw('Datediff( CURDATE(),tgl_pembelian)  >=30')
             ->groupBy('no_pembelian')
             ->orderBy("DUE_DATE","asc")
             ->limit(2)
             ->get()
             ->toArray();
 
-            $array=array_merge($ap,$ar);
-            return $array;
+          
+
+            return $ap;
 
     }
 }

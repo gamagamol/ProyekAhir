@@ -1,7 +1,8 @@
-<?php 
+<?php
 use App\Http\Controllers\DashboardController;
-$notif= new DashboardController;
-$notif=$notif->notif();
+$notif = new DashboardController();
+$notif = $notif->notif();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -58,7 +59,7 @@ $notif=$notif->notif();
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{url('dashboard')}}">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url('dashboard') }}">
                 <div class="sidebar-brand-icon ">
                     <i class="fas fa-file-invoice-dollar"></i>
                 </div>
@@ -69,7 +70,7 @@ $notif=$notif->notif();
             <hr class="sidebar-divider my-0">
             <!-- Nav Item - Dashboard -->
             <li class="nav-item ">
-                <a class="nav-link" href={{url('dashboard')}} >
+                <a class="nav-link" href={{ url('dashboard') }}>
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -80,9 +81,8 @@ $notif=$notif->notif();
             {{-- MASTERDATA --}}
             <li class="nav-item" id="nav-masterdata">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                    aria-expanded="true" aria-controls="collapseUtilities" id="masterdata-menu" @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'ACCOUNTING_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN')
-                    hidden
-                    @endif>
+                    aria-expanded="true" aria-controls="collapseUtilities" id="masterdata-menu"
+                    @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'ACCOUNTING_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>
                     <i class="fas fa-folder-open"></i>
                     <span>Master Data</span>
                 </a>
@@ -90,26 +90,19 @@ $notif=$notif->notif();
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Mater Data:</h6>
-                        <a class="collapse-item" href="{{ url('product') }}" @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN')
-                            hidden
-                            @endif>Product</a>
-                        <a class="collapse-item" href="{{ url('custumor') }}" @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN')
-                            hidden
-                            @endif>Custumor</a>
-                        <a class="collapse-item" href="{{ url('COA') }}" @if (Auth::user()->status_pengguna != 'ACCOUNTING_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN')
-                            hidden
-                            @endif>Chart of Account</a>
-                        <a class="collapse-item" href="{{ url('supplier') }}" @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN')
-                            hidden
-                            @endif>Supplier</a>
+                        <a class="collapse-item" href="{{ url('product') }}"
+                            @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>Product</a>
+                        <a class="collapse-item" href="{{ url('custumor') }}"
+                            @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>Custumor</a>
+                        <a class="collapse-item" href="{{ url('COA') }}"
+                            @if (Auth::user()->status_pengguna != 'ACCOUNTING_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>Chart of Account</a>
+                        <a class="collapse-item" href="{{ url('supplier') }}"
+                            @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>Supplier</a>
                     </div>
                 </div>
             </li>
             {{-- Transaction --}}
-            <li class="nav-item " @if (Auth::user()->status_pengguna != 'ACCOUNTING_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN')
-                hidden
-
-                @endif>
+            <li class="nav-item " @if (Auth::user()->status_pengguna != 'ACCOUNTING_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#Transaction"
                     aria-expanded="true" aria-controls="Transaction">
                     <i class="fas fa-hand-holding-usd"></i>
@@ -131,9 +124,7 @@ $notif=$notif->notif();
                 </div>
             </li>
             {{-- report --}}
-            <li class="nav-item" @if (Auth::user()->status_pengguna != 'OWNER' && Auth::user()->status_pengguna != 'SUPER_ADMIN')
-                hidden
-                @endif>
+            <li class="nav-item" @if (Auth::user()->status_pengguna != 'OWNER' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#Report" aria-expanded="true"
                     aria-controls="Report">
                     <i class="fas fa-book"></i>
@@ -148,7 +139,8 @@ $notif=$notif->notif();
                         <a class="collapse-item" href="{{ url('aging') }}">Aging Schedule</a>
                         <a class="collapse-item" href="{{ url('SDR') }}">Sales Detail Report</a>
                         <a class="collapse-item" href="{{ url('PCR') }}">Purchase Detail Report</a>
-                        <a class="collapse-item" href="{{ url('paymentvendor/report/report') }}">Payment To Vendor  Report</a>
+                        <a class="collapse-item" href="{{ url('paymentvendor/report/report') }}">Payment To Vendor
+                            Report</a>
 
                     </div>
                 </div>
@@ -187,13 +179,13 @@ $notif=$notif->notif();
                     <ul class="navbar-nav ml-auto">
 
                         {{-- strat notif --}}
-                         <li class="nav-item dropdown no-arrow mx-1">
+                        <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-bell fa-fw"></i>
                                 <!-- Counter - Alerts -->
-                                <span class="badge badge-danger badge-counter">{{$notif['length']}}</span>
-                                
+                                <span class="badge badge-danger badge-counter">{{ $notif['length'] }}</span>
+
                             </a>
                             <!-- Dropdown - Alerts -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -201,20 +193,23 @@ $notif=$notif->notif();
                                 <h6 class="dropdown-header">
                                     Alerts Center
                                 </h6>
-                                @foreach ($notif['data'] as $d )
-                                    
-                                <div class="dropdown-item d-flex align-items-center" >
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-danger">
-                                            <i class="fas fa-exclamation-triangle text-white"></i>
+                                @foreach ($notif['data'] as $n)
+                                    <div class="dropdown-item d-flex align-items-center">
+                                        <div class="mr-3">
+                                            <div class="icon-circle bg-danger">
+                                                <i class="fas fa-exclamation-triangle text-white"></i>
+                                            </div>
                                         </div>
+                                        <div class="mx-2">
+                                            <div class="small text-gray-500">{{ date('M') }}, {{ date('Y') }}
+                                            </div>
+                                        </div>
+                                        Announcement Notice: We have known about your debt with transaction number
+                                         {{ $n->no_transaksi }},<br> your debt will expire on
+                                        {{ $n->DUE_DATE }} with {{ $n->selisih }} days remaining
                                     </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 2, 2019</div>
-                                        Spending Alert: We've noticed unusually high spending for your account.
-                                    </div>
-                                </div>
                                 @endforeach
+
                                 <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
                             </div>
                         </li>

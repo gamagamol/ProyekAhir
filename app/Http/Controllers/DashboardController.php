@@ -75,11 +75,17 @@ class DashboardController extends Controller
     }
 
     public  function notif(){
+        if ($this->DM->notif()<1) {
+            return $array=0;
+        }   
+        else{
+
             $array=[
-                'length'=>count($this->DM->notif()),
-                'data'=> $this->DM->notif(),
-            ];
-            return $array; 
+                    'length'=>count($this->DM->notif()),
+                    'data'=> $this->DM->notif(),
+                ];
+                return $array; 
+        }
     }
 
     
