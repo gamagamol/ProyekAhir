@@ -41,10 +41,10 @@ class DashboardModel extends Model
 
     public function notif()
     {
-       
-        
-           $ap = DB::table('transaksi')
-            ->selectRaw('Datediff( CURDATE(),tgl_pembelian)  as selisih,no_pembelian as no_transaksi,tgl_pembelian, DATE_ADD(tgl_pembelian, INTERVAL 45 DAY) AS DUE_DATE,subtotal')
+
+
+        $ap = DB::table('transaksi')
+            ->selectRaw('Datediff( CURDATE(),tgl_pembelian) ,no_pembelian as no_transaksi,tgl_pembelian, DATE_ADD(tgl_pembelian, INTERVAL 45 DAY) AS DUE_DATE,subtotal')
             ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
             ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', '=', 'penawaran.id_penawaran')
             ->join("produk", 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')
@@ -57,16 +57,30 @@ class DashboardModel extends Model
                 $query->select('id_pembelian')
                     ->from('pembayaranvendor');
             })
-            ->whereRaw('Datediff( CURDATE(),tgl_pembelian)  >=30')
+            ->whereRaw('Datediff( CURDATE(),tgl_pembelian) >= 30')
             ->groupBy('no_pembelian')
-            ->orderBy("DUE_DATE","asc")
+            ->orderBy("DUE_DATE", "asc")
             ->limit(2)
             ->get()
             ->toArray();
 
-          
-
-            return $ap;
-
+        $ar = DB::table('transaksi')
+            ->selectRaw("no_tagihan as no_transaksi,tgl_tagihan, DATE_ADD(tgl_tagihan, INTERVAL 31 DAY) AS DUE_DATE,nama_pelanggan, total, Datediff( CURDATE(),tgl_tagihan),tgl_tagihan, 
+            total AS total_selisih")
+            ->join('pelanggan', 'transaksi.id_pelanggan', "=", "pelanggan.id_pelanggan")
+            ->join('penawaran', 'penawaran.id_transaksi', "=", "transaksi.id_transaksi")
+            ->join('tagihan', 'tagihan.id_transaksi', "=", "transaksi.id_transaksi")
+            ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', "=", "penawaran.id_penawaran")
+            ->where('status_transaksi', "=", "bill")
+            ->whereRaw('Datediff( CURDATE(),tgl_tagihan) >= 30')
+            ->groupBy('no_tagihan')
+            ->orderBy("DUE_DATE", "asc")
+            ->limit(2)
+            ->get()
+            ->toArray();
+        
+            $array=array_merge($ap,$ar);
+         return $array;
+        //  return $ap;
     }
 }

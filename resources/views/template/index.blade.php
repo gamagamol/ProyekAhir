@@ -3,6 +3,7 @@ use App\Http\Controllers\DashboardController;
 $notif = new DashboardController();
 $notif = $notif->notif();
 
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -193,24 +194,44 @@ $notif = $notif->notif();
                                 <h6 class="dropdown-header">
                                     Alerts Center
                                 </h6>
-                                @foreach ($notif['data'] as $n)
-                                    <div class="dropdown-item d-flex align-items-center">
-                                        <div class="mr-3">
-                                            <div class="icon-circle bg-danger">
-                                                <i class="fas fa-exclamation-triangle text-white"></i>
-                                            </div>
+
+                                @foreach ($notif['data'] as $n )
+                                    
+                                @if (substr($n->no_transaksi,0,2)=='PO')
+                                    
+                                <a class="dropdown-item d-flex align-items-center" href="{{url('PCR')}}">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-danger">
+                                            <i class="fas fa-exclamation-triangle text-white"></i>
                                         </div>
-                                        <div class="mx-2">
-                                            <div class="small text-gray-500">{{ date('M') }}, {{ date('Y') }}
-                                            </div>
-                                        </div>
-                                        Announcement Notice: We have known about your debt with transaction number
-                                         {{ $n->no_transaksi }},<br> your debt will expire on
-                                        {{ $n->DUE_DATE }} with {{ $n->selisih }} days remaining
                                     </div>
+                                    <div>
+                                        <div class="small text-gray-500">{{ date('M') . ' ' . date('d') }},
+                                            {{ date('Y') }}</div>
+                                        <span class="font-weight-bold">Announcement Notice: You have a
+                                            notification regarding debt {{$n->no_transaksi}} click for more</span>
+                                    </div>
+                                </a>
+                                @else
+                                    
+                                <a class="dropdown-item d-flex align-items-center" href="{{url('aging')}}">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-danger">
+                                            <i class="fas fa-exclamation-triangle text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">{{ date('M') . ' ' . date('d') }},
+                                            {{ date('Y') }}</div>
+                                        <span class="font-weight-bold">Announcement Notice: You have a
+                                            notification regarding recivable {{$n->no_transaksi}} click for more</span>
+                                    </div>
+                                </a>
+                                @endif
+
                                 @endforeach
 
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                                {{-- <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a> --}}
                             </div>
                         </li>
 

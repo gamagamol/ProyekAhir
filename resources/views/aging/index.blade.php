@@ -33,9 +33,9 @@
                         </tr>
 
                         <tr>
-                            <td>0-30</td>
-                            <td>31-60</td>
-                            <td>61-90</td>
+                            <td style="text-align: center">0-30</td>
+                            <td style="text-align: center">31-60</td>
+                            <td style="text-align: center">61-90</td>
 
                         </tr>
                         @foreach ($data as $d)
