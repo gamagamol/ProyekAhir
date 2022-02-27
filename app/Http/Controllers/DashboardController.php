@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DashboardModel;
 use Illuminate\Http\Request;
 use App\Models\GeneralLadgerModel;
+use App\Models\ReportDetailSalesModel;
 
 class DashboardController extends Controller
 {
@@ -13,6 +14,7 @@ class DashboardController extends Controller
     {
         $this->model = new GeneralLadgerModel();
         $this->DM = new DashboardModel();
+        $this->RDSM = new ReportDetailSalesModel();
     }
     public function index()
     {
@@ -40,10 +42,15 @@ class DashboardController extends Controller
         }
 
         // how make total sales
-        $total_sales = 0;
-        foreach ($revenue as $r) {
-            $total_sales = $saldo_awal_penjualan + $r->nominal;
+
+
+        $total_sales = $this->RDSM->index();
+        $sales=0;
+        foreach ($total_sales as $r) {
+            $sales = $sales + $r->total;
         }
+
+
 
         // how make total AR
 
@@ -66,7 +73,7 @@ class DashboardController extends Controller
 
         $data = [
             'tittle' => "DashBoard",
-            'sales' => $total_sales,
+            'sales' => $sales,
             'recivable' => $total_AR,
             'grafik' => $this->DM->grafik(),
             'tagihan'=>round($this->DM->persentase_tagihan()),

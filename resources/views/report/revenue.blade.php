@@ -25,24 +25,31 @@
                             <td>Invoice Date</td>
                             <td>Amount</td>
                             <td>Total Amount </td>
-                            <td>The total of all purchases</td>
 
                         </tr>
-                       @foreach ($data as $d )
-                       <tr>
-                           <td>{{$loop->iteration}}</td>
-                           <td>{{$d->nama_pelanggan}}</td>
-                           <td>{{$d->no_penjualan}}</td>
-                           <td>{{$d->no_tagihan}}</td>
-                           <td>{{$d->tgl_tagihan}}</td>
-                           <td>{{"Rp.".number_format($d->subtotal, 2, ',', '.')}}</td>
-                         
-                           <td>{{"Rp.".number_format($d->total, 2, ',', '.')}}</td>
-                           <td>{{"Rp.".number_format($d->total_keseluruhan, 2, ',', '.')}}</td>
-                          
-                           </tr>
+                        <?php $no = 1; ?>
+                        <?php $total = 0; ?>
 
-                       @endforeach
+                        @foreach ($data as $d)
+                                <tr>
+                                    <td> {{ $loop->iteration }} </td>
+                                    <td> {{ $d->nama_pelanggan }} </td>
+                                    <td>{{ $d->no_penjualan }}</td>
+                                    <td>{{ $d->no_tagihan }}</td>
+                                    <td>{{ $d->tgl_tagihan }}</td>
+                                    <td>{{ 'Rp.' . number_format($d->subtotal, 2, ',', '.') }}</td>
+                                    <td>{{ 'Rp.' . number_format($d->total, 2, ',', '.') }}</td>
+
+                                </tr>
+                                <?php $total=$d->total+$total; ?>
+                                @endforeach
+                                <tr>
+                                    <td colspan="6">{{"TOTAL"}}</td>
+                                    <td>{{'Rp.' . number_format($total, 2, ',', '.')}}</td>
+                                </tr>
+
+                        </tr>
+                        <?php $no++; ?>
                     </table>
 
                 </div>

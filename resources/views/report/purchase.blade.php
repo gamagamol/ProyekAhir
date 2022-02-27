@@ -36,6 +36,8 @@
                             <td>Total Amount </td>
 
                         </tr>
+                        <?php $total=0; ?>
+
                         @foreach ($data as $d)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
@@ -46,8 +48,13 @@
                                 <td>{{ 'Rp.' . number_format($d->subtotal, 2, ',', '.') }}</td>
                               
                             </tr>
+                                <?php $total=$total+$d->subtotal ?>
 
                         @endforeach
+                       <tr>
+                                <td colspan="5">{{"TOTAL"}}</td>
+                                <td>{{'Rp.' . number_format($total, 2, ',', '.')}}</td>
+                            </tr>
                     </table>
 
                 </div>
