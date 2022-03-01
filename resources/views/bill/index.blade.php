@@ -4,8 +4,12 @@
         <div class="alert alert-success" role="alert">
             {{ session('success') }}
         </div>
+        @elseif (session()->has('email'))
+        <div class="alert alert-success" role="alert">
+            {{ session('email') }}
+        </div>
     @endif
-    <div class="container">
+    <div class="container-xxl mx-5">
         <div class="card shadow mb-4">
             <div class="card-header py-3 mt-2">
                 <h6 class="m-0 font-weight-bold text-primary">Bill Payment</h6>
@@ -46,11 +50,10 @@
 
 
 
+
                         </tr>
                         <?php $i = 1; ?>
                         @foreach ($data as $d)
-
-
                             <tr>
                                 <td> {{ $loop->iteration }}</td>
                                 <td>{{ $d->nama_pelanggan }}</td>
@@ -75,18 +78,14 @@
 
                                 </td>
 
-                                <td>
+                                <td >
                                     <a href="{{ url('bill/print', str_replace('/', '-', $d->no_tagihan)) }}"
-                                        class="btn btn-info mt-2">print</a>
+                                        class="btn btn-info mt-2 w-75"><i class="fa fa-print" aria-hidden="true"></i></a>
+                                    <a href="{{ url('email', str_replace('/', '-', $d->no_tagihan)) }}"
+                                        class="btn btn-secondary mt-2 w-75"> <i class="fa fa-envelope" aria-hidden="true"></i>
+                                         </a>
                                 </td>
                             </tr>
-
-
-
-
-
-
-
                         @endforeach
                     </table>
                     {{ $data->links() }}

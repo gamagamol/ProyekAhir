@@ -19,6 +19,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\GoodsController;
 use App\Http\Controllers\PurchaseReportController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\PaymentVendorController;
 // Auth
 Route::get('/', [AuthController::class, 'index'])->name('login')->middleware(['guest', 'revalidate']);
@@ -80,3 +81,6 @@ Route::get('export',[AgingScheduleController::class,'export']);
 Route::resource('ledger', GeneralLadgerController::class)->middleware(['auth', 'revalidate']);
 Route::resource('SDR', ReportDetailSales::class)->middleware(['auth', 'revalidate']);
 Route::resource('PCR', PurchaseReportController::class)->middleware(['auth', 'revalidate']);
+
+// email
+Route::get('email/{id}',[EmailController::class,'email']);

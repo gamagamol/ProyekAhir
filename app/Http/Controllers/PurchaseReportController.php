@@ -21,6 +21,8 @@ class PurchaseReportController extends Controller
         } else {
             $data = $this->model->index();
         }
+
+
         $data = [
             'tittle' => "Purchase Detail Report",
             'data' => $data,

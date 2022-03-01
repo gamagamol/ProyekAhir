@@ -12,7 +12,7 @@ class PurchaseReportModel extends Model
     public function index()
     {
         return DB::table('transaksi')
-            ->selectRaw('nama_pemasok,no_pembelian,tgl_pembelian, DATE_ADD(tgl_pembelian, INTERVAL 45 DAY) AS DUE_DATE,subtotal')
+            ->selectRaw('nama_pemasok,no_pembelian,tgl_pembelian, DATE_ADD(tgl_pembelian, INTERVAL 45 DAY) AS DUE_DATE,subtotal,Datediff( CURDATE(),tgl_pembelian) as jumlah_hari')
             ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
             ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', '=', 'penawaran.id_penawaran')
             ->join("produk", 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')
