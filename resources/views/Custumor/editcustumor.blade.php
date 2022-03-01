@@ -50,6 +50,19 @@
                     </div>
                 </div>                
             </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group mt-2 ">
+                        <label for="example1" class="mt-2">Email</label>
+                        <input type="TEXT" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $data->email }}">
+                        @error('email') 
+                        <div class="invalid-feedback">
+                        {{ $message }}
+                        </div> 
+                        @enderror 
+                    </div>
+                </div>                
+            </div>
 
             <div class="row">
                 <div class="col">

@@ -14,8 +14,10 @@ class CustumorModel extends Model
     {
         if ($kode) {
             return DB::table('pelanggan')->where('nama_pelanggan', 'like', "%$kode%")->get();
+        }else{
+
+            return DB::table('pelanggan')->paginate(5);
         }
-        return DB::table('pelanggan')->paginate(5);
     }
     public function insert($data)
     {

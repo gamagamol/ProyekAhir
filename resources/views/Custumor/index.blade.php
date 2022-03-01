@@ -5,7 +5,6 @@
             {{ session('success') }}
         </div>
     @endif
-
     <div class="container">
         <div class="card shadow mb-4">
             <div class="card-header py-3 mt-2">
@@ -31,6 +30,7 @@
                             <td>No</td>
                             <td>Name Company</td>
                             <td>Company Side</td>
+                            <td>Email Company Side</td>
                             <td>Company's Address</td>
                             <td>Action</td>
                         </tr>
@@ -40,13 +40,18 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $d->nama_pelanggan }}</td>
                                 <td>{{ $d->perwakilan }}</td>
+                                <td>{{ $d->email }}</td>
                                 <td>{{ $d->alamat_pelanggan }}</td>
                                 <td><a href="{{ url('custumor', $d->id_pelanggan) }}" class="btn btn-warning">Change</a>
                                 </td>
                             </tr>
                         @endforeach
                     </table>
+                    @if ($type=='true')
+                        
                     {{ $data->links() }}
+                    
+                    @endif
 
                 </div>
             </div>

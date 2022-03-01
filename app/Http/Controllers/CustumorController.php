@@ -21,13 +21,18 @@ class CustumorController extends Controller
         $serch = request('cari');
         if ($serch) {
             $data = $this->custumor_model->index($serch);
+            $type='false';
         } else {
             $data = $this->custumor_model->index();
+            $type = 'true';
+
         }
+       
 
         $data = [
             'tittle' => "Data Custumor",
-            'data' => $data
+            'data' => $data,
+            'type'=>$type,
         ];
         return view('Custumor.index', $data);
     }
@@ -56,7 +61,8 @@ class CustumorController extends Controller
             'id_pelanggan' => 'required|unique:pelanggan,id_pelanggan',
             'nama_pelanggan' => 'required|string',
             'alamat_pelanggan' => 'required',
-            'perwakilan' => 'required|string'
+            'perwakilan' => 'required|string',
+            'email'=> 'required|email:rfc,dns'
         ];
         $message = [
             'id_pelanggan.required' => "The CODE COMPANY'S field is required",
@@ -78,6 +84,7 @@ class CustumorController extends Controller
             'nama_pelanggan' => strtoupper($request->input('nama_pelanggan')),
             'alamat_pelanggan' => strtoupper($request->input('alamat_pelanggan')),
             'perwakilan' => strtoupper($request->input('perwakilan')),
+            'email' => $request->input('email'),
         ];
         $this->custumor_model->insert($validated);
         return redirect('custumor')->with('success', 'Data Entered Successfully');
@@ -97,7 +104,9 @@ class CustumorController extends Controller
         $rules = [
             'nama_pelanggan' => 'required|string',
             'alamat_pelanggan' => 'required',
-            'perwakilan' => 'required|string'
+            'perwakilan' => 'required|string',
+            'email' => 'required|email:rfc,dns'
+
         ];
         $message = [
             'nama_pelanggan.required' => "The NAME COMPANY'S field is required",
@@ -117,6 +126,7 @@ class CustumorController extends Controller
             'nama_pelanggan' => strtoupper($request->input('nama_pelanggan')),
             'alamat_pelanggan' => strtoupper($request->input('alamat_pelanggan')),
             'perwakilan' => strtoupper($request->input('perwakilan')),
+            'email' => $request->input('email'),
         ];
 
         $this->custumor_model->updt($validated);

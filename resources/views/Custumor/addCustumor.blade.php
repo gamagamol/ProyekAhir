@@ -56,6 +56,21 @@
 
                     <div class="row">
                         <div class="col">
+                            <div class="form-group mt-2 ">
+                                <label for="example1" class="mt-2">Email</label>
+                                <input type="TEXT" class="form-control @error('email') is-invalid @enderror"
+                                    name="email" value="{{ old('email') }}">
+                                @error('email')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
                             <div class="form-group">
                                 <label for="exampleFormControlTextarea1">Company Address</label>
                                 <textarea class="form-control @error('alamat_pelanggan') is-invalid @enderror"
