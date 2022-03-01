@@ -2,10 +2,12 @@
 @section('content')
     @if (session()->has('success'))
         <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert">×</button>
             {{ session('success') }}
         </div>
-        @elseif (session()->has('email'))
+    @elseif (session()->has('email'))
         <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert">×</button>
             {{ session('email') }}
         </div>
     @endif
@@ -78,12 +80,13 @@
 
                                 </td>
 
-                                <td >
+                                <td>
                                     <a href="{{ url('bill/print', str_replace('/', '-', $d->no_tagihan)) }}"
                                         class="btn btn-info mt-2 w-75"><i class="fa fa-print" aria-hidden="true"></i></a>
                                     <a href="{{ url('email', str_replace('/', '-', $d->no_tagihan)) }}"
-                                        class="btn btn-secondary mt-2 w-75"> <i class="fa fa-envelope" aria-hidden="true"></i>
-                                         </a>
+                                        class="btn btn-secondary mt-2 w-75"> <i class="fa fa-envelope"
+                                            aria-hidden="true"></i>
+                                    </a>
                                 </td>
                             </tr>
                         @endforeach
