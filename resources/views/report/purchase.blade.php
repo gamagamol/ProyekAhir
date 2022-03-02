@@ -33,11 +33,12 @@
                             <td>Purchase Number</td>
                             <td>Purchase Date</td>
                             <td>Due Date</td>
+                            <td>Payment date</td>
+
                             <td>Total Amount </td>
 
                         </tr>
-                        <?php $total=0; ?>
-
+                        <?php $total = 0; ?>
                         @foreach ($data as $d)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
@@ -45,16 +46,24 @@
                                 <td>{{ $d->no_pembelian }}</td>
                                 <td>{{ $d->tgl_pembelian }}</td>
                                 <td>{{ $d->DUE_DATE }}</td>
+                               @if ($d->tgl_pembayaran_vendor!='ABC')
+                               <td>  
+                               {{$d->tgl_pembayaran_vendor}}
+                                  </td>
+                               @else
+                                 <td>
+                                     {{" "}}
+                                 </td>
+                               @endif
                                 <td>{{ 'Rp.' . number_format($d->subtotal, 2, ',', '.') }}</td>
-                              
-                            </tr>
-                                <?php $total=$total+$d->subtotal ?>
 
-                        @endforeach
-                       <tr>
-                                <td colspan="5">{{"TOTAL"}}</td>
-                                <td>{{'Rp.' . number_format($total, 2, ',', '.')}}</td>
                             </tr>
+                            <?php $total = $total + $d->subtotal; ?>
+                        @endforeach
+                        <tr>
+                            <td colspan="6">{{ 'TOTAL' }}</td>
+                            <td>{{ 'Rp.' . number_format($total, 2, ',', '.') }}</td>
+                        </tr>
                     </table>
 
                 </div>
