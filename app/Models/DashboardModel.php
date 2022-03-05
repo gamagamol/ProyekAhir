@@ -35,8 +35,14 @@ class DashboardModel extends Model
             ->selectRaw('count(id_transaksi) as id')
             ->whereBetween('tgl_pembayaran', ['2022-01-01', '2022-12-31'])
             ->first();
-
-        return (int)$pembayaran->id / $tagihan->id * 100;
+        if ( is_countable($tagihan)) {
+         
+            
+            return (int)$pembayaran->id / $tagihan->id * 100;
+          
+        }else{
+            return 0;
+        }
     }
 
     public function notif()
