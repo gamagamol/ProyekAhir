@@ -23,7 +23,7 @@ class PaymentVendorController extends Controller
             $data=$this->model->index();
         }
         $data = [
-            'tittle' => "Payment To Vendor",
+            'tittle' => "Debt Payment Vendor Report",
             'data' => $data,
             'deta'=>$this->model->index(),
             
