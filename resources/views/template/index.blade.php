@@ -120,7 +120,7 @@ $notif = $notif->notif();
                         <a class="collapse-item" href="{{ url('delivery') }}">Delivery</a>
                         <a class="collapse-item" href="{{ url('bill') }}">Bill Payment</a>
                         <a class="collapse-item" href="{{ url('payment') }}">Payment</a>
-                        <a class="collapse-item" href="{{ url('paymentvendor') }}">Payment to vendor </a>
+                        <a class="collapse-item" href="{{ url('paymentvendor') }}">Debt Payment </a>
                     </div>
                 </div>
             </li>
@@ -325,12 +325,7 @@ $notif = $notif->notif();
     <script src="{{ asset('assets/') }}/js/sb-admin-2.min.js"></script>
 
 
-    <!-- Page level plugins -->
-    <script src="{{ asset('assets/') }}/vendor/chart.js/Chart.min.js"></script>
 
-    <!-- Page level custom scripts -->
-    <script src="{{ asset('assets/') }}/js/demo/chart-area-demo.js"></script>
-    <script src="{{ asset('assets/') }}/js/demo/chart-pie-demo.js"></script>
 
 
 
