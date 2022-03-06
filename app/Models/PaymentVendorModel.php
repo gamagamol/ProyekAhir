@@ -72,6 +72,21 @@ class PaymentVendorModel extends Model
             ->get();
     }
 
+    public function no_penjualan($tgl_penjualan)
+    {
+        $no_penjualan =
+            DB::table('pembayaranvendor')
+            ->selectRaw("DISTINCT ifnull(max(substring(no_penjualan,4,1)),0)+1 as no_penjualan")
+            ->where("tgl_penjualan", "=", $tgl_penjualan)
+            ->first();
+        $no_penjualan = (int)$no_penjualan->no_penjualan;
+
+
+        return $no_penjualan;
+    }
+
+
+
     public function insert($data_pembayaran_vendor)
     {
         DB::table('pembayaranvendor')->insert($data_pembayaran_vendor);

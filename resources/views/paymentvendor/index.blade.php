@@ -51,7 +51,6 @@
                         <?php $i = 1; ?>
                         @foreach ($data as $d)
 
-
                             <tr>
                                 <td> {{ $loop->iteration }}</td>
                                 <td>{{ $d->nama_pemasok }}</td>
@@ -61,7 +60,7 @@
 
                                 <td>{{ $d->berat }}</td>
 
-                                <td>{{ 'Rp.' . number_format($d->total) }}</td>
+                                <td>{{ 'Rp.' . number_format($d->total=+$d->total) }}</td>
                                 <td>{{ $d->layanan }}</td>
                                 <td>{{ $d->nama_pengguna }}</td>
                                 <td>

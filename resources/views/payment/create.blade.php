@@ -18,6 +18,7 @@
                             <input type="date" required name="tgl_pembayaran" class="form-control" value={{$data[0]->tgl_tagihan}}>
 
                         </div>
+                       
                     </div>
                 </div>
                 <div class="card-body">

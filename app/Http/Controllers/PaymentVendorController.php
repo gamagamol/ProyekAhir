@@ -16,17 +16,17 @@ class PaymentVendorController extends Controller
     }
     public function index()
     {
-        $serch=request()->get('serch');
+        $serch = request()->get('serch');
         if ($serch) {
-            $data=$this->model->index($serch);
-        }else{
-            $data=$this->model->index();
+            $data = $this->model->index($serch);
+        } else {
+            $data = $this->model->index();
         }
         $data = [
             'tittle' => "Debt Payment Vendor Report",
             'data' => $data,
-            'deta'=>$this->model->index(),
-            
+            'deta' => $this->model->index(),
+
 
         ];
         return view('paymentvendor.index', $data);
@@ -45,14 +45,46 @@ class PaymentVendorController extends Controller
     {
         $kode_transaksi = $request->input('kode_transaksi');
         $tgl_pembelian = $request->input('tgl_pembelian');
+        $cicilan = $request->input('installment_payment');
+        $tombol_cicilan = $request->input('installment_button');
+        // if ($tombol_cicilan) {
+        //     $purchase = $this->model->edit($kode_transaksi);
+
+        //     $tgl_pembelian = $purchase[0]->tgl_pembelian;
+        //     $rules = [
+        //         'tgl_pembelian' => " after_or_equal:$tgl_pembelian",
+        //         'installment' => "integer"
+        //     ];
+        //     $message = [
+        //         "tgl_pembelian.after_or_equal" => "Choose a date after the purchase date or equal",
+        //     ];
+        //     $validated = Validator::make($request->all(), $rules, $message);
+        //     if ($validated->fails()) {
+        //         return redirect()->back()->with("failed", "Choose a date after the purchase date or equal");
+        //     }
+
+        //     //    kumpulan array data pembayaran vendor
+        //     $data_pembelian = [];
 
 
+        //     for ($i = 0; $i < count($purchase); $i++) {
 
+
+        //         $data_pembelian[$i] = [
+        //             'id_transaksi' => $purchase[$i]->id_transaksi,
+        //             'id_pembelian' => $purchase[$i]->id_pembelian,
+        //             'no_pembayaran_vendor' => $purchase[$i]->no_pembelian,
+        //             'tgl_pembayaran_vendor' => $tgl_pembelian
+        //         ];
+        //     }
+        // }
+        // die;
         $purchase = $this->model->edit($kode_transaksi);
 
         $tgl_pembelian = $purchase[0]->tgl_pembelian;
         $rules = [
             'tgl_pembelian' => " after_or_equal:$tgl_pembelian",
+            'installment' => "integer"
         ];
         $message = [
             "tgl_pembelian.after_or_equal" => "Choose a date after the purchase date or equal",
@@ -71,19 +103,13 @@ class PaymentVendorController extends Controller
 
             $data_pembelian[$i] = [
                 'id_transaksi' => $purchase[$i]->id_transaksi,
-                'id_pembelian'=>$purchase[$i]->id_pembelian,
+                'id_pembelian' => $purchase[$i]->id_pembelian,
                 'no_pembayaran_vendor' => $purchase[$i]->no_pembelian,
                 'tgl_pembayaran_vendor' => $tgl_pembelian
             ];
-
-
-
-           
         }
-       $this->model->insert($data_pembelian);
-        return redirect('paymentvendor/report/report')->with('success','Payment to vendor has been success');
-
-        
+        $this->model->insert($data_pembelian);
+        return redirect('paymentvendor/report/report')->with('success', 'Payment to vendor has been success');
     }
 
     public function detail($no_pembelian)
@@ -98,7 +124,8 @@ class PaymentVendorController extends Controller
     }
 
 
-    public function report(){
+    public function report()
+    {
 
         $serch = request()->get('serch');
         if ($serch) {
@@ -109,7 +136,7 @@ class PaymentVendorController extends Controller
         $data = [
             'tittle' => "Report Payment To Vendor",
             'data' => $data,
-            'deta'=>$this->model->report(),
+            'deta' => $this->model->report(),
         ];
         return view('paymentvendor.report', $data);
     }
