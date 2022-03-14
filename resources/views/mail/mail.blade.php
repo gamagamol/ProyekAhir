@@ -15,7 +15,7 @@
         <br>
         Perusahaan Bapak. <br> <br><br>
 
-        Bersama ini kami informasikan outstanding payment invoice sebesar <i> Rp. 902.000 </i> , kami lampirkan
+        Bersama ini kami informasikan outstanding payment invoice sebesar <i> {{$total}} </i> , kami lampirkan
         rinciannya. <br> <br><br>
 
         Email ini merupakan pemberitahuan kepada Bapak. Mohon abaikan pemberitahuan ini apabila Bapak sudah melakukan

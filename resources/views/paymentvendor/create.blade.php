@@ -22,40 +22,11 @@
                             <input type="text" value="{{ $data[0]->kode_transaksi }}" name="kode_transaksi" hidden>
 
                         </div>
-                        <div class="col-md-3 mt-3 ml-3">
-
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="installment_button"
-                                            id="installment">
-                                        <label class="form-check-label" for="flexRadioDefault1">
-                                            Installment
-                                        </label>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
+                    
 
                     </div>
 
-                    <div class="row ml-2" id="row_installment" hidden>
-                        <div class="col-md-3 mt-2">
-                            <input type="text" name="installment_payment" id="installment_payment" class="form-control"
-                                placeholder="Installment Payments">
-
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-1 mt-2" id="check_debt">
-                                <p class="btn btn-primary " style="font-size: 14px"> Check</p>
-                            </div>
-                        </div>
-                    </div>
-
-
-                </div>
+                   
 
                 <div class="card-body">
 

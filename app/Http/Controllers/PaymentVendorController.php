@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 
+
 class PaymentVendorController extends Controller
 {
     public $model;
@@ -45,40 +46,7 @@ class PaymentVendorController extends Controller
     {
         $kode_transaksi = $request->input('kode_transaksi');
         $tgl_pembelian = $request->input('tgl_pembelian');
-        $cicilan = $request->input('installment_payment');
-        $tombol_cicilan = $request->input('installment_button');
-        // if ($tombol_cicilan) {
-        //     $purchase = $this->model->edit($kode_transaksi);
-
-        //     $tgl_pembelian = $purchase[0]->tgl_pembelian;
-        //     $rules = [
-        //         'tgl_pembelian' => " after_or_equal:$tgl_pembelian",
-        //         'installment' => "integer"
-        //     ];
-        //     $message = [
-        //         "tgl_pembelian.after_or_equal" => "Choose a date after the purchase date or equal",
-        //     ];
-        //     $validated = Validator::make($request->all(), $rules, $message);
-        //     if ($validated->fails()) {
-        //         return redirect()->back()->with("failed", "Choose a date after the purchase date or equal");
-        //     }
-
-        //     //    kumpulan array data pembayaran vendor
-        //     $data_pembelian = [];
-
-
-        //     for ($i = 0; $i < count($purchase); $i++) {
-
-
-        //         $data_pembelian[$i] = [
-        //             'id_transaksi' => $purchase[$i]->id_transaksi,
-        //             'id_pembelian' => $purchase[$i]->id_pembelian,
-        //             'no_pembayaran_vendor' => $purchase[$i]->no_pembelian,
-        //             'tgl_pembayaran_vendor' => $tgl_pembelian
-        //         ];
-        //     }
-        // }
-        // die;
+       
         $purchase = $this->model->edit($kode_transaksi);
 
         $tgl_pembelian = $purchase[0]->tgl_pembelian;

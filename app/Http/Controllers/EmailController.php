@@ -20,7 +20,8 @@ class EmailController extends Controller
 
         $data = $this->model->detail($no_tagihan);
         $details = [
-            'perwakilan' => $data[0]->perwakilan
+            'perwakilan' => $data[0]->perwakilan,
+            'total'=>$data[0]->total,
         ];
         Mail::to($data[0]->email)->send(new \App\Mail\Testmail($details));
         $subject=$data[0]->email;
