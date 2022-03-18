@@ -28,7 +28,7 @@
                                 id="id_pemasok" name="id_pemasok" onchange="drop()" value="{{ old('id_pemasok') }}">
 
 
-                                <option value={{ null }}>Select Your product</option>
+                                <option value={{ null }}>Select Your Supplier</option>
                                 @foreach ($supplier as $p)
                                     <option value='{{ $p->id_pemasok }}'>
                                         {{ $p->nama_pemasok }}</option>
