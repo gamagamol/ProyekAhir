@@ -105,6 +105,8 @@
         </div>
 
         <!-- Content Row -->
+        <div class="container">
+
         <div class="row">
 
             <!-- Content Column -->
@@ -249,6 +251,8 @@
         </div>
 
     </div>
+        </div>
+
     <!-- /.container-fluid -->
 
     </div>
