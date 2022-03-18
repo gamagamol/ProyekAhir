@@ -14,11 +14,12 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-4 mt-3">
-                        <form action={{url('quotation')}} method="GET" id="serch-form">
-                            <select class="form-control form-select" aria-label="Default select example"  name='serch' id="serch">
-                              @foreach ($deta as $d )
-                                  <option value={{$d->no_penawaran}} >{{$d->no_penawaran}}</option>
-                              @endforeach
+                        <form action={{ url('quotation') }} method="GET" id="serch-form">
+                            <select class="form-control form-select" aria-label="Default select example" name='serch'
+                                id="serch">
+                                @foreach ($deta as $d)
+                                    <option value={{ $d->no_penawaran }}>{{ $d->no_penawaran }}</option>
+                                @endforeach
                             </select>
                             <button type=submit name=submit class="btn btn-primary mt-3" id="serch-button">submit</button>
                         </form>
@@ -51,8 +52,6 @@
                         </tr>
                         <?php $i = 1; ?>
                         @foreach ($data as $d)
-
-
                             <tr>
                                 <td> {{ $loop->iteration }}</td>
                                 <td style="min-width:120px">{{ $d->tgl_penawaran }}</td>
@@ -63,31 +62,23 @@
 
                                 <td>{{ 'Rp.' . number_format($d->total) }}</td>
                                 <td>{{ $d->layanan }}</td>
-                                <td>{{  $d->nama_pelanggan }}</td>
-                                <td>{{  $d->nama_pengguna }}</td>
+                                <td>{{ $d->nama_pelanggan }}</td>
+                                <td>{{ $d->nama_pengguna }}</td>
                                 <td>
-                                    <a class="btn btn-primary" href="{{ url('sales', $d->kode_transaksi) }}">
+                                   
 
-                                        Sales
-                                    </a>
-
-
+                                    <a href="{{ url('sales', $d->kode_transaksi) }}" class="btn btn-primary mt-1">
+                                        Sales </a>
 
                                     <a href="{{ url('quotation', $d->kode_transaksi) }}" class="btn btn-info mt-1">
                                         Detail </a>
                                 </td>
                                 <td>
-                                    <a href={{url('quotation/print',$d->kode_transaksi)}} class="btn btn-primary"> Print</a>
+                                    <a href={{ url('quotation/print', $d->kode_transaksi) }} class="btn btn-primary">
+                                        Print</a>
                                 </td>
 
                             </tr>
-
-
-
-
-
-
-
                         @endforeach
                     </table>
                     {{ $data->links() }}
@@ -95,25 +86,6 @@
             </div>
         </div>
     </div>
-    {{-- <script>
-        $(document).ready(function() {
 
-            $('#serch-button').click(function (){
-                let form=$('#serch-form').attr('action');
-                $.ajax({
-                    type:'GET',
-                    url:form,
-                    data:$('#serch-form').find(":selected").val(),
-                    typeData:'json',
-                    success:function(){
-                        console.log(form);
-                    }
-                })
-               
-            })
-           
-
-        });
-    </script> --}}
-
+   
 @endsection()

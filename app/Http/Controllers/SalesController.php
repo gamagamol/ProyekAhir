@@ -99,7 +99,8 @@ class SalesController extends Controller
 
 
         $no_penjualan = $this->SalesModel->insert_penjualan($id_transaksi, $data_penjualan, $data_detail_penjualan, $kode_transaksi);
-        return redirect('sales')->with('success', "Data entered successfully, Your Sales Number $no_penjualan ");
+        return redirect()->route('sales.detail',str_replace('/','-', $no_penjualan))
+        ->with('success', "Data entered successfully, Your Sales Number $no_penjualan ");
     }
     public function detail($no_penjualan)
     {

@@ -43,7 +43,7 @@ Route::get('quotation/print/{id}', [QuotationController::class, "print"]);
 
 Route::resource('sales', SalesController::class)->middleware(['auth', 'revalidate']);
 Route::post('sales_insert', [SalesController::class, "insert"]);
-Route::get('sales/detail/{no_tagihan}', [SalesController::class, "detail"]);
+Route::get('sales/detail/{no_tagihan}', [SalesController::class, "detail"])->name('sales.detail');
 
 Route::resource('purchase', PurchaseController::class)->middleware(['auth', 'revalidate']);
 Route::post('purchase_insert', [PurchaseController::class, "insert"]);

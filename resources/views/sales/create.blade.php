@@ -15,8 +15,9 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-3 mt-2">
-                            <input type="date"  name="tgl_penjualan" class="form-control" value={{$data[0]->tgl_penawaran}} >
-                            <input type="text" value="{{$data[0]->kode_transaksi}}" name="kode_transaksi" hidden>
+                            <input type="date" name="tgl_penjualan" class="form-control"
+                                value={{ $data[0]->tgl_penawaran }}>
+                            <input type="text" value="{{ $data[0]->kode_transaksi }}" name="kode_transaksi" hidden>
 
                         </div>
                     </div>
@@ -50,11 +51,9 @@
                             @csrf
                             <?php $i = 1; ?>
                             @foreach ($data as $d)
-
-
                                 <tr>
-                                  
-                                    <td>{{$loop->iteration}}</td>
+
+                                    <td>{{ $loop->iteration }}</td>
                                     <td style="min-width:120px">{{ $d->tgl_penawaran }}</td>
                                     <td>{{ $d->no_penawaran }}</td>
                                     <td>{{ $d->nomor_pekerjaan }}</td>
@@ -75,27 +74,49 @@
 
 
                                 </tr>
-
-
-
-
-
-
-
                             @endforeach
                         </table>
                     </div>
                     <div class="container">
                         <div class="row">
                             <div class="col">
-                                <button type=submit name=submit class="btn btn-primary">submit</button>
-                                <a href="{{url('quotation')}}" class="btn btn-primary">back</a>
+
+
+                                <p href="" class="btn btn-primary mt-3" onclick="MoveCreate()">submit</p>
+
+                                <a href="{{ url('quotation') }}" class="btn btn-primary">back</a>
                             </div>
                         </div>
                     </div>
-            </form>
+                </div>
         </div>
     </div>
-    </div>
+    {{-- Modal Move Create --}}
 
+    <div id="modal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sales</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure to continue the transaction? please check the details first! </p>
+                    <button type=submit name=submit class="btn btn-primary " >submit</button>
+                    <a href="{{ url('quotation', $d->kode_transaksi) }}" class="btn btn-info mt-1">
+                        Detail </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+
+    <script>
+        function MoveCreate() {
+            $('#modal').modal('show');
+        }
+    </script>
 @endsection()
