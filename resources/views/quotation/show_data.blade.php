@@ -120,7 +120,7 @@
             </table>
     </div>
     
-    <a href="{{ url()->previous() }}" class="btn btn-primary  mb-4 ml-3" style="margin-top: 30px">Back</a>
+    <a href="{{ url('quotation') }}" class="btn btn-primary  mb-4 ml-3" style="margin-top: 30px">Back</a>
 
 
 
