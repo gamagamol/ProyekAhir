@@ -20,7 +20,8 @@
                             <input type="text" value="{{ $data[0]->kode_transaksi }}" name="kode_transaksi" hidden>
 
                         </div>
-                        <div class="col-md-3 mt-2">
+                        {{-- jangan hapus dulu penting --}}
+                        {{-- <div class="col-md-3 mt-2">
                             <select
                                 class="form-control @error('id_pemasok')
                                     is-invalid  
@@ -40,7 +41,14 @@
                                 </div>
                             @enderror
 
-                        </div>
+                        </div> --}}
+                    </div>
+
+                    <div class="row" id="CreateSupplier">
+
+
+
+
                     </div>
                 </div>
                 <div class="card-body">
@@ -56,7 +64,6 @@
                                 <td>Grade</td>
                                 <td colspan="3">Material Size</td>
                                 <td>QTY</td>
-
                                 <td>Weight(Kg)</td>
                                 <td>Unit Price</td>
                                 <td>Shipment</td>
@@ -65,6 +72,7 @@
                                 <td>Total Amount</td>
                                 <td>Processing</td>
                                 <td>customer</td>
+                                <td>Supplier</td>
 
 
 
@@ -72,8 +80,6 @@
                             @csrf
                             <?php $i = 1; ?>
                             @foreach ($data as $d)
-
-
                                 <tr>
 
                                     <td>{{ $loop->iteration }}</td>
@@ -93,17 +99,15 @@
                                     <td>{{ 'Rp.' . number_format($d->total) }}</td>
                                     <td>{{ $d->layanan }}</td>
                                     <td>{{ $d->nama_pelanggan }}</td>
+                                    <td>
+                                        <i class="fa fa-plus-circle" aria-hidden="true"
+                                            onclick="CreateSupplier('{{ $d->id_produk }}','{{ $d->nama_produk }}','{{ $d->no_penjualan }}')"></i>
+
+                                    </td>
 
 
 
                                 </tr>
-
-
-
-
-
-
-
                             @endforeach
                         </table>
                     </div>
@@ -120,4 +124,40 @@
     </div>
     </div>
 
+
+    <script>
+        function CreateSupplier(IdProduk, NamaProduk, NoPenjualan) {
+            let Supplier = {!! json_encode($supplier->toArray(), JSON_HEX_TAG) !!}
+            let html = ``
+            html += `<div class='col-md-3 mt-3'>
+        <select class='form-control ' id='id_pemasok' name='id_pemasok[]'>`
+            html += ` <option value=null>Select Your Supplier</option>`
+
+            for (let i = 0; i < Supplier.length; i++) {
+                html += ` <option value=${Supplier[i].id_pemasok}>${Supplier[i].nama_pemasok}</option>`
+            }
+            html += `</select></div>`
+            $('#CreateSupplier').append(`
+             
+            <div class="col-md-2">
+                            <input type="text" name="no_penjualan[]" class="form-control mt-3" value='${NoPenjualan}' readonly>
+            </div>
+             <div class="col-md-2">
+                            <input type="text" name="nama_produk[]" class="form-control mt-3" placeholder="Unit" value='${NamaProduk}' readonly>
+            </div>
+ 
+            </div>
+        <div class="col-md-1">
+             <input type="text" name="unit[]" class="form-control mt-3" placeholder="Unit">
+            </div>
+
+        ${html}
+<div class="col-sm-3">
+                            <input type="text" name="id_produk[]" class="form-control mt-3" value='${IdProduk}' hidden>
+            </div>
+                        `);
+
+
+        }
+    </script>
 @endsection()

@@ -51,6 +51,8 @@ class PurchaseController extends Controller
 
     public function store(Request $request)
     {
+        dd($request->input());
+
         $kode_transaksi = $request->input('kode_transaksi');
         $tgl_pembelian = $request->input('tgl_pembelian');
         $id_pemasok = $request->input('id_pemasok');
