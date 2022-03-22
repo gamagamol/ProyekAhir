@@ -148,7 +148,7 @@
  
             </div>
         <div class="col-md-1">
-             <input type="text" name="unit[]" class="form-control mt-3" placeholder="Unit">
+             <input type="number" name="unit[]" class="form-control mt-3" placeholder="Unit">
             </div>
 
         ${html}

@@ -19,19 +19,17 @@ class PurchaseController extends Controller
     }
     public function index()
     {
-        $serch=request()->get('serch');
+        $serch = request()->get('serch');
         if ($serch) {
             $data = $this->PurchaseModel->index($serch);
-            
-        }else{
+        } else {
             $data = $this->PurchaseModel->index();
-
         }
 
         $data = [
             'tittle' => 'Purchase Order',
             "data" => $data,
-            'deta'=> $this->PurchaseModel->index(),
+            'deta' => $this->PurchaseModel->index(),
 
 
         ];
@@ -51,32 +49,55 @@ class PurchaseController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->input());
-
+        // Persiapan Variable
         $kode_transaksi = $request->input('kode_transaksi');
         $tgl_pembelian = $request->input('tgl_pembelian');
         $id_pemasok = $request->input('id_pemasok');
-       if ($id_pemasok==null) {
-            return redirect()->back()->with("failed", "Choose Your Supplier");
-           
-       }
-
-
+        $unit = $request->input('unit');
         $quotation = $this->PurchaseModel->edit($kode_transaksi);
-
+        dump($quotation);
         $tgl_penjualan = $quotation[0]->tgl_penjualan;
+        // Validation Proses
+
+        if(!$request->input('id_pemasok')){
+            return redirect()->back()->with("failed", "Please click the add button for choose your supplier ");
+
+        }
+
+        for ($ip = 0; $ip < count($id_pemasok); $ip++) {
+            if ($id_pemasok[$ip] == "null") {
+                return redirect()->back()->with("failed", "Choose Your Supplier ");
+            }else{
+                break;
+            }
+        }
+
+        for($iu=0;$iu<count($unit);$iu++){
+            if ($unit[$iu]==null ) {
+                return redirect()->back()->with("failed", "Please Fill Unit Coloumn with Integer Value ");
+                
+            }else{
+                
+            }
+        }
+        dd($request->input());
+       
+       
+
         $rules = [
             'tgl_pembelian' => " after_or_equal:$tgl_penjualan",
+         
         ];
         $message = [
             "tgl_pembelian.after_or_equal" => "Choose a date after the quotation date or equal",
+           
         ];
         $validated = Validator::make($request->all(), $rules, $message);
         if ($validated->fails()) {
             return redirect()->back()->with("failed", "Choose a date after the sales date or equal");
         }
-
-
+        dump($tgl_penjualan);
+        dd($request->input());
         //    kumpulan array data penjualan
         $id_transaksi = [];
         $data_pembelian = [];
@@ -108,9 +129,9 @@ class PurchaseController extends Controller
             ];
         }
 
-       
 
-        $no_pembelian = $this->PurchaseModel->insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian,$id_pemasok,$kode_transaksi);
+
+        $no_pembelian = $this->PurchaseModel->insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok, $kode_transaksi);
         return redirect('purchase')->with('success', "Data entered successfully, Your purchase Number $no_pembelian ");
     }
     public function detail($no_pembelian)
@@ -125,9 +146,10 @@ class PurchaseController extends Controller
     }
 
 
-    public function print($no_transaksi){
+    public function print($no_transaksi)
+    {
         $total = $this->PurchaseModel->detail(str_replace("-", "/", $no_transaksi));
-      
+
         foreach ($total as $t) {
 
             $total = penyebut($t->total);

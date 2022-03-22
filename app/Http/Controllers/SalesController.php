@@ -50,7 +50,7 @@ class SalesController extends Controller
 
 
         $quotation = $this->SalesModel->edit($kode_transaksi);
-
+        
         $tgl_quotation = $quotation[0]->tgl_penawaran;
         $rules = [
             'tgl_penjualan' => " after_or_equal:$tgl_quotation",
@@ -93,6 +93,7 @@ class SalesController extends Controller
             $data_detail_penjualan[] = [
                 'id_penjualan' => 0,
                 'id_produk' => $quotation[$i]->id_produk,
+                'jumlah_detail_penjualan'=>$quotation[$i]->jumlah
             ];
         }
 

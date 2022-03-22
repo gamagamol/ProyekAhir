@@ -62,7 +62,7 @@ class PurchaseModel extends Model
     public function edit($kode_transaksi)
     {
         return DB::table('transaksi')
-            ->selectRaw('transaksi.id_transaksi,penjualan.id_penjualan,penjualan.tgl_penjualan,penjualan.no_penjualan,detail_transaksi_penjualan.id_produk')
+            ->selectRaw('transaksi.id_transaksi,penjualan.id_penjualan,penjualan.tgl_penjualan,penjualan.no_penjualan,detail_transaksi_penjualan.id_produk,')
             ->join('penjualan', 'penjualan.id_transaksi', '=', 'transaksi.id_transaksi')
             ->join('detail_transaksi_penjualan', 'detail_transaksi_penjualan.id_penjualan', '=', 'penjualan.id_penjualan')
             ->where('kode_transaksi', '=', $kode_transaksi)
