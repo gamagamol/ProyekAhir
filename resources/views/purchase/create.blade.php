@@ -101,7 +101,7 @@
                                     <td>{{ $d->nama_pelanggan }}</td>
                                     <td>
                                         <i class="fa fa-plus-circle" aria-hidden="true"
-                                            onclick="CreateSupplier('{{ $d->id_produk }}','{{ $d->nama_produk }}','{{ $d->no_penjualan }}')"></i>
+                                            onclick="CreateSupplier('{{ $d->id_produk }}','{{ $d->nama_produk }}','{{ $d->no_penjualan }}','{{ $d->id_transaksi }}')"></i>
 
                                     </td>
 
@@ -126,7 +126,7 @@
 
 
     <script>
-        function CreateSupplier(IdProduk, NamaProduk, NoPenjualan) {
+        function CreateSupplier(IdProduk, NamaProduk, NoPenjualan,IdTransaksi) {
             let Supplier = {!! json_encode($supplier->toArray(), JSON_HEX_TAG) !!}
             let html = ``
             html += `<div class='col-md-3 mt-3'>
@@ -148,12 +148,15 @@
  
             </div>
         <div class="col-md-1">
-             <input type="number" name="unit[]" class="form-control mt-3" placeholder="Unit">
+             <input type="number" name="unit[]" class="form-control mt-3" placeholder="Unit" min=0>
             </div>
 
         ${html}
 <div class="col-sm-3">
                             <input type="text" name="id_produk[]" class="form-control mt-3" value='${IdProduk}' hidden>
+            </div>
+<div class="col-sm-1">
+                            <input type="text" name="id_transaksi[]" class="form-control mt-3" value='${IdTransaksi}' hidden >
             </div>
                         `);
 
