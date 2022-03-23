@@ -52,6 +52,7 @@ class GoodsModel extends Model
             ->join('penjualan', 'penjualan.id_transaksi', '=', 'transaksi.id_transaksi')
             ->join('detail_transaksi_penjualan', 'detail_transaksi_penjualan.id_penjualan', '=', 'penjualan.id_penjualan')
             ->join('pembelian', 'pembelian.id_transaksi', '=', 'transaksi.id_transaksi')
+            ->join('detail_transaksi_pembelian', 'detail_transaksi_pembelian.id_pembelian', '=', 'pembelian.id_pembelian')
             ->join("produk", 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')
             ->join("pelanggan", 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
             ->join("pemasok", 'transaksi.id_pemasok', '=', 'pemasok.id_pemasok')

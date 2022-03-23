@@ -6,17 +6,19 @@ use App\Models\PurchaseModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Stmt\Foreach_;
 use Terbilang;
 use function app\helper\penyebut;
+use App\Http\Controllers\QuotationController;
 
 class PurchaseController extends Controller
 {
     protected $PurchaseModel;
     protected $SupplierModel;
+    protected $qc;
     public function __construct()
     {
         $this->PurchaseModel = new PurchaseModel();
+        $this->qc = new QuotationController;
     }
     public function index()
     {
@@ -26,7 +28,6 @@ class PurchaseController extends Controller
         } else {
             $data = $this->PurchaseModel->index();
         }
-
         $data = [
             'tittle' => 'Purchase Order',
             "data" => $data,
@@ -50,18 +51,27 @@ class PurchaseController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->input());
         // Persiapan Variable
         $kode_transaksi = $request->input('kode_transaksi');
-        $id_transaksi=$request->input('id_transaksi');
+        $id_transaksi = $request->input('id_transaksi');
         $tgl_pembelian = $request->input('tgl_pembelian');
         $id_pemasok = $request->input('id_pemasok');
         $unit = $request->input('unit');
         $quotation = $this->PurchaseModel->edit($kode_transaksi);
         $tgl_penjualan = $quotation[0]->tgl_penjualan;
         $id_produk = $request->input('id_produk');
+        $tebal_transaksi = $request->input('tebal_transaksi');
+        $lebar_transaksi = $request->input('lebar_transaksi');
+        $panjang_transaksi = $request->input('panjang_transaksi');
+        $bentuk_produk = $request->input('bentuk_produk');
+        $layanan = $request->input('layanan');
+        $harga = $request->input('harga');
 
         $produk = [];
         $arr_produk = [];
+
+
 
 
 
@@ -80,28 +90,63 @@ class PurchaseController extends Controller
             }
         }
 
+        foreach ($harga as $h) {
+            if ($h == null) {
+                return redirect()->back()->with("failed", "Please Fill Coloumn Price");
+            } else {
+                if ($h == 0) {
+                    return redirect()->back()->with("failed", "Please Fill Coloumn Price More Then 0");
+                }
+            }
+        }
+
+        // dump($unit);
+        // dd($id_produk);
+
         // mengisi var produk
         for ($ipo = 0; $ipo < count($id_produk); $ipo++) {
-                $produk[$ipo] = [
-                    'id_produk' => $id_produk[$ipo],
-                    'unit' => (int) $unit[$ipo],
-                ];
+            foreach ($quotation as $quoi) {
+                if ($quoi->id_produk == $id_produk[$ipo]) {
+                    $produk[$ipo] = [
+                        'id_produk' => $id_produk[$ipo],
+                        'unit' => (int) $unit[$ipo],
+                        'harga' => (int)$harga[$ipo],
+                        'berat' => (float) $this->qc->CalculateWeight(
+                            $bentuk_produk[$ipo],
+                            $layanan[$ipo],
+                            $tebal_transaksi[$ipo],
+                            $lebar_transaksi[$ipo],
+                            $panjang_transaksi[$ipo],
+                            (int) $unit[$ipo]
+                        ),
+                    ];
+                }
+            }
         }
+
         // mengisi arr produk
         $ipdk = 0;
         foreach ($quotation as $quo) {
             $total_unit_produk = 0;
+            $total_harga_produk = 0;
             foreach ($produk as $prdk) {
                 if ($prdk['id_produk'] == $quo->id_produk) {
                     $arr_produk[$ipdk] = [
                         'id_produk' => $quo->id_produk,
                         'unit' => $total_unit_produk += $prdk['unit'],
                         'jumlah_unit' => $quo->jumlah_detail_penjualan,
+                        'harga' => $total_harga_produk += $prdk['harga']
+
+
+
                     ];
                 }
             }
             $ipdk++;
         }
+        // chek iteem array produk
+        //    dd($arr_produk);
+
         foreach ($arr_produk as $apdk) {
             foreach ($quotation as $quo1) {
 
@@ -112,6 +157,10 @@ class PurchaseController extends Controller
                         if ($id_produk[$pdkv] == $apdk['id_produk']) {
                             if ($apdk['unit'] > $quo1->jumlah_detail_penjualan) {
                                 return redirect()->back()->with("failed", "Please Fill Unit Coloumn with Less Value");
+                            } else {
+                                if ($apdk['harga'] > $quo1->harga) {
+                                    return redirect()->back()->with("failed", "Please Fill Price Coloumn with Less Value");
+                                }
                             }
                         }
                     }
@@ -121,6 +170,7 @@ class PurchaseController extends Controller
 
         $rules = [
             'tgl_pembelian' => " after_or_equal:$tgl_penjualan",
+            'harga' => 'required',
 
         ];
         $message = [
@@ -146,14 +196,13 @@ class PurchaseController extends Controller
             array_push($array_no_pembelian, $no_pembelian);
         }
 
-
         // pengisian array data penjualan
-        $i=0;
+        // mencari harga dan total
+        $i = 0;
         foreach ($array_no_pembelian as $anp) {
+            if ($id_produk[$i] == $produk[$i]['id_produk']) {
 
-
-
-                $data_pembelian[] = [
+                $data_pembelian[$i] = [
                     'id_transaksi' => $id_transaksi[$i],
                     'no_pembelian' => $anp,
                     'tgl_pembelian' => $tgl_penjualan
@@ -161,20 +210,30 @@ class PurchaseController extends Controller
 
 
 
-                $data_detail_pembelian[] = [
+                $data_detail_pembelian[$i] = [
                     'id_pembelian' => 0,
                     'id_produk' => $id_produk[$i],
                     'jumlah_detail_pembelian' => $unit[$i],
+                    'harga_detail_pembelian' => $produk[$i]['harga'],
+                    'total_detail_pembelian' => ($produk[$i]['harga'] * $unit[$i])+ (($produk[$i]['harga'] * $unit[$i]) * 0.1),
+                    'berat_detail_pembelian' => $produk[$i]['berat'],
+                    'subtotal_detail_pembelian' => $produk[$i]['harga'] * $unit[$i],
+                    'ppn_detail_pembelian' => ($produk[$i]['harga'] * $unit[$i])*0.1,
+
+
+
                 ];
+            }
+
             $i++;
-
         }
-       
+        // jangan di hapus untuk check isi array
+
+  
 
 
+        $no_pembelian = $this->PurchaseModel->insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok);
 
-        $no_pembelian = $this->PurchaseModel->insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok, $kode_transaksi);
-        
         return redirect('purchase')->with('success', "Data entered successfully Please Chek Your Detail Transaction for more information");
     }
     public function detail($no_pembelian)

@@ -28,64 +28,102 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 
                             <tr>
-                                <td>No</td>
                                 <td>Date</td>
-                                <td>No Purchase</td>
+                                <td>No Transaction</td>
                                 <td>Job number</td>
                                 <td>Grade</td>
                                 <td colspan="3">Material Size</td>
                                 <td>QTY</td>
-
+                                <td>Grade</td>
+                                <td colspan="3">Material Size</td>
+                                <td>QTY</td>
                                 <td>Weight(Kg)</td>
                                 <td>Unit Price</td>
-                                <td>Shipment</td>
                                 <td>Amount</td>
                                 <td>VAT 10%</td>
                                 <td>Total Amount</td>
                                 <td>Processing</td>
-                                <td>customer</td>
-                                <td>supplier</td>
-
-
+                                <td>Custumor</td>
+                                <td>Supplier</td>
 
                             </tr>
-                            @csrf
-                            <?php $i = 1; ?>
-                            @foreach ($data as $d)
 
-
+                            @foreach ($data as $p)
                                 <tr>
 
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td style="min-width:120px">{{ $d->tgl_pembelian }}</td>
-                                    <td>{{ $d->no_pembelian }}</td>
-                                    <td>{{ $d->nomor_pekerjaan }}</td>
-                                    <td>{{ $d->nama_produk }}</td>
-                                    <td>{{ $d->tebal_transaksi }}</td>
-                                    <td>{{ $d->lebar_transaksi }}</td>
-                                    <td>{{ $d->panjang_transaksi }}</td>
-                                    <td>{{ $d->jumlah }}</td>
-                                    <td>{{ $d->berat }}</td>
-                                    <td>{{ 'Rp.' . number_format($d->harga) }}</td>
-                                    <td>{{ 'Rp.' . number_format($d->ongkir) }}</td>
-                                    <td>{{ 'Rp.' . number_format($d->subtotal) }}</td>
-                                    <td>{{ 'Rp.' . number_format($d->ppn) }}</td>
-                                    <td>{{ 'Rp.' . number_format($d->total) }}</td>
-                                    <td>{{ $d->layanan }}</td>
-                                    <td>{{ $d->nama_pelanggan }}</td>
-                                    <td>{{ $d->nama_pemasok }}</td>
+                                    <td style="min-width:120px">
+                                        {{ $p->tgl_pembelian }}
+                                    </td>
+                                    <td>
+                                        {{ $p->no_pembelian }}
+                                    </td>
+                                    <td>
+                                        {{ $p->nomor_pekerjaan }}
+                                    </td>
+                                    <td>
+                                        {{ $p->nama_produk }}
+                                    </td>
+                                    <td>
+                                        {{ $p->tebal_transaksi }}
+                                    </td>
+                                    <td>
+                                        {{ $p->lebar_transaksi }}
+                                    </td>
+
+                                    <td>
+                                        {{ $p->panjang_transaksi }}
+                                    </td>
+                                    <td>
+                                        {{ $p->jumlah_detail_pembelian }}
+                                    </td>
+
+                                    <td>
+                                        {{ $p->nama_produk }}
+                                    </td>
+                                    <td>
+                                        {{ $p->tebal_penawaran }}
+                                    </td>
+                                    <td>
+                                        {{ $p->lebar_penawaran }}
+                                    </td>
+                                    <td>
+                                        {{ $p->panjang_penawaran }}
+                                    </td>
+                                    <td>
+                                        {{ $p->jumlah_detail_pembelian }}
+                                    </td>
+                                    <td>
+                                        {{ $p->berat_detail_pembelian }}
+                                    </td>
+                                    <td>
+                                        {{ 'Rp' . number_format($p->harga_detail_pembelian) }}
+                                    </td>
+
+                                    <td>
+                                        {{ 'Rp' . number_format($p->subtotal_detail_pembelian) }}
+                                    </td>
+                                    <td>
+                                        {{ 'Rp' . number_format($p->ppn_detail_pembelian) }}
+
+                                    </td>
+                                    <td>
+                                        {{ 'Rp' . number_format($p->total_detail_pembelian) }}
+                                    </td>
+                                    <td>
+                                        {{ $p->layanan }}
+                                    </td>
+                                    <td>
+                                        {{ $p->nama_pelanggan }}
+                                    </td>
+                                    <td>
+                                        {{ $p->nama_pemasok }}
+                                    </td>
 
 
 
                                 </tr>
-
-
-
-
-
-
-
                             @endforeach
+
                         </table>
                     </div>
                     <div class="container">
@@ -100,5 +138,4 @@
         </div>
     </div>
     </div>
-
 @endsection()

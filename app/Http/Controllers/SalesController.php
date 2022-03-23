@@ -47,10 +47,7 @@ class SalesController extends Controller
     {
         $kode_transaksi = $request->input('kode_transaksi');
         $tgl_penjualan = $request->input('tgl_penjualan');
-
-
-        $quotation = $this->SalesModel->edit($kode_transaksi);
-        
+        $quotation = $this->SalesModel->edit($kode_transaksi);        
         $tgl_quotation = $quotation[0]->tgl_penawaran;
         $rules = [
             'tgl_penjualan' => " after_or_equal:$tgl_quotation",

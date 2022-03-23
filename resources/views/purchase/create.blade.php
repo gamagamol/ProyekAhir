@@ -44,9 +44,25 @@
                         </div> --}}
                     </div>
 
-                    <div class="row" id="CreateSupplier">
+                    <div class="row">
 
+                        <div class="col mt-5">
+                            <div class="table-responsive text-center">
+                                <table class="table table-bordered" width="100%" cellspacing="0" id="CreateSupplier" hidden>
+                                    <tr>
+                                        <td>No</td>
+                                        <td hidden>id produk</td>
+                                        <td>No Sales</td>
+                                        <td>Grade</td>
+                                        <td colspan="3">Material Size</td>
+                                        <td>Price</td>
+                                        <td>QTY</td>
+                                        <td>supplier</td>
+                                    </tr>
 
+                                </table>
+                            </div>
+                        </div>
 
 
                     </div>
@@ -101,7 +117,7 @@
                                     <td>{{ $d->nama_pelanggan }}</td>
                                     <td>
                                         <i class="fa fa-plus-circle" aria-hidden="true"
-                                            onclick="CreateSupplier('{{ $d->id_produk }}','{{ $d->nama_produk }}','{{ $d->no_penjualan }}','{{ $d->id_transaksi }}')"></i>
+                                            onclick="CreateSupplier('{{ $d->id_produk }}','{{ $d->nama_produk }}','{{ $d->no_penjualan }}','{{ $d->id_transaksi }}','{{ $d->tebal_transaksi }}','{{ $d->lebar_transaksi }}','{{ $d->panjang_transaksi }}','{{ $d->bentuk_produk }}','{{ $d->layanan }}')"></i>
 
                                     </td>
 
@@ -126,41 +142,55 @@
 
 
     <script>
-        function CreateSupplier(IdProduk, NamaProduk, NoPenjualan,IdTransaksi) {
+        let click = 1
+
+        function CreateSupplier(IdProduk, NamaProduk, NoPenjualan, IdTransaksi, TebalTransaksi, LebarTransaksi,
+            PanjangTransaksi, BentukProduk, Layanan) {
             let Supplier = {!! json_encode($supplier->toArray(), JSON_HEX_TAG) !!}
+
+
             let html = ``
-            html += `<div class='col-md-3 mt-3'>
-        <select class='form-control ' id='id_pemasok' name='id_pemasok[]'>`
+            html += `<tr>`
+            html += `<td>${click}</td>`
+            html +=
+                `<td> <input type="text" name="no_penjualan[]" class="form-control" value='${NoPenjualan}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
+            html +=
+                `<td> <input type="text" name="nama_produk[]" class="form-control" value='${NamaProduk}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
+            html +=
+                `<td> <input type="text" name="tebal_transaksi[]" class="form-control" value='${TebalTransaksi}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
+            html +=
+                `<td> <input type="text" name="lebar_transaksi[]" class="form-control" value='${LebarTransaksi}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
+            html +=
+                `<td> <input type="text" name="panjang_transaksi[]" class="form-control text-center" value='${PanjangTransaksi}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
+            html +=
+                `<td> <input type="number" name="harga[]" class="form-control" size="4" placeholder="Price" min='0'></td>`
+            html +=
+                `<td> <input type="number" name="unit[]" class="form-control" size="3" placeholder="Unit" min='0'></td>`
+
+            html += `<td> <select class='form-control ' id='id_pemasok' name='id_pemasok[]'>`
             html += ` <option value=null>Select Your Supplier</option>`
 
             for (let i = 0; i < Supplier.length; i++) {
-                html += ` <option value=${Supplier[i].id_pemasok}>${Supplier[i].nama_pemasok}</option>`
+                html += ` <option value=${Supplier[i].id_pemasok} size="1">${Supplier[i].nama_pemasok}</option>`
             }
-            html += `</select></div>`
-            $('#CreateSupplier').append(`
-             
-            <div class="col-md-2">
-                            <input type="text" name="no_penjualan[]" class="form-control mt-3" value='${NoPenjualan}' readonly>
-            </div>
-             <div class="col-md-2">
-                            <input type="text" name="nama_produk[]" class="form-control mt-3" placeholder="Unit" value='${NamaProduk}' readonly>
-            </div>
- 
-            </div>
-        <div class="col-md-1">
-             <input type="number" name="unit[]" class="form-control mt-3" placeholder="Unit" min=0>
-            </div>
+            html += `</select></td>`
 
-        ${html}
-<div class="col-sm-3">
-                            <input type="text" name="id_produk[]" class="form-control mt-3" value='${IdProduk}' hidden>
-            </div>
-<div class="col-sm-1">
-                            <input type="text" name="id_transaksi[]" class="form-control mt-3" value='${IdTransaksi}' hidden >
-            </div>
-                        `);
+            html +=
+                `<td hidden><input type="text" name="id_produk[]" class="form-control text-center" value='${IdProduk}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
+            html +=
+                `<td hidden ><input type="text" name="id_transaksi[]" class="form-control text-center" value='${IdTransaksi}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
+            html +=
+                `<td hidden ><input type="text" name="bentuk_produk[]" class="form-control text-center" value='${BentukProduk}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
+            html +=
+                `<td hidden ><input type="text" name="layanan[]" class="form-control text-center" value='${Layanan}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
 
+            html += `</tr>`
 
+            $('#CreateSupplier').append(html)
+
+            $('#CreateSupplier').removeAttr('hidden');
+
+            click++
         }
     </script>
 @endsection()

@@ -138,6 +138,7 @@ class QuotationController extends Controller
             $produk = $request->input("id_produk");
             $produk = explode("|", $request->input('id_produk'));
             $nama_produk = $produk[0];
+            
             $p = DB::table('produk')->where("nama_produk", "=", $nama_produk)->first();
             $bentuk_produk = $p->bentuk_produk;
             $tebal_transaksi = $request->input("tebal_transaksi");
@@ -148,48 +149,8 @@ class QuotationController extends Controller
 
             // Logika penentuan berat
             // deklarasi
-            switch ($bentuk_produk) {
-                case "FLAT":
-                    if ($layanan == "CUTTING") {
-                        //    membuat ukuran dan berat pxl 0,0000625
-                        $tebal_penawaran = $tebal_transaksi;
-                        $lebar_penawaran = $lebar_transaksi;
-                        $panjang_penawaran = $panjang_transaksi;
-
-                        $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
-                        $berat = number_format($berat, 2, '.', '');
-                    }
-                    if ($layanan == "MILLING") {
-                        //    membuat ukuran dan berat pxl 0,00008
-                        $tebal_penawaran = $tebal_transaksi + 5;
-                        $lebar_penawaran = $lebar_transaksi + 5;
-                        $panjang_penawaran = $panjang_transaksi + 5;
-
-                        $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.000008;
-                        $berat = number_format($berat, 2, '.', '');
-                    }
-                    break;
-                case 'CYLINDER':
-                    if ($layanan == "CUTTING") {
-                        //    membuat ukuran dan berat pxl 0,0000625
-                        $tebal_penawaran = $tebal_transaksi;
-                        $lebar_penawaran = 0;
-                        $panjang_penawaran = $panjang_transaksi;
-
-                        $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
-                        $berat = number_format($berat, 2, '.', '');
-                    }
-                    if ($layanan == "MILLING") {
-                        //    membuat ukuran dan berat pxl 0,00008
-                        $tebal_penawaran = $tebal_transaksi + 5;
-                        $lebar_penawaran = 0;
-                        $panjang_penawaran = $panjang_transaksi + 5;
-
-                        $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.000008;
-                        $berat = number_format($berat, 2, '.', '');
-                    }
-                    break;
-            }
+            $berat=$this->CalculateWeight($bentuk_produk,$layanan,$tebal_transaksi,$lebar_transaksi,$panjang_transaksi,$jumlah);
+          
 
 
             $subtotal = $berat * str_replace('.', "", $request->input('harga'));
@@ -210,9 +171,9 @@ class QuotationController extends Controller
                 'harga_pembantu' => str_replace('.', "", $request->input('harga')),
                 'ongkir_pembantu' => str_replace('.', "", $request->input('ongkir')),
                 'id_user' => $request->input("id"),
-                'tebal_penawaran' => $tebal_penawaran,
-                'lebar_penawaran' => $lebar_penawaran,
-                'panjang_penawaran' => $panjang_penawaran,
+                'tebal_penawaran' => $tebal_transaksi,
+                'lebar_penawaran' => $lebar_transaksi,
+                'panjang_penawaran' => $panjang_transaksi,
                 'berat_pembantu' => $berat,
                 'subtotal' => $subtotal,
                 'ppn' => $ppn,
@@ -338,5 +299,52 @@ class QuotationController extends Controller
         return view('quotation.print',$data);
 
 
+    }
+
+
+
+    public function CalculateWeight($bentuk_produk,$layanan,$tebal_transaksi,$lebar_transaksi,$panjang_transaksi,$jumlah){
+        switch ($bentuk_produk) {
+            case "FLAT":
+                if ($layanan == "CUTTING") {
+                    //    membuat ukuran dan berat pxl 0,0000625
+                    $tebal_penawaran = $tebal_transaksi;
+                    $lebar_penawaran = $lebar_transaksi;
+                    $panjang_penawaran = $panjang_transaksi;
+
+                    $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
+                   return  $berat = number_format($berat, 2, '.', '');
+                }
+                if ($layanan == "MILLING") {
+                    //    membuat ukuran dan berat pxl 0,00008
+                    $tebal_penawaran = $tebal_transaksi + 5;
+                    $lebar_penawaran = $lebar_transaksi + 5;
+                    $panjang_penawaran = $panjang_transaksi + 5;
+
+                    $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.000008;
+                  return  $berat = number_format($berat, 2, '.', '');
+                }
+                break;
+            case 'CYLINDER':
+                if ($layanan == "CUTTING") {
+                    //    membuat ukuran dan berat pxl 0,0000625
+                    $tebal_penawaran = $tebal_transaksi;
+                    $lebar_penawaran = 0;
+                    $panjang_penawaran = $panjang_transaksi;
+
+                    $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
+                    return  $berat = number_format($berat, 2, '.', '');
+                }
+                if ($layanan == "MILLING") {
+                    //    membuat ukuran dan berat pxl 0,00008
+                    $tebal_penawaran = $tebal_transaksi + 5;
+                    $lebar_penawaran = 0;
+                    $panjang_penawaran = $panjang_transaksi + 5;
+
+                    $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.000008;
+                    return  $berat = number_format($berat, 2, '.', '');
+                }
+                break;
+        }
     }
 }

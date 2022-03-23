@@ -1,6 +1,6 @@
 @extends('template.index')
 @section('content')
-    <div class="container">
+<div class="container">
         @if (session()->has('success'))
             <div class="alert alert-success" role="alert">
                 {{ session('success') }}
@@ -60,9 +60,9 @@
                                 <td>{{ $d->no_pembelian }}</td>
                                 <td>{{ $d->nomor_pekerjaan }}</td>
                                
-                                <td>{{ $d->berat }}</td>
+                                <td>{{ $d->berat_detail_pembelian }}</td>
                                
-                                <td>{{ 'Rp.' . number_format($d->total) }}</td>
+                                <td>{{ 'Rp.' . number_format($d->total_detail_pembelian) }}</td>
                                 <td>{{ $d->layanan }}</td>
                                 <td>{{ $d->nama_pelanggan }}</td>
                                 <td>{{ $d->nama_pemasok }}</td>
