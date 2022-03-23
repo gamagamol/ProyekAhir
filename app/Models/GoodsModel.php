@@ -43,7 +43,7 @@ class GoodsModel extends Model
                 ->paginate(5);
         }
     }
-    public function show($kode_transaksi)
+    public function show($no_pembelian)
     {
         return DB::table('transaksi')
 
@@ -57,7 +57,7 @@ class GoodsModel extends Model
             ->join("pelanggan", 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
             ->join("pemasok", 'transaksi.id_pemasok', '=', 'pemasok.id_pemasok')
             ->join("pengguna", 'transaksi.id', '=', 'pengguna.id')
-            ->where('kode_transaksi', '=', $kode_transaksi)
+            ->where('pembelian.no_pembelian', '=', $no_pembelian)
             ->get();
     }
 

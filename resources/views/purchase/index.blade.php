@@ -69,7 +69,7 @@
                                 <td>{{ $d->nama_pengguna }}</td>
                                 <td>
 
-                                    <a class="btn btn-primary" href="{{ url('goods', $d->kode_transaksi) }}">
+                                    <a class="btn btn-primary" href="{{ url('goods', str_replace('/','-',$d->no_pembelian)) }}">
 
                                         Good Recipt
                                     </a>

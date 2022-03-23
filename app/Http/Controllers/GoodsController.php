@@ -35,11 +35,12 @@ class GoodsController extends Controller
         return view('goods.index', $data);
     }
 
-    public function show($kode_transaksi)
+    public function show($no_pembelian)
     {
+        $no_pembelian=str_replace('-','/',$no_pembelian);
         $data = [
             'tittle' => "Create Goods Receipt",
-            "data" => $this->goods->show($kode_transaksi),
+            "data" => $this->goods->show($no_pembelian),
         ];
         return view('goods.create', $data);
     }
