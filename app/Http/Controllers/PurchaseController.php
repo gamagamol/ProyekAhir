@@ -155,7 +155,7 @@ class PurchaseController extends Controller
                         return redirect()->back()->with("failed", "Please Fill Unit Coloumn more then 0 ");
                     } else {
                         if ($id_produk[$pdkv] == $apdk['id_produk']) {
-                            if ($apdk['unit'] > $quo1->jumlah_detail_penjualan) {
+                            if ($apdk['unit'] > $apdk['jumlah_unit']) {
                                 return redirect()->back()->with("failed", "Please Fill Unit Coloumn with Less Value");
                             } else {
                                 if ($apdk['harga'] > $quo1->harga) {
@@ -229,7 +229,8 @@ class PurchaseController extends Controller
         }
         // jangan di hapus untuk check isi array
 
-  
+        // dump($data_pembelian);
+        // dd($data_detail_pembelian);
 
 
         $no_pembelian = $this->PurchaseModel->insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok);

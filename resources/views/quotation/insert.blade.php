@@ -66,8 +66,9 @@
                           @enderror"
                                         name="nomor_pekerjaan" id="nomor_pekerjaan" value={{ old('nomor_pekerjaan') }}
                                         @if (count($pembantu) > 0)
-                                    readonly value={{ $pembantu[0]->nomor_pekerjaan }}
+                                     {{ $pembantu[0]->nomor_pekerjaan }} readonly
                                     @endif >
+
                                     @error('nomor_pekerjaan')
                                         <div class="invalid-feedback">
                                             {{ $message }}

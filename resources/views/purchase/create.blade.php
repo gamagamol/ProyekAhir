@@ -130,8 +130,32 @@
                     <div class="container">
                         <div class="row">
                             <div class="col">
-                                <button type=submit name=submit class="btn btn-primary">submit</button>
-                                <a href="{{ url('sales') }}" class="btn btn-primary">back</a>
+                                {{-- <button type=submit name=submit class="btn btn-primary">submit</button> --}}
+
+                                <p href="" class="btn btn-primary mt-3" onclick="MoveCreate()">Submit</p>
+
+                                <a href=" {{ url('sales') }}" class="btn btn-primary">back</a>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- modal --}}
+                    <div id="modal" class="modal fade">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Sales</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you sure to continue the transaction? please check the details first! </p>
+                                    <button type=submit name=submit class="btn btn-primary ">submit</button>
+                                    <a href="{{ url('sales/detail', str_replace('/', '-', $d->no_penjualan)) }}"
+                                        class="btn btn-info mt-1">
+                                        Detail </a>
+
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -191,6 +215,10 @@
             $('#CreateSupplier').removeAttr('hidden');
 
             click++
+        }
+
+        function MoveCreate() {
+            $('#modal').modal('show');
         }
     </script>
 @endsection()

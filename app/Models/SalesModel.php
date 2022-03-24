@@ -48,7 +48,6 @@ class SalesModel extends Model
                ->join("produk", 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')
                ->join("pelanggan", 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
                ->join("pengguna", 'transaksi.id', '=', 'pengguna.id')
-
                ->where('kode_transaksi', '=', $kode_transaksi)
                ->get();
      }
