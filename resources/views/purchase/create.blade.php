@@ -21,12 +21,9 @@
 
                         </div>
                         {{-- jangan hapus dulu penting --}}
-                        {{-- <div class="col-md-3 mt-2">
-                            <select
-                                class="form-control @error('id_pemasok')
-                                    is-invalid  
-                                @enderror"
-                                id="id_pemasok" name="id_pemasok" onchange="drop()" value="{{ old('id_pemasok') }}">
+                        <div class="col-md-3 mt-2">
+                            <select class="form-control @error('id_pemasok') is-invalid @enderror" id="id_pemasok"
+                                name="id_pemasok" onchange="drop()" value="{{ old('id_pemasok') }}">
 
 
                                 <option value={{ null }}>Select Your Supplier</option>
@@ -41,7 +38,10 @@
                                 </div>
                             @enderror
 
-                        </div> --}}
+                        </div>
+                        <div class="col-md-3 mt-3" id="MultiSupplier">
+                            <i class="fa fa-plus-circle" aria-hidden="true" onclick="MultiSupplier()"></i>
+                        </div>
                     </div>
 
                     <div class="row">
@@ -88,7 +88,7 @@
                                 <td>Total Amount</td>
                                 <td>Processing</td>
                                 <td>customer</td>
-                                <td>Supplier</td>
+                                <td hidden id="RTS">Supplier</td>
 
 
 
@@ -115,7 +115,7 @@
                                     <td>{{ 'Rp.' . number_format($d->total) }}</td>
                                     <td>{{ $d->layanan }}</td>
                                     <td>{{ $d->nama_pelanggan }}</td>
-                                    <td>
+                                    <td hidden id="CTS">
                                         <i class="fa fa-plus-circle" aria-hidden="true"
                                             onclick="CreateSupplier('{{ $d->id_produk }}','{{ $d->nama_produk }}','{{ $d->no_penjualan }}','{{ $d->id_transaksi }}','{{ $d->tebal_transaksi }}','{{ $d->lebar_transaksi }}','{{ $d->panjang_transaksi }}','{{ $d->bentuk_produk }}','{{ $d->layanan }}')"></i>
 
@@ -219,6 +219,17 @@
 
         function MoveCreate() {
             $('#modal').modal('show');
+        }
+
+        function MultiSupplier(){
+            $('#CTS').removeAttr('hidden');
+            $('#RTS').removeAttr('hidden');
+            // $('#MultiSupplier').addattr('hidden');
+            $('#MultiSupplier').attr('hidden', 'true');
+            
+
+
+
         }
     </script>
 @endsection()

@@ -26,17 +26,56 @@ class SalesModel extends Model
                     ->paginate(1);
           } else {
 
-               return DB::table('transaksi')
+               // return DB::table('transaksi')
 
-                    ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
-                    ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', '=', 'penawaran.id_penawaran')
-                    ->join("produk", 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')
-                    ->join("pelanggan", 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
-                    ->join("pengguna", 'transaksi.id', '=', 'pengguna.id')
-                    ->join('penjualan', "penjualan.id_transaksi", "transaksi.id_transaksi")
-                    ->where('status_transaksi', "=", 'sales')
-                    ->groupBy('no_penjualan')
-                    ->paginate(5);
+               //      ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
+               //      ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', '=', 'penawaran.id_penawaran')
+               //      ->join("pelanggan", 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
+               //      ->join("pengguna", 'transaksi.id', '=', 'pengguna.id')
+               //      ->join("produk", 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')
+               //      ->join('penjualan', "penjualan.id_transaksi", "transaksi.id_transaksi")
+               //      ->where('status_transaksi', "=", 'sales')
+               //      ->groupBy('no_penjualan')
+               //      ->paginate(5);
+
+               // return DB::table('transaksi')
+               //      ->selectRaw('tgl_penjualan,no_penjualan,nomor_pekerjaan,berat,total,layanan,nama_pelanggan,nama_pengguna,kode_transaksi,jumlah_detail_penjualan,jumlah_detail_pembelian')
+               //      ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
+               //      ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', '=', 'penawaran.id_penawaran')
+               //      ->join("pelanggan", 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
+               //      ->join("pengguna", 'transaksi.id', '=', 'pengguna.id')
+               //      ->join('penjualan', "penjualan.id_transaksi", "transaksi.id_transaksi")
+               //      ->join('detail_transaksi_penjualan', 'detail_transaksi_penjualan.id_penjualan', '=', 'penjualan.id_penjualan')
+               //      ->join("produk", 'detail_transaksi_penjualan.id_produk', '=', 'produk.id_produk')
+               //      ->join('pembelian', "pembelian.id_transaksi", "transaksi.id_transaksi")
+               //      ->join('detail_transaksi_pembelian', 'detail_transaksi_pembelian.id_pembelian', '=', 'pembelian.id_pembelian')
+               //      ->groupBy('kode_transaksi')
+               //      ->havingRaw("jumlah_detail_penjualan > sum(jumlah_detail_pembelian)")
+               //      ->paginate(5);
+
+
+               // dd( DB::table('penjualan')
+               // ->join('detail_transaksi_penjualan','penjualan.id_penjualan','=','detail_transaksi_penjualan.id_penjualan')
+               // ->join('transaksi','penjualan.id_transaksi','=','transaksi.id_transaksi')
+               // ->leftJoin('pembelian','pembelian.id_transaksi','=','transaksi.id_transaksi')
+               // ->leftJoin('detail_transaksi_pembelian','detail_transaksi_pembelian.id_pembelian','=','pembelian.id_pembelian')
+               // ->groupBy("kode_transaksi, detail_transaksi_penjualan . id_produk")
+               // ->havingRaw("having jumlah_detail_penjualan > sum(ifnull(jumlah_detail_pembelian,0))")
+               // ->get());
+               return DB::select("SELECT *,
+                         sum(ifnull(jumlah_detail_pembelian,0)) as total_unit_pembelian 
+                         FROM penjualan join detail_transaksi_penjualan 
+                         on penjualan.id_penjualan=detail_transaksi_penjualan.id_penjualan
+                         join transaksi on transaksi.id_transaksi=penjualan.id_transaksi
+                         left outer join pembelian on pembelian.id_transaksi=transaksi.id_transaksi
+                         LEFT OUTER join detail_transaksi_pembelian 
+                         on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
+                         join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
+                         join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
+                         join pelanggan on transaksi.id_pelanggan = pelanggan.id_pelanggan
+                         join pengguna on transaksi.id = pengguna.id
+                         group by kode_transaksi,no_penjualan 
+                         having jumlah_detail_penjualan > sum(ifnull(jumlah_detail_pembelian,0))");
           }
      }
      public function show($kode_transaksi)

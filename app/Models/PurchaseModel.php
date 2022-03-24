@@ -41,7 +41,7 @@ class PurchaseModel extends Model
                 ->join("pelanggan", 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
                 ->join("pemasok", 'transaksi.id_pemasok', '=', 'pemasok.id_pemasok')
                 ->join("pengguna", 'transaksi.id', '=', 'pengguna.id')
-                ->groupBy('pembelian.id_pembelian')
+                ->groupBy('pembelian.no_pembelian')
                 ->orderBy('no_pembelian', 'ASC')
                 ->paginate(5);
         }
@@ -64,7 +64,7 @@ class PurchaseModel extends Model
     public function edit($kode_transaksi)
     {
         return DB::table('transaksi')
-            ->selectRaw('transaksi.id_transaksi,penjualan.id_penjualan,penjualan.tgl_penjualan,penjualan.no_penjualan,detail_transaksi_penjualan.id_produk,detail_transaksi_penjualan.jumlah_detail_penjualan,transaksi.harga')
+            ->selectRaw('transaksi.id_transaksi,penjualan.id_penjualan,penjualan.tgl_penjualan,penjualan.no_penjualan,detail_transaksi_penjualan.id_produk,detail_transaksi_penjualan.jumlah_detail_penjualan,transaksi.harga,transaksi.berat')
             ->join('penjualan', 'penjualan.id_transaksi', '=', 'transaksi.id_transaksi')
             ->join('detail_transaksi_penjualan', 'detail_transaksi_penjualan.id_penjualan', '=', 'penjualan.id_penjualan')
             ->where('kode_transaksi', '=', $kode_transaksi)
@@ -74,7 +74,7 @@ class PurchaseModel extends Model
     public function no_pembelian($tgl_pembelian, $id_pemasok)
     {
         $arr_pembelian = [];
-        if (count($id_pemasok) > 1) {
+        if (is_array($id_pemasok)) {
             for ($i = 0; $i < count($id_pemasok); $i++) {
                 $no_pembelian =
                     DB::table('pembelian')
@@ -101,7 +101,7 @@ class PurchaseModel extends Model
 
 
 
-    public function insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok)
+    public function insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok, $kode_transaksi)
     {
 
         // mengubah data transaksi
@@ -109,32 +109,60 @@ class PurchaseModel extends Model
             'status_transaksi' => "purchase",
             'id_pemasok' => $id_pemasok,
         ];
-        for ($i = 0; $i <= count($id_transaksi) - 1; $i++) {
+        if (is_array($id_pemasok)) {
+
+            for ($i = 0; $i <= count($id_transaksi) - 1; $i++) {
+                DB::table('transaksi')
+                    ->where("id_transaksi", "=", $id_transaksi[$i])
+                    ->update([
+                        'status_transaksi' => 'purchase',
+                        'id_pemasok' => $id_pemasok[$i]
+                    ]);
+            }
+        } else {
             DB::table('transaksi')
-                ->where("id_transaksi", "=", $id_transaksi[$i])
+                ->where('kode_transaksi', '=', $kode_transaksi)
                 ->update([
                     'status_transaksi' => 'purchase',
-                    'id_pemasok' => $id_pemasok[$i]
+                    'id_pemasok' => $id_pemasok
                 ]);
         }
-
         // insert data transaksi
-
 
         DB::table('pembelian')->insert($data_pembelian);
 
         // perispan data detail transaksi penjualan
 
-        // dump($data_pembelian);
         // dd($data_pembelian[0]['no_pembelian']);
+        if (is_array($id_pemasok)) {
 
-        for ($i = 0; $i < count($id_transaksi); $i++) {
-            $id_pembelian = DB::table('pembelian')->select('id_pembelian')->where('no_pembelian', "=", $data_pembelian[$i]['no_pembelian'])->get();
-            $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian[0]->id_pembelian;
+            for ($i = 0; $i < count($id_transaksi); $i++) {
+                $id_pembelian = DB::table('pembelian')->select('id_pembelian')->where('no_pembelian', "=", $data_pembelian[$i]['no_pembelian'])->get();
+                $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian[0]->id_pembelian;
+            }
+            //     insert data detail penjualan transaksi
+
+            DB::table('detail_transaksi_pembelian')->insert($data_detail_pembelian);
+        } else {
+            if (count($data_pembelian) > 1) {
+                for ($z = 0; $z < count($data_detail_pembelian); $z++) {
+
+                    $id_pembelian = DB::table('pembelian')->select('id_pembelian')->where('no_pembelian', "=", $data_pembelian[$z]['no_pembelian'])->get();
+
+                    $data_detail_pembelian[$z]['id_pembelian'] = $id_pembelian[$z]->id_pembelian;
+                }
+                DB::table('detail_transaksi_pembelian')->insert($data_detail_pembelian);
+            } else {
+
+                $id_pembelian = DB::table('pembelian')
+                    ->select('id_pembelian')
+                    ->where('no_pembelian', '=', $data_pembelian[0]['no_pembelian'])->first();
+                $data_detail_pembelian[0]['id_pembelian'] = $id_pembelian->id_pembelian;
+
+                DB::table('detail_transaksi_pembelian')->insert($data_detail_pembelian);
+            }
         }
-        //     insert data detail penjualan transaksi
 
-        DB::table('detail_transaksi_pembelian')->insert($data_detail_pembelian);
 
         // kodingan jurnal pembelian utang
 
@@ -175,12 +203,12 @@ class PurchaseModel extends Model
         return DB::table('transaksi')
             ->join('pembelian', 'pembelian.id_transaksi', '=', 'transaksi.id_transaksi')
             ->join('detail_transaksi_pembelian', 'detail_transaksi_pembelian.id_pembelian', '=', 'pembelian.id_pembelian')
-            ->join('produk','detail_transaksi_pembelian.id_produk','=','produk.id_produk')
+            ->join('produk', 'detail_transaksi_pembelian.id_produk', '=', 'produk.id_produk')
             ->join('pelanggan', 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
             ->join('pengguna', 'transaksi.id', '=', 'pengguna.id')
             ->join('pemasok', 'transaksi.id_pemasok', '=', 'pemasok.id_pemasok')
             ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
-           
+
             ->where('pembelian.no_pembelian', "=", $no_pembelian)
             ->get();
     }

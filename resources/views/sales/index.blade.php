@@ -1,6 +1,6 @@
 @extends('template.index')
 @section('content')
-    <div class="container">
+<div class="container">
         @if (session()->has('success'))
             <div class="alert alert-success" role="alert">
                 {{ session('success') }}
@@ -16,7 +16,7 @@
                         <form action={{ url('sales') }} method="GET" id="serch-form">
                             <select class="form-control form-select" aria-label="Default select example" name='serch'
                                 id="serch">
-                                @foreach ($deta as $d)
+                                @foreach ($data as $d)
                                     <option value={{ $d->no_penjualan }}>{{ $d->no_penjualan }}</option>
                                 @endforeach
                             </select>
@@ -35,9 +35,7 @@
                             <td>Date</td>
                             <td>No Sales </td>
                             <td>Job number</td>
-
                             <td>Weight(Kg)</td>
-
                             <td>Total Amount</td>
                             <td>Processing</td>
                             <td>customer</td>
@@ -84,7 +82,7 @@
 
                         @endforeach
                     </table>
-                    {{ $data->links() }}
+                    {{-- {{ $data->links() }} --}}
 
                 </div>
             </div>
