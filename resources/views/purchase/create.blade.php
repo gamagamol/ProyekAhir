@@ -1,5 +1,6 @@
 @extends('template.index')
 @section('content')
+{{-- @dd($data) --}}
     <div class="container">
         @if (session()->has('failed'))
             <div class="alert alert-danger" role="alert">
@@ -82,7 +83,6 @@
                                 <td>QTY</td>
                                 <td>Weight(Kg)</td>
                                 <td>Unit Price</td>
-                                <td>Shipment</td>
                                 <td>Amount</td>
                                 <td>VAT 10%</td>
                                 <td>Total Amount</td>
@@ -96,6 +96,22 @@
                             @csrf
                             <?php $i = 1; ?>
                             @foreach ($data as $d)
+                                <?php
+                                if ($d->jumlah_detail_pembelian > 0 && $d->berat_detail_pembelian > 0) {
+                                    $jumlah = $d->jumlah_detail_penjualan - $d->jumlah_detail_pembelian;
+                                    $berat = $d->berat - $d->berat_detail_pembelian;
+                                    $subtotal=$d->subtotal-$d->subtotal_detail_pembelian;
+                                    $ppn=$subtotal*0.1;
+                                    $total=$d->total- $d->total_keseluruhan_detail_pembelian;
+                                } else {
+                                    $jumlah = $d->jumlah;
+                                    $berat = $d->berat;
+                                    $subtotal=$d->subtotal;
+                                    $ppn=$d->ppn;
+                                    $total=$d->total;
+                                }
+                                
+                                ?>
                                 <tr>
 
                                     <td>{{ $loop->iteration }}</td>
@@ -106,13 +122,12 @@
                                     <td>{{ $d->tebal_transaksi }}</td>
                                     <td>{{ $d->lebar_transaksi }}</td>
                                     <td>{{ $d->panjang_transaksi }}</td>
-                                    <td>{{ $d->jumlah }}</td>
-                                    <td>{{ $d->berat }}</td>
+                                    <td>{{ $jumlah }}</td>
+                                    <td>{{ $berat }}</td>
                                     <td>{{ 'Rp.' . number_format($d->harga) }}</td>
-                                    <td>{{ 'Rp.' . number_format($d->ongkir) }}</td>
-                                    <td>{{ 'Rp.' . number_format($d->subtotal) }}</td>
-                                    <td>{{ 'Rp.' . number_format($d->ppn) }}</td>
-                                    <td>{{ 'Rp.' . number_format($d->total) }}</td>
+                                    <td>{{ 'Rp.' . number_format($subtotal) }}</td>
+                                    <td>{{ 'Rp.' . number_format($ppn) }}</td>
+                                    <td>{{ 'Rp.' . number_format($total) }}</td>
                                     <td>{{ $d->layanan }}</td>
                                     <td>{{ $d->nama_pelanggan }}</td>
                                     <td hidden id="CTS">
@@ -221,12 +236,12 @@
             $('#modal').modal('show');
         }
 
-        function MultiSupplier(){
+        function MultiSupplier() {
             $('#CTS').removeAttr('hidden');
             $('#RTS').removeAttr('hidden');
             // $('#MultiSupplier').addattr('hidden');
             $('#MultiSupplier').attr('hidden', 'true');
-            
+
 
 
 
