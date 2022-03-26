@@ -40,6 +40,7 @@ class PurchaseController extends Controller
 
     public function show($kode_transaksi)
     {
+        // dd($this->PurchaseModel->show($kode_transaksi));
 
         $data = [
             'tittle' => "Create purchase",
@@ -71,6 +72,7 @@ class PurchaseController extends Controller
         $arr_produk = [];
         //    check array apa bukan
         if (is_array($id_pemasok)) {
+
 
             // Validation Proses
             if (!$request->input('id_pemasok')) {
@@ -262,8 +264,7 @@ class PurchaseController extends Controller
             }
         }
         // jangan di hapus untuk check isi array
-        // dump($data_pembelian);
-        // dd($data_detail_pembelian);
+    
 
 
         $no_pembelian = $this->PurchaseModel->insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok,$kode_transaksi);

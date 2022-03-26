@@ -1,6 +1,6 @@
 @extends('template.index')
 @section('content')
-    @dump($data)
+    {{-- @dump($data) --}}
     @if (session()->has('success'))
         <div class="alert alert-success" role="alert">
             {{ session('success') }}

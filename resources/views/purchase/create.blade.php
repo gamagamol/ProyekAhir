@@ -40,9 +40,10 @@
                             @enderror
 
                         </div>
-                        <div class="col-md-3 mt-3" id="MultiSupplier">
+                        {{-- <div class="col-md-3 mt-3" id="MultiSupplier">
                             <i class="fa fa-plus-circle" aria-hidden="true" onclick="MultiSupplier()"></i>
-                        </div>
+                        </div> --}}
+
                     </div>
 
                     <div class="row">
@@ -67,6 +68,7 @@
 
 
                     </div>
+                    
                 </div>
                 <div class="card-body">
 
@@ -88,7 +90,7 @@
                                 <td>Total Amount</td>
                                 <td>Processing</td>
                                 <td>customer</td>
-                                <td hidden id="RTS">Supplier</td>
+                                <td  id="RTS">Supplier</td>
 
 
 
@@ -130,7 +132,7 @@
                                     <td>{{ 'Rp.' . number_format($total) }}</td>
                                     <td>{{ $d->layanan }}</td>
                                     <td>{{ $d->nama_pelanggan }}</td>
-                                    <td hidden id="CTS">
+                                    <td  id="CTS">
                                         <i class="fa fa-plus-circle" aria-hidden="true"
                                             onclick="CreateSupplier('{{ $d->id_produk }}','{{ $d->nama_produk }}','{{ $d->no_penjualan }}','{{ $d->id_transaksi }}','{{ $d->tebal_transaksi }}','{{ $d->lebar_transaksi }}','{{ $d->panjang_transaksi }}','{{ $d->bentuk_produk }}','{{ $d->layanan }}')"></i>
 
@@ -236,15 +238,15 @@
             $('#modal').modal('show');
         }
 
-        function MultiSupplier() {
-            $('#CTS').removeAttr('hidden');
-            $('#RTS').removeAttr('hidden');
-            // $('#MultiSupplier').addattr('hidden');
-            $('#MultiSupplier').attr('hidden', 'true');
+        // function MultiSupplier() {
+        //     $('#CTS').removeAttr('hidden');
+        //     $('#RTS').removeAttr('hidden');
+        //     // $('#MultiSupplier').addattr('hidden');
+        //     $('#MultiSupplier').attr('hidden', 'true');
 
 
 
 
-        }
+        // }
     </script>
 @endsection()

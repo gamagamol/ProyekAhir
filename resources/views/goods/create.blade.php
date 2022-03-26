@@ -11,16 +11,41 @@
                 <h6 class="m-0 font-weight-bold text-primary">Create Goods Receipt</h6>
             </div>
             <form action={{ url('goods') }} method="post">
-
+                @csrf
                 <div class="container">
                     <div class="row">
                         <div class="col-md-3 mt-2">
                             <input type="date" name="tgl_penerimaan" class="form-control"
                                 value={{ $data[0]->tgl_pembelian }}>
                             <input type="text" value="{{ $data[0]->kode_transaksi }}" name="kode_transaksi" hidden>
+                            <input type="text" value="{{ $data[0]->no_pembelian }}" name="no_pembelian" hidden>
 
                         </div>
+                        {{-- <div class="col-md-3 mt-3" id="MultiSupplier">
+                            <i class="fa fa-plus-circle" aria-hidden="true" onclick="MultiSupplier()"></i>
+                        </div> --}}
                     </div>
+
+                    <div class="row">
+
+                        <div class="col mt-5">
+                            <div class="table-responsive text-center">
+                                <table class="table table-bordered"  cellspacing="0" id="CreateSupplier" hidden>
+                                    <tr>
+                                        <td style="width: 1%;">No</td>
+                                        <td hidden>id produk</td>
+                                        <td style="width: 20%;">No Sales</td>
+                                        <td style="width: 15%;">Grade</td>
+                                        <td style="width: 15%;">QTY</td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                        </div>
+
+
+                    </div>
+
                 </div>
                 <div class="card-body">
 
@@ -45,10 +70,24 @@
                                 <td>Processing</td>
                                 <td>Custumor</td>
                                 <td>Supplier</td>
+                                <td >Unit</td>
 
                             </tr>
 
                             @foreach ($data as $p)
+                              <?php
+                                if ($p->jumlah_detail_penerimaan > 0 ) {
+                                    $jumlah = $p->jumlah_detail_pembelian - $p->jumlah_detail_penerimaan;
+                                  
+                                } else {
+                                    $jumlah = $p->jumlah_detail_pembelian;
+                                    $berat = $p->berat;
+                                    $subtotal=$p->subtotal;
+                                    $ppn=$p->ppn;
+                                    $total=$p->total;
+                                }
+                                
+                                ?>
                                 <tr>
 
                                     <td style="min-width:120px">
@@ -74,7 +113,7 @@
                                         {{ $p->panjang_transaksi }}
                                     </td>
                                     <td>
-                                        {{ $p->jumlah_detail_pembelian }}
+                                        {{ $jumlah }}
                                     </td>
 
                                     <td>
@@ -90,7 +129,7 @@
                                         {{ $p->panjang_penawaran }}
                                     </td>
                                     <td>
-                                        {{ $p->jumlah_detail_pembelian }}
+                                        {{ $jumlah }}
                                     </td>
                                     <td>
                                         {{ $p->berat_detail_pembelian }}
@@ -118,6 +157,11 @@
                                     <td>
                                         {{ $p->nama_pemasok }}
                                     </td>
+                                    <td >
+                                        <i class="fa fa-plus-circle" aria-hidden="true"
+                                            onclick="CreateSupplier('{{ $p->id_produk }}','{{ $p->nama_produk }}','{{ $p->no_pembelian }}','{{ $p->id_transaksi }}','{{ $p->tebal_transaksi }}','{{ $p->lebar_transaksi }}','{{ $p->panjang_transaksi }}','{{ $p->bentuk_produk }}','{{ $p->layanan }}')"></i>
+
+                                    </td>
 
 
 
@@ -129,13 +173,81 @@
                     <div class="container">
                         <div class="row">
                             <div class="col">
-                                <button type=submit name=submit class="btn btn-primary">submit</button>
-                                <a href="{{ url('goods') }}" class="btn btn-primary">back</a>
+                                {{-- <button type=submit name=submit class="btn btn-primary">submit</button> --}}
+                                <p href="" class="btn btn-primary mt-3" onclick="MoveCreate()">Submit</p>
+                                <a href="{{ url('purchase') }}" class="btn btn-primary">back</a>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- modal --}}
+                    <div id="modal" class="modal fade">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Sales</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you sure to continue the transaction? please check the details first! </p>
+                                    <button type=submit name=submit class="btn btn-primary">submit</button>
+                                    <a href="{{ url('purchase/detail', str_replace('/', '-', $p->no_pembelian)) }}"
+                                        class="btn btn-info mt-1">
+                                        Detail </a>
+
+                                </div>
                             </div>
                         </div>
                     </div>
             </form>
         </div>
     </div>
-    </div>
+    </div >
+    <script>
+        let click = 1
+
+        function CreateSupplier(IdProduk, NamaProduk, NoPembelian, IdTransaksi) {
+
+
+            let html = ``
+            html += `<tr>`
+            html += `<td>${click}</td>`
+            html +=
+                `<td> <input type="text" name="no_pembelian" class="form-control" value='${NoPembelian}' readonly  style="border-width:0px;background-color:white;"></td>`
+            html +=
+                `<td> <input type="text" name="nama_produk[]" class="form-control" value='${NamaProduk}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
+            html +=
+                `<td> <input type="number" name="unit[]" class="form-control" size="3" placeholder="Unit" min='0'></td>`
+            html +=
+                `<td hidden><input type="text" name="id_produk[]" class="form-control text-center" value='${IdProduk}' readonly  style="border-width:0px;background-color:white;width: 105%;" ></td>`
+            html +=
+                `<td hidden ><input type="text" name="id_transaksi[]" class="form-control text-center" value='${IdTransaksi}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
+           
+           
+
+            html += `</tr>`
+
+            $('#CreateSupplier').append(html)
+
+            $('#CreateSupplier').removeAttr('hidden');
+
+            click++
+        }
+
+        function MoveCreate() {
+            $('#modal').modal('show');
+        }
+
+        // function MultiSupplier() {
+        //     $('#CTS').removeAttr('hidden');
+        //     $('#RTS').removeAttr('hidden');
+        //     // $('#MultiSupplier').addattr('hidden');
+        //     // $('#MultiSupplier').attr('hidden', 'true');
+
+
+
+
+        // }
+    </script>
 @endsection()
