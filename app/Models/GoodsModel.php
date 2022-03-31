@@ -40,6 +40,7 @@ class GoodsModel extends Model
                 ->where('status_transaksi', "=", 'goods')
                 ->groupBy('no_penerimaan')
                 ->orderBy('tgl_penerimaan', 'asc')
+                ->orderBy('no_penerimaan', 'asc')
                 ->paginate(5);
         }
     }
@@ -75,7 +76,7 @@ class GoodsModel extends Model
             join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
             join pengguna on pengguna.id=transaksi.id
             join pemasok on transaksi.id_pemasok = pemasok.id_pemasok
-            group by no_pembelian
+            group by no_pembelian,detail_transaksi_pembelian.id_produk
             having  jumlah_detail_pembelian >sum(ifnull(jumlah_detail_penerimaan,0)) and no_pembelian='$no_pembelian'");
 
 
@@ -144,14 +145,15 @@ class GoodsModel extends Model
 
         DB::table('penerimaan_barang')->insert($data_penerimaan);
 
-
         // perispan data detail transaksi penjualan
         if ($unit) {
-            for ($i = 0; $i < count($id_transaksi); $i++) {
-                $id_penerimaan_barang = DB::table('penerimaan_barang')->select('id_penerimaan_barang')->where('no_penerimaan', "=", $data_penerimaan[$i]['no_penerimaan'])->get();
+            for ($i = 0; $i < count($data_detail_penerimaan); $i++) {
 
-                $data_detail_penerimaan[$i]['id_penerimaan_barang'] = $id_penerimaan_barang[0]->id_penerimaan_barang;
+                $id_penerimaan_barang = DB::table('penerimaan_barang')->select('id_penerimaan_barang')->where('no_penerimaan', "=", $data_penerimaan[$i]['no_penerimaan'])->first();
+
+                $data_detail_penerimaan[$i]['id_penerimaan_barang'] = $id_penerimaan_barang->id_penerimaan_barang;
             }
+            // dd($data_detail_penerimaan);
             //     insert data detail penjualan transaksi
             DB::table('detail_penerimaan_barang')->insert($data_detail_penerimaan);
         } 
@@ -161,7 +163,7 @@ class GoodsModel extends Model
             for ($i = 0; $i < count($data_detail_penerimaan); $i++) {
                 $id_penerimaan_barang = DB::table('penerimaan_barang')->select('id_penerimaan_barang')->where('no_penerimaan', "=", $data_penerimaan[$i]['no_penerimaan'])->get();
 
-                $data_detail_penerimaan[$i]['id_penerimaan_barang'] = $id_penerimaan_barang[0]->id_penerimaan_barang;
+                $data_detail_penerimaan[$i]['id_penerimaan_barang'] = $id_penerimaan_barang[$i]->id_penerimaan_barang;
             }
             //     insert data detail penjualan transaksi
             DB::table('detail_penerimaan_barang')->insert($data_detail_penerimaan);
@@ -193,4 +195,8 @@ class GoodsModel extends Model
             ->where('no_penerimaan', "=", $no_penerimaan)
             ->get();
     }
+
+
+
+    
 }

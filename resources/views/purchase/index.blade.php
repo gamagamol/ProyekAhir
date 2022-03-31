@@ -36,19 +36,11 @@
                             <td>Date</td>
                             <td>No Purchase </td>
                             <td>Job number</td>
-                          
-                            <td>Weight(Kg)</td>
-                           
-                            <td>Total Amount</td>
-                            <td>Processing</td>
                             <td>customer</td>
                             <td>Supplier</td>
                             <td>Prepared</td>
                             <td>Action</td>
                             <td>Document</td>
-
-
-
                         </tr>
                         <?php $i = 1; ?>
                         @foreach ($data as $d)
@@ -59,16 +51,10 @@
                                 <td style="min-width:120px">{{ $d->tgl_pembelian }}</td>
                                 <td>{{ $d->no_pembelian }}</td>
                                 <td>{{ $d->nomor_pekerjaan }}</td>
-                               
-                                <td>{{ $d->berat_detail_pembelian }}</td>
-                               
-                                <td>{{ 'Rp.' . number_format($d->total_detail_pembelian) }}</td>
-                                <td>{{ $d->layanan }}</td>
                                 <td>{{ $d->nama_pelanggan }}</td>
                                 <td>{{ $d->nama_pemasok }}</td>
                                 <td>{{ $d->nama_pengguna }}</td>
                                 <td>
-
                                     <a class="btn btn-primary" href="{{ url('goods', str_replace('/','-',$d->no_pembelian)) }}">
 
                                         Good Recipt

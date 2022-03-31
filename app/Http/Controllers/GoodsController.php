@@ -210,6 +210,10 @@ class GoodsController extends Controller
                 $i++;
             }
         }
+        // check isi variable akhir
+        // dd(count($id_transaksi));
+        // dd(count($data_penerimaan));
+        // dd($data_detail_penerimaan);
        
        
      $this->goods->insert_penerimaan($id_transaksi,$data_penerimaan,$data_detail_penerimaan,$unit);

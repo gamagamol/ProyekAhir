@@ -35,9 +35,6 @@
                             <td>Date</td>
                             <td>No Sales </td>
                             <td>Job number</td>
-                            <td>Weight(Kg)</td>
-                            <td>Total Amount</td>
-                            <td>Processing</td>
                             <td>customer</td>
                             <td>Prepared</td>
                             <td>Action</td>
@@ -54,11 +51,6 @@
                                 <td style="min-width:120px">{{ $d->tgl_penjualan }}</td>
                                 <td>{{ $d->no_penjualan }}</td>
                                 <td>{{ $d->nomor_pekerjaan }}</td>
-
-                                <td>{{ $d->berat }}</td>
-
-                                <td>{{ 'Rp.' . number_format($d->total) }}</td>
-                                <td>{{ $d->layanan }}</td>
                                 <td>{{ $d->nama_pelanggan }}</td>
                                 <td>{{ $d->nama_pengguna }}</td>
                                 <td>

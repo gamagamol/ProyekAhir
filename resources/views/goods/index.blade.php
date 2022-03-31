@@ -66,7 +66,7 @@
                                 <td>{{ $d->nama_pengguna }}</td>
                                 <td>
 
-                                    <a class="btn btn-primary" href="{{ url('delivery', $d->kode_transaksi) }}">
+                                    <a class="btn btn-primary" href="{{ url('delivery', str_replace('/','-',$d->no_penerimaan)) }}">
 
                                         Delivery
                                     </a>

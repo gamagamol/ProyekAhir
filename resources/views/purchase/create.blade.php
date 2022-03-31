@@ -75,20 +75,18 @@
                     <div class="table-responsive text-center">
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 
+                          
+
                             <tr>
                                 <td>No</td>
                                 <td>Date</td>
                                 <td>No Sales</td>
-                                <td>Job number</td>
                                 <td>Grade</td>
                                 <td colspan="3">Material Size</td>
-                                <td>QTY</td>
-                                <td>Weight(Kg)</td>
-                                <td>Unit Price</td>
-                                <td>Amount</td>
-                                <td>VAT 10%</td>
-                                <td>Total Amount</td>
-                                <td>Processing</td>
+                                <td>QTY(Sales) </td>
+                              
+                                <td>QTY(Purchase) </td>
+
                                 <td>customer</td>
                                 <td  id="RTS">Supplier</td>
 
@@ -104,7 +102,6 @@
                                     $berat = $d->berat - $d->berat_detail_pembelian;
                                     $subtotal=$d->subtotal-$d->subtotal_detail_pembelian;
                                     $ppn=$subtotal*0.1;
-                                    $total=$d->total- $d->total_keseluruhan_detail_pembelian;
                                 } else {
                                     $jumlah = $d->jumlah;
                                     $berat = $d->berat;
@@ -119,22 +116,21 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td style="min-width:120px">{{ $d->tgl_penjualan }}</td>
                                     <td>{{ $d->no_penjualan }}</td>
-                                    <td>{{ $d->nomor_pekerjaan }}</td>
                                     <td>{{ $d->nama_produk }}</td>
                                     <td>{{ $d->tebal_transaksi }}</td>
                                     <td>{{ $d->lebar_transaksi }}</td>
                                     <td>{{ $d->panjang_transaksi }}</td>
-                                    <td>{{ $jumlah }}</td>
-                                    <td>{{ $berat }}</td>
-                                    <td>{{ 'Rp.' . number_format($d->harga) }}</td>
-                                    <td>{{ 'Rp.' . number_format($subtotal) }}</td>
-                                    <td>{{ 'Rp.' . number_format($ppn) }}</td>
-                                    <td>{{ 'Rp.' . number_format($total) }}</td>
-                                    <td>{{ $d->layanan }}</td>
+                                    {{-- sales --}}
+                                    <td>{{ $d->jumlah_detail_penjualan }}</td>
+                                    <td>{{ $d->jumlah_detail_pembelian }}</td>
+                                    {{-- purchase --}}
+
+                                   
+                                    
                                     <td>{{ $d->nama_pelanggan }}</td>
                                     <td  id="CTS">
                                         <i class="fa fa-plus-circle" aria-hidden="true"
-                                            onclick="CreateSupplier('{{ $d->id_produk }}','{{ $d->nama_produk }}','{{ $d->no_penjualan }}','{{ $d->id_transaksi }}','{{ $d->tebal_transaksi }}','{{ $d->lebar_transaksi }}','{{ $d->panjang_transaksi }}','{{ $d->bentuk_produk }}','{{ $d->layanan }}')"></i>
+                                            onclick="CreateSupplier('{{ $d->id_produk }}','{{ $d->nama_produk }}','{{ $d->no_penjualan }}','{{ $d->id_transaksi }}','{{ $d->tebal_transaksi }}','{{ $d->lebar_transaksi }}','{{ $d->panjang_transaksi }}','{{ $d->bentuk_produk }}','{{ $d->layanan }}','{{ $jumlah }}','{{ $d->id_penawaran }}')"></i>
 
                                     </td>
 
@@ -186,7 +182,7 @@
         let click = 1
 
         function CreateSupplier(IdProduk, NamaProduk, NoPenjualan, IdTransaksi, TebalTransaksi, LebarTransaksi,
-            PanjangTransaksi, BentukProduk, Layanan) {
+            PanjangTransaksi, BentukProduk, Layanan,Jumlah,IdPenawaran) {
             let Supplier = {!! json_encode($supplier->toArray(), JSON_HEX_TAG) !!}
 
 
@@ -194,7 +190,7 @@
             html += `<tr>`
             html += `<td>${click}</td>`
             html +=
-                `<td> <input type="text" name="no_penjualan[]" class="form-control" value='${NoPenjualan}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
+                `<td> <input type="text" name="no_penjualan[]" class="form-control" value='${NoPenjualan}' readonly  style="border-width:0px;background-color:white;"></td>`
             html +=
                 `<td> <input type="text" name="nama_produk[]" class="form-control" value='${NamaProduk}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
             html +=
@@ -219,11 +215,15 @@
             html +=
                 `<td hidden><input type="text" name="id_produk[]" class="form-control text-center" value='${IdProduk}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
             html +=
-                `<td hidden ><input type="text" name="id_transaksi[]" class="form-control text-center" value='${IdTransaksi}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
+                `<td  hidden><input type="text" name="id_transaksi[]" class="form-control text-center" value='${IdTransaksi}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
             html +=
                 `<td hidden ><input type="text" name="bentuk_produk[]" class="form-control text-center" value='${BentukProduk}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
             html +=
                 `<td hidden ><input type="text" name="layanan[]" class="form-control text-center" value='${Layanan}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
+            html +=
+                `<td hidden ><input type="text" name="jumlah[]" class="form-control text-center" value='${Jumlah}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
+            html +=
+                `<td hidden ><input type="text" name="id_penawaran[]" class="form-control text-center" value='${IdPenawaran}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
 
             html += `</tr>`
 
