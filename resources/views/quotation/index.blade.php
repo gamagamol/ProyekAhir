@@ -1,5 +1,6 @@
 @extends('template.index')
 @section('content')
+
     <div class="container">
         @if (session()->has('success'))
             <div class="alert alert-success" role="alert">
@@ -36,11 +37,7 @@
                             <td>No</td>
                             <td>Date</td>
                             <td>No Quotation</td>
-                            <td>Job number</td>
-
-                            <td>Weight(Kg)</td>
-
-                            <td>Total Amount</td>
+                           
                             <td>Processing</td>
                             <td>customer</td>
                             <td>Prepared</td>
@@ -58,15 +55,11 @@
                                 <td>{{ $d->no_penawaran }}</td>
                                 <td>{{ $d->nomor_pekerjaan }}</td>
 
-                                <td>{{ $d->berat }}</td>
-
-                                <td>{{ 'Rp.' . number_format($d->total) }}</td>
-                                <td>{{ $d->layanan }}</td>
                                 <td>{{ $d->nama_pelanggan }}</td>
                                 <td>{{ $d->nama_pengguna }}</td>
                                 <td>
                                    
-
+                                        
                                     <a href="{{ url('sales', $d->kode_transaksi) }}" class="btn btn-primary mt-1">
                                         Sales </a>
 

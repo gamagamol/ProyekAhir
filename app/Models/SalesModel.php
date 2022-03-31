@@ -78,22 +78,21 @@ class SalesModel extends Model
                //           group by kode_transaksi,no_penjualan 
                //           having jumlah_detail_penjualan > sum(ifnull(jumlah_detail_pembelian,0))");
 
-               return DB::select("SELECT *, jumlah_detail_penjualan,jumlah_detail_pembelian from transaksi 
-        join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
-        join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
-        join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
-        join detail_transaksi_penjualan on penjualan.id_penjualan=detail_transaksi_penjualan.id_penjualan
-        left join pembelian on pembelian.id_penjualan=penjualan.id_penjualan
-        left join detail_transaksi_pembelian on detail_transaksi_pembelian.id_pembelian=pembelian.id_pembelian
-        join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
-        join pengguna on pengguna.id=transaksi.id
-        join produk on detail_transaksi_penjualan.id_produk=produk.id_produk
-		group by penjualan.id_penjualan,no_penjualan
-        having   jumlah_detail_penjualan>sum( ifnull(jumlah_detail_pembelian,0))");
-
-
-
-
+               return DB::select(
+                    "SELECT distinct tgl_penjualan,no_penjualan,nomor_pekerjaan,nama_pelanggan,nama_pengguna,kode_transaksi,jumlah_detail_penjualan,jumlah_detail_pembelian from transaksi 
+               join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
+               join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
+               join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
+               join detail_transaksi_penjualan on penjualan.id_penjualan=detail_transaksi_penjualan.id_penjualan
+               left join pembelian on pembelian.id_penjualan=penjualan.id_penjualan
+               left join detail_transaksi_pembelian on detail_transaksi_pembelian.id_pembelian=pembelian.id_pembelian
+               join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+               join pengguna on pengguna.id=transaksi.id
+               join produk on detail_transaksi_penjualan.id_produk=produk.id_produk
+               -- where sisa_detail_pembelian >0
+               group by pembelian.id_penjualan,no_penjualan
+               having jumlah_detail_penjualan > sum(ifnull(jumlah_detail_pembelian,0))"
+               );
           }
      }
      public function show($kode_transaksi)

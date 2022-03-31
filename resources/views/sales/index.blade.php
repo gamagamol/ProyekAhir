@@ -59,6 +59,7 @@
 
                                         Purchase
                                     </a>
+                                    
                                     <a href="{{ url('sales/detail', str_replace('/', '-', $d->no_penjualan)) }}"
                                         class="btn btn-info mt-1">
                                         Detail </a>
