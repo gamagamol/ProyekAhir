@@ -47,7 +47,6 @@ class GoodsController extends Controller
 
     public function store(Request $request)
     {
-
         // variabel yang di butuhkan 
         $kode_transaksi = $request->input('kode_transaksi');
         $tgl_penerimaan = $request->input('tgl_penerimaan');
@@ -72,7 +71,7 @@ class GoodsController extends Controller
             }
 
         }
-
+        
 
 
 
@@ -170,6 +169,7 @@ class GoodsController extends Controller
             $no_penerimaan = "GR/$no_penerimaan/$no_purchase[0]/$no_purchase[1]/$no_purchase[2]";
             array_push($arr_no_penerimaan, $no_penerimaan);
         }
+
         if ($unit) {
             # code...
             $i = 0;
@@ -195,7 +195,9 @@ class GoodsController extends Controller
         else{
             $i=0;
             foreach($purchase as $pcss){
+
                 $data_penerimaan[$i] = [
+                    'id_pembelian' => $pcss->id_pembelian,
                     'id_transaksi' => $pcss->id_transaksi,
                     'no_penerimaan' => $no_penerimaan,
                     'tgl_penerimaan' => $tgl_penerimaan
@@ -212,13 +214,14 @@ class GoodsController extends Controller
         }
         // check isi variable akhir
         // dd(count($id_transaksi));
-        // dd(count($data_penerimaan));
+        // dump($purchase);
+        // dump($data_penerimaan);
         // dd($data_detail_penerimaan);
        
        
      $this->goods->insert_penerimaan($id_transaksi,$data_penerimaan,$data_detail_penerimaan,$unit);
-    return redirect('goods')->with('success', "Data entered successfully,Please Click Detail For more Information");
 
+        return redirect('goods')->with('success', "Data entered successfully Please Chek Your Detail Transaction for more information");
 
     }
     public function detail($no_penerimaan)

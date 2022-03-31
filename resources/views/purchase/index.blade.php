@@ -1,5 +1,6 @@
 @extends('template.index')
 @section('content')
+{{-- @dd($data); --}}
 <div class="container">
         @if (session()->has('success'))
             <div class="alert alert-success" role="alert">
@@ -17,6 +18,7 @@
                         <form action={{ url('purchase') }} method="GET" id="serch-form">
                             <select class="form-control form-select" aria-label="Default select example" name='serch'
                                 id="serch">
+                                <option value=""><a href="{{url('goods')}}">All</a></option>
                                 @foreach ($deta as $d)
                                     <option value={{ $d->no_pembelian }}>{{ $d->no_pembelian }}</option>
                                 @endforeach

@@ -42,25 +42,22 @@ class PurchaseModel extends Model
             //     ->orderBy('tgl_pembelian', 'DESC')
             //     ->paginate(5);
 
-            return DB::select("SELECT *
-            FROM penjualan join detail_transaksi_penjualan 
-            on penjualan.id_penjualan=detail_transaksi_penjualan.id_penjualan
-            join transaksi on transaksi.id_transaksi=penjualan.id_transaksi
-            left outer join pembelian on pembelian.id_transaksi=transaksi.id_transaksi
-            LEFT OUTER join detail_transaksi_pembelian 
+            return DB::select(
+                "SELECT * FROM pembelian join detail_transaksi_pembelian 
             on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
-            LEFT OUTER JOIN penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
-            left outer join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
+            join transaksi on transaksi.id_transaksi=pembelian.id_transaksi
             join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
 			join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
             join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
             join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
             join pengguna on pengguna.id=transaksi.id
-            join pemasok on transaksi.id_pemasok = pemasok.id_pemasok
+            left join penerimaan_barang on penerimaan_barang.id_pembelian=pembelian.id_pembelian
+            left join detail_penerimaan_barang on penerimaan_barang.id_penerimaan_barang=detail_penerimaan_barang.id_penerimaan_barang
+            join pemasok on transaksi.id_pemasok  = pemasok.id_pemasok
             group by no_pembelian
-            having  jumlah_detail_pembelian >sum(ifnull(jumlah_detail_penerimaan,0))
-            ORDER BY tgl_pembelian ASC,no_pembelian ASC
-           ");
+            having jumlah_detail_penerimaan is null
+         "
+            );
         }
     }
     public function show($kode_transaksi)

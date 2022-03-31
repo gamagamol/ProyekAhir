@@ -30,7 +30,7 @@
 
                         <div class="col mt-5">
                             <div class="table-responsive text-center">
-                                <table class="table table-bordered"  cellspacing="0" id="CreateSupplier" hidden>
+                                <table class="table table-bordered" cellspacing="0" id="CreateSupplier" hidden>
                                     <tr>
                                         <td style="width: 1%;">No</td>
                                         <td hidden>id produk</td>
@@ -70,24 +70,31 @@
                                 <td>Processing</td>
                                 <td>Custumor</td>
                                 <td>Supplier</td>
-                                <td >Unit</td>
+                                {{-- <td >Unit</td> --}}
 
                             </tr>
 
                             @foreach ($data as $p)
-                              <?php
-                                if ($p->jumlah_detail_penerimaan > 0 ) {
-                                    $jumlah = $p->jumlah_detail_pembelian - $p->jumlah_detail_penerimaan;
-                                  
-                                } else {
-                                    $jumlah = $p->jumlah_detail_pembelian;
-                                    $berat = $p->berat;
-                                    $subtotal=$p->subtotal;
-                                    $ppn=$p->ppn;
-                                    $total=$p->total;
-                                }
+                                <?php
+                                // jangan hapus dulu buat codingan penerimaan bertahap
+                                // if ($p->jumlah_detail_penerimaan > 0 ) {
+                                //     $jumlah = $p->jumlah_detail_pembelian - $p->jumlah_detail_penerimaan;
+                                
+                                // } else {
+                                //     $jumlah = $p->jumlah_detail_pembelian;
+                                //     $berat = $p->berat;
+                                //     $subtotal=$p->subtotal;
+                                //     $ppn=$p->ppn;
+                                //     $total=$p->total;
+                                // }
+                                $jumlah = $p->jumlah_detail_pembelian;
+                                $berat = $p->berat;
+                                $subtotal = $p->subtotal;
+                                $ppn = $p->ppn;
+                                $total = $p->total;
                                 
                                 ?>
+
                                 <tr>
 
                                     <td style="min-width:120px">
@@ -157,11 +164,12 @@
                                     <td>
                                         {{ $p->nama_pemasok }}
                                     </td>
-                                    <td >
+                                    {{-- jangan di hapus untuk pnerimaan barang beberapakali --}}
+                                    {{-- <td >
                                         <i class="fa fa-plus-circle" aria-hidden="true"
                                             onclick="CreateSupplier('{{ $p->id_produk }}','{{ $p->nama_produk }}','{{ $p->no_pembelian }}','{{ $p->id_transaksi }}','{{ $p->tebal_transaksi }}','{{ $p->lebar_transaksi }}','{{ $p->panjang_transaksi }}','{{ $p->bentuk_produk }}','{{ $p->layanan }}')"></i>
 
-                                    </td>
+                                    </td> --}}
 
 
 
@@ -203,7 +211,7 @@
             </form>
         </div>
     </div>
-    </div >
+    </div>
     <script>
         let click = 1
 
@@ -223,8 +231,8 @@
                 `<td hidden><input type="text" name="id_produk[]" class="form-control text-center" value='${IdProduk}' readonly  style="border-width:0px;background-color:white;width: 105%;" ></td>`
             html +=
                 `<td hidden ><input type="text" name="id_transaksi[]" class="form-control text-center" value='${IdTransaksi}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
-           
-           
+
+
 
             html += `</tr>`
 
