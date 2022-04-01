@@ -17,6 +17,7 @@
                         <form action={{ url('goods') }} method="GET" id="serch-form">
                             <select class="form-control form-select" aria-label="Default select example" name='serch'
                                 id="serch">
+                                    <option value=""><a href="{{url('goods')}}">All</a></option>
                                 @foreach ($deta as $d)
                                     <option value={{ $d->no_penerimaan }}>{{ $d->no_penerimaan }}</option>
                                 @endforeach
@@ -36,11 +37,6 @@
                             <td>Date</td>
                             <td>No Goods Recipt </td>
                             <td>Job number</td>
-                          
-                            <td>Weight(Kg)</td>
-                           
-                            <td>Total Amount</td>
-                            <td>Processing</td>
                             <td>customer</td>
                             <td>Prepared</td>
                             <td>Action</td>
@@ -57,11 +53,6 @@
                                 <td style="min-width:120px">{{ $d->tgl_penerimaan }}</td>
                                 <td>{{ $d->no_penerimaan }}</td>
                                 <td>{{ $d->nomor_pekerjaan }}</td>
-                               
-                                <td>{{ $d->berat }}</td>
-                               
-                                <td>{{ 'Rp.' . number_format($d->total) }}</td>
-                                <td>{{ $d->layanan }}</td>
                                 <td>{{ $d->nama_pelanggan }}</td>
                                 <td>{{ $d->nama_pengguna }}</td>
                                 <td>
