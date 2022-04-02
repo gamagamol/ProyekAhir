@@ -55,10 +55,12 @@ class DeliveryController extends Controller
         $tgl_penerimaan = $penerimaan[0]->tgl_penerimaan;
         $unit = $request->input('unit');
         $id_produk = $request->input('id_produk');
+        $id_penawaran = $request->input('id_penawaran');
+        $id_penerimaan_barang = $request->input('id_penerimaan_barang');
         // persiapan array
         $produk = [];
         $arr_produk = [];
-       
+
 
         if ($unit) {
 
@@ -67,16 +69,21 @@ class DeliveryController extends Controller
             for ($ipo = 0; $ipo < count($id_produk); $ipo++) {
                 foreach ($penerimaan as $quoi) {
                     if ($quoi->id_produk == $id_produk[$ipo]) {
-                        $produk[$ipo] = [
-                            'id_produk' => $id_produk[$ipo],
-                            'unit' => (int) $unit[$ipo],
-                            'id_penjualan'=>$quoi->id_penjualan
+                        if ($quoi->id_penawaran == $id_penawaran[$ipo]) {
 
-                        ];
+                            $produk[$ipo] = [
+                                'id_penawaran' => $quoi->id_penawaran,
+                                'id_produk' => $id_produk[$ipo],
+                                'unit' => (int) $unit[$ipo],
+                                'id_penerimaan_barang' => $quoi->id_penerimaan_barang,
+
+
+
+                            ];
+                        }
                     }
                 }
             }
-
 
             // // mengisi arr produk
             $ipdk = 0;
@@ -84,18 +91,22 @@ class DeliveryController extends Controller
                 $total_unit_produk = 0;
                 foreach ($produk as $prdk) {
                     if ($prdk['id_produk'] == $quo->id_produk) {
-                        $arr_produk[$ipdk] = [
-                            'id_produk' => $quo->id_produk,
-                            'unit' => $total_unit_produk += $prdk['unit'],
-                            'jumlah_unit' => $quo->jumlah_detail_penerimaan,
+                        if ($prdk['id_penawaran'] == $quo->id_penawaran) {
+
+                            $arr_produk[$ipdk] = [
+                                'id_produk' => $quo->id_produk,
+                                'unit' => $total_unit_produk += $prdk['unit'],
+                                'jumlah_unit' => $quo->jumlah_detail_penerimaan,
 
 
 
-                        ];
+                            ];
+                        }
                     }
                 }
                 $ipdk++;
             }
+
 
 
             // validasi unit produk
@@ -107,15 +118,16 @@ class DeliveryController extends Controller
                             return redirect()->back()->with("failed", "Please Fill Unit Coloumn more then 0 ");
                         } else {
                             if ($id_produk[$pdkv] == $apdk['id_produk']) {
-                                if ($apdk['unit'] > $apdk['jumlah_unit']) {
-                                    return redirect()->back()->with("failed", "Please Fill Unit Coloumn with Less Value");
+                                if ($prdk['id_penawaran'] == $quo->id_penawaran) {
+                                    if ($apdk['unit'] > $apdk['jumlah_unit']) {
+                                        return redirect()->back()->with("failed", "Please Fill Unit Coloumn with Less Value");
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-
         }
 
 
@@ -144,13 +156,13 @@ class DeliveryController extends Controller
 
         //    kumpulan array data penjualan
         $data_pengiriman = [];
-        $data_detail_pengiriman= [];
+        $data_detail_pengiriman = [];
         $arr_no_pengiriman = [];
 
         // Persiapan no penerimaan
-    
 
-            $no_pengiriman = $this->model->no_delivery($tgl_penerimaan, $unit);
+
+        $no_pengiriman = $this->model->no_delivery($tgl_penerimaan, $unit);
 
 
         if (is_array($no_pengiriman)) {
@@ -163,63 +175,73 @@ class DeliveryController extends Controller
                 array_push($arr_no_pengiriman, $no_penerimaan);
             }
         } else {
-            $no_purchase = explode('-',
+            $no_purchase = explode(
+                '-',
                 $tgl_pengiriman
             );
             $no_penerimaan = "DO/$no_pengiriman/$no_purchase[0]/$no_purchase[1]/$no_purchase[2]";
             array_push($arr_no_pengiriman, $no_penerimaan);
-
         }
 
-
-
         if ($unit) {
-            # code...
             $i = 0;
             foreach ($arr_no_pengiriman as $anps) {
-                if ($id_produk[$i] == $produk[$i]['id_produk']) {
-                    $data_pengiriman[$i] = [
-                        'id_transaksi' => $id_transaksi[$i],
-                        'no_penerimaan' => $anps,
-                        'tgl_pengiriman' => $tgl_pengiriman
-                    ];
+                foreach ($penerimaan as $pcsss) {
+
+                    if ($id_produk[$i] == $produk[$i]['id_produk']) {
+                        if ($pcsss->id_penerimaan_barang == $produk[$i]['id_penerimaan_barang']) {
+
+                            $data_pengiriman[$i] = [
+                                'id_penerimaan_barang' => $pcsss->id_penerimaan_barang,
+                                'id_transaksi' => $id_transaksi[$i],
+                                'no_pengiriman' => $anps,
+                                'tgl_pengiriman' => $tgl_pengiriman
+                            ];
 
 
-                    $data_detail_pengiriman[$i] = [
-                        'id_penerimaan_barang' => 0,
-                        'id_produk' => $id_produk[$i],
-                        'id_penjualan'=>$produk[$i]['id_penjualan'],
-                        'jumlah_detail_penerimaan' => $unit[$i]
-                    ];
+                            $data_detail_pengiriman[$i] = [
+                                'id_pengiriman' => 0,
+                                'id_penjualan' => $pcsss->id_penjualan,
+                                'id_produk' => $id_produk[$i],
+                                'jumlah_detail_pengiriman' => (int) $unit[$i],
+                                'sisa_detail_pengiriman' => (int) $pcsss->jumlah_detail_penerimaan-$unit[$i],
+
+                            ];
+                        }
+                    }
                 }
+
                 $i++;
             }
         } else {
             $i = 0;
             foreach ($penerimaan as $pcss) {
                 $data_pengiriman[$i] = [
-                        'id_transaksi' => $pcss->id_transaksi,
-                        'no_pengiriman' => $arr_no_pengiriman[0],
-                        'tgl_pengiriman' => $tgl_pengiriman
-                    ];
+                    'id_penerimaan_barang' => $pcss->id_penerimaan_barang,
+                    'id_transaksi' => $pcss->id_transaksi,
+                    'no_pengiriman' => $arr_no_pengiriman[0],
+                    'tgl_pengiriman' => $tgl_pengiriman
+                ];
 
 
                 $data_detail_pengiriman[$i] = [
                     'id_pengiriman' => 0,
                     'id_produk' => $pcss->id_produk,
-                    'id_penjualan'=>$pcss->id_penjualan,
-                    'jumlah_detail_pengiriman' => $pcss->jumlah_detail_penerimaan
+                    'id_penjualan' => $pcss->id_penjualan,
+                    'jumlah_detail_pengiriman' => (int) $pcss->jumlah_detail_penerimaan,
+                    'sisa_detail_pengiriman' => 0,
+                   
                 ];
                 $i++;
             }
         }
         // check isi data yang mau di insert
-       
-        $this->model->insert_delivery($id_transaksi,$data_pengiriman,$data_detail_pengiriman,$unit);
+        // dump($data_pengiriman);
+        // dd($data_detail_pengiriman);
+
+        $this->model->insert_delivery($id_transaksi, $data_pengiriman, $data_detail_pengiriman, $unit);
 
         return redirect('delivery')->with('success', "Data entered successfully,Please Click Detail For more Information");
-        
-  
     }
 
 

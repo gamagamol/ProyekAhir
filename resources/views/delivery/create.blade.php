@@ -112,7 +112,14 @@
                                     <td>{{ $d->nama_pelanggan }}</td>
                                     <td>
                                         <i class="fa fa-plus-circle" aria-hidden="true"
-                                            onclick="CreateSupplier('{{ $d->id_produk }}','{{ $d->nama_produk }}','{{ $d->no_penerimaan }}','{{ $d->id_transaksi }}')"></i>
+                                            onclick="CreateSupplier('{{ $d->id_produk }}',
+                                            '{{ $d->nama_produk }}',
+                                            '{{ $d->no_penerimaan }}',
+                                            '{{ $d->id_transaksi }}',
+                                            '{{ $d->id_penawaran }}',
+                                            '{{ $d->id_penerimaan_barang }}',
+                                            
+                                            )"></i>
 
                                     </td>
 
@@ -146,7 +153,7 @@
                                 <div class="modal-body">
                                     <p>Are you sure to continue the transaction? please check the details first! </p>
                                     <button type=submit name=submit class="btn btn-primary">submit</button>
-                                    <a href="{{ url('delivery/detail', str_replace('/', '-', $d->no_penerimaan)) }}"
+                                    <a href="{{ url('goods/detail', str_replace('/', '-', $d->no_penerimaan)) }}"
                                         class="btn btn-info mt-1">
                                         Detail </a>
 
@@ -186,7 +193,7 @@
         });
         let click = 1;
 
-        function CreateSupplier(IdProduk, NamaProduk, NoPenerimaan, IdTransaksi) {
+        function CreateSupplier(IdProduk, NamaProduk, NoPenerimaan, IdTransaksi,IdPenawaran,IdPenerimaanBarang) {
 
 
             let html = ``
@@ -202,6 +209,10 @@
                 `<td hidden><input type="text" name="id_produk[]" class="form-control text-center" value='${IdProduk}' readonly  style="border-width:0px;background-color:white;width: 105%;" ></td>`
             html +=
                 `<td hidden ><input type="text" name="id_transaksi[]" class="form-control text-center" value='${IdTransaksi}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
+            html +=
+                `<td hidden ><input type="text" name="id_penawaran[]" class="form-control text-center" value='${IdPenawaran}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
+            html +=
+                `<td hidden ><input type="text" name="id_penerimaan_barang[]" class="form-control text-center" value='${IdPenerimaanBarang}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
 
 
 

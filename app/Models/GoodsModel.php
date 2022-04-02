@@ -27,21 +27,21 @@ class GoodsModel extends Model
                 ->paginate(5);
         } else {
 
-            return DB::table('transaksi')
-
-                ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
-                ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', '=', 'penawaran.id_penawaran')
-                ->join("produk", 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')
-                ->join("pelanggan", 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
-                ->join("pengguna", 'transaksi.id', '=', 'pengguna.id')
-                ->join('penjualan', "penjualan.id_transaksi", "transaksi.id_transaksi")
-                ->join('pembelian', "pembelian.id_transaksi", "transaksi.id_transaksi")
-                ->join('penerimaan_barang', "penerimaan_barang.id_transaksi", "transaksi.id_transaksi")
-                ->where('status_transaksi', "=", 'goods')
-                ->groupBy('no_penerimaan')
-                ->orderBy('tgl_penerimaan', 'asc')
-                ->orderBy('no_penerimaan', 'asc')
-                ->paginate(5);
+            return DB::select("SELECT *, no_penerimaan,no_pengiriman, pengiriman.id_penerimaan_barang , case 
+            when sisa_detail_pengiriman > 0 then jumlah_detail_penerimaan - sisa_detail_pengiriman
+            else 
+            jumlah_detail_penerimaan-0
+            end as jumlah_detail_penerimaan,
+            jumlah_detail_pengiriman,sisa_detail_pengiriman FROM transaksi
+            join penerimaan_barang on penerimaan_barang.id_transaksi = transaksi.id_transaksi
+            join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
+            left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
+            left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
+                join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+              join pengguna on pengguna.id=transaksi.id
+             join produk on detail_penerimaan_barang.id_produk=produk.id_produk
+            where sisa_detail_pengiriman>0 or sisa_detail_pengiriman is null
+            group by no_penerimaan");
         }
     }
     public function show($no_pembelian)
@@ -61,7 +61,7 @@ class GoodsModel extends Model
         //     ->where('pembelian.no_pembelian', '=', $no_pembelian)
         //     ->get();
 
-     return    DB::select("SELECT * FROM pembelian join detail_transaksi_pembelian 
+        return    DB::select("SELECT * FROM pembelian join detail_transaksi_pembelian 
             on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
             join transaksi on transaksi.id_transaksi=pembelian.id_transaksi
             join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
@@ -73,8 +73,6 @@ class GoodsModel extends Model
 			where no_pembelian='$no_pembelian'
             
             ");
-
-
     }
 
     public function edit($no_pembelian, $kode_transaksi = null)
@@ -99,11 +97,11 @@ class GoodsModel extends Model
 
 
         return DB::table('transaksi')
-        ->selectRaw('transaksi.id_transaksi,pembelian.id_pembelian,pembelian.tgl_pembelian,pembelian.no_pembelian,detail_transaksi_pembelian.id_produk,jumlah_detail_pembelian')
-        ->join('pembelian', 'pembelian.id_transaksi', '=', 'transaksi.id_transaksi')
-        ->join('detail_transaksi_pembelian', 'detail_transaksi_pembelian.id_pembelian', '=', 'pembelian.id_pembelian')
-        ->where('no_pembelian', '=', $no_pembelian)
-        ->get();
+            ->selectRaw('transaksi.id_transaksi,pembelian.id_pembelian,pembelian.tgl_pembelian,pembelian.no_pembelian,detail_transaksi_pembelian.id_produk,jumlah_detail_pembelian')
+            ->join('pembelian', 'pembelian.id_transaksi', '=', 'transaksi.id_transaksi')
+            ->join('detail_transaksi_pembelian', 'detail_transaksi_pembelian.id_pembelian', '=', 'pembelian.id_pembelian')
+            ->where('no_pembelian', '=', $no_pembelian)
+            ->get();
     }
 
     public function no_penerimaan($tgl_penerimaan, $unit)
@@ -161,10 +159,7 @@ class GoodsModel extends Model
             // dd($data_detail_penerimaan);
             //     insert data detail penjualan transaksi
             DB::table('detail_penerimaan_barang')->insert($data_detail_penerimaan);
-        } 
-        
-        
-        else {
+        } else {
             for ($i = 0; $i < count($data_detail_penerimaan); $i++) {
                 $id_penerimaan_barang = DB::table('penerimaan_barang')->select('id_penerimaan_barang')->where('no_penerimaan', "=", $data_penerimaan[$i]['no_penerimaan'])->get();
 
@@ -173,11 +168,6 @@ class GoodsModel extends Model
             //     insert data detail penjualan transaksi
             DB::table('detail_penerimaan_barang')->insert($data_detail_penerimaan);
         }
-
-
-
-
-
     }
 
 
@@ -200,8 +190,4 @@ class GoodsModel extends Model
             ->where('no_penerimaan', "=", $no_penerimaan)
             ->get();
     }
-
-
-
-    
 }
