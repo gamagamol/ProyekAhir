@@ -121,6 +121,9 @@ $notif = $notif->notif();
                         <a class="collapse-item" href="{{ url('bill') }}">Bill Payment</a>
                         <a class="collapse-item" href="{{ url('payment') }}">Payment</a>
                         <a class="collapse-item" href="{{ url('paymentvendor') }}">Debt Payment </a>
+                        <a class="collapse-item" href="{{ url('status_transaksi') }}">Transaction Status </a>
+                        
+                 
                     </div>
                 </div>
             </li>

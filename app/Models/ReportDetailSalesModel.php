@@ -42,4 +42,42 @@ class ReportDetailSalesModel extends Model
             ->groupBy('tgl_penawaran')
             ->get();
     }
+
+
+
+
+    public function status_transaki($no_penawaran = null)
+    {
+        if ($no_penawaran) {
+            return   DB::table('transaksi')
+                ->selectRaw('kode_transaksi,no_penawaran,no_penjualan,no_pembelian,no_penerimaan,no_pengiriman,no_tagihan,no_pembayaran,nama_pelanggan,nama_pengguna ')
+                ->leftJoin('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
+                ->leftJoin('penjualan', 'penjualan.id_transaksi', '=', 'transaksi.id_transaksi')
+                ->leftJoin('pembelian', 'pembelian.id_transaksi', '=', 'transaksi.id_transaksi')
+                ->leftJoin('penerimaan_barang', 'penerimaan_barang.id_transaksi', '=', 'transaksi.id_transaksi')
+                ->leftJoin('pengiriman', 'pengiriman.id_transaksi', '=', 'transaksi.id_transaksi')
+                ->leftJoin('tagihan', 'tagihan.id_transaksi', '=', 'transaksi.id_transaksi')
+                ->leftJoin('pembayaran', 'pembayaran.id_transaksi', '=', 'transaksi.id_transaksi')
+                ->leftJoin('pelanggan', 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
+                ->leftJoin('pengguna', 'pengguna.id', '=', 'transaksi.id')
+                ->groupBy('kode_transaksi')
+                ->having('no_penawaran','=',$no_penawaran)
+                ->paginate(5);
+        } else {
+
+            return   DB::table('transaksi')
+                ->selectRaw('kode_transaksi,no_penawaran,no_penjualan,no_pembelian,no_penerimaan,no_pengiriman,no_tagihan,no_pembayaran,nama_pelanggan,nama_pengguna ')
+                ->leftJoin('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
+                ->leftJoin('penjualan', 'penjualan.id_transaksi', '=', 'transaksi.id_transaksi')
+                ->leftJoin('pembelian', 'pembelian.id_transaksi', '=', 'transaksi.id_transaksi')
+                ->leftJoin('penerimaan_barang', 'penerimaan_barang.id_transaksi', '=', 'transaksi.id_transaksi')
+                ->leftJoin('pengiriman', 'pengiriman.id_transaksi', '=', 'transaksi.id_transaksi')
+                ->leftJoin('tagihan', 'tagihan.id_transaksi', '=', 'transaksi.id_transaksi')
+                ->leftJoin('pembayaran', 'pembayaran.id_transaksi', '=', 'transaksi.id_transaksi')
+                ->leftJoin('pelanggan', 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
+                ->leftJoin('pengguna', 'pengguna.id', '=', 'transaksi.id')
+                ->groupBy('kode_transaksi')
+                ->paginate(5);
+        }
+    }
 }

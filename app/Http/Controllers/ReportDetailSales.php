@@ -17,9 +17,6 @@ class ReportDetailSales extends Controller
 
     public function index()
     {
-
-
-
         $data = [
             'tittle' => " Report Detail Sales",
             'data' => $this->model->index(),
@@ -27,4 +24,29 @@ class ReportDetailSales extends Controller
         ];
         return view('report.revenue', $data);
     }
+
+
+    public function status_transaki(){
+
+        $serch=request()->input('serch');
+        if ($serch) {
+            $data= $this->model->status_transaki($serch);
+        }else{
+            $data = $this->model->status_transaki(); 
+        }
+
+        $data = [
+            'tittle' => " Status Transaksi",
+            'data' =>$data,
+            'no_penawaran'=> $this->model->status_transaki(),
+
+           
+        ];
+        
+        return view('report.status_transaksi', $data);
+    }
+
+
+
+    
 }
