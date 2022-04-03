@@ -70,20 +70,11 @@
                                 <td>Job number</td>
                                 <td>Grade</td>
                                 <td colspan="3">Material Size</td>
-                                <td>QTY</td>
-
-                                <td>Weight(Kg)</td>
-                                <td>Unit Price</td>
-                                <td>Shipment</td>
-                                <td>Amount</td>
-                                <td>VAT 10%</td>
-                                <td>Total Amount</td>
-                                <td>Processing</td>
+                                <td class="text-wrap" style="width: 10%">QTY 
+                                    (Goods ) </td>
+                                <td>QTY (Delivery) </td>
                                 <td>customer</td>
                                 <td>Unit</td>
-
-
-
                             </tr>
                             @csrf
                             <?php $i = 1; ?>
@@ -102,13 +93,7 @@
                                     <td>{{ $d->lebar_transaksi }}</td>
                                     <td>{{ $d->panjang_transaksi }}</td>
                                     <td>{{ $d->jumlah_detail_penerimaan }}</td>
-                                    <td>{{ $d->berat }}</td>
-                                    <td>{{ 'Rp.' . number_format($d->harga) }}</td>
-                                    <td>{{ 'Rp.' . number_format($d->ongkir) }}</td>
-                                    <td>{{ 'Rp.' . number_format($d->subtotal) }}</td>
-                                    <td>{{ 'Rp.' . number_format($d->ppn) }}</td>
-                                    <td>{{ 'Rp.' . number_format($d->total) }}</td>
-                                    <td>{{ $d->layanan }}</td>
+                                    <td>{{ $d->jumlah_detail_pengiriman }}</td>
                                     <td>{{ $d->nama_pelanggan }}</td>
                                     <td>
                                         <i class="fa fa-plus-circle" aria-hidden="true"
@@ -118,6 +103,15 @@
                                             '{{ $d->id_transaksi }}',
                                             '{{ $d->id_penawaran }}',
                                             '{{ $d->id_penerimaan_barang }}',
+                                            '{{ $d->tebal_transaksi }}',
+                                            '{{ $d->lebar_transaksi }}',
+                                            '{{ $d->panjang_transaksi }}',
+                                            '{{ $d->bentuk_produk }}',
+                                            '{{ $d->layanan }}',
+                                            '{{ $d->jumlah_detail_penerimaan }}',
+                                            '{{ $d->harga }}',
+
+                                          
                                             
                                             )"></i>
 
@@ -193,7 +187,7 @@
         });
         let click = 1;
 
-        function CreateSupplier(IdProduk, NamaProduk, NoPenerimaan, IdTransaksi,IdPenawaran,IdPenerimaanBarang) {
+        function CreateSupplier(IdProduk, NamaProduk, NoPenerimaan, IdTransaksi,IdPenawaran,IdPenerimaanBarang,TebalTransaksi,LebarTransaksi,PanjangTransaksi,BentukProduk,Layanan,JumlahDetailPenerimaan) {
 
 
             let html = ``
@@ -213,6 +207,18 @@
                 `<td hidden ><input type="text" name="id_penawaran[]" class="form-control text-center" value='${IdPenawaran}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
             html +=
                 `<td hidden ><input type="text" name="id_penerimaan_barang[]" class="form-control text-center" value='${IdPenerimaanBarang}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
+            html +=
+                `<td hidden ><input type="text" name="tebal_transaksi[]" class="form-control text-center" value='${TebalTransaksi}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
+            html +=
+                `<td hidden ><input type="text" name="lebar_transaksi[]" class="form-control text-center" value='${LebarTransaksi}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
+            html +=
+                `<td hidden ><input type="text" name="panjang_transaksi[]" class="form-control text-center" value='${PanjangTransaksi}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
+            html +=
+                `<td hidden ><input type="text" name="bentuk_produk[]" class="form-control text-center" value='${BentukProduk}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
+            html +=
+                `<td hidden ><input type="text" name="layanan[]" class="form-control text-center" value='${Layanan}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
+            html +=
+                `<td hidden ><input type="text" name="jumlah_detail_penerimaan[]" class="form-control text-center" value='${JumlahDetailPenerimaan}' readonly size="3" style="border-width:0px;background-color:white;" ></td>`
 
 
 

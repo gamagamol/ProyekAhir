@@ -27,21 +27,17 @@ class GoodsModel extends Model
                 ->paginate(5);
         } else {
 
-            return DB::select("SELECT *, no_penerimaan,no_pengiriman, pengiriman.id_penerimaan_barang , case 
-            when sisa_detail_pengiriman > 0 then jumlah_detail_penerimaan - sisa_detail_pengiriman
-            else 
-            jumlah_detail_penerimaan-0
-            end as jumlah_detail_penerimaan,
-            jumlah_detail_pengiriman,sisa_detail_pengiriman FROM transaksi
+            return DB::select("SELECT distinct tgl_penerimaan,nomor_pekerjaan, no_penerimaan,no_pengiriman, pengiriman.id_penerimaan_barang, jumlah_detail_penerimaan,sum(jumlah_detail_pengiriman) as jumlah_detail_pengiriman,sisa_detail_pengiriman,nama_pelanggan,nama_pengguna FROM transaksi
             join penerimaan_barang on penerimaan_barang.id_transaksi = transaksi.id_transaksi
             join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
             left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
             left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
-                join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
-              join pengguna on pengguna.id=transaksi.id
-             join produk on detail_penerimaan_barang.id_produk=produk.id_produk
-            where sisa_detail_pengiriman>0 or sisa_detail_pengiriman is null
-            group by no_penerimaan");
+             join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+            join pengguna on pengguna.id=transaksi.id
+            join pemasok on transaksi.id_pemasok =  pemasok.id_pemasok
+			group by penerimaan_barang.id_penerimaan_barang
+			HAVING jumlah_detail_penerimaan> sum(ifnull(jumlah_detail_pengiriman,0))
+           order by tgl_penerimaan asc , no_penerimaan asc");
         }
     }
     public function show($no_pembelian)

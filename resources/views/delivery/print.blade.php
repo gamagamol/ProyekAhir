@@ -81,6 +81,7 @@
                     </tr>
                     <tr>
                         <td>No</td>
+                        <td>Date</td>
                         <td>Job Number</td>
                         <td>Grade</td>
                         <td colspan="3">Material Size</td>
@@ -94,9 +95,8 @@
 
                     </tr>
                     @foreach ($data as $p)
-
                         <tr>
-
+                            <td>{{ $loop->iteration }}</td>
                             <td style="min-width:120px">
                                 {{ $p->tgl_pengiriman }}
                             </td>

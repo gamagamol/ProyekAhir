@@ -84,14 +84,9 @@
                                 <td>Grade</td>
                                 <td colspan="3">Material Size</td>
                                 <td>QTY(Sales) </td>
-                              
                                 <td>QTY(Purchase) </td>
-
                                 <td>customer</td>
                                 <td  id="RTS">Supplier</td>
-
-
-
                             </tr>
                             @csrf
                             <?php $i = 1; ?>

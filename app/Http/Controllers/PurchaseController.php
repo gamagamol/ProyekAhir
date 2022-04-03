@@ -28,6 +28,7 @@ class PurchaseController extends Controller
         } else {
             $data = $this->PurchaseModel->index();
         }
+        // dd($data);
         $data = [
             'tittle' => 'Purchase Order',
             "data" => $data,
@@ -80,9 +81,7 @@ class PurchaseController extends Controller
 
 
             // Validation Proses
-            if (!$request->input('id_pemasok')) {
-                return redirect()->back()->with("failed", "Please click the add button for choose your supplier ");
-            }
+         
 
             for ($ip = 0; $ip <= count($id_pemasok); $ip++) {
                 if ($id_pemasok[$ip] == "null") {
@@ -189,6 +188,12 @@ class PurchaseController extends Controller
                 }
             }
         }
+        else{
+            if ($request->input('id_pemasok')==null) {
+                return redirect()->back()->with("failed", "Please click the add button for choose your supplier ");
+            }
+        }
+   
 
 
         $rules = [
@@ -290,8 +295,7 @@ class PurchaseController extends Controller
             }
         }
         // jangan di hapus untuk check isi array
-        // dump($data_pembelian);
-        // dd($data_detail_pembelian);
+   
 
 
         $no_pembelian = $this->PurchaseModel->insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok, $kode_transaksi);

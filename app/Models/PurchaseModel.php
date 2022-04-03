@@ -53,7 +53,7 @@ class PurchaseModel extends Model
             join pengguna on pengguna.id=transaksi.id
             left join penerimaan_barang on penerimaan_barang.id_pembelian=pembelian.id_pembelian
             left join detail_penerimaan_barang on penerimaan_barang.id_penerimaan_barang=detail_penerimaan_barang.id_penerimaan_barang
-            join pemasok on transaksi.id_pemasok  = pemasok.id_pemasok
+          left   join pemasok on transaksi.id_pemasok  = pemasok.id_pemasok
             group by no_pembelian
             having jumlah_detail_penerimaan is null
          "
@@ -158,7 +158,7 @@ class PurchaseModel extends Model
 
     public function insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok, $kode_transaksi)
     {
-
+       
         // mengubah data transaksi
         $update = [
             'status_transaksi' => "purchase",

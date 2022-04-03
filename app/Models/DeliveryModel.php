@@ -33,32 +33,50 @@ class DeliveryModel extends Model
                 ->join('detail_transaksi_pengiriman', "detail_transaksi_pengiriman.id_pengiriman", "=", "pengiriman.id_pengiriman")
                 ->join('detail_transaksi_penawaran', "detail_transaksi_penawaran.id_penawaran", "=", "penawaran.id_penawaran")
                 ->join("produk", "detail_transaksi_pengiriman.id_produk", "=", "produk.id_produk")
+                ->join('penerimaan_barang', 'pengiriman.id_penerimaan_barang', '=', 'penerimaan_barang.id_penerimaan_barang')
                 ->groupBy('no_pengiriman')
-                ->orderBy('tgl_pengiriman', 'asc')
+                ->orderByRaw(
+                    'tgl_pengiriman asc,no_pengiriman asc'
+                )
                 ->paginate(5);
         }
     }
 
     public function show($no_penerimaan)
     {
-        return DB::select("SELECT  *,no_penerimaan,no_pengiriman, pengiriman.id_penerimaan_barang , case 
-            when sisa_detail_pengiriman > 0 then jumlah_detail_penerimaan - sisa_detail_pengiriman
-            else 
-            jumlah_detail_penerimaan-0
-            end as jumlah_detail_penerimaan,
-            jumlah_detail_pengiriman,sisa_detail_pengiriman FROM transaksi
-            join penerimaan_barang on penerimaan_barang.id_transaksi = transaksi.id_transaksi
-            join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
+
+        $no_pengiriman =
+            DB::select("SELECT distinct no_pengiriman FROM ibaraki_db.penerimaan_barang
+            join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang= penerimaan_barang.id_penerimaan_barang
+            left join pengiriman on pengiriman.id_penerimaan_barang =penerimaan_barang.id_penerimaan_barang
+            where no_penerimaan='$no_penerimaan'");
+
+
+        if ($no_pengiriman[0]->no_pengiriman == null) {
+            $query = "jumlah_detail_penerimaan >ifnull( jumlah_detail_pengiriman,0) ";
+        } else {
+            $query = "jumlah_detail_penerimaan > jumlah_detail_pengiriman";
+        }
+
+        //   dd($no_pengiriman[0]->no_pengiriman);
+
+
+        return DB::select(
+            "SELECT  *, penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan ,
+            penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,jumlah_detail_penerimaan,jumlah_detail_pengiriman,
+            sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM ibaraki_db.transaksi 
+            join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
+            join penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
+            join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+            join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
             left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
             left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
-            join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
-            join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
-                join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
-              join pengguna on pengguna.id=transaksi.id
-             join produk on detail_penerimaan_barang.id_produk=produk.id_produk
-                where no_penerimaan='$no_penerimaan'
-             
-             ");
+            join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+            join pengguna on pengguna.id=transaksi.id
+            join produk on detail_penerimaan_barang.id_produk=produk.id_produk
+			where no_penerimaan='$no_penerimaan' and $query
+            "
+        );
     }
     public function data($id_transaksi)
     {
@@ -147,38 +165,75 @@ class DeliveryModel extends Model
 
     public function detail($no_pengiriman)
     {
+
+        return  DB::select(
+            "SELECT * FROM transaksi
+         join pengiriman on transaksi.id_transaksi=pengiriman.id_transaksi
+        join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
+         join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman
+        join penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
+        join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+        join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+        join pelanggan on transaksi.id_pelanggan = pelanggan.id_pelanggan
+        join pemasok on transaksi.id_pemasok = pemasok.id_pemasok
+        join produk on detail_penerimaan_barang.id_produk = produk.id_produk
+        where no_pengiriman = '$no_pengiriman'
+        
+        "
+
+
+        );
+    }
+
+
+    public function edit($no_penerimaan)
+    {
+        $no_pengiriman =
+            DB::select("SELECT distinct no_pengiriman FROM ibaraki_db.penerimaan_barang
+            join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang= penerimaan_barang.id_penerimaan_barang
+            left join pengiriman on pengiriman.id_penerimaan_barang =penerimaan_barang.id_penerimaan_barang
+            where no_penerimaan='$no_penerimaan'");
+
+
+        if ($no_pengiriman[0]->no_pengiriman == null) {
+            $query = " and jumlah_detail_penerimaan >ifnull( jumlah_detail_pengiriman,0) ";
+        } else {
+            $query = " and jumlah_detail_penerimaan > jumlah_detail_pengiriman";
+        }
+
+
+        return DB::select(
+            "SELECT  *,penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan ,penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran, jumlah_detail_penerimaan,
+         jumlah_detail_pengiriman as jumlah_detail_pengiriman,jumlah_detail_penerimaan- jumlah_detail_pengiriman as sisa_detail_penerimaan
+            ,tgl_penerimaan,detail_penerimaan_barang.id_produk,harga FROM ibaraki_db.transaksi 
+        join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
+        join penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
+        join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+        join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+     left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
+        left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
+        join produk on detail_penerimaan_barang.id_produk = produk.id_produk
+        where no_penerimaan='$no_penerimaan' $query
+        
+         "
+        );
+    }
+
+
+    public function print($no_penerimaan)
+    {
         return DB::table('transaksi')
             ->join("pelanggan", "transaksi.id_pelanggan", "=", "pelanggan.id_pelanggan")
-            ->join("pemasok", "transaksi.id_pemasok", "=", "pemasok.id_pemasok")
             ->join("pengguna", "transaksi.id", "=", "pengguna.id")
             ->join('penawaran', "penawaran.id_transaksi", "=", "transaksi.id_transaksi")
             ->join('pengiriman', "pengiriman.id_transaksi", "=", "transaksi.id_transaksi")
             ->join('detail_transaksi_pengiriman', "detail_transaksi_pengiriman.id_pengiriman", "=", "pengiriman.id_pengiriman")
             ->join('detail_transaksi_penawaran', "detail_transaksi_penawaran.id_penawaran", "=", "penawaran.id_penawaran")
             ->join("produk", "detail_transaksi_pengiriman.id_produk", "=", "produk.id_produk")
-            ->where('no_pengiriman', '=', $no_pengiriman)
-            ->get();
-    }
-
-
-    public function edit($no_penerimaan)
-    {
-
-
-
-        return DB::select("SELECT  penerimaan_barang.no_penerimaan, transaksi.id_transaksi , penjualan.id_penjualan ,penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,
-            case 
-            when sisa_detail_pengiriman > 0 then jumlah_detail_penerimaan - sisa_detail_pengiriman
-            else 
-            jumlah_detail_penerimaan-0
-            end as jumlah_detail_penerimaan
-            ,tgl_penerimaan,detail_penerimaan_barang.id_produk FROM ibaraki_db.transaksi 
-        join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
-        join penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
-        join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
-        join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
-     left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
-           left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
-        where no_penerimaan='$no_penerimaan' ");
+            ->join('penerimaan_barang', 'pengiriman.id_penerimaan_barang', '=', 'penerimaan_barang.id_penerimaan_barang')
+            ->where('no_penerimaan', $no_penerimaan)
+            ->groupBy('detail_transaksi_pengiriman.id_produk')
+            ->orderBy('tgl_pengiriman', 'asc')
+            ->get();;
     }
 }

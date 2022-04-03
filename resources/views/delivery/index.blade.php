@@ -33,13 +33,10 @@
 
                         <tr>
                             <td>No</td>
-                            <td>Customer</td>
                             <td>Date</td>
                             <td>No Delivery</td>
                             <td>Job number</td>
-                            <td>Weight (kg)</td>
-                            <td>Total Amount</td>
-                            <td>Processing</td>
+                            <td>Customer</td>
                             <td>Prepared</td>
                             <td>Action</td>
                             <td>Document</td>
@@ -53,15 +50,10 @@
 
                             <tr>
                                 <td> {{ $loop->iteration }}</td>
-                                <td>{{ $d->nama_pelanggan }}</td>
                                 <td style="min-width:120px">{{ $d->tgl_pengiriman }}</td>
                                 <td>{{ $d->no_pengiriman }}</td>
                                 <td>{{ $d->nomor_pekerjaan }}</td>
-                                
-                                <td>{{ $d->berat }}</td>
-                                
-                                <td>{{ 'Rp.' . number_format($d->total) }}</td>
-                                <td>{{ $d->layanan }}</td>
+                                <td>{{ $d->nama_pelanggan }}</td>
                                 <td>{{ $d->nama_pengguna }}</td>
                                 <td>
 
@@ -73,7 +65,7 @@
                                         Detail </a>
                                 </td>
                                 <td>
-                                    <a href={{url('delivery/print',str_replace("/","-",$d->no_pengiriman))}} class="btn btn-primary">Print </a>
+                                    <a href={{url('delivery/print',str_replace("/","-",$d->no_penerimaan))}} class="btn btn-primary" target='_blank'>Print </a>
                                 </td>
                             </tr>
 
