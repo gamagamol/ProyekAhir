@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Js;
 
 class DeliveryModel extends Model
 {
@@ -53,9 +54,10 @@ class DeliveryModel extends Model
 
 
         if ($no_pengiriman[0]->no_pengiriman == null) {
-            $query = "jumlah_detail_penerimaan >ifnull( jumlah_detail_pengiriman,0) ";
+            $query = "and jumlah_detail_penerimaan >ifnull( jumlah_detail_pengiriman,0) ";
         } else {
-            $query = "jumlah_detail_penerimaan > jumlah_detail_pengiriman";
+            $query = "and jumlah_detail_penerimaan > jumlah_detail_pengiriman
+            group by transaksi.id_transaksi having jumlah_detail_penerimaan > sudah_terkirim  ";
         }
 
         //   dd($no_pengiriman[0]->no_pengiriman);
@@ -63,7 +65,12 @@ class DeliveryModel extends Model
 
         return DB::select(
             "SELECT  *, penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan ,
-            penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,jumlah_detail_penerimaan,jumlah_detail_pengiriman,
+            penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,jumlah_detail_penerimaan,
+            case 
+            when jumlah_detail_pengiriman > 0 then sum(jumlah_detail_pengiriman)
+            end as
+            sudah_terkirim,
+            jumlah_detail_pengiriman,
             sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM ibaraki_db.transaksi 
             join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
             join penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
@@ -74,7 +81,7 @@ class DeliveryModel extends Model
             join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
             join pengguna on pengguna.id=transaksi.id
             join produk on detail_penerimaan_barang.id_produk=produk.id_produk
-			where no_penerimaan='$no_penerimaan' and $query
+			where no_penerimaan='$no_penerimaan'  $query
             "
         );
     }
@@ -145,19 +152,28 @@ class DeliveryModel extends Model
         if ($unit) {
             for ($i = 0; $i < count($data_detail_pengiriman); $i++) {
 
-                $id_pengiriman = DB::table('pengiriman')->select('id_pengiriman')->where('no_pengiriman', "=", $data_pengirimian[$i]['no_pengiriman'])->first();
-
-                $data_detail_pengiriman[$i]['id_pengiriman'] = $id_pengiriman->id_pengiriman;
+                $id_pengiriman = DB::table('pengiriman')
+                    ->select('id_pengiriman')
+                    ->where('id_transaksi', "=", $id_transaksi[$i])
+                    ->get();
+                $id_pengiriman = json_decode(json_encode($id_pengiriman), true);
+                $id_pengiriman = end($id_pengiriman);
+                $data_detail_pengiriman[$i]['id_pengiriman'] = $id_pengiriman['id_pengiriman'];
             }
             // dd($data_detail_pengiriman);
             //     insert data detail penjualan transaksi
             DB::table('detail_transaksi_pengiriman')->insert($data_detail_pengiriman);
         } else {
             for ($i = 0; $i < count($data_detail_pengiriman); $i++) {
-                $id_pengiriman = DB::table('pengiriman')->select('id_pengiriman')->where('no_pengiriman', "=", $data_pengirimian[$i]['no_pengiriman'])->get();
-
-                $data_detail_pengiriman[$i]['id_pengiriman'] = $id_pengiriman[$i]->id_pengiriman;
+                $id_pengiriman = DB::table('pengiriman')
+                    ->select('id_pengiriman')
+                    ->where('id_transaksi', "=", $id_transaksi[$i])
+                    ->get();
+                $id_pengiriman = json_decode(json_encode($id_pengiriman), true);
+                $id_pengiriman = end($id_pengiriman);
+                $data_detail_pengiriman[$i]['id_pengiriman'] = $id_pengiriman['id_pengiriman'];
             }
+
             //     insert data detail penjualan transaksi
             DB::table('detail_transaksi_pengiriman')->insert($data_detail_pengiriman);
         }
@@ -178,6 +194,8 @@ class DeliveryModel extends Model
         join pemasok on transaksi.id_pemasok = pemasok.id_pemasok
         join produk on detail_penerimaan_barang.id_produk = produk.id_produk
         where no_pengiriman = '$no_pengiriman'
+        Order BY tgl_pengiriman asc
+
         
         "
 
@@ -214,7 +232,6 @@ class DeliveryModel extends Model
         left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
         join produk on detail_penerimaan_barang.id_produk = produk.id_produk
         where no_penerimaan='$no_penerimaan' $query
-        
          "
         );
     }

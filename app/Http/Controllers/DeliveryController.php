@@ -326,7 +326,7 @@ class DeliveryController extends Controller
             }
         }
         // check isi data yang mau di insert
-        // dump($penerimaan);
+        // dump($id_transaksi);
         // dump($data_pengiriman);
         // dd($data_detail_pengiriman);
 
