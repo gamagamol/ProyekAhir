@@ -13,14 +13,7 @@
 
             <div class="container mt-2">
                 <div id="table_atas">
-
-
-
-
-
                     <div class="table-responsive text-center mt-2">
-
-
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 
                             <tr>
@@ -42,7 +35,12 @@
                                 <td>Custumor</td>
 
                             </tr>
-
+                            <?php
+                            $subtotal = 0;
+                            $total = 0;
+                            $ongkir = 0;
+                            $ppn = 0;
+                            ?>
                             @foreach ($data as $p)
                                 <tr>
 
@@ -113,7 +111,22 @@
 
 
                                 </tr>
+                                <?php
+                                $subtotal += $p->subtotal;
+                                $ongkir += $p->ongkir;
+                                $ppn += $p->ppn;
+                                $total += $p->total;
+                                
+                                ?>
                             @endforeach
+
+                            <tr>
+                                <td colspan='14'>TOTAL</td>
+                                <td>{{'Rp.'.number_format( $ongkir)}}</td>
+                                <td>{{'Rp.'.number_format($subtotal)}}</td>
+                                <td>{{'Rp.'.number_format($ppn)}}</td>
+                                <td>{{'Rp.'.number_format($total)}}</td>
+                            </tr>
 
                         </table>
                     </div>

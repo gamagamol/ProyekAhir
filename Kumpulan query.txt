@@ -1,3 +1,22 @@
+-- query sales model index 
+
+	-- 	SELECT distinct tgl_penjualan,no_penjualan,nomor_pekerjaan,nama_pelanggan,nama_pengguna
+-- 		kode_transaksi,jumlah_detail_penjualan,jumlah_detail_pembelian,penjualan.id_penjualan
+-- 		from transaksi 
+--         join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
+--         join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
+--         join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
+--         join detail_transaksi_penjualan on penjualan.id_penjualan=detail_transaksi_penjualan.id_penjualan
+--         left join pembelian on pembelian.id_penjualan=penjualan.id_penjualan
+--         left join detail_transaksi_pembelian on detail_transaksi_pembelian.id_pembelian=pembelian.id_pembelian
+--         join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+--         join pengguna on pengguna.id=transaksi.id
+--         join produk on detail_transaksi_penjualan.id_produk=produk.id_produk
+-- 		group by pembelian.id_penjualan,no_penjualan
+-- 		having jumlah_detail_penjualan > sum(ifnull(jumlah_detail_pembelian,0))
+
+
+
 
 
 -- query untuk show model  purchase
@@ -19,23 +38,183 @@
 
 -- edit purchase model
 
-select transaksi.id_transaksi,penjualan.id_penjualan,penjualan.tgl_penjualan,penjualan.no_penjualan
-,detail_transaksi_penjualan.id_produk,detail_transaksi_penjualan.jumlah_detail_penjualan
-,transaksi.harga,transaksi.berat,jumlah_detail_pembelian,
-case 
-when jumlah_detail_pembelian is not null then jumlah_detail_penjualan - jumlah_detail_pembelian
-else jumlah_detail_penjualan
-end as jumlah_unit
-from transaksi 
-join  penjualan on penjualan.id_transaksi=transaksi.id_transaksi
-join detail_transaksi_penjualan on detail_transaksi_penjualan.id_penjualan = penjualan.id_penjualan
-left join pembelian on pembelian.id_penjualan=penjualan.id_penjualan
-left join detail_transaksi_pembelian on detail_transaksi_pembelian.id_pembelian=pembelian.id_pembelian
-where kode_transaksi='PJ1'
-group by id_penjualan
- having jumlah_detail_penjualan>sum(ifnull(jumlah_detail_pembelian,0))
+-- select penawaran.id_penawaran,transaksi.id_transaksi,penjualan.id_penjualan,penjualan.tgl_penjualan,penjualan.no_penjualan
+-- ,detail_transaksi_penjualan.id_produk,detail_transaksi_penjualan.jumlah_detail_penjualan
+-- ,transaksi.harga,transaksi.berat,jumlah_detail_pembelian,
+-- case 
+-- when jumlah_detail_pembelian is not null then jumlah_detail_penjualan - jumlah_detail_pembelian
+-- else jumlah_detail_penjualan
+-- end as jumlah_unit
+-- from transaksi 
+-- join  penjualan on penjualan.id_transaksi=transaksi.id_transaksi
+-- join detail_transaksi_penjualan on detail_transaksi_penjualan.id_penjualan = penjualan.id_penjualan
+-- left join pembelian on pembelian.id_penjualan=penjualan.id_penjualan
+-- left join detail_transaksi_pembelian on detail_transaksi_pembelian.id_pembelian=pembelian.id_pembelian
+-- join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
+--  where kode_transaksi='PJ2'
+-- group by id_penjualan
+--  having jumlah_detail_penjualan>sum(ifnull(jumlah_detail_pembelian,0))
 
--- query index model 
+-- query  purchase model index
+-- SELECT no_pembelian,no_penerimaan, jumlah_detail_pembelian,jumlah_detail_penerimaan from transaksi 
+--         join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
+--         join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
+-- 		join pembelian on pembelian.id_transaksi=transaksi.id_transaksi
+-- 		join detail_transaksi_pembelian on detail_transaksi_pembelian.id_pembelian=pembelian.id_pembelian
+--         left join penerimaan_barang on penerimaan_barang.id_transaksi = transaksi.id_transaksi
+-- 		left join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+--         join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+--         join pengguna on pengguna.id=transaksi.id
+--         join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
+-- 		group by no_pembelian
+--         order by tgl_pembelian asc,no_pembelian asc
+
+
+
+-- query show purchase
+-- SELECT * FROM pembelian join detail_transaksi_pembelian 
+--             on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
+--             join transaksi on transaksi.id_transaksi=pembelian.id_transaksi
+--             join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
+-- 			join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
+--             join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
+--             join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+--             join pengguna on pengguna.id=transaksi.id
+--             left join penerimaan_barang on penerimaan_barang.id_pembelian=pembelian.id_pembelian
+--             left join detail_penerimaan_barang on penerimaan_barang.id_penerimaan_barang=detail_penerimaan_barang.id_penerimaan_barang
+-- 			 where no_pembelian='PO/2/2022/03/31'
+
+
+
+-- query index purchase 
+-- SELECT no_pembelian,jumlah_detail_pembelian,jumlah_detail_penerimaan FROM pembelian join detail_transaksi_pembelian 
+--             on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
+--             join transaksi on transaksi.id_transaksi=pembelian.id_transaksi
+--             join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
+-- 			join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
+--             join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
+--             join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+--             join pengguna on pengguna.id=transaksi.id
+--             left join penerimaan_barang on penerimaan_barang.id_pembelian=pembelian.id_pembelian
+--             left join detail_penerimaan_barang on penerimaan_barang.id_penerimaan_barang=detail_penerimaan_barang.id_penerimaan_barang
+-- 	
+--               group by no_pembelian
+--               having jumlah_detail_penerimaan is null
+
+-- query goods model index
+
+-- SELECT distinct no_penerimaan,no_pengiriman, pengiriman.id_penerimaan_barang, jumlah_detail_penerimaan,sum(jumlah_detail_pengiriman) as jumlah_detail_pengiriman,sisa_detail_pengiriman FROM transaksi
+--             join penerimaan_barang on penerimaan_barang.id_transaksi = transaksi.id_transaksi
+--             join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
+--             left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
+--             left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
+--              join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+--             join pengguna on pengguna.id=transaksi.id
+--             join pemasok on transaksi.id_pemasok =  pemasok.id_pemasok
+-- 			group by penerimaan_barang.id_penerimaan_barang
+-- 			HAVING jumlah_detail_penerimaan> sum(ifnull(jumlah_detail_pengiriman,0))
+--            order by tgl_penerimaan asc , no_penerimaan asc
+
+
+
+-- query edit dan show model delivery
+
+-- SELECT 
+--  penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan ,
+--  penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,jumlah_detail_penerimaan,jumlah_detail_pengiriman,
+--  sisa_detail_pengiriman 
+--  FROM ibaraki_db.transaksi 
+--             join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
+--             join penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
+--             join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+--             join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+--             join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+--             join pengguna on pengguna.id=transaksi.id
+--          
+--           left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
+--             left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
+--              join produk on detail_penerimaan_barang.id_produk=produk.id_produk
+--             where no_penerimaan='GR/2/2022/03/31'
+
+
+
+
+
+-- query show model delivery index
+
+-- SELECT  *,no_penerimaan,no_pengiriman, pengiriman.id_penerimaan_barang , case 
+--             when sisa_detail_pengiriman > 0 then jumlah_detail_penerimaan - sisa_detail_pengiriman
+--             else 
+--             jumlah_detail_penerimaan-0
+--             end as jumlah_detail_penerimaan,
+--             jumlah_detail_pengiriman,sisa_detail_pengiriman FROM transaksi
+--             join penerimaan_barang on penerimaan_barang.id_transaksi = transaksi.id_transaksi
+--             join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
+--             left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
+--             left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
+--             join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+--             join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
+--          
+--                 join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+--               join pengguna on pengguna.id=transaksi.id
+--              join produk on detail_penerimaan_barang.id_produk=produk.id_produk
+--             where no_penerimaan='GR/1/2022/03/31'
+
+
+
+
+-- query detail model delivery
+
+-- SELECT no_pengiriman,jumlah_detail_pengiriman,sisa_detail_pengiriman from pengiriman 
+-- join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman = pengiriman.id_pengiriman
+
+
+
+-- SELECT *,no_penerimaan,no_pengiriman, pengiriman.id_penerimaan_barang, jumlah_detail_penerimaan,sum(jumlah_detail_pengiriman) as jumlah_detail_pengiriman,sisa_detail_pengiriman FROM transaksi
+--             join penerimaan_barang on penerimaan_barang.id_transaksi = transaksi.id_transaksi
+--             join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
+--             left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
+--             left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
+--              join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+--             join pengguna on pengguna.id=transaksi.id
+--             join pemasok on transaksi.id_pemasok =  pemasok.id_pemasok
+--         where no_penerimaan ='GR/1/2022/04/03'
+SELECT 
+ sum(sisa_detail_pengiriman),transaksi.id_transaksi,penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan ,
+penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,jumlah_detail_penerimaan,jumlah_detail_pengiriman,
+sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk 
+
+FROM ibaraki_db.transaksi 
+            join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
+            join penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
+            join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+            join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+            left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
+            left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
+            join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+            join pengguna on pengguna.id=transaksi.id
+            join produk on detail_penerimaan_barang.id_produk=produk.id_produk
+			where no_pengiriman='DO/1/2022/04/03' 
+            group by produk.id_produk
+            having sum(jumlah_detail_penerimaan) >= sum(jumlah_detail_pengiriman)
+            
+            
+     
+            
+        
+   
+           
+
+
+        
+
+
+
+      
+
+
+
+
 
 
 

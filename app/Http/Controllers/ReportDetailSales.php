@@ -35,10 +35,11 @@ class ReportDetailSales extends Controller
             $data = $this->model->status_transaki(); 
         }
 
+        // dd($data);
         $data = [
             'tittle' => " Status Transaksi",
             'data' =>$data,
-            'no_penawaran'=> $this->model->status_transaki(),
+            'no_penjualan'=> $this->model->status_transaki(),
 
            
         ];

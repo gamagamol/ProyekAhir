@@ -1,5 +1,6 @@
 @extends('template.index')
 @section('content')
+
     @if (session()->has('success'))
         <div class="alert alert-success" role="alert">
             {{ session('success') }}
@@ -46,8 +47,6 @@
                         </tr>
                         <?php $i = 1; ?>
                         @foreach ($data as $d)
-
-
                             <tr>
                                 <td> {{ $loop->iteration }}</td>
                                 <td style="min-width:120px">{{ $d->tgl_pengiriman }}</td>
@@ -56,25 +55,29 @@
                                 <td>{{ $d->nama_pelanggan }}</td>
                                 <td>{{ $d->nama_pengguna }}</td>
                                 <td>
-
-                                    <a href="{{ url('show', ['kode' => $d->id_transaksi, 'id' => $d->tgl_pengiriman]) }}"
+                                    @if ($d->status_transaksi=='delivery')
+                                        
+                                    <a href="{{ url('show', str_replace('/', '-', $d->no_penerimaan)) }}"
                                         class="btn btn-primary mt-1">
-                                         Bill Payment </a>
+                                        Bill Payment </a>
+                                    @endif
 
-                                    <a href="{{ url('delivery/detail', str_replace("/","-",$d->no_pengiriman)) }}" class="btn btn-info mt-1">
+                                    <a href="{{ url('delivery/detail', str_replace('/', '-', $d->no_pengiriman)) }}"
+                                        class="btn btn-info mt-1">
                                         Detail </a>
                                 </td>
                                 <td>
-                                    <a href={{url('delivery/print',str_replace("/","-",$d->no_penerimaan))}} class="btn btn-primary" target='_blank'>Print </a>
+                                  
+                                    @if ($d->jumlah_detail_penerimaan == $d->jumlah_detail_pengiriman)
+                                        <a href={{ url('delivery/print', str_replace('/', '-', $d->no_pengiriman)) }}
+                                            class="btn btn-primary" target='_blank'>Print </a>
+                                    @else
+                                        <i class="fas fa-clock fs-1 mt-2"></i>
+                                    @endif
+
+
                                 </td>
                             </tr>
-
-
-
-
-
-
-
                         @endforeach
                     </table>
                     {{-- {{ $data->links() }} --}}

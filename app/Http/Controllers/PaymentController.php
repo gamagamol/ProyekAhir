@@ -18,18 +18,18 @@ class PaymentController extends Controller
     }
     public function index()
     {
-       $serch=request()->get('serch');
-       if ($serch) {
-           $data= $this->model->index($serch);
-       }else {
+        $serch = request()->get('serch');
+        if ($serch) {
+            $data = $this->model->index($serch);
+        } else {
             $data = $this->model->index();
-       }
-      
+        }
+
 
         $data = [
             'tittle' => 'Payment',
             'data' => $data,
-            'deta'=> $this->model->index()
+            'deta' => $this->model->index()
 
         ];
         return view('payment.index', $data);
@@ -37,14 +37,14 @@ class PaymentController extends Controller
 
 
 
-    public function show($id, $tgl_tagihan)
+    public function show($no_penerimaan)
     {
-        $id = str_replace("-", "/", $id);
-        
+        $no_penerimaan = str_replace("-", "/", $no_penerimaan);
+        // dd($no_penerimaan);
 
         $data = [
             'tittle' => "Create Payment",
-            'data' => $this->model->create($id, $tgl_tagihan),
+            'data' => $this->model->show($no_penerimaan),
         ];
         return view('payment.create', $data);
     }
@@ -94,18 +94,35 @@ class PaymentController extends Controller
                 'id_produk' => $id_produk[$i]
             ];
         }
+        // dd($id_transaksi);
+        $nominal=0;
+        if (count($id_transaksi)>1) {
+            for ($i=0; $i <count($id_transaksi) ; $i++) { 
+                    $id_jurnal = DB::table('jurnal')
+                    ->select('nominal')
+                    ->where('id_transaksi', "=", $id_transaksi[$i])
+                    ->where('kode_akun', "=", 112)
+                    ->first();
+                    if ($id_jurnal) {
+                        $nominal=$id_jurnal->nominal;
+                }
+            }
+        }
 
-        $this->model->insert($id_transaksi, $data_pembayaran, $data_detail_pembayaran);
+       
+
+        $this->model->insert($id_transaksi, $data_pembayaran, $data_detail_pembayaran,$nominal);
 
         return redirect('payment')->with('success', " Data Entered Successfully Payment number $no_pembayaran[0]");
     }
 
-    public function detail($no_transaksi){
-        $no_transaksi=str_replace('-','/',$no_transaksi);
-       
+    public function detail($no_transaksi)
+    {
+        $no_transaksi = str_replace('-', '/', $no_transaksi);
 
-      
-        
+
+
+
         $data = [
             'tittle' => 'Payment',
             'data' => $this->model->detail($no_transaksi),

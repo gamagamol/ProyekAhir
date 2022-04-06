@@ -38,9 +38,6 @@
                             <td>Date</td>
                             <td>No Payment</td>
                             <td>Job number</td>
-                            <td>Weight (kg)</td>
-                            <td>Total Amount</td>
-                            <td>Processing</td>
                             <td>Prepared</td>
                             <td>Action</td>
 
@@ -57,17 +54,9 @@
                                 <td style="min-width:120px">{{ $d->tgl_pembayaran }}</td>
                                 <td>{{ $d->no_pembayaran }}</td>
                                 <td>{{ $d->nomor_pekerjaan }}</td>
-                               
-                                <td>{{ $d->berat }}</td>
-                                
-                                <td>{{ 'Rp.' . number_format($d->total) }}</td>
-                                <td>{{ $d->layanan }}</td>
                                 <td>{{ $d->nama_pengguna }}</td>
                                 <td>
-
-                                  
-
-                                    <a href="{{ url('payment/detail', str_replace('/','-',$d->no_pembayaran)) }}" class="btn btn-info mt-1">
+                                    <a href="{{ url('payment/detail', str_replace('/','-',$d->no_penerimaan)) }}" class="btn btn-info mt-1">
                                         Detail </a>
                                 </td>
                             </tr>

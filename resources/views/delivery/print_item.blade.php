@@ -1,3 +1,4 @@
+{{-- @dd($penerimaan) --}}
 <!doctype html>
 <html lang="en">
 
@@ -26,7 +27,7 @@
                         <h3 class="text-strat "> PT.Ibaraki Kogyo Hanan Indonesia</h3>
                     </div>
                     <div class="col">
-                        <h3 class="text-end  "> INVOICE</h3>
+                        <h3 class="text-end  "> Delivery Order</h3>
                     </div>
                 </div>
                 <hr class=" border border-5 border-dark">
@@ -48,9 +49,9 @@
 
             <div class="col-md-4">
                 <h5 class=" ml-5">
-                    Date : {{ $data[0]->tgl_tagihan }} <br><br>
-                    NO Invoice : {{ $data[0]->no_tagihan }} <br><br>
-                    NO PO : {{ $data[0]->no_pembelian }} <br>
+                    Date : {{ $data[0]['tgl_pengiriman'] }} <br><br>
+                    NO DO : {{ $data[0]['no_pengiriman'] }} <br><br>
+                    NO PO : {{ $data[0]['no_penawaran'] }} <br>
 
                 </h5>
             </div>
@@ -62,9 +63,9 @@
                     Delivery order for :
                 </h4>
                 <h5>
-                    {{ $data[0]->perwakilan }} <br>
-                    {{ $data[0]->nama_pelanggan }} <br>
-                    {{ $data[0]->alamat_pelanggan }} <br>
+                    {{ $data[0]['perwakilan'] }} <br>
+                    {{ $data[0]['nama_pelanggan'] }} <br>
+                    {{ $data[0]['alamat_pelanggan'] }} <br>
 
                 </h5>
             </div>
@@ -76,140 +77,125 @@
                 <table class="table table-bordered  boder-5 border-dark text-center fw-bold" id="dataTable" width="100%"
                     cellspacing="0">
                     <tr>
-                        <td colspan="8">INQUIRY</td>
+                        <td colspan="9">INQUIRY</td>
                         <td colspan="8">QUOTATION</td>
                     </tr>
                     <tr>
                         <td>No</td>
-                        <td>Tanggal</td>
+                        <td>Date</td>
                         <td>Job Number</td>
                         <td>Grade</td>
                         <td colspan="3">Material Size</td>
                         <td>QTY</td>
+                        <td>WEIGHT(KG)</td>
                         <td>Grade</td>
                         <td colspan="3">Material Size</td>
                         <td>QTY</td>
                         <td>WEIGHT(KG)</td>
-                        <td>Unit Price</td>
-                        <td>Amount</td>
 
 
 
                     </tr>
-                    <?php 
-                    $subtotal=0;
-                    $ppn=0;
-                    $total=0;
-                    ?>
+                    <?php $i = 0; ?>
                     @foreach ($data as $p)
-                    <?php 
-                    $subtotal+=$p->subtotal;
-                    $ppn+=$p->ppn;
-                    $total+=$p->total;
-                    ?>
-
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-
                             <td style="min-width:120px">
-                                {{ $p->tgl_tagihan }}
+                                {{ $p['tgl_pengiriman'] }}
                             </td>
                             <td>
-                                {{ $p->nomor_pekerjaan }}
-                            </td>
-
-                            <td>
-                                {{ $p->nama_produk }}
-                            </td>
-                            <td>
-                                {{ $p->tebal_transaksi }}
-                            </td>
-                            <td>
-                                {{ $p->lebar_transaksi }}
+                                {{ $p['nomor_pekerjaan'] }}
                             </td>
 
                             <td>
-                                {{ $p->panjang_transaksi }}
+                                {{ $p['nama_produk' ]}}
                             </td>
                             <td>
-                                {{ $p->jumlah }}
+                                {{ $p['tebal_produk'] }}
+                            </td>
+                            <td>
+                                {{ $p['lebar_produk'] }}
                             </td>
 
                             <td>
-                                {{ $p->nama_produk }}
+                                {{ $p['panjang_produk'] }}
                             </td>
                             <td>
-                                {{ $p->tebal_penawaran }}
+                                {{ $p['jumlah'] }}
                             </td>
                             <td>
-                                {{ $p->lebar_penawaran }}
+                                {{ $p['berat'] }}
+                            </td>
+
+                            <td>
+                                {{ $p['nama_produk'] }}
                             </td>
                             <td>
-                                {{ $p->panjang_penawaran }}
+                                {{ $p['tebal_produk'] }}
                             </td>
                             <td>
-                                {{ $p->jumlah }}
+                                {{ $p['lebar_produk'] }}
                             </td>
                             <td>
-                                {{ $p->berat }}
+                                {{ $p['panjang_produk' ]}}
                             </td>
                             <td>
-                                {{ 'Rp' . number_format($p->harga) }}
+                                {{ $p['jumlah_penawaran'] }}
                             </td>
                             <td>
-                                {{ 'Rp' . number_format($p->subtotal) }}
+                                {{ $p['berat_penawaran'] }}
                             </td>
                         </tr>
+                        <?php $i++; ?>
                     @endforeach
                 </table>
 
-               
-                <h5 class="text-end mb-5">
-                    {{ 'Amount  : Rp' . number_format($subtotal) }} <br>
-                    {{ ' Vat    : Rp' . number_format($ppn) }} <br>
-                    {{ ' Total  : Rp' . number_format($total) }}</h5>
 
-                <h5 class="text-decoration-underline "> Terbilang:</h5>
-                <h6> {{ $total_penyebut }} </h6>
             </div>
-
         </div>
 
 
 
         <div class="row align-items-center mt-4 ">
-            <div class="col">
-                <h4 class="text-decoration-underline">
-                    Payment Transfer :
-                </h4>
-                <h4>
-                    PT IBARAKI KOGYO HANAN INDONESIA <br>
-                    BANK MANDIRI KCP BEKASI <br>
-                    KOTA DELTAMAS <br>
-                    No Rekening : 156-00-1733899-9
-                </h4>
+            <div class="col ">
+                <h5>
+                    Issued by,
+                    <br><br><br><br>
+                    (............)
+
+                </h5>
 
             </div>
+            <div class="col">
+                <h5>
 
+                    Delivery,
+                    <br><br><br><br>
+                    (............)
+                </h5>
+            </div>
+            <div class="col">
+                <h5>
 
-            <div class="col text-end">
-
-                <h4>
-                    {{ 'Bekasi,' . date('Y-M-d') }}
-                </h4>
-                <br>
-                <br>
-                <br>
-                <br>
-                <h4 class="text-decoration-underline me-5">
-                    Taufan
-                </h4>
-                <h4>Finance & Accounting</h4>
+                    Customer,
+                    <br><br><br><br>
+                    (............)
+                </h5>
             </div>
         </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <div class="row">
+            <div class="col">
+                <a href="{{'delivery'}}" class="btn btn-primary">Next</a>
 
-
+            </div>
+        </div>
     </div>
+
 
 
 

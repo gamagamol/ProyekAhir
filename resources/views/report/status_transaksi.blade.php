@@ -16,8 +16,8 @@
                 <div class="col-md-4 mt-3">
                     <form action={{ url('status_transaksi') }} method="GET" id="serch-form">
                         <select class="form-control form-select" aria-label="Default select example" name='serch' id="serch">
-                            @foreach ($no_penawaran as $d)
-                                <option value="{{ $d->no_penawaran }}">{{ $d->no_penawaran }}</option>
+                            @foreach ($no_penjualan as $d)
+                                <option value="{{ $d->no_penjualan }}">{{ $d->no_penjualan }}</option>
                             @endforeach
                         </select>
                         <button type=submit name=submit class="btn btn-primary mt-3 ml-3" id="serch-button">submit</button>
@@ -30,6 +30,8 @@
 
                         <tr>
                             <td>No</td>
+                            <td>Date</td>
+                            <td>Sales Number</td>
                             <td>Quotation</td>
                             <td>Sales</td>
                             <td>Purchase </td>
@@ -43,6 +45,8 @@
                         @foreach ($data as $d )
                         <tr>
                             <td>{{$loop->iteration}}</td>
+                            <td >{{$d->tgl_penjualan}}</td>
+                            <td>{{$d->no_penjualan}}</td>
 
                             <td>
                          @if ($d->no_penawaran)

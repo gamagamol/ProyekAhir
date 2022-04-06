@@ -46,11 +46,11 @@ class ReportDetailSalesModel extends Model
 
 
 
-    public function status_transaki($no_penawaran = null)
+    public function status_transaki($no_penjualan = null)
     {
-        if ($no_penawaran) {
+        if ($no_penjualan) {
             return   DB::table('transaksi')
-                ->selectRaw('kode_transaksi,no_penawaran,no_penjualan,no_pembelian,no_penerimaan,no_pengiriman,no_tagihan,no_pembayaran,nama_pelanggan,nama_pengguna ')
+                ->selectRaw('kode_transaksi,no_penawaran,no_penjualan,no_pembelian,no_penerimaan,no_pengiriman,no_tagihan,no_pembayaran,nama_pelanggan,nama_pengguna ,tgl_penjualan')
                 ->leftJoin('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
                 ->leftJoin('penjualan', 'penjualan.id_transaksi', '=', 'transaksi.id_transaksi')
                 ->leftJoin('pembelian', 'pembelian.id_transaksi', '=', 'transaksi.id_transaksi')
@@ -61,12 +61,12 @@ class ReportDetailSalesModel extends Model
                 ->leftJoin('pelanggan', 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
                 ->leftJoin('pengguna', 'pengguna.id', '=', 'transaksi.id')
                 ->groupBy('kode_transaksi')
-                ->having('no_penawaran','=',$no_penawaran)
+                ->having('no_penjualan','=', $no_penjualan)
                 ->paginate(5);
         } else {
 
             return   DB::table('transaksi')
-                ->selectRaw('kode_transaksi,no_penawaran,no_penjualan,no_pembelian,no_penerimaan,no_pengiriman,no_tagihan,no_pembayaran,nama_pelanggan,nama_pengguna ')
+                ->selectRaw('kode_transaksi,no_penawaran,no_penjualan,no_pembelian,no_penerimaan,no_pengiriman,no_tagihan,no_pembayaran,nama_pelanggan,nama_pengguna ,tgl_penjualan ')
                 ->leftJoin('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
                 ->leftJoin('penjualan', 'penjualan.id_transaksi', '=', 'transaksi.id_transaksi')
                 ->leftJoin('pembelian', 'pembelian.id_transaksi', '=', 'transaksi.id_transaksi')

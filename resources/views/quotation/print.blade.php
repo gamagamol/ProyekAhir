@@ -113,8 +113,12 @@
 
 
                     </tr>
+                    <?php 
+                    $subtotal=0;
+                    $total=0;
+                    $ongkir=0;
+                    ?>
                     @foreach ($data as $p)
-
                         <tr>
                             <td>{{ $loop->iteration }}</td>
 
@@ -170,16 +174,23 @@
                                 {{ $p->layanan }}
                             </td>
                         </tr>
+
+                        <?php 
+                        $subtotal+=$p->subtotal;
+                        $ongkir+=$p->ongkir;
+                        $total+=$p->total;
+                        
+                        ?>
                     @endforeach
                 </table>
 
-                <?php
-                
-                ?>
+
                 <h5 class="text-end mb-5">
-                    {{ 'Amount  : Rp' . number_format($p->subtotal) }} <br>
-                    {{ ' Vat    : Rp' . number_format($p->ppn) }} <br>
-                    {{ ' Total  : Rp' . number_format($p->total) }}</h5>
+                    {{ 'Amount          : Rp' . number_format($subtotal) }} <br>
+                    {{ ' Vat            : Rp' . number_format($subtotal*0.1) }} <br>
+                    {{ ' Shippment      : Rp' . number_format($ongkir) }} <br>
+                    {{ ' Total          : Rp' . number_format($total+$ongkir) }}
+                </h5>
 
 
             </div>
@@ -263,7 +274,7 @@
 
                 </h6>
                 <h6>
-                   {{$data[0]->perwakilan}}
+                    {{ $data[0]->perwakilan }}
                 </h6>
             </div>
 

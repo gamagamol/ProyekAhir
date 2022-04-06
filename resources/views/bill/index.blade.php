@@ -43,9 +43,6 @@
                             <td>Date</td>
                             <td>Due Date</td>
                             <td>No Bill Payment</td>
-                            <td>Weight (Kg) </td>
-                            <td>Total Amount</td>
-                            <td>Processing</td>
                             <td>Prepared</td>
                             <td>Action</td>
                             <td>Document</td>
@@ -62,28 +59,23 @@
                                 <td style="min-width:120px">{{ $d->tgl_tagihan }}</td>
                                 <td style="min-width:120px">{{ $d->DUE_DATE }}</td>
                                 <td>{{ $d->no_tagihan }}</td>
-
-                                <td>{{ $d->berat }}</td>
-
-                                <td>{{ 'Rp.' . number_format($d->total) }}</td>
-                                <td>{{ $d->layanan }}</td>
                                 <td>{{ $d->nama_pengguna }}</td>
                                 <td>
 
 
-                                    <a href="{{ url('payment/show', ['kode' => str_replace('/', '-', $d->no_tagihan), 'tgl' => $d->kode_transaksi]) }}"
+                                    <a href="{{ url('payment/show',str_replace('/', '-', $d->no_penerimaan)) }}"
                                         class="btn btn-primary mt-1"> Payment</a>
 
-                                    <a href="{{ url('bill/detail', str_replace('/', '-', $d->no_tagihan)) }}"
+                                    <a href="{{ url('bill/detail', str_replace('/', '-', $d->no_penerimaan)) }}"
                                         class="btn btn-info mt-2">Detail</a>
 
 
                                 </td>
 
                                 <td>
-                                    <a href="{{ url('bill/print', str_replace('/', '-', $d->no_tagihan)) }}"
-                                        class="btn btn-info mt-2 w-75"><i class="fa fa-print" aria-hidden="true"></i></a>
-                                    <a href="{{ url('email', str_replace('/', '-', $d->no_tagihan)) }}"
+                                    <a href="{{ url('bill/print', str_replace('/', '-', $d->no_penerimaan)) }}"
+                                        class="btn btn-info mt-2 w-75" target="_blank"><i class="fa fa-print" aria-hidden="true"></i></a>
+                                    <a href="{{ url('email', str_replace('/', '-', $d->no_penerimaan)) }}"
                                         class="btn btn-secondary mt-2 w-75"> <i class="fa fa-envelope"
                                             aria-hidden="true"></i>
                                     </a>

@@ -9,6 +9,7 @@ use App\Exports\AgingExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Testmail;
+
 class AgingScheduleController extends Controller
 {
     public $model;
@@ -32,7 +33,7 @@ class AgingScheduleController extends Controller
         } else {
             $pelanggan = 0;
         }
-    
+
         $data = [
             'tittle' => "Aging Schedule",
             'data' => $data,
@@ -43,7 +44,8 @@ class AgingScheduleController extends Controller
         return view('aging.index', $data);
     }
 
-    public function export(){
+    public function export()
+    {
         return Excel::download(new AgingExport, 'AgingScheduleExport.xlsx');
     }
 }

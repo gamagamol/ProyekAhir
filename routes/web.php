@@ -60,12 +60,15 @@ Route::get('delivery/detail/{no_tagihan}', [DeliveryController::class, "detail"]
 Route::get('delivery/print/{no_delivery}',[DeliveryController::class,'print']);
 
 Route::resource('bill', BillPaymentController::class)->middleware(['auth', 'revalidate']);
-Route::get('show/{kode}/{id}', [BillPaymentController::class, "show"]);
+
+// Route::get('show/{kode}/{id}', [BillPaymentController::class, "show"]);
+Route::get('show/{no_tagihan}', [BillPaymentController::class, "show"]);
+
 Route::get('bill/detail/{no_tagihan}', [BillPaymentController::class, "detail"]);
 Route::get('bill/print/{no_transaksi}',[BillPaymentController::class,'print']);
 
 Route::resource('payment', PaymentController::class)->middleware(['auth', 'revalidate']);
-Route::get('payment/show/{kode}/{tgl}', [PaymentController::class, "show"]);
+Route::get('payment/show/{kode}', [PaymentController::class, "show"]);
 Route::get('payment/detail/{no_pembayaran}',[PaymentController::class,"detail"]);
 
 Route::resource('paymentvendor', PaymentVendorController::class)->middleware(['auth', 'revalidate']);

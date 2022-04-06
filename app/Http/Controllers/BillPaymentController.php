@@ -28,25 +28,28 @@ class BillPaymentController extends Controller
         } else {
             $data = $this->model->index();
         }
-
+       
 
         $data = [
             'tittle' => "Bill Payment ",
             'data' => $data,
-            'deta'=> $this->model->index()
+            'deta' => $this->model->index()
         ];
         return view('bill.index', $data);
     }
 
 
 
-    public function show($id_transaksi, $tgl_pengiriman)
+    public function show($no_pengiriman)
     {
 
-        $array = $this->model->create($id_transaksi, $tgl_pengiriman);
-        $id_transaksi = $array['id_transaksi'];
-        $data = $array['data'];
-
+        // $array = $this->model->create($id_transaksi, $tgl_pengiriman);
+        // $id_transaksi = $array['id_transaksi'];
+        // $data = $array['data'];
+        $no_pengiriman= str_replace("-", "/", $no_pengiriman);
+        $data = $this->model->show($no_pengiriman);
+        // dump($no_pengiriman);
+        // dd($data);
         $data = [
             "tittle" => "Bill payment",
             'data' => $data,
@@ -116,6 +119,7 @@ class BillPaymentController extends Controller
         }
 
 
+
         $this->model->insert($data_transaksi, $data_tagihan, $id_transaksi);
         return redirect('bill')->with('success', " Data Entered Successfully Inovice number $no_tagihan");
     }
@@ -132,21 +136,43 @@ class BillPaymentController extends Controller
         return view('bill.detail', $data);
     }
 
-    public function print($no_transaksi){
-        $no_transaksi=str_replace('-','/',$no_transaksi);
-        $total= $this->model->detail($no_transaksi);
-        foreach ($total as $t ) {
+    public function print($no_transaksi)
+    {
+        $no_transaksi = str_replace('-', '/', $no_transaksi);
+        $total = $this->model->detail($no_transaksi);
+        $ttl=0;
+        foreach ($total as $t) {
+          $ttl+= $t->total;
             
-           $total=penyebut($t->total);
-         
         }
+      
 
         $data = [
             'tittle' => "Print INVOICE",
             'data' => $this->model->detail($no_transaksi),
-            'total'=>$total
-            
+            'total_penyebut' => $total = penyebut($ttl),
+
         ];
         return view('bill.print', $data);
+    }
+
+
+
+    public function bill_email($no_transaksi){
+        $no_transaksi = str_replace('-', '/', $no_transaksi);
+        $total = $this->model->detail($no_transaksi);
+        $ttl = 0;
+        foreach ($total as $t) {
+            $ttl += $t->total;
+        }
+
+
+        $data = [
+            'tittle' => "Print INVOICE",
+            'data' => $this->model->detail($no_transaksi),
+            'total_penyebut' => $total = penyebut($ttl),
+
+        ];
+        return $data;
     }
 }

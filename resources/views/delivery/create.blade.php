@@ -82,7 +82,7 @@
                                 <tr>
                                
                                     <td>
-                                        <input type="checkbox" value={{ $d->id_transaksi }} name="id_transaksi[]"
+                                        <input type="checkbox" value={{(int) $d->id_transaksi }} name="id_transaksi[]"
                                             id="select{{ $loop->iteration }}">
                                     </td>
                                     <td style="min-width:120px">{{ $d->tgl_penerimaan }}</td>

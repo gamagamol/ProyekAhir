@@ -37,15 +37,11 @@
                             <td>No</td>
                             <td>Date</td>
                             <td>No Quotation</td>
-                           
                             <td>Processing</td>
                             <td>customer</td>
                             <td>Prepared</td>
                             <td>Action</td>
                             <td>Document</td>
-
-
-
                         </tr>
                         <?php $i = 1; ?>
                         @foreach ($data as $d)
@@ -67,7 +63,7 @@
                                         Detail </a>
                                 </td>
                                 <td>
-                                    <a href={{ url('quotation/print', $d->kode_transaksi) }} class="btn btn-primary">
+                                    <a href={{ url('quotation/print', $d->kode_transaksi) }} class="btn btn-primary" target='_blank'>
                                         Print</a>
                                 </td>
 
