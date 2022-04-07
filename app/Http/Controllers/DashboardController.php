@@ -69,14 +69,14 @@ class DashboardController extends Controller
 
 
         // membuat persentasi transaksi
-        
+        $persentase_pembayaran = $this->DM->persentase_tagihan();
 
         $data = [
             'tittle' => "DashBoard",
             'sales' => $sales,
             'recivable' => $total_AR,
             'grafik' => $this->DM->grafik(),
-            'tagihan'=>round($this->DM->persentase_tagihan()),
+            'tagihan'=> round($persentase_pembayaran[0]->persentase_pembayaran, 2),
         ];
         return view("dashboard.index", $data);
     }

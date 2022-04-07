@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\PaymentModel;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use function app\helper\penyebut;
 
 
 class PaymentController extends Controller
@@ -80,6 +81,13 @@ class PaymentController extends Controller
         }
 
 
+        // persiapan no pembyaran
+        $no_tagihan = $this->model->no_pembayaran($request->input('tgl_pembayaran'));
+        $tgl_pembayaran_no=explode('-',$tgl_pembayaran);
+        $no_pembayaran = "PYT/$no_tagihan/$tgl_pembayaran_no[0]/$tgl_pembayaran_no[1]/$tgl_pembayaran_no[2]";
+
+
+
         // persiapan
 
         $data_pembayaran = [];
@@ -87,7 +95,7 @@ class PaymentController extends Controller
         for ($i = 0; $i < count($id_transaksi); $i++) {
             $data_pembayaran[$i] = [
                 'id_transaksi' => $id_transaksi[$i],
-                'no_pembayaran' => $no_pembayaran[$i],
+                'no_pembayaran' => $no_pembayaran,
                 'tgl_pembayaran' => $tgl_pembayaran,
 
 
@@ -132,5 +140,28 @@ class PaymentController extends Controller
 
         ];
         return view('payment.detail', $data);
+    }
+
+
+    public function print($no_transaksi)
+    {
+        $no_transaksi = str_replace('-', '/', $no_transaksi);
+
+        $total = $this->model->detail($no_transaksi);
+        $ttl = 0;
+        foreach ($total as $t) {
+            $ttl += $t->total;
+        }
+
+
+        $data = [
+            'tittle' => 'Print Payment Document',
+            'data' => $this->model->detail($no_transaksi),
+            'total_penyebut' =>  penyebut($ttl),
+
+        ];
+        // dd($data);
+
+        return view('payment.print', $data);
     }
 }

@@ -26,23 +26,13 @@ class DashboardModel extends Model
 
     public function persentase_tagihan()
     {
-        $tagihan = DB::table('tagihan')
-            ->selectRaw('count(id_transaksi) as id')
-            ->whereBetween('tgl_tagihan', ['2022-01-01', '2022-12-31'])
-            ->first();
-
-        $pembayaran = DB::table('pembayaran')
-            ->selectRaw('count(id_transaksi) as id')
-            ->whereBetween('tgl_pembayaran', ['2022-01-01', '2022-12-31'])
-            ->first();
-        if ( is_countable($tagihan)) {
-         
-            
-            return (int)$pembayaran->id / $tagihan->id * 100;
-          
-        }else{
-            return 0;
-        }
+       return DB::select("SELECT 
+            distinct (select 
+            count(kode_transaksi) 
+            from transaksi where status_transaksi='payment') / (select 
+            count(kode_transaksi) 
+            from transaksi ) *100 AS persentase_pembayaran
+            from transaksi");
     }
 
     public function notif()
