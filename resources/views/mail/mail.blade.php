@@ -16,8 +16,7 @@
         <br>
         Perusahaan Bapak. <br> <br><br>
 
-        Bersama ini kami informasikan outstanding payment invoice sebesar <i> {{ "Rp".number_format( $total) }} </i> , kami lampirkan
-        rinciannya. <br> <br><br>
+        Bersama ini kami informasikan outstanding payment invoice sebesar <i> {{ "Rp".number_format( $total) }} </i> . <br> <br><br>
 
         Email ini merupakan pemberitahuan kepada Bapak. Mohon abaikan pemberitahuan ini apabila Bapak sudah melakukan
         <br>
@@ -40,7 +39,7 @@
         Email : accounting@ibaraki.co.id; sales@ibaraki.co.id; ahmadsolihin@ibaraki.co.id
     </p>
 
-    <div class="container">
+    {{-- <div class="container">
         <div class="row">
             <div class="col">
                 <table class="table table-bordered  boder-5 border-dark text-center fw-bold" id="dataTable" width="100%"
@@ -116,7 +115,7 @@
 
             </div>
         </div>
-    </div>
+    </div> --}}
 
 
 

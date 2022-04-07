@@ -87,6 +87,7 @@ Route::resource('PCR', PurchaseReportController::class)->middleware(['auth', 're
 
 // email
 Route::get('email/{id}',[EmailController::class,'email']);
+Route::post('mail/store',[EmailController::class,'store']);
 
 // status transaksi
 Route::get('status_transaksi',[ReportDetailSales::class, 'status_transaki']);
