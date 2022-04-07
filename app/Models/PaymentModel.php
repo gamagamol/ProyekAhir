@@ -22,7 +22,7 @@ class PaymentModel extends Model
                 ->join('detail_transaksi_penawaran', "detail_transaksi_penawaran.id_penawaran", "=", "penawaran.id_penawaran")
                 ->join("produk", "detail_transaksi_pengiriman.id_produk", "=", "produk.id_produk")
                 ->join('pembayaran', "pembayaran.id_transaksi", "=", "transaksi.id_transaksi")
-              
+                ->join('penerimaan_barang', 'pengiriman.id_penerimaan_barang', '=', 'penerimaan_barang.id_penerimaan_barang')
                 ->where("no_pembayaran", "=", $id)
                 ->paginate(1);
         } else {
@@ -166,7 +166,7 @@ class PaymentModel extends Model
             join produk on detail_penerimaan_barang.id_produk=produk.id_produk
            
             join tagihan on tagihan.id_pengiriman=pengiriman.id_pengiriman
-			where no_penerimaan='$no_penerimaan'  and jumlah_detail_penerimaan > jumlah_detail_pengiriman
+			where no_penerimaan='$no_penerimaan'  and jumlah_detail_penerimaan >= jumlah_detail_pengiriman
             group by transaksi.id_transaksi");
     }
 }

@@ -41,11 +41,14 @@ class PaymentController extends Controller
     {
         $no_penerimaan = str_replace("-", "/", $no_penerimaan);
         // dd($no_penerimaan);
+        
 
         $data = [
             'tittle' => "Create Payment",
             'data' => $this->model->show($no_penerimaan),
         ];
+
+        // dd($data);
         return view('payment.create', $data);
     }
     public function store(Request $request)
