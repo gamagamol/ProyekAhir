@@ -12,22 +12,32 @@ class GoodsModel extends Model
     public function index($id = null)
     {
         if ($id) {
-            return DB::table('transaksi')
+            if($id=='All'){
+                $query='';
+            }else{
+                $query="where no_penerimaan=$id";
+            }
 
-                ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
-                ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', '=', 'penawaran.id_penawaran')
-                ->join("produk", 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')
-                ->join("pelanggan", 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
-                ->join("pengguna", 'transaksi.id', '=', 'pengguna.id')
-                ->join('penjualan', "penjualan.id_transaksi", "transaksi.id_transaksi")
-                ->join('pembelian', "pembelian.id_transaksi", "transaksi.id_transaksi")
-                ->join('penerimaan_barang', "penerimaan_barang.id_transaksi", "transaksi.id_transaksi")
-                ->where('no_penerimaan', "=", $id)
 
-                ->paginate(5);
-        } else {
 
-            return DB::select("SELECT distinct tgl_penerimaan,nomor_pekerjaan, no_penerimaan,no_pengiriman, pengiriman.id_penerimaan_barang, jumlah_detail_penerimaan,sum(jumlah_detail_pengiriman) as jumlah_detail_pengiriman,sisa_detail_pengiriman,nama_pelanggan,nama_pengguna FROM transaksi
+            return DB::select(
+                "SELECT b.tgl_penerimaan,b.no_penerimaan,b.no_pengiriman,b.nomor_pekerjaan,b.nama_pelanggan,b.nama_pengguna,
+                (select sum( jumlah_detail_pengiriman) from penerimaan_barang 
+                join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+                join transaksi on penerimaan_barang.id_transaksi = transaksi.id_transaksi
+                left join pengiriman on pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+                left join detail_transaksi_pengiriman on pengiriman.id_pengiriman = detail_transaksi_pengiriman.id_pengiriman
+                where no_pengiriman=b.no_pengiriman
+
+                )jumlah_detail_pengiriman ,
+                (SELECT sum(jumlah_detail_penerimaan) FROM ibaraki_db.detail_penerimaan_barang join penerimaan_barang on penerimaan_barang.id_penerimaan_barang = detail_penerimaan_barang.id_penerimaan_barang
+                where no_penerimaan=b.no_penerimaan
+                ) jumlah_detail_penerimaan
+                from(
+            SELECT distinct transaksi.id_transaksi,nomor_pekerjaan, no_penerimaan,no_pengiriman, 
+            pengiriman.id_penerimaan_barang, jumlah_detail_penerimaan,
+            sum(jumlah_detail_pengiriman) as jumlah_detail_pengiriman,sisa_detail_pengiriman,
+            nama_pelanggan,nama_pengguna,tgl_penerimaan FROM transaksi
             join penerimaan_barang on penerimaan_barang.id_transaksi = transaksi.id_transaksi
             join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
             left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
@@ -35,9 +45,51 @@ class GoodsModel extends Model
              join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
             join pengguna on pengguna.id=transaksi.id
             join pemasok on transaksi.id_pemasok =  pemasok.id_pemasok
-			group by penerimaan_barang.id_penerimaan_barang
-			HAVING jumlah_detail_penerimaan> sum(ifnull(jumlah_detail_pengiriman,0))
-           order by tgl_penerimaan asc , no_penerimaan asc");
+            $query
+            group by no_pengiriman
+           ) b
+           group by b.no_pengiriman
+           having jumlah_detail_penerimaan != ifnull(jumlah_detail_pengiriman,0)
+      
+   
+           
+           "
+            );
+        } else {
+
+            return DB::select(
+                "SELECT b.tgl_penerimaan,b.no_penerimaan,b.no_pengiriman,b.nomor_pekerjaan,b.nama_pelanggan,b.nama_pengguna,
+                (select sum( jumlah_detail_pengiriman) from penerimaan_barang 
+                join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+                join transaksi on penerimaan_barang.id_transaksi = transaksi.id_transaksi
+                left join pengiriman on pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+                left join detail_transaksi_pengiriman on pengiriman.id_pengiriman = detail_transaksi_pengiriman.id_pengiriman
+                where no_pengiriman=b.no_pengiriman
+
+                )jumlah_detail_pengiriman ,
+                (SELECT sum(jumlah_detail_penerimaan) FROM ibaraki_db.detail_penerimaan_barang join penerimaan_barang on penerimaan_barang.id_penerimaan_barang = detail_penerimaan_barang.id_penerimaan_barang
+                where no_penerimaan=b.no_penerimaan
+                ) jumlah_detail_penerimaan
+                from(
+            SELECT distinct transaksi.id_transaksi,nomor_pekerjaan, no_penerimaan,no_pengiriman, 
+            pengiriman.id_penerimaan_barang, jumlah_detail_penerimaan,
+            sum(jumlah_detail_pengiriman) as jumlah_detail_pengiriman,sisa_detail_pengiriman,
+            nama_pelanggan,nama_pengguna,tgl_penerimaan FROM transaksi
+            join penerimaan_barang on penerimaan_barang.id_transaksi = transaksi.id_transaksi
+            join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
+            left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
+            left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
+             join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+            join pengguna on pengguna.id=transaksi.id
+            join pemasok on transaksi.id_pemasok =  pemasok.id_pemasok
+            group by no_pengiriman
+           ) b
+           group by b.no_pengiriman
+           having jumlah_detail_penerimaan != ifnull(jumlah_detail_pengiriman,0)
+      
+   
+           
+           ");
         }
     }
     public function show($no_pembelian)

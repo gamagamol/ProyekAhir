@@ -415,7 +415,6 @@ class DeliveryController extends Controller
         // dd($data);
 
 
-
         $this->model->insert_delivery($id_transaksi, $data_pengiriman, $data_detail_pengiriman, $unit);
 
         $data = [
