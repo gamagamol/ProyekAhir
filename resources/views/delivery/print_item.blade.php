@@ -51,7 +51,7 @@
                 <h5 class=" ml-5">
                     Date : {{ $data[0]['tgl_pengiriman'] }} <br><br>
                     NO DO : {{ $data[0]['no_pengiriman'] }} <br><br>
-                    NO PO : {{ $data[0]['no_penawaran'] }} <br>
+                    NO SO : {{ $data[0]['no_penjualan'] }} <br>
 
                 </h5>
             </div>
@@ -78,7 +78,7 @@
                     cellspacing="0">
                     <tr>
                         <td colspan="9">INQUIRY</td>
-                        <td colspan="8">QUOTATION</td>
+                        <td colspan="8">SALES</td>
                     </tr>
                     <tr>
                         <td>No</td>

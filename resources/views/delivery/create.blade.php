@@ -19,9 +19,9 @@
                         <div class="col-md-3 mt-2">
                             <input type="date" name="tgl_pengiriman" class="form-control"
                                 value={{ $data[0]->tgl_penerimaan }}>
-                                <input type="text" name="no_penerimaan" value="{{$data[0]->no_penerimaan}}" hidden>
+                            <input type="text" name="no_penerimaan" value="{{ $data[0]->no_penerimaan }}" hidden>
 
-                                
+
 
                         </div>
                         <div class="col-md-3 mt-3 ml-4">
@@ -70,7 +70,7 @@
                                 <td>Job number</td>
                                 <td>Grade</td>
                                 <td colspan="3">Material Size</td>
-                                <td class="text-wrap" style="width: 10%">QTY 
+                                <td class="text-wrap" style="width: 10%">QTY
                                     (Goods ) </td>
                                 <td>QTY (Delivery) </td>
                                 <td>customer</td>
@@ -80,9 +80,9 @@
                             <?php $i = 1; ?>
                             @foreach ($data as $d)
                                 <tr>
-                               
+
                                     <td>
-                                        <input type="checkbox" value={{(int) $d->id_transaksi }} name="id_transaksi[]"
+                                        <input type="checkbox" value={{ (int) $d->id_transaksi }} name="id_transaksi[]"
                                             id="select{{ $loop->iteration }}">
                                     </td>
                                     <td style="min-width:120px">{{ $d->tgl_penerimaan }}</td>
@@ -95,31 +95,31 @@
                                     <td>{{ $d->jumlah_detail_penerimaan }}</td>
                                     <td>{{ $d->jumlah_detail_pengiriman }}</td>
                                     <td>{{ $d->nama_pelanggan }}</td>
-                                    <td>
-                                        <i class="fa fa-plus-circle" aria-hidden="true"
-                                            onclick="CreateSupplier('{{ $d->id_produk }}',
-                                            '{{ $d->nama_produk }}',
-                                            '{{ $d->no_penerimaan }}',
-                                            '{{ $d->id_transaksi }}',
-                                            '{{ $d->id_penawaran }}',
-                                            '{{ $d->id_penerimaan_barang }}',
-                                            '{{ $d->tebal_transaksi }}',
-                                            '{{ $d->lebar_transaksi }}',
-                                            '{{ $d->panjang_transaksi }}',
-                                            '{{ $d->bentuk_produk }}',
-                                            '{{ $d->layanan }}',
-                                            '{{ $d->jumlah_detail_penerimaan }}',
-                                            '{{ $d->harga }}',
+                                    <td id={{"ClickCreateSupplier$i"}} >
+                                        <i class="fa fa-plus-circle" aria-hidden="true" onclick="CreateSupplier('{{ $d->id_produk }}',
+                                                '{{ $d->nama_produk }}',
+                                                '{{ $d->no_penerimaan }}',
+                                                '{{ $d->id_transaksi }}',
+                                                '{{ $d->id_penawaran }}',
+                                                '{{ $d->id_penerimaan_barang }}',
+                                                '{{ $d->tebal_transaksi }}',
+                                                '{{ $d->lebar_transaksi }}',
+                                                '{{ $d->panjang_transaksi }}',
+                                                '{{ $d->bentuk_produk }}',
+                                                '{{ $d->layanan }}',
+                                                '{{ $d->jumlah_detail_penerimaan }}',
+                                                '{{ $d->harga }}',
 
-                                          
-                                            
-                                            )"></i>
+                                              
+                                                
+                                                )" id={{"IconClickCreateSupplier$i"}}  ></i>
 
                                     </td>
 
 
 
                                 </tr>
+                                <?php $i++ ?>
                             @endforeach
                             <input type="text" value="{{ count($data) }}" hidden id="lenght_data">
                         </table>
@@ -185,9 +185,10 @@
             // end cheked
 
         });
-        let click = 1;
-
-        function CreateSupplier(IdProduk, NamaProduk, NoPenerimaan, IdTransaksi,IdPenawaran,IdPenerimaanBarang,TebalTransaksi,LebarTransaksi,PanjangTransaksi,BentukProduk,Layanan,JumlahDetailPenerimaan) {
+        
+        function CreateSupplier(IdProduk, NamaProduk, NoPenerimaan, IdTransaksi, IdPenawaran, IdPenerimaanBarang,
+        TebalTransaksi, LebarTransaksi, PanjangTransaksi, BentukProduk, Layanan, JumlahDetailPenerimaan) {
+                let click = 1;
 
 
             let html = ``
@@ -229,7 +230,18 @@
             $('#CreateSupplier').removeAttr('hidden');
 
             click++
+            console.log(click);
+            if (click > 2) {
+                $('#ClickCreateSupplier').click(
+                ()=>{
+                    console.log(click);
+                  $('#ClickCreateSupplier1').attr('hidden',true)
+                }
+                
+                )
+            }
         }
+
 
         function MoveCreate() {
             $('#modal').modal('show');

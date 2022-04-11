@@ -50,7 +50,7 @@
                 <h5 class=" ml-5">
                     Date : {{ $data[0]->tgl_tagihan }} <br><br>
                     NO Invoice : {{ $data[0]->no_tagihan }} <br><br>
-                    NO PO : {{ $data[0]->no_pembelian }} <br>
+                    NO SO : {{ $data[0]->no_penjualan }} <br>
 
                 </h5>
             </div>
@@ -77,7 +77,7 @@
                     cellspacing="0">
                     <tr>
                         <td colspan="8">INQUIRY</td>
-                        <td colspan="8">QUOTATION</td>
+                        <td colspan="8">SALES</td>
                     </tr>
                     <tr>
                         <td>No</td>

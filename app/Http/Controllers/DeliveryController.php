@@ -200,10 +200,9 @@ class DeliveryController extends Controller
         for ($pop = 0; $pop < count($penerimaan); $pop++) {
 
             $no_pengiriman = $penerimaan[$pop]->no_pengiriman;
-            if($no_pengiriman){
+            if ($no_pengiriman) {
                 break;
             }
-     
         }
 
 
@@ -303,7 +302,7 @@ class DeliveryController extends Controller
                                 'panjang_produk' => $pcsss->panjang_transaksi,
                                 'jumlah' => (int) $unit[$i],
                                 'berat' => $produk[$i]['berat'],
-                                'no_penawaran' => $pcsss->no_penawaran,
+                                'no_penjualan' => $pcsss->no_penjualan,
                                 'perwakilan' => $pcsss->perwakilan,
                                 'nama_pelanggan' => $pcsss->nama_pelanggan,
                                 'alamat_pelanggan' => $pcsss->alamat_pelanggan,
@@ -320,98 +319,88 @@ class DeliveryController extends Controller
             for ($i = 0; $i < count($id_transaksi); $i++) {
                 foreach ($penerimaan as $pcss) {
                     if ($pcss->id_transaksi == $id_transaksi[$i]) {
-                            $data_pengiriman[$i] = [
-                                'id_penerimaan_barang' => $pcss->id_penerimaan_barang,
-                                'id_transaksi' => $pcss->id_transaksi,
-                                'no_pengiriman' => $arr_no_pengiriman[0],
-                                'tgl_pengiriman' => $tgl_pengiriman
-                            ];
+                        $data_pengiriman[$i] = [
+                            'id_penerimaan_barang' => $pcss->id_penerimaan_barang,
+                            'id_transaksi' => $pcss->id_transaksi,
+                            'no_pengiriman' => $arr_no_pengiriman[0],
+                            'tgl_pengiriman' => $tgl_pengiriman
+                        ];
 
 
-                            if ($pcss->sisa_detail_penerimaan) {
-                                $berat = $this->QuotationController->CalculateWeight(
-                                    $pcss->bentuk_produk,
-                                    $pcss->layanan,
-                                    $pcss->tebal_penawaran,
-                                    $pcss->lebar_penawaran,
-                                    $pcss->panjang_penawaran,
-                                    $pcss->sisa_detail_penerimaan,
+                        if ($pcss->sisa_detail_penerimaan) {
+                            $berat = $this->QuotationController->CalculateWeight(
+                                $pcss->bentuk_produk,
+                                $pcss->layanan,
+                                $pcss->tebal_penawaran,
+                                $pcss->lebar_penawaran,
+                                $pcss->panjang_penawaran,
+                                $pcss->sisa_detail_penerimaan,
 
-                                );
-                                $data_detail_pengiriman[$i] = [
-                                    'id_pengiriman' => 0,
-                                    'id_produk' => $pcss->id_produk,
-                                    'id_penjualan' => $pcss->id_penjualan,
-                                    'jumlah_detail_pengiriman' => (int) $pcss->sisa_detail_penerimaan,
-                                    'sisa_detail_pengiriman' => 0,
-                                    'berat_detail_pengiriman' => $berat,
-                                    'ppn_detail_pengiriman' => ($pcss->harga * $pcss->berat) * 0.1,
-                                    'subtotal_detail_pengiriman' => $pcss->harga * $berat,
-                                    'total_detail_pengiriman' => ($pcss->harga * $berat) + (($pcss->harga * $berat) * 0.1)
+                            );
+                            $data_detail_pengiriman[$i] = [
+                                'id_pengiriman' => 0,
+                                'id_produk' => $pcss->id_produk,
+                                'id_penjualan' => $pcss->id_penjualan,
+                                'jumlah_detail_pengiriman' => (int) $pcss->sisa_detail_penerimaan,
+                                'sisa_detail_pengiriman' => 0,
+                                'berat_detail_pengiriman' => $berat,
+                                'ppn_detail_pengiriman' => ($pcss->harga * $pcss->berat) * 0.1,
+                                'subtotal_detail_pengiriman' => $pcss->harga * $berat,
+                                'total_detail_pengiriman' => ($pcss->harga * $berat) + (($pcss->harga * $berat) * 0.1)
 
-
-                                ];
-                                $jumlah_item = $pcss->sisa_detail_penerimaan;
-                                $berat_item = $berat;
-                            } else {
-
-
-                                $data_detail_pengiriman[$i] = [
-                                    'id_pengiriman' => 0,
-                                    'id_produk' => $pcss->id_produk,
-                                    'id_penjualan' => $pcss->id_penjualan,
-                                    'jumlah_detail_pengiriman' => (int) $pcss->jumlah_detail_penerimaan,
-                                    'sisa_detail_pengiriman' => 0,
-                                    // perhitungan berat
-                                    'berat_detail_pengiriman' => $pcss->berat,
-                                    'ppn_detail_pengiriman' => ($pcss->harga * $pcss->berat) * 0.1,
-                                    'subtotal_detail_pengiriman' => $pcss->harga * $pcss->berat,
-                                    'total_detail_pengiriman' => ($pcss->harga * $pcss->berat) + (($pcss->harga * $pcss->berat) * 0.1)
-
-
-                                ];
-
-                                $jumlah_item = $pcss->jumlah_detail_penerimaan;
-                                $berat_item = $pcss->berat;
-                            }
-
-                            $data[$i] = [
-                                'tgl_pengiriman' => $tgl_pengiriman,
-                                'no_pengiriman' => $arr_no_pengiriman[0],
-                                'nama_produk' => $pcss->nama_produk,
-                                'tebal_produk' => $pcss->tebal_transaksi,
-                                'lebar_produk' => $pcss->lebar_transaksi,
-                                'panjang_produk' => $pcss->panjang_transaksi,
-                                'jumlah' => $jumlah_item,
-                                'berat' => $berat_item,
-                                'no_penawaran' => $pcss->no_penawaran,
-                                'perwakilan' => $pcss->perwakilan,
-                                'nama_pelanggan' => $pcss->nama_pelanggan,
-                                'alamat_pelanggan' => $pcss->alamat_pelanggan,
-                                'nomor_pekerjaan' => $pcss->nomor_pekerjaan,
-                                'jumlah_penawaran' => $pcss->jumlah,
-                                'berat_penawaran' => $pcss->berat,
 
                             ];
+                            $jumlah_item = $pcss->sisa_detail_penerimaan;
+                            $berat_item = $berat;
+                        } else {
+
+
+                            $data_detail_pengiriman[$i] = [
+                                'id_pengiriman' => 0,
+                                'id_produk' => $pcss->id_produk,
+                                'id_penjualan' => $pcss->id_penjualan,
+                                'jumlah_detail_pengiriman' => (int) $pcss->jumlah_detail_penerimaan,
+                                'sisa_detail_pengiriman' => 0,
+                                // perhitungan berat
+                                'berat_detail_pengiriman' => $pcss->berat,
+                                'ppn_detail_pengiriman' => ($pcss->harga * $pcss->berat) * 0.1,
+                                'subtotal_detail_pengiriman' => $pcss->harga * $pcss->berat,
+                                'total_detail_pengiriman' => ($pcss->harga * $pcss->berat) + (($pcss->harga * $pcss->berat) * 0.1)
+
+
+                            ];
+
+                            $jumlah_item = $pcss->jumlah_detail_penerimaan;
+                            $berat_item = $pcss->berat;
+                        }
+
+                        $data[$i] = [
+                            'tgl_pengiriman' => $tgl_pengiriman,
+                            'no_pengiriman' => $arr_no_pengiriman[0],
+                            'nama_produk' => $pcss->nama_produk,
+                            'tebal_produk' => $pcss->tebal_transaksi,
+                            'lebar_produk' => $pcss->lebar_transaksi,
+                            'panjang_produk' => $pcss->panjang_transaksi,
+                            'jumlah' => $jumlah_item,
+                            'berat' => $berat_item,
+                            'no_penjualan' => $pcss->no_penjualan,
+                            'perwakilan' => $pcss->perwakilan,
+                            'nama_pelanggan' => $pcss->nama_pelanggan,
+                            'alamat_pelanggan' => $pcss->alamat_pelanggan,
+                            'nomor_pekerjaan' => $pcss->nomor_pekerjaan,
+                            'jumlah_penawaran' => $pcss->jumlah,
+                            'berat_penawaran' => $pcss->berat,
+
+                        ];
                     }
                 }
             }
-
-
-
-
-            // foreach ($penerimaan as $pcss) {
-
-               
-
-                // $i++;
-            // }
         }
         // check isi data yang mau di insert
         // dump($id_transaksi);
-        // dump($tgl_pengiriman);
+        // dump($penerimaan);
         // dump($data_pengiriman);
-        // dump($data_detail_pengiriman);
+        // dd($data_detail_pengiriman);
         // dd($data);
 
 
@@ -445,7 +434,6 @@ class DeliveryController extends Controller
 
 
         $no_transaksi = str_replace('-', '/', $no_transaksi);
-
         $data = [
             'tittle' => "Print Delivery Document",
             'data' => $this->model->detail($no_transaksi),

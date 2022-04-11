@@ -82,9 +82,9 @@ class GoodsModel extends Model
              join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
             join pengguna on pengguna.id=transaksi.id
             join pemasok on transaksi.id_pemasok =  pemasok.id_pemasok
-            group by no_pengiriman
+            group by no_penerimaan
            ) b
-           group by b.no_pengiriman
+           group by b.no_penerimaan
            having jumlah_detail_penerimaan != ifnull(jumlah_detail_pengiriman,0)
       
    

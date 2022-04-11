@@ -5,6 +5,7 @@
             {{ session('failed') }}
         </div>
     @endif
+    {{-- @dd($pembantu) --}}
     <div class="container  ">
         <div class="card shadow mb-4 ml-4 mr-4">
             <div class="card-header py-3 mb-2 ">
@@ -16,17 +17,13 @@
                     <form action="{{ url('quotation') }}" method="POST">
                         @csrf
 
-                        <div class="row" >
+                        <div class="row">
                             <div class="col-md-3 ">
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2">Transaction Date </label>
-                                    <input type="date"
-                                        class="form-control @error('tgl_penawaran')
-                              is-invalid
-                          @enderror"
-                                        name="tgl_penawaran" id="tgl_penawaran" @if (count($pembantu) > 0)
-                                readonly value={{ $pembantu[0]->tgl_pembantu }} @else value={{ date('Y-m-d') }}
-                                    @endif >
+                                    <input type="date" class="form-control @error('tgl_penawaran') is-invalid @enderror"
+                                        name="tgl_penawaran" id="tgl_penawaran"
+                                        @if (count($pembantu) > 0) readonly value={{ $pembantu[0]->tgl_pembantu }} @else value={{ date('Y-m-d') }} @endif>
 
                                     @error('tgl_penawaran')
                                         <div class="invalid-feedback">
@@ -35,18 +32,12 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-3 " >
+                            <div class="col-md-3 ">
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2">Transaction Code </label>
-                                    <input type="text"
-                                        class="form-control @error('kode_transaksi')
-                              is-invalid
-                          @enderror"
+                                    <input type="text" class="form-control @error('kode_transaksi') is-invalid @enderror"
                                         name="kode_transaksi" id="kode_transaksi" value={{ $kode_transaksi }} readonly
-                                        @if (count($pembantu) > 0)
-                                    readonly value={{ $pembantu[0]->kode_transaksi }}
-
-                                    @endif >
+                                        @if (count($pembantu) > 0) readonly value={{ $pembantu[0]->kode_transaksi }} @endif>
 
                                     @error('kode_transaksi')
                                         <div class="invalid-feedback">
@@ -60,14 +51,9 @@
                             <div class="col-md-3 ">
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2">Job number</label>
-                                    <input type="text"
-                                        class="form-control @error('nomor_pekerjaan')
-                              is-invalid
-                          @enderror"
+                                    <input type="text" class="form-control @error('nomor_pekerjaan') is-invalid @enderror"
                                         name="nomor_pekerjaan" id="nomor_pekerjaan" value={{ old('nomor_pekerjaan') }}
-                                        @if (count($pembantu) > 0)
-                                     {{ $pembantu[0]->nomor_pekerjaan }} readonly
-                                    @endif >
+                                        @if (count($pembantu) > 0) {{ $pembantu[0]->nomor_pekerjaan }} readonly @endif>
 
                                     @error('nomor_pekerjaan')
                                         <div class="invalid-feedback">
@@ -80,15 +66,11 @@
                             <div class="col-md-3 mt-3">
                                 <div class="form-group">
                                     <label for="id_pelanggan">Customer</label>
-                                    <select
-                                        class="form-control @error('id_pelanggan')
-                                    is-invalid
-                                @enderror"
+                                    <select class="form-control @error('id_pelanggan') is-invalid @enderror"
                                         id="id_pelanggan" name="id_pelanggan" value="{{ old('id_pelanggan') }}">
                                         @if (count($pembantu) > 0)
                                             <option value={{ $pembantu[0]->id_pelanggan }}>{{ $nama_pelanggan }}
                                             </option>
-
                                         @else
                                             <option value={{ null }}>Select Your Customer</option>
 
@@ -96,8 +78,6 @@
                                                 <option value="{{ $p->id_pelanggan }}">{{ $p->nama_pelanggan }}
                                                 </option>
                                             @endforeach
-
-
                                         @endif
                                     </select>
 
@@ -118,11 +98,8 @@
                             <div class="col-md-3 mt-3">
                                 <div class="form-group">
                                     <label for="id_produk">Product</label>
-                                    <select
-                                        class="form-control @error('id_produk')
-                 is-invalid  
-               @enderror"
-                                        id="id_produk" name="id_produk" onchange="drop()" value="{{ old('id_produk') }}">
+                                    <select class="form-control @error('id_produk') is-invalid @enderror" id="id_produk"
+                                        name="id_produk" onchange="drop()" value="{{ old('id_produk') }}">
 
 
                                         <option value={{ null }}>Select Your product</option>
@@ -142,10 +119,7 @@
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2" id="tebal_label">Inquiry
                                         thick/Diameter</label>
-                                    <input type="number"
-                                        class="form-control @error('tebal_transaksi')
-                            is-invalid
-                        @enderror"
+                                    <input type="number" class="form-control @error('tebal_transaksi') is-invalid @enderror"
                                         name="tebal_transaksi" id="tebal_transaksi" value="{{ old('tebal_transaksi') }}"
                                         min="0">
                                     @error('tebal_transaksi')
@@ -158,10 +132,7 @@
                             <div class="col-md-3 ">
                                 <div class="form-group mt-2 rounded" id="lebar">
                                     <label for="example1" class="mt-2">Inquiry Widht</label>
-                                    <input type="number"
-                                        class="form-control @error('lebar_transaksi')
-                            is-invalid
-                        @enderror"
+                                    <input type="number" class="form-control @error('lebar_transaksi') is-invalid @enderror"
                                         name="lebar_transaksi" id="lebar_transaksi" value="{{ old('lebar_transaksi') }}"
                                         min="0">
                                     @error('lebar_transaksi')
@@ -175,9 +146,7 @@
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2"> Inquiry Length</label>
                                     <input type="number"
-                                        class="form-control @error('panjang_transaksi')
-                            is-invalid
-                        @enderror"
+                                        class="form-control @error('panjang_transaksi') is-invalid @enderror"
                                         name="panjang_transaksi" id="panjang_transaksi"
                                         value="{{ old('panjang_transaksi') }}" min="0">
                                     @error('panjang_transaksi')
@@ -195,10 +164,7 @@
                             <div class="col-md-3 ">
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2">Inquiry QTY</label>
-                                    <input type="number"
-                                        class="form-control @error('jumlah')
-                            is-invalid
-                        @enderror"
+                                    <input type="number" class="form-control @error('jumlah') is-invalid @enderror"
                                         name="jumlah" id="jumlah" value="{{ old('jumlah') }}" min="0">
                                     @error('jumlah')
                                         <div class="invalid-feedback">
@@ -210,11 +176,8 @@
                             <div class="col-md-3 mt-3">
                                 <div class="form-group">
                                     <label for="layanan">Processing</label>
-                                    <select
-                                        class="form-control @error('layanan')
-                    is-invalid
-                @enderror"
-                                        id="layanan" name="layanan">
+                                    <select class="form-control @error('layanan') is-invalid @enderror" id="layanan"
+                                        name="layanan">
 
                                         <option value="CUTTING">Raw Material</option>
                                         <option value="MILLING">Milling</option>
@@ -234,10 +197,7 @@
                             <div class="col-md-3 ">
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2">Unit Price</label>
-                                    <input type="text"
-                                        class="form-control @error('harga')
-                            is-invalid
-                        @enderror"
+                                    <input type="text" class="form-control @error('harga') is-invalid @enderror"
                                         name="harga" id="harga" value="{{ old('harga') }}" min="0">
                                     @error('harga')
                                         <div class="invalid-feedback">
@@ -250,11 +210,11 @@
                             <div class="col-md-3">
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2">Shipment</label>
-                                    <input type="text"
-                                        class="form-control @error('ongkir')
-                            is-invalid
-                        @enderror"
-                                        name="ongkir" id="ongkir" value="{{ old('ongkir') }}" min="0">
+                                    <input type="text" class="form-control @error('ongkir') is-invalid @enderror"
+                                        name="ongkir" id="ongkir"   
+                                         @if (count($pembantu) > 0) value= {{$pembantu[0]->ongkir_pembantu }} readonly @endif
+                                        value="{{ old('ongkir') }}" min="0"
+                                       >
                                     @error('ongkir')
                                         <div class="invalid-feedback">
                                             {{ $message }}
@@ -321,7 +281,6 @@
                     <?php $i = 1;
                     $total = 0; ?>
                     @foreach ($pembantu as $p)
-
                         <tr>
 
                             <input type="text"
@@ -404,7 +363,6 @@
                         </tr>
                         <?php $i++; ?>
                         <?php $total = $total + $p->total; ?>
-
                     @endforeach
                     <tr>
                         <td colspan='18'>Total Quotation</td>
@@ -434,11 +392,8 @@
                 <div class="row">
                     <div class="col-md-3 mt-3">
                         <div class="form-group">
-                            <select
-                                class="form-control @error('id_pelanggan')
-                                    is-invalid
-                                @enderror"
-                                id="id_pelanggan" name="id_pelanggan" value="{{ old('id_pelanggan') }}">
+                            <select class="form-control @error('id_pelanggan') is-invalid @enderror" id="id_pelanggan"
+                                name="id_pelanggan" value="{{ old('id_pelanggan') }}">
                                 @foreach ($pelanggan as $p)
                                     <option value="{{ $p->id_pelanggan }}">{{ $p->nama_pelanggan }}
                                     </option>
@@ -517,7 +472,6 @@
                 <td>{{ $h->layanan }}</td>
 
             </tr>
-
             @endforeach
             @endif
 

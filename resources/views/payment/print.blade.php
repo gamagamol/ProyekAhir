@@ -49,8 +49,8 @@
             <div class="col-md-4">
                 <h5 class=" ml-5">
                     Date : {{ $data[0]->tgl_tagihan }} <br><br>
+                    NO Payment : {{ $data[0]->no_pembayaran }} <br>
                     NO Invoice : {{ $data[0]->no_tagihan }} <br><br>
-                    NO PO : {{ $data[0]->no_pembelian }} <br>
 
                 </h5>
             </div>
@@ -59,7 +59,7 @@
         <div class="row mb-4">
             <div class="col">
                 <h4>
-                    Delivery order for :
+                   Payment Order From :
                 </h4>
                 <h5>
                     {{ $data[0]->perwakilan }} <br>
@@ -77,7 +77,7 @@
                     cellspacing="0">
                     <tr>
                         <td colspan="8">INQUIRY</td>
-                        <td colspan="8">QUOTATION</td>
+                        <td colspan="8">Sales</td>
                     </tr>
                     <tr>
                         <td>No</td>

@@ -14,11 +14,10 @@ class DeliveryModel extends Model
     public function index($id = null)
     {
         if ($id) {
-            if ($id=='All') {
-                $query="";
-            }else{
-                $query="and no_pengiriman='$id'";
-
+            if ($id == 'All') {
+                $query = "";
+            } else {
+                $query = "and no_pengiriman='$id'";
             }
             return DB::select(
                 "SELECT b.*,(SELECT sum(jumlah_detail_penerimaan) FROM ibaraki_db.penerimaan_barang 
@@ -37,7 +36,8 @@ class DeliveryModel extends Model
                 group by no_pengiriman
                 order by tgl_pengiriman asc,no_pengiriman asc
                             ) b
-                where b.no_pengiriman is not null");
+                where b.no_pengiriman is not null"
+            );
         } else {
 
             return DB::select(
@@ -58,7 +58,8 @@ class DeliveryModel extends Model
                 order by tgl_pengiriman asc,no_pengiriman asc
                             ) b
                 where b.no_pengiriman is not null
-             ");
+             "
+            );
         }
     }
 
@@ -241,7 +242,7 @@ class DeliveryModel extends Model
             if ($no_pengiriman[$i]->no_pengiriman) {
                 $query = " and jumlah_detail_penerimaan >= ifnull( jumlah_detail_pengiriman,0) ";
             } else {
-                $query = " and jumlah_detail_penerimaan > ifnull( jumlah_detail_pengiriman,0)";
+                $query = " and jumlah_detail_penerimaan >= ifnull( jumlah_detail_pengiriman,0)";
             }
         }
 
@@ -256,10 +257,10 @@ class DeliveryModel extends Model
         join penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
         join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
         join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
-     left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
+        left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
         left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
         join produk on detail_penerimaan_barang.id_produk = produk.id_produk
-           join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+        join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
         where no_penerimaan='$no_penerimaan' $query
          "
         );
@@ -285,12 +286,12 @@ class DeliveryModel extends Model
 
 
 
-    public function edit1($no_penerimaan,$id_transaksi=null)
+    public function edit1($no_penerimaan, $id_transaksi = null)
     {
         if ($id_transaksi) {
-            $query= "and transaksi.id_transaksi=$id_transaksi";
-        }else{
-            $query='';
+            $query = "and transaksi.id_transaksi=$id_transaksi";
+        } else {
+            $query = '';
         }
 
 
