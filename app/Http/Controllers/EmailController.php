@@ -24,13 +24,23 @@ class EmailController extends Controller
 
         $no_tagihan = str_replace('-', '/', $no_tagihan);
         $data = $this->model->detail($no_tagihan);
-        $bill= $this->bc->bill_email($no_tagihan);
+        
+        $total=0;
+        foreach($data as $d){
+            $total+=$d->total;
+        }
+
+        $dueDate = $this->model->index($no_tagihan);
+
+
 
         // CETAK PDF
         $details = [
             'perwakilan' => $data[0]->perwakilan,
-            'total'=>$data[0]->total,
-            'data'=>$bill['data'],
+            'total'=>$total,
+            'data' => $data,
+            'due_date'=>$dueDate[0]->DUE_DATE
+
             
         ];
         Mail::to($data[0]->email)->send(new \App\Mail\Testmail($details,$no_tagihan));

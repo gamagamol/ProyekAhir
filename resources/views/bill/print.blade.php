@@ -49,6 +49,7 @@
             <div class="col-md-4">
                 <h5 class=" ml-5">
                     Date : {{ $data[0]->tgl_tagihan }} <br><br>
+                    DUE Date : {{ $due_date }} <br><br>
                     NO Invoice : {{ $data[0]->no_tagihan }} <br><br>
                     NO SO : {{ $data[0]->no_penjualan }} <br>
 
@@ -59,7 +60,7 @@
         <div class="row mb-4">
             <div class="col">
                 <h4>
-                    Delivery order for :
+                   BILL TO :
                 </h4>
                 <h5>
                     {{ $data[0]->perwakilan }} <br>

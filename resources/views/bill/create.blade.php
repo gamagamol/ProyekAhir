@@ -17,7 +17,7 @@
                     <div class="row">
                         <div class="col-md-3 mt-2">
                             <input type="date" required name="tgl_pembayaran" class="form-control"
-                                value={{ $data[0]->tgl_pengiriman }}>
+                                value={{$tgl_pengiriman }}>
                         </div>
                     </div>
                 </div>
@@ -67,6 +67,8 @@
                                     </td>
                                     <td hidden> <input type="text" value={{ $d->id_produk }} name="id_produk[]"></td>
                                     <td hidden> <input type="text" value={{ $d->id_pengiriman }} name="id_pengiriman[]">
+                                    <td hidden> <input type="text" value={{ $d->no_pengiriman }} name="no_pengiriman[]">
+
                                     </td>
                                     <td> {{ $loop->iteration }}</td>
                                     <td style="min-width:120px">{{ $d->tgl_pengiriman }}</td>

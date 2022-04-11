@@ -167,7 +167,7 @@ class PaymentModel extends Model
             join produk on detail_penerimaan_barang.id_produk=produk.id_produk
            
             join tagihan on tagihan.id_pengiriman=pengiriman.id_pengiriman
-			where no_penerimaan='$no_penerimaan'  and jumlah_detail_penerimaan >= jumlah_detail_pengiriman
+			where no_tagihan='$no_penerimaan'  and jumlah_detail_penerimaan >= jumlah_detail_pengiriman
             group by transaksi.id_transaksi");
     }
 

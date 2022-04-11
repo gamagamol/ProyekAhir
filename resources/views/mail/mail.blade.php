@@ -20,7 +20,7 @@
 
         Email ini merupakan pemberitahuan kepada Bapak. Mohon abaikan pemberitahuan ini apabila Bapak sudah melakukan
         <br>
-        pembayaran. <br> <br><br>
+        pembayaran. Jika bapak belum melakukan pembayaran harap melakukan pembayaran sebelum tanggal {{$due_date}}<br> <br><br>
 
         Untuk pertanyaan atau saran, Bapak dapat menghubungi kami dan kami segera menindaklanjuti pertanyaan atau saran
         <br>
@@ -37,6 +37,7 @@
         Tel: (021) 8932 6362 <br>
         Mobile / What's app: 0821-2308-0975 / 0813-8057-8075 / 0813-1423-2905 <br>
         Email : accounting@ibaraki.co.id; sales@ibaraki.co.id; ahmadsolihin@ibaraki.co.id
+
     </p>
 
     {{-- <div class="container">

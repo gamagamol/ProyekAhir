@@ -27,7 +27,7 @@ class BillPaymentModel extends Model
             ->where('no_tagihan', "=", "$id")
             ->groupBy('tgl_tagihan', "no_tagihan")
             ->orderBy('tgl_tagihan', 'asc')
-                ->paginate(1);
+            ->paginate(1);
         } else {
 
             return DB::table('transaksi')
@@ -176,7 +176,7 @@ class BillPaymentModel extends Model
         DB::table('jurnal')->insert($jurnal);
     }
 
-    public function detail($no_penerimaan)
+    public function detail($no_tagihan)
     {
         // return DB::table('transaksi')
         //     ->join("pelanggan", "transaksi.id_pelanggan", "=", "pelanggan.id_pelanggan")
@@ -210,7 +210,7 @@ class BillPaymentModel extends Model
             join produk on detail_penerimaan_barang.id_produk=produk.id_produk
             join tagihan on tagihan.id_transaksi=transaksi.id_transaksi
             join pembelian on pembelian.id_transaksi=transaksi.id_transaksi
-			where no_penerimaan='$no_penerimaan'  and jumlah_detail_penerimaan > jumlah_detail_pengiriman
+			where no_tagihan='$no_tagihan'  and jumlah_detail_penerimaan > jumlah_detail_pengiriman
             group by transaksi.id_transaksi"
             );
     }

@@ -50,9 +50,13 @@ class BillPaymentController extends Controller
         $data = $this->model->show($no_pengiriman);
         // dump($no_pengiriman);
         // dd($data);
+        $tgl_pengiriman=end($data);
+        $tgl_pengiriman=$tgl_pengiriman->tgl_pengiriman;
+
         $data = [
             "tittle" => "Bill payment",
             'data' => $data,
+            'tgl_pengiriman'=> $tgl_pengiriman
         ];
         return view('bill.create', $data);
     }
@@ -63,14 +67,16 @@ class BillPaymentController extends Controller
 
         $id_transaksi = $request->input('id_transaksi');
         $id_pengiriman = $request->input('id_pengiriman');
-
+        $no_pengiriman = $request->input('no_pengiriman');
 
         $tgl_pengiriman =
             DB::table('pengiriman')
             ->select('tgl_pengiriman')
-            ->where('id_pengiriman', "=", $id_pengiriman[0])
+            ->where('no_pengiriman', "=", $no_pengiriman[0])
+            ->orderBy('tgl_pengiriman','desc')
             ->first();
 
+      
         $tgl_pengiriman = $tgl_pengiriman->tgl_pengiriman;
         $rules = [
             'tgl_pembayaran' => " after_or_equal:$tgl_pengiriman",
@@ -118,6 +124,8 @@ class BillPaymentController extends Controller
             $data_tagihan[$i] = ${"data_tagihan$i"};
         }
 
+            // check varibael final
+            // dd($data_tagihan);
 
 
         $this->model->insert($data_transaksi, $data_tagihan, $id_transaksi);
@@ -136,21 +144,24 @@ class BillPaymentController extends Controller
         return view('bill.detail', $data);
     }
 
-    public function print($no_transaksi)
+    public function print($no_tagihan)
     {
-        $no_transaksi = str_replace('-', '/', $no_transaksi);
-        $total = $this->model->detail($no_transaksi);
+        $no_tagihan = str_replace('-', '/', $no_tagihan);
+        // dd($no_tagihan);
+        $total = $this->model->detail($no_tagihan);
         $ttl=0;
         foreach ($total as $t) {
           $ttl+= $t->total;
             
         }
-      
+      $dueDate=$this->model->index($no_tagihan);
+  
 
         $data = [
             'tittle' => "Print INVOICE",
-            'data' => $this->model->detail($no_transaksi),
+            'data' => $this->model->detail($no_tagihan),
             'total_penyebut' => $total = penyebut($ttl),
+            'due_date'=>$dueDate[0]->DUE_DATE
 
         ];
         return view('bill.print', $data);

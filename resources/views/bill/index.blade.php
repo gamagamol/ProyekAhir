@@ -63,19 +63,19 @@
                                 <td>
 
 
-                                    <a href="{{ url('payment/show',str_replace('/', '-', $d->no_penerimaan)) }}"
+                                    <a href="{{ url('payment/show',str_replace('/', '-', $d->no_tagihan)) }}"
                                         class="btn btn-primary mt-1"> Payment</a>
 
-                                    <a href="{{ url('bill/detail', str_replace('/', '-', $d->no_penerimaan)) }}"
+                                    <a href="{{ url('bill/detail', str_replace('/', '-', $d->no_tagihan)) }}"
                                         class="btn btn-info mt-2">Detail</a>
 
 
                                 </td>
 
                                 <td>
-                                    <a href="{{ url('bill/print', str_replace('/', '-', $d->no_penerimaan)) }}"
+                                    <a href="{{ url('bill/print', str_replace('/', '-', $d->no_tagihan)) }}"
                                         class="btn btn-info mt-2 w-75" target="_blank"><i class="fa fa-print" aria-hidden="true"></i></a>
-                                    <a href="{{ url('email', str_replace('/', '-', $d->no_penerimaan)) }}"
+                                    <a href="{{ url('email', str_replace('/', '-', $d->no_tagihan)) }}"
                                         class="btn btn-secondary mt-2 w-75"> <i class="fa fa-envelope"
                                             aria-hidden="true"></i>
                                     </a>

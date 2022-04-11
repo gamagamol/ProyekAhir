@@ -124,7 +124,7 @@ class PaymentController extends Controller
 
         $this->model->insert($id_transaksi, $data_pembayaran, $data_detail_pembayaran,$nominal);
 
-        return redirect('payment')->with('success', " Data Entered Successfully Payment number $no_pembayaran[0]");
+        return redirect('payment')->with('success', " Data Entered Successfully");
     }
 
     public function detail($no_transaksi)
