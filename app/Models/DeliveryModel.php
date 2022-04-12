@@ -242,7 +242,7 @@ class DeliveryModel extends Model
             if ($no_pengiriman[$i]->no_pengiriman) {
                 $query = " and jumlah_detail_penerimaan >= ifnull( jumlah_detail_pengiriman,0) ";
             } else {
-                $query = " and jumlah_detail_penerimaan >= ifnull( jumlah_detail_pengiriman,0)";
+                $query = " and jumlah_detail_penerimaan > ifnull( jumlah_detail_pengiriman,0)";
             }
         }
 

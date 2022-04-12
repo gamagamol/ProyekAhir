@@ -35,7 +35,6 @@
                             <td>Action</td>
                         </tr>
                         @foreach ($data as $d)
-
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $d->nama_pelanggan }}</td>
@@ -47,10 +46,8 @@
                             </tr>
                         @endforeach
                     </table>
-                    @if ($type=='true')
-                        
-                    {{ $data->links() }}
-                    
+                    @if ($type == 'true')
+                        {{ $data->links() }}
                     @endif
 
                 </div>

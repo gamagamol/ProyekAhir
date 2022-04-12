@@ -51,6 +51,7 @@ class CustumorController extends Controller
             'tittle' => 'Add data Custumor',
             'id_pelanggan' =>  $id_pelanggan->id_pelanggan
         ];
+        
         return view("Custumor.addCustumor", $data);
     }
 

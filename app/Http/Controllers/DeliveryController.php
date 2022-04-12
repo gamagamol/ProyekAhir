@@ -434,9 +434,19 @@ class DeliveryController extends Controller
 
 
         $no_transaksi = str_replace('-', '/', $no_transaksi);
+
+        $tgl_pengiriman= $this->model->detail($no_transaksi);
+        $tgl_pengiriman=end($tgl_pengiriman);
+        $tgl_pengiriman=$tgl_pengiriman->tgl_pengiriman;
+        
+        $data=$this->detail($no_transaksi);
+        // dd($data['data']);
+
+
         $data = [
             'tittle' => "Print Delivery Document",
-            'data' => $this->model->detail($no_transaksi),
+            'data' => $data['data'],
+            'tgl_pengiriman'=>$tgl_pengiriman
         ];
 
         return view('delivery.print', $data);

@@ -14,6 +14,7 @@
 </head>
 
 <body>
+    {{-- @dd($data) --}}
     <div class="container">
         {{-- strat cop surat --}}
         <div class="row">
@@ -48,7 +49,7 @@
 
             <div class="col-md-4">
                 <h5 class=" ml-5">
-                    Date : {{ $data[0]->tgl_pengiriman }} <br><br>
+                    Date : {{ $tgl_pengiriman }} <br><br>
                     NO DO : {{ $data[0]->no_pengiriman }} <br><br>
                     NO SO : {{ $data[0]->no_penjualan }} <br>
 
@@ -118,7 +119,7 @@
                                 {{ $p->panjang_transaksi }}
                             </td>
                             <td>
-                                {{ $p->jumlah }}
+                                {{ $p->jumlah_detail_pengiriman }}
                             </td>
 
                             <td>

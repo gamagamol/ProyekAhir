@@ -32,7 +32,9 @@ Route::get('dashboard/notif',[DashboardController::class,'notif']);
 // Materdata
 Route::resource('COA', CoaController::class)->middleware(['auth', 'revalidate']);
 Route::resource('product', ProductController::class)->middleware(['auth', 'revalidate']);
+
 Route::resource('custumor', CustumorController::class)->middleware(['auth', 'revalidate']);
+
 Route::resource('supplier', SupplierController::class)->middleware(['auth', 'revalidate']);
 // transaksi
 Route::resource('quotation', QuotationController::class)->middleware(['auth', 'revalidate']);
