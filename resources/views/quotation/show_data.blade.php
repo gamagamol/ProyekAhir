@@ -29,7 +29,7 @@
                                 <td>Unit Price</td>
                                 <td>Shipment</td>
                                 <td>Amount</td>
-                                <td>VAT 10%</td>
+                                <td>VAT 11%</td>
                                 <td>Total Amount</td>
                                 <td>Processing</td>
                                 <td>Custumor</td>
@@ -121,8 +121,7 @@
                             @endforeach
 
                             <tr>
-                                <td colspan='14'>TOTAL</td>
-                                <td>{{'Rp.'.number_format( $ongkir)}}</td>
+                                <td colspan='15'>TOTAL</td>
                                 <td>{{'Rp.'.number_format($subtotal)}}</td>
                                 <td>{{'Rp.'.number_format($ppn)}}</td>
                                 <td>{{'Rp.'.number_format($total)}}</td>

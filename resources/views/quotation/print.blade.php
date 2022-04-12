@@ -52,7 +52,7 @@
                 <h5 class=" ml-5">
 
                     Quotation : {{ $data[0]->no_penawaran }} <br><br>
-                    Customer : {{ $data[0]->id_pelanggan }} <br>
+                    Customer : {{ $data[0]->nama_pelanggan }} <br>
 
                 </h5>
             </div>
@@ -188,7 +188,7 @@
                 <h5 class="text-end mb-5">
                     {{ 'Amount          : Rp' . number_format($subtotal) }} <br>
                     {{ ' Vat            : Rp' . number_format($subtotal*0.1) }} <br>
-                    {{ ' Shippment      : Rp' . number_format($ongkir) }} <br>
+                    {{ ' Shippment      : Rp' . number_format($data[0]->ongkir) }} <br>
                     {{ ' Total          : Rp' . number_format($total+$ongkir) }}
                 </h5>
 

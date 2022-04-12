@@ -155,8 +155,8 @@ class QuotationController extends Controller
 
             $subtotal = $berat * str_replace('.', "", $request->input('harga'));
 
-            $ppn = $subtotal * 0.1;
-            $total = $subtotal + $ppn + str_replace('.', "", $request->input('ongkir'));
+            $ppn = $subtotal * 0.11;
+            $total = $subtotal + $ppn ;
             $data = [
                 'kode_transaksi' => strtoupper($request->input("kode_transaksi")),
                 'tgl_pembantu' => $request->input("tgl_penawaran"),
