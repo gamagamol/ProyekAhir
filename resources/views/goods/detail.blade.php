@@ -37,14 +37,20 @@
                                 <td>Unit Price</td>
                                 <td>Shipment</td>
                                 <td>Amount</td>
-                                <td>VAT 10%</td>
+                                <td>VAT 11%</td>
                                 <td>Total Amount</td>
                                 <td>Processing</td>
                                 <td>Custumor</td>
                                 <td>supplier</td>
 
                             </tr>
-
+                            <?php
+                            
+                            $i = 1;
+                            $subtotal = 0;
+                            $ppn = 0;
+                            $total = 0;
+                            ?>
                             @foreach ($data as $p)
                                 <tr>
 
@@ -121,7 +127,20 @@
 
 
                                 </tr>
+                                <?php
+                                $subtotal += $p->subtotal;
+                                $ppn += $p->ppn;
+                                $total += $p->total;
+                                
+                                ?>
                             @endforeach
+
+                            <tr>
+                                <td colspan='16'>TOTAL</td>
+                                <td>{{ 'Rp.' . number_format($subtotal) }}</td>
+                                <td>{{ 'Rp.' . number_format($ppn) }}</td>
+                                <td>{{ 'Rp.' . number_format($total) }}</td>
+                            </tr>
 
                         </table>
                     </div>

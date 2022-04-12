@@ -1,6 +1,5 @@
 @extends('template.index')
 @section('content')
-
     @if (session()->has('success'))
         <div class="alert alert-success" role="alert">
             {{ session('success') }}
@@ -44,9 +43,15 @@
                                 <td>Custumor</td>
 
                             </tr>
+                            <?php
+                            
+                            $i = 1;
+                            $subtotal = 0;
+                            $ppn = 0;
+                            $total = 0;
+                            ?>
 
                             @foreach ($data as $p)
-
                                 <tr>
 
                                     <td style="min-width:120px">
@@ -119,7 +124,20 @@
 
 
                                 </tr>
+                             <?php
+                                $subtotal += $p->subtotal;
+                                $ppn += $p->ppn;
+                                $total += $p->total;
+                                
+                                ?>
                             @endforeach
+
+                            <tr>
+                                <td colspan='16'>TOTAL</td>
+                                <td>{{'Rp.'.number_format($subtotal)}}</td>
+                                <td>{{'Rp.'.number_format($ppn)}}</td>
+                                <td>{{'Rp.'.number_format($total)}}</td>
+                            </tr>
 
                         </table>
                     </div>
@@ -186,14 +204,3 @@
         }
     </script>
 @endsection
-
-
-
-
-
-
-
-
-
-
-

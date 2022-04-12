@@ -254,10 +254,10 @@ class PurchaseController extends Controller
                         'id_produk' => $id_produk[$i],
                         'jumlah_detail_pembelian' => $unit[$i],
                         'harga_detail_pembelian' => $produk[$i]['harga'],
-                        'total_detail_pembelian' => ($produk[$i]['harga'] * $produk[$i]['berat']) + (($produk[$i]['harga'] * $produk[$i]['berat']) * 0.1),
+                        'total_detail_pembelian' => ($produk[$i]['harga'] * $produk[$i]['berat']) + (($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11),
                         'berat_detail_pembelian' => $produk[$i]['berat'],
                         'subtotal_detail_pembelian' => $produk[$i]['harga'] * $produk[$i]['berat'],
-                        'ppn_detail_pembelian' => ($produk[$i]['harga'] * $produk[$i]['berat']) * 0.1,
+                        'ppn_detail_pembelian' => ($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11,
 
 
 
@@ -283,10 +283,10 @@ class PurchaseController extends Controller
                     'id_produk' => $quos->id_produk,
                     'jumlah_detail_pembelian' => $quos->jumlah_unit,
                     'harga_detail_pembelian' => $quos->harga,
-                    'total_detail_pembelian' => ($quos->harga * $quos->berat) + ($quos->harga * $quos->berat) * 0.1,
+                    'total_detail_pembelian' => ($quos->harga * $quos->berat) + ($quos->harga * $quos->berat) * 0.11,
                     'berat_detail_pembelian' => $quos->berat,
                     'subtotal_detail_pembelian' => $quos->harga * $quos->berat,
-                    'ppn_detail_pembelian' => ($quos->harga * $quos->berat) * 0.1,
+                    'ppn_detail_pembelian' => ($quos->harga * $quos->berat) * 0.11,
 
 
 
@@ -295,7 +295,8 @@ class PurchaseController extends Controller
             }
         }
         // jangan di hapus untuk check isi array
-   
+        // dump($data_pembelian);
+        // dd($data_detail_pembelian);
 
 
         $no_pembelian = $this->PurchaseModel->insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok, $kode_transaksi);
