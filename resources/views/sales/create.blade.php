@@ -40,7 +40,7 @@
                                 <td>Unit Price</td>
                                 <td>Shipment</td>
                                 <td>Amount</td>
-                                <td>VAT 10%</td>
+                                <td>VAT 11%</td>
                                 <td>Total Amount</td>
                                 <td>Processing</td>
                                 <td>customer</td>
@@ -49,7 +49,13 @@
 
                             </tr>
                             @csrf
-                            <?php $i = 1; ?>
+                            <?php 
+
+                            $i = 1; 
+                                $subtotal = 0;
+                                $ppn = 0;
+                                $total = 0;
+                            ?>
                             @foreach ($data as $d)
                                 <tr>
 
@@ -74,7 +80,20 @@
 
 
                                 </tr>
+                              <?php
+                                $subtotal += $d->subtotal;
+                                $ppn += $d->ppn;
+                                $total += $d->total;
+                                
+                                ?>
                             @endforeach
+
+                            <tr>
+                                <td colspan='12'>TOTAL</td>
+                                <td>{{'Rp.'.number_format($subtotal)}}</td>
+                                <td>{{'Rp.'.number_format($ppn)}}</td>
+                                <td>{{'Rp.'.number_format($total)}}</td>
+                            </tr>
                         </table>
                     </div>
                     <div class="container">
