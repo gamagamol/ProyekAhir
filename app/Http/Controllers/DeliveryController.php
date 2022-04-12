@@ -266,9 +266,9 @@ class DeliveryController extends Controller
                                     'jumlah_detail_pengiriman' => (int) $unit[$i],
                                     'sisa_detail_pengiriman' => (int) $pcsss->sisa_detail_penerimaan - $unit[$i],
                                     'berat_detail_pengiriman' => $produk[$i]['berat'],
-                                    'ppn_detail_pengiriman' => ($produk[$i]['harga'] * $produk[$i]['berat']) * 0.1,
+                                    'ppn_detail_pengiriman' => ($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11,
                                     'subtotal_detail_pengiriman' => $produk[$i]['harga'] * $produk[$i]['berat'],
-                                    'total_detail_pengiriman' => ($produk[$i]['harga'] * $produk[$i]['berat']) + (($produk[$i]['harga'] * $produk[$i]['berat']) * 0.1)
+                                    'total_detail_pengiriman' => ($produk[$i]['harga'] * $produk[$i]['berat']) + (($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11)
 
 
 
@@ -284,10 +284,10 @@ class DeliveryController extends Controller
                                     'jumlah_detail_pengiriman' => (int) $unit[$i],
                                     'sisa_detail_pengiriman' => (int) $pcsss->jumlah_detail_penerimaan - $unit[$i],
                                     'berat_detail_pengiriman' => $produk[$i]['berat'],
-                                    'ppn_detail_pengiriman' => ($produk[$i]['harga'] * $produk[$i]['berat']) * 0.1,
+                                    'ppn_detail_pengiriman' => ($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11,
 
                                     'subtotal_detail_pengiriman' => $produk[$i]['harga'] * $produk[$i]['berat'],
-                                    'total_detail_pengiriman' => ($produk[$i]['harga'] * $produk[$i]['berat']) + (($produk[$i]['harga'] * $produk[$i]['berat']) * 0.1)
+                                    'total_detail_pengiriman' => ($produk[$i]['harga'] * $produk[$i]['berat']) + (($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11)
                                 ];
                                 $jumlah_item = (int) $unit[$i];
                                 $berat_item = $produk[$i]['berat'];
@@ -344,9 +344,9 @@ class DeliveryController extends Controller
                                 'jumlah_detail_pengiriman' => (int) $pcss->sisa_detail_penerimaan,
                                 'sisa_detail_pengiriman' => 0,
                                 'berat_detail_pengiriman' => $berat,
-                                'ppn_detail_pengiriman' => ($pcss->harga * $pcss->berat) * 0.1,
+                                'ppn_detail_pengiriman' => ($pcss->harga * $berat) * 0.11,
                                 'subtotal_detail_pengiriman' => $pcss->harga * $berat,
-                                'total_detail_pengiriman' => ($pcss->harga * $berat) + (($pcss->harga * $berat) * 0.1)
+                                'total_detail_pengiriman' => ($pcss->harga * $berat) + (($pcss->harga * $berat) * 0.11)
 
 
                             ];
@@ -363,9 +363,9 @@ class DeliveryController extends Controller
                                 'sisa_detail_pengiriman' => 0,
                                 // perhitungan berat
                                 'berat_detail_pengiriman' => $pcss->berat,
-                                'ppn_detail_pengiriman' => ($pcss->harga * $pcss->berat) * 0.1,
+                                'ppn_detail_pengiriman' => ($pcss->harga * $pcss->berat) * 0.11,
                                 'subtotal_detail_pengiriman' => $pcss->harga * $pcss->berat,
-                                'total_detail_pengiriman' => ($pcss->harga * $pcss->berat) + (($pcss->harga * $pcss->berat) * 0.1)
+                                'total_detail_pengiriman' => ($pcss->harga * $pcss->berat) + (($pcss->harga * $pcss->berat) * 0.11)
 
 
                             ];
