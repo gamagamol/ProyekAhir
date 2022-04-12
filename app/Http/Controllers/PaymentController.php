@@ -106,6 +106,7 @@ class PaymentController extends Controller
             ];
         }
         // dd($id_transaksi);
+        // dd($id_transaksi);
         $nominal=0;
         if (count($id_transaksi)>1) {
             for ($i=0; $i <count($id_transaksi) ; $i++) { 
