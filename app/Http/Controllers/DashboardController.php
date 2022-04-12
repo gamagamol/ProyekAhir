@@ -6,6 +6,7 @@ use App\Models\DashboardModel;
 use Illuminate\Http\Request;
 use App\Models\GeneralLadgerModel;
 use App\Models\ReportDetailSalesModel;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -55,6 +56,7 @@ class DashboardController extends Controller
         // how make total AR
 
         $total_AR = 0;
+  
         foreach ($piutang as $r) {
             if ($r->posisi_db_cr == 'debit') {
                 $total_AR = $saldo_awal_piutang + $r->nominal;
@@ -75,11 +77,10 @@ class DashboardController extends Controller
         }else{
             $tagihan=0;
         }
-
         $data = [
             'tittle' => "DashBoard",
             'sales' => $sales,
-            'recivable' => $total_AR,
+            'recivable' => DB::table('transaksi')->where('status_transaksi', '=', 'bill')->sum('total'),
             'grafik' => $this->DM->grafik(),
             'tagihan'=> $tagihan,
         ];

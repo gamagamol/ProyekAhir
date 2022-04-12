@@ -35,7 +35,7 @@
                                 <td>Unit Price</td>
                                 <td>Shipment</td>
                                 <td>Amount</td>
-                                <td>VAT 10%</td>
+                                <td>VAT 11%</td>
                                 <td>Total Amount</td>
                                 <td>Processing</td>
                                 <td>Custumor</td>
