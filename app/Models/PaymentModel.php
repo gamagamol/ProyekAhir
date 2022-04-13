@@ -70,7 +70,7 @@ class PaymentModel extends Model
               group by transaksi.id_transaksi ");
     }
 
-    public function create($id, $tgl_tagihan)
+    public function create($no_tagihan, $tgl_tagihan)
     {
 
         return DB::table('transaksi')
@@ -82,7 +82,7 @@ class PaymentModel extends Model
             ->join('detail_transaksi_penawaran', "detail_transaksi_penawaran.id_penawaran", "=", "penawaran.id_penawaran")
             ->join("produk", "detail_transaksi_pengiriman.id_produk", "=", "produk.id_produk")
             ->join('tagihan', "tagihan.id_transaksi", "=", "transaksi.id_transaksi")
-            ->where('no_tagihan', "=", $id)
+            ->where('no_tagihan', "=", $no_tagihan)
             ->where('kode_transaksi', "=", $tgl_tagihan)
             ->get();
     }

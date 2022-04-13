@@ -286,30 +286,30 @@ class DeliveryModel extends Model
 
 
 
-    public function edit1($no_penerimaan, $id_transaksi = null)
-    {
-        if ($id_transaksi) {
-            $query = "and transaksi.id_transaksi=$id_transaksi";
-        } else {
-            $query = '';
-        }
+    // public function edit1($no_penerimaan, $id_transaksi = null)
+    // {
+    //     if ($id_transaksi) {
+    //         $query = "and transaksi.id_transaksi=$id_transaksi";
+    //     } else {
+    //         $query = '';
+    //     }
 
 
 
-        return DB::select(
-            "SELECT  *,penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan ,penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran, jumlah_detail_penerimaan,
-         jumlah_detail_pengiriman as jumlah_detail_pengiriman,jumlah_detail_penerimaan- jumlah_detail_pengiriman as sisa_detail_penerimaan
-            ,tgl_penerimaan,detail_penerimaan_barang.id_produk,harga FROM ibaraki_db.transaksi 
-        join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
-        join penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
-        join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
-        join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
-     left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
-        left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
-        join produk on detail_penerimaan_barang.id_produk = produk.id_produk
-           join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
-        where no_penerimaan='$no_penerimaan' and jumlah_detail_penerimaan > ifnull( jumlah_detail_pengiriman,0) $query
-         "
-        );
-    }
+    //     return DB::select(
+    //         "SELECT  *,penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan ,penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran, jumlah_detail_penerimaan,
+    //      jumlah_detail_pengiriman as jumlah_detail_pengiriman,jumlah_detail_penerimaan- jumlah_detail_pengiriman as sisa_detail_penerimaan
+    //         ,tgl_penerimaan,detail_penerimaan_barang.id_produk,harga FROM ibaraki_db.transaksi 
+    //     join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
+    //     join penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
+    //     join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+    //     join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+    //  left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
+    //     left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
+    //     join produk on detail_penerimaan_barang.id_produk = produk.id_produk
+    //        join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+    //     where no_penerimaan='$no_penerimaan' and jumlah_detail_penerimaan > ifnull( jumlah_detail_pengiriman,0) $query
+    //      "
+    //     );
+    // }
 }

@@ -119,11 +119,11 @@ $notif = $notif->notif();
                         <a class="collapse-item" href="{{ url('purchase') }}"
                             @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{"hidden"}} @endif>Purchase Order</a>
                         <a class="collapse-item" href="{{ url('goods') }}"  @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{"hidden"}} @endif>Goods Receipt</a>
-                        <a class="collapse-item" href="{{ url('delivery') }}"  @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{"hidden"}} @endif>Delivery</a>
+                        <a class="collapse-item" href="{{ url('delivery') }}"  >Delivery</a>
                         <a class="collapse-item" href="{{ url('bill') }}"  @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{"hidden"}} @endif>Bill Payment</a>
                         <a class="collapse-item" href="{{ url('payment') }}"  @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{"hidden"}} @endif>Payment</a>
                         <a class="collapse-item" href="{{ url('paymentvendor') }}"  @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{"hidden"}} @endif>Debt Payment </a>
-                        <a class="collapse-item" href="{{ url('status_transaksi') }}"  @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{"hidden"}} @endif>Transaction Status </a>
+                        <a class="collapse-item" href="{{ url('status_transaksi') }}"  >Transaction Status </a>
 
 
 
@@ -131,7 +131,7 @@ $notif = $notif->notif();
                 </div>
             </li>
             {{-- report --}}
-            <li class="nav-item" @if (Auth::user()->status_pengguna != 'OWNER' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>
+            <li class="nav-item" @if (Auth::user()->status_pengguna != 'OWNER' && Auth::user()->status_pengguna != 'SUPER_ADMIN' && Auth::user()->status_pengguna != 'ACCOUNTING_ADMIN') hidden @endif>
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#Report" aria-expanded="true"
                     aria-controls="Report">
                     <i class="fas fa-book"></i>

@@ -169,21 +169,21 @@ class BillPaymentController extends Controller
 
 
 
-    public function bill_email($no_transaksi){
-        $no_transaksi = str_replace('-', '/', $no_transaksi);
-        $total = $this->model->detail($no_transaksi);
-        $ttl = 0;
-        foreach ($total as $t) {
-            $ttl += $t->total;
-        }
+    // public function bill_email($no_transaksi){
+    //     $no_transaksi = str_replace('-', '/', $no_transaksi);
+    //     $total = $this->model->detail($no_transaksi);
+    //     $ttl = 0;
+    //     foreach ($total as $t) {
+    //         $ttl += $t->total;
+    //     }
 
 
-        $data = [
-            'tittle' => "Print INVOICE",
-            'data' => $this->model->detail($no_transaksi),
-            'total_penyebut' => $total = penyebut($ttl),
+    //     $data = [
+    //         'tittle' => "Print INVOICE",
+    //         'data' => $this->model->detail($no_transaksi),
+    //         'total_penyebut' => $total = penyebut($ttl),
 
-        ];
-        return $data;
-    }
+    //     ];
+    //     return $data;
+    // }
 }
