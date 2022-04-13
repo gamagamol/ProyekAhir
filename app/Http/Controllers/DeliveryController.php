@@ -254,6 +254,7 @@ class DeliveryController extends Controller
                             $data_pengiriman[$i] = [
                                 'id_penerimaan_barang' => $pcsss->id_penerimaan_barang,
                                 'id_transaksi' => $id_transaksi[$i],
+                                'id_penjualan' => $pcsss->id_penjualan,
                                 'no_pengiriman' => $arr_no_pengiriman[0],
                                 'tgl_pengiriman' => $tgl_pengiriman
                             ];
@@ -261,7 +262,6 @@ class DeliveryController extends Controller
                             if ($pcsss->sisa_detail_penerimaan) {
                                 $data_detail_pengiriman[$i] = [
                                     'id_pengiriman' => 0,
-                                    'id_penjualan' => $pcsss->id_penjualan,
                                     'id_produk' => $id_produk[$i],
                                     'jumlah_detail_pengiriman' => (int) $unit[$i],
                                     'sisa_detail_pengiriman' => (int) $pcsss->sisa_detail_penerimaan - $unit[$i],
@@ -279,7 +279,6 @@ class DeliveryController extends Controller
                             } else {
                                 $data_detail_pengiriman[$i] = [
                                     'id_pengiriman' => 0,
-                                    'id_penjualan' => $pcsss->id_penjualan,
                                     'id_produk' => $id_produk[$i],
                                     'jumlah_detail_pengiriman' => (int) $unit[$i],
                                     'sisa_detail_pengiriman' => (int) $pcsss->jumlah_detail_penerimaan - $unit[$i],
@@ -322,6 +321,7 @@ class DeliveryController extends Controller
                         $data_pengiriman[$i] = [
                             'id_penerimaan_barang' => $pcss->id_penerimaan_barang,
                             'id_transaksi' => $pcss->id_transaksi,
+                            'id_penjualan' => $pcss->id_penjualan,
                             'no_pengiriman' => $arr_no_pengiriman[0],
                             'tgl_pengiriman' => $tgl_pengiriman
                         ];
@@ -340,7 +340,6 @@ class DeliveryController extends Controller
                             $data_detail_pengiriman[$i] = [
                                 'id_pengiriman' => 0,
                                 'id_produk' => $pcss->id_produk,
-                                'id_penjualan' => $pcss->id_penjualan,
                                 'jumlah_detail_pengiriman' => (int) $pcss->sisa_detail_penerimaan,
                                 'sisa_detail_pengiriman' => 0,
                                 'berat_detail_pengiriman' => $berat,
@@ -358,7 +357,6 @@ class DeliveryController extends Controller
                             $data_detail_pengiriman[$i] = [
                                 'id_pengiriman' => 0,
                                 'id_produk' => $pcss->id_produk,
-                                'id_penjualan' => $pcss->id_penjualan,
                                 'jumlah_detail_pengiriman' => (int) $pcss->jumlah_detail_penerimaan,
                                 'sisa_detail_pengiriman' => 0,
                                 // perhitungan berat

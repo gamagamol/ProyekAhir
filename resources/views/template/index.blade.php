@@ -3,7 +3,6 @@ use App\Http\Controllers\DashboardController;
 $notif = new DashboardController();
 $notif = $notif->notif();
 
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -103,7 +102,7 @@ $notif = $notif->notif();
                 </div>
             </li>
             {{-- Transaction --}}
-            <li class="nav-item " @if (Auth::user()->status_pengguna != 'ACCOUNTING_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>
+            <li class="nav-item " @if (Auth::user()->status_pengguna != 'ACCOUNTING_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN' && Auth::user()->status_pengguna != 'SALES_ADMIN') hidden @endif>
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#Transaction"
                     aria-expanded="true" aria-controls="Transaction">
                     <i class="fas fa-hand-holding-usd"></i>
@@ -113,17 +112,21 @@ $notif = $notif->notif();
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Transaction:</h6>
+
+
                         <a class="collapse-item" href="{{ url('quotation') }}">Quotation</a>
                         <a class="collapse-item" href="{{ url('sales') }}">Sales Order</a>
-                        <a class="collapse-item" href="{{ url('purchase') }}">Purchase Order</a>
-                        <a class="collapse-item" href="{{ url('goods') }}">Goods Receipt</a>
-                        <a class="collapse-item" href="{{ url('delivery') }}">Delivery</a>
-                        <a class="collapse-item" href="{{ url('bill') }}">Bill Payment</a>
-                        <a class="collapse-item" href="{{ url('payment') }}">Payment</a>
-                        <a class="collapse-item" href="{{ url('paymentvendor') }}">Debt Payment </a>
-                        <a class="collapse-item" href="{{ url('status_transaksi') }}">Transaction Status </a>
-                        
-                 
+                        <a class="collapse-item" href="{{ url('purchase') }}"
+                            @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{"hidden"}} @endif>Purchase Order</a>
+                        <a class="collapse-item" href="{{ url('goods') }}"  @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{"hidden"}} @endif>Goods Receipt</a>
+                        <a class="collapse-item" href="{{ url('delivery') }}"  @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{"hidden"}} @endif>Delivery</a>
+                        <a class="collapse-item" href="{{ url('bill') }}"  @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{"hidden"}} @endif>Bill Payment</a>
+                        <a class="collapse-item" href="{{ url('payment') }}"  @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{"hidden"}} @endif>Payment</a>
+                        <a class="collapse-item" href="{{ url('paymentvendor') }}"  @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{"hidden"}} @endif>Debt Payment </a>
+                        <a class="collapse-item" href="{{ url('status_transaksi') }}"  @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{"hidden"}} @endif>Transaction Status </a>
+
+
+
                     </div>
                 </div>
             </li>
@@ -198,40 +201,38 @@ $notif = $notif->notif();
                                     Alerts Center
                                 </h6>
 
-                                @foreach ($notif['data'] as $n )
-                                    
-                                @if (substr($n->no_transaksi,0,2)=='PO')
-                                    
-                                <a class="dropdown-item d-flex align-items-center" href="{{url('PCR')}}">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-danger">
-                                            <i class="fas fa-exclamation-triangle text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">{{ date('M') . ' ' . date('d') }},
-                                            {{ date('Y') }}</div>
-                                        <span class="font-weight-bold">Announcement Notice: You have a
-                                            notification regarding debt {{$n->no_transaksi}} click for more</span>
-                                    </div>
-                                </a>
-                                @else
-                                    
-                                <a class="dropdown-item d-flex align-items-center" href="{{url('aging')}}">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-danger">
-                                            <i class="fas fa-exclamation-triangle text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">{{ date('M') . ' ' . date('d') }},
-                                            {{ date('Y') }}</div>
-                                        <span class="font-weight-bold">Announcement Notice: You have a
-                                            notification regarding recivable {{$n->no_transaksi}} click for more</span>
-                                    </div>
-                                </a>
-                                @endif
-
+                                @foreach ($notif['data'] as $n)
+                                    @if (substr($n->no_transaksi, 0, 2) == 'PO')
+                                        <a class="dropdown-item d-flex align-items-center" href="{{ url('PCR') }}">
+                                            <div class="mr-3">
+                                                <div class="icon-circle bg-danger">
+                                                    <i class="fas fa-exclamation-triangle text-white"></i>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="small text-gray-500">{{ date('M') . ' ' . date('d') }},
+                                                    {{ date('Y') }}</div>
+                                                <span class="font-weight-bold">Announcement Notice: You have a
+                                                    notification regarding debt {{ $n->no_transaksi }} click for
+                                                    more</span>
+                                            </div>
+                                        </a>
+                                    @else
+                                        <a class="dropdown-item d-flex align-items-center" href="{{ url('aging') }}">
+                                            <div class="mr-3">
+                                                <div class="icon-circle bg-danger">
+                                                    <i class="fas fa-exclamation-triangle text-white"></i>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="small text-gray-500">{{ date('M') . ' ' . date('d') }},
+                                                    {{ date('Y') }}</div>
+                                                <span class="font-weight-bold">Announcement Notice: You have a
+                                                    notification regarding recivable {{ $n->no_transaksi }} click for
+                                                    more</span>
+                                            </div>
+                                        </a>
+                                    @endif
                                 @endforeach
 
                                 {{-- <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a> --}}
