@@ -92,7 +92,7 @@ class SalesModel extends Model
                -- where sisa_detail_pembelian >0
                group by no_penjualan,penjualan.id_penjualan
                -- having jumlah_detail_penjualan > sum(ifnull(jumlah_detail_pembelian,0))
-               order by tgl_penjualan desc
+               order by tgl_penjualan desc,no_penjualan desc
                "
                
                );

@@ -61,7 +61,7 @@
 
                                     
                                 <a href="{{ url('show', str_replace('/', '-', $d->no_penerimaan)) }}"
-                                    class="btn btn-primary mt-1"  @if ($d->status_transaksi == 'bill')
+                                    class="btn btn-primary mt-1"  @if ($d->jumlah_detail_pengiriman == $d->jumlah_detail_penerimaan && $d->status_transaksi !='delivery')
                                        {{'hidden'}}
                                    @endif>
                                     Bill Payment </a>

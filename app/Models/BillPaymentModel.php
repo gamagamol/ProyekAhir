@@ -43,7 +43,7 @@ class BillPaymentModel extends Model
                 ->join("tagihan", "tagihan.id_transaksi", "=", "transaksi.id_transaksi")
                 // ->where('status_transaksi', "=", "bill")
                 ->groupBy('tgl_tagihan', "no_tagihan")
-                ->orderBy('tgl_tagihan', 'asc')
+                ->orderByRaw('tgl_tagihan desc,no_tagihan desc')
                 ->paginate(5);
         }
     }

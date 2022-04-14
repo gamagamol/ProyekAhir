@@ -55,7 +55,7 @@ class DeliveryModel extends Model
                 left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
                 -- where status_transaksi='delivery'
                 group by no_pengiriman
-                order by tgl_pengiriman asc,no_pengiriman asc
+                order by tgl_pengiriman desc,no_pengiriman desc
                             ) b
                 where b.no_pengiriman is not null
              "
