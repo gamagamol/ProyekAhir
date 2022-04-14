@@ -56,11 +56,14 @@
                                 <td>{{ $d->nama_pelanggan }}</td>
                                 <td>{{ $d->nama_pengguna }}</td>
                                 <td>
-                                    {{-- @if ($d->status_transaksi=='delivery')
-                                    @endif --}}
+                                  
+
+
                                     
                                 <a href="{{ url('show', str_replace('/', '-', $d->no_penerimaan)) }}"
-                                    class="btn btn-primary mt-1">
+                                    class="btn btn-primary mt-1"  @if ($d->status_transaksi == 'bill')
+                                       {{'hidden'}}
+                                   @endif>
                                     Bill Payment </a>
 
                                     <a href="{{ url('delivery/detail', str_replace('/', '-', $d->no_pengiriman)) }}"

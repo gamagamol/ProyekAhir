@@ -1,6 +1,6 @@
 @extends('template.index')
 @section('content')
-<div class="container">
+    <div class="container">
         @if (session()->has('success'))
             <div class="alert alert-success" role="alert">
                 {{ session('success') }}
@@ -44,8 +44,6 @@
                         </tr>
                         <?php $i = 1; ?>
                         @foreach ($data as $d)
-
-
                             <tr>
                                 <td> {{ $loop->iteration }}</td>
                                 <td style="min-width:120px">{{ $d->tgl_penjualan }}</td>
@@ -55,24 +53,20 @@
                                 <td>{{ $d->nama_pengguna }}</td>
                                 <td>
 
-                                    <a class="btn btn-primary" href="{{ url('purchase', $d->kode_transaksi) }}">
+
+
+                                    <a class="btn btn-primary" href="{{ url('purchase', $d->kode_transaksi) }}"
+                                        @if ($d->jumlah_detail_penjualan == $d->jumlah_detail_pembelian) {{ 'hidden' }} @endif>
 
                                         Purchase
                                     </a>
-                                    
+
                                     <a href="{{ url('sales/detail', str_replace('/', '-', $d->no_penjualan)) }}"
                                         class="btn btn-info mt-1">
                                         Detail </a>
 
                                 </td>
                             </tr>
-
-
-
-
-
-
-
                         @endforeach
                     </table>
                     {{-- {{ $data->links() }} --}}

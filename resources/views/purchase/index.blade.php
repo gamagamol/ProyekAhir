@@ -57,7 +57,12 @@
                                 <td>{{ $d->nama_pemasok }}</td>
                                 <td>{{ $d->nama_pengguna }}</td>
                                 <td>
-                                    <a class="btn btn-primary" href="{{ url('goods', str_replace('/','-',$d->no_pembelian)) }}">
+
+                                    
+
+                                    <a class="btn btn-primary" href="{{ url('goods', str_replace('/','-',$d->no_pembelian)) }}" @if ($d->jumlah_detail_penerimaan)
+                                        {{'hidden'}}
+                                    @endif>
 
                                         Good Recipt
                                     </a>

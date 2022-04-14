@@ -34,7 +34,7 @@ class QuotationModel extends Model
             ->join('pelanggan','transaksi.id_pelanggan','=', 'pelanggan.id_pelanggan')
             ->join('pengguna','transaksi.id','=', 'pengguna.id')
             ->groupBy("kode_transaksi")
-            ->where('status_transaksi', '=', 'quotation')
+            // ->where('status_transaksi', '=', 'quotation')
             ->orderBy("tgl_penawaran", "desc")
             ->paginate(5);
     }

@@ -17,7 +17,7 @@
                         <form action={{ url('goods') }} method="GET" id="serch-form">
                             <select class="form-control form-select" aria-label="Default select example" name='serch'
                                 id="serch">
-                                    <option value=""><a href="{{url('goods')}}">All</a></option>
+                                <option value=""><a href="{{ url('goods') }}">All</a></option>
                                 @foreach ($deta as $d)
                                     <option value={{ $d->no_penerimaan }}>{{ $d->no_penerimaan }}</option>
                                 @endforeach
@@ -46,8 +46,6 @@
                         </tr>
                         <?php $i = 1; ?>
                         @foreach ($data as $d)
-
-
                             <tr>
                                 <td> {{ $loop->iteration }}</td>
                                 <td style="min-width:120px">{{ $d->tgl_penerimaan }}</td>
@@ -57,22 +55,19 @@
                                 <td>{{ $d->nama_pengguna }}</td>
                                 <td>
 
-                                    <a class="btn btn-primary" href="{{ url('delivery', str_replace('/','-',$d->no_penerimaan)) }}">
+
+                                    <a class="btn btn-primary"
+                                        href="{{ url('delivery', str_replace('/', '-', $d->no_penerimaan)) }}"
+                                        @if ($d->jumlah_detail_pengiriman == $d->jumlah_detail_penerimaan) {{ 'hidden' }} @endif>
 
                                         Delivery
                                     </a>
-                                     <a href="{{ url('goods/detail', str_replace('/','-',$d->no_penerimaan)) }}" class="btn btn-info mt-1">
+                                    <a href="{{ url('goods/detail', str_replace('/', '-', $d->no_penerimaan)) }}"
+                                        class="btn btn-info mt-1">
                                         Detail </a>
 
                                 </td>
                             </tr>
-
-
-
-
-
-
-
                         @endforeach
                     </table>
                     {{-- {{ $data->links() }} --}}

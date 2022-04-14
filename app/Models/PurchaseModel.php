@@ -55,7 +55,8 @@ class PurchaseModel extends Model
             left join detail_penerimaan_barang on penerimaan_barang.id_penerimaan_barang=detail_penerimaan_barang.id_penerimaan_barang
           left   join pemasok on transaksi.id_pemasok  = pemasok.id_pemasok
             group by no_pembelian
-            having jumlah_detail_penerimaan is null
+            -- having jumlah_detail_penerimaan is null
+             order by tgl_pembelian desc
          "
             );
         }

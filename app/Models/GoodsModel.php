@@ -85,7 +85,8 @@ class GoodsModel extends Model
             group by no_penerimaan
            ) b
            group by b.no_penerimaan
-           having jumlah_detail_penerimaan != ifnull(jumlah_detail_pengiriman,0)
+        --    having jumlah_detail_penerimaan != ifnull(jumlah_detail_pengiriman,0)
+        order by b.tgl_penerimaan desc
       
    
            
