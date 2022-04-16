@@ -19,7 +19,8 @@
             <div class="card-body">
 
 
-                <a href="{{url('export')}}" class="btn btn-success my-3" style="margin-left: 90%"> <i class="fas fa-file-excel"></i>
+                <a href="{{ url('export') }}" class="btn btn-success my-3" style="margin-left: 90%"> <i
+                        class="fas fa-file-excel"></i>
                     Excel</a>
                 <div class="table-responsive text-center">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -39,7 +40,16 @@
 
                         </tr>
                         @foreach ($data as $d)
-                            <tr>
+                            @if ($d->selisih >= 0 && $d->selisih < 30)
+                                <?php $BackgroundColor = 'class='; ?>
+                            @elseif ($d->selisih >= 31 && $d->selisih <= 60)
+                                <?php $BackgroundColor = 'class=bg-danger style=color:white '; ?>
+                            @elseif ($d->selisih >= 61 && $d->selisih <= 90)
+                                <?php $BackgroundColor = 'class=bg-danger style=color:white '; ?>
+                            @endif
+
+
+                            <tr {{ $BackgroundColor }}>
                                 <td>{{ $d->nama_pelanggan }}</td>
                                 <td>{{ $d->no_tagihan }}</td>
                                 <td style="min-width:120px">{{ $d->tgl_tagihan }}</td>
@@ -51,7 +61,7 @@
                                     <td>{{ 'Rp.' . number_format($d->total_selisih, 2, ',', '.') }}</td>
                                     <td>{{ ' ' }}</td>
                                     <td>{{ ' ' }}</td>
-                                @elseif ($d->selisih >= 31 && $d->selisih <= 60) <td>
+                                @elseif ($d->selisih >= 31 && $d->selisih <= 60)
                                     <td>{{ ' ' }}</td>
                                     <td>{{ 'Rp.' . number_format($d->total_selisih, 2, ',', '.') }}</td>
                                     <td>{{ ' ' }}</td>

@@ -81,15 +81,14 @@ class PurchaseController extends Controller
 
 
             // Validation Proses
-         
 
-            for ($ip = 0; $ip <= count($id_pemasok); $ip++) {
+
+            for ($ip = 0; $ip < count($id_pemasok); $ip++) {
                 if ($id_pemasok[$ip] == "null") {
                     return redirect()->back()->with("failed", "Choose Your Supplier ");
-                } else {
-                    break;
-                }
+                } 
             }
+            // dd($id_pemasok);
 
             foreach ($harga as $h) {
                 if ($h == null) {
@@ -101,8 +100,14 @@ class PurchaseController extends Controller
                 }
             }
 
-            // dump($unit);
-            // dd($id_produk);
+            for ($ip = 0; $ip < count($unit); $ip++) {
+                if ($unit[$ip] == null) {
+                    return redirect()->back()->with("failed", "Please Fill Coloumn Unit ")->withInput();
+                }
+            }
+
+            // dd($unit);
+          
 
             // mengisi var produk
             for ($ipo = 0; $ipo < count($id_produk); $ipo++) {
@@ -146,9 +151,6 @@ class PurchaseController extends Controller
                                 'unit' => $total_unit_produk += $prdk['unit'],
                                 // 'jumlah_unit' => $prdk['jumlah_unit'],
                                 'harga' => $total_harga_produk += $prdk['harga']
-
-
-
                             ];
                             $ipdk++;
                         }

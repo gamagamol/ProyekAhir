@@ -56,7 +56,7 @@
                                         <td hidden>id produk</td>
                                         <td>No Sales</td>
                                         <td>Grade</td>
-                                        <td colspan="3">Material Size</td>
+                                        {{-- <td colspan="3">Material Size</td> --}}
                                         <td>Price</td>
                                         <td>QTY</td>
                                         <td>supplier</td>
@@ -185,19 +185,19 @@
             html += `<tr>`
             html += `<td>${click}</td>`
             html +=
-                `<td> <input type="text" name="no_penjualan[]" class="form-control" value='${NoPenjualan}' readonly  style="border-width:0px;background-color:white;"></td>`
+                `<td style='width:200px'> <input type="text" name="no_penjualan[]" class="form-control" value='${NoPenjualan}' readonly  style="border-width:0px;background-color:white;width=500px"></td>`
             html +=
-                `<td> <input type="text" name="nama_produk[]" class="form-control" value='${NamaProduk}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
+                `<td style='width:150px' > <input type="text" name="nama_produk[]" class="form-control text-center" value='${NamaProduk}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
             html +=
-                `<td> <input type="text" name="tebal_transaksi[]" class="form-control" value='${TebalTransaksi}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
+                `<td hidden > <input type="text" name="tebal_transaksi[]" class="form-control" value='${TebalTransaksi}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
             html +=
-                `<td> <input type="text" name="lebar_transaksi[]" class="form-control" value='${LebarTransaksi}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
+                `<td hidden> <input type="text" name="lebar_transaksi[]" class="form-control" value='${LebarTransaksi}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
             html +=
-                `<td> <input type="text" name="panjang_transaksi[]" class="form-control text-center" value='${PanjangTransaksi}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
+                `<td hidden> <input type="text" name="panjang_transaksi[]" class="form-control text-center" value='${PanjangTransaksi}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
             html +=
                 `<td> <input type="number" name="harga[]" class="form-control" size="4" placeholder="Price" min='0'></td>`
             html +=
-                `<td> <input type="number" name="unit[]" class="form-control" size="3" placeholder="Unit" min='0'></td>`
+                `<td> <input type="number" name="unit[]" class="form-control" size="3" placeholder="Unit" min='0' ></td>`
 
             html += `<td> <select class='form-control ' id='id_pemasok' name='id_pemasok[]'>`
             html += ` <option value=null>Select Your Supplier</option>`

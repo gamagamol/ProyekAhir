@@ -33,6 +33,7 @@ class AgingScheduleController extends Controller
         } else {
             $pelanggan = 0;
         }
+        // dd(date('Y-m-d'));
 
         $data = [
             'tittle' => "Aging Schedule",
