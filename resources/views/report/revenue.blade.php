@@ -38,10 +38,10 @@
                                     <td>{{ $d->no_tagihan }}</td>
                                     <td>{{ $d->tgl_tagihan }}</td>
                                     <td>{{ 'Rp.' . number_format($d->subtotal, 2, ',', '.') }}</td>
-                                    <td>{{ 'Rp.' . number_format($d->total, 2, ',', '.') }}</td>
+                                    <td>{{ 'Rp.' . number_format($d->subtotal, 2, ',', '.') }}</td>
 
                                 </tr>
-                                <?php $total=$d->total+$total; ?>
+                                <?php $total=$d->subtotal+$total; ?>
                                 @endforeach
                                 <tr>
                                     <td colspan="6">{{"TOTAL"}}</td>

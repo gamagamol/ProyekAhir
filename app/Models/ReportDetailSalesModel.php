@@ -21,18 +21,10 @@ class ReportDetailSalesModel extends Model
         //     ->get();
 
 
-        return DB::table('penjualan')
-            ->selectRaw(' pelanggan.id_pelanggan,nama_pelanggan,no_penjualan,tagihan.no_tagihan,tagihan.tgl_tagihan,transaksi.subtotal,transaksi.total')
-            ->join("transaksi", "penjualan.id_transaksi", "=", "transaksi.id_transaksi")
-            ->join("tagihan", "tagihan.id_transaksi", "=", "transaksi.id_transaksi")
-            ->join("pelanggan", "transaksi.id_pelanggan", "=", "pelanggan.id_pelanggan")
-            ->whereIn('pelanggan.id_pelanggan', function ($query) {
-                $query->select('id_pelanggan')
-                    ->from('pelanggan');
-            })
-            ->distinct()
-            ->get()
-            ->toArray();
+     return DB::select("SELECT tgl_tagihan,nama_pelanggan,no_penjualan,no_tagihan,subtotal from transaksi
+        join pelanggan on transaksi.id_pelanggan=pelanggan.id_pelanggan
+        join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
+        join tagihan on tagihan.id_transaksi=transaksi.id_transaksi");
     }
     public function total()
     {
