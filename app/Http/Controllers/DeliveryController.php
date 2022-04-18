@@ -19,7 +19,7 @@ class DeliveryController extends Controller
         $this->model = new DeliveryModel();
         $this->QuotationController = new QuotationController;
         $this->GoodsController = new GoodsController;
-        $this->SalesModel=new SalesModel();
+        $this->SalesModel = new SalesModel();
     }
     public function index()
     {
@@ -433,19 +433,11 @@ class DeliveryController extends Controller
 
     public function print($no_transaksi)
     {
-
-
         $no_transaksi = str_replace('-', '/', $no_transaksi);
-        // dd($no_transaksi);
         $tgl_pengiriman = $this->model->detail($no_transaksi);
         $tgl_pengiriman = end($tgl_pengiriman);
         $tgl_pengiriman = $tgl_pengiriman->tgl_pengiriman;
-        
-       $data= $this->model->print($no_transaksi);
-
-            // dd($tgl_pengiriman);
-
-
+        $data=$this->model->print($no_transaksi);
         $data = [
             'tittle' => "Print Delivery Document",
             'data' => $data,

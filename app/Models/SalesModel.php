@@ -119,7 +119,7 @@ class SalesModel extends Model
      public function detail($no_penjualan)
      {
           return DB::table('transaksi')
-
+               ->distinct('no_penjualan')
                ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
                ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', '=', 'penawaran.id_penawaran')
                ->join("produk", 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')

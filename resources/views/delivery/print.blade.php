@@ -126,13 +126,13 @@
                                 {{ $p->nama_produk }}
                             </td>
                             <td>
-                                {{ $p->tebal_penawaran }}
+                                {{ $p->tebal_transaksi }}
                             </td>
                             <td>
-                                {{ $p->lebar_penawaran }}
+                                {{ $p->lebar_transaksi }}
                             </td>
                             <td>
-                                {{ $p->panjang_penawaran }}
+                                {{ $p->panjang_transaksi }}
                             </td>
                             <td>
                                 {{ $p->jumlah }}

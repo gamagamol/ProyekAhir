@@ -12,35 +12,11 @@ class PurchaseModel extends Model
     public function index($id = null)
     {
         if ($id) {
-            return DB::table('transaksi')
-
-                ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
-                ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', '=', 'penawaran.id_penawaran')
-                ->join("produk", 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')
-                ->join("pelanggan", 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
-                ->join("pemasok", 'transaksi.id_pemasok', '=', 'pemasok.id_pemasok')
-                ->join("pengguna", 'transaksi.id', '=', 'pengguna.id')
-                ->join('penjualan', "penjualan.id_transaksi", "transaksi.id_transaksi")
-                ->join('pembelian', "pembelian.id_transaksi", "transaksi.id_transaksi")
-                ->where('no_pembelian', "=", $id)
-                ->paginate(1);
-        } else {
-
-            // return DB::table('transaksi')
-
-            //     ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
-            //     ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', '=', 'penawaran.id_penawaran')
-            //     ->join('penjualan', 'penjualan.id_transaksi', '=', 'transaksi.id_transaksi')
-            //     ->join('detail_transaksi_penjualan', 'detail_transaksi_penjualan.id_penjualan', '=', 'penjualan.id_penjualan')
-            //     ->join('pembelian', 'pembelian.id_transaksi', '=', 'transaksi.id_transaksi')
-            //     ->join('detail_transaksi_pembelian', 'detail_transaksi_pembelian.id_pembelian', '=', 'pembelian.id_pembelian')
-            //     ->join("produk", 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')
-            //     ->join("pelanggan", 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
-            //     ->join("pemasok", 'transaksi.id_pemasok', '=', 'pemasok.id_pemasok')
-            //     ->join("pengguna", 'transaksi.id', '=', 'pengguna.id')
-            //     ->groupBy('pembelian.no_pembelian')
-            //     ->orderBy('tgl_pembelian', 'DESC')
-            //     ->paginate(5);
+        $query="where no_pembelian = '$id'";
+        }else{
+            $query="";
+        }
+          
 
             return DB::select(
                 "SELECT * FROM pembelian join detail_transaksi_pembelian 
@@ -54,12 +30,13 @@ class PurchaseModel extends Model
             left join penerimaan_barang on penerimaan_barang.id_pembelian=pembelian.id_pembelian
             left join detail_penerimaan_barang on penerimaan_barang.id_penerimaan_barang=detail_penerimaan_barang.id_penerimaan_barang
           left   join pemasok on transaksi.id_pemasok  = pemasok.id_pemasok
+           $query
             group by no_pembelian
             -- having jumlah_detail_penerimaan is null
              order by tgl_pembelian desc,no_pembelian desc
          "
             );
-        }
+        
     }
     public function show($kode_transaksi)
     {
