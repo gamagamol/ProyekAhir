@@ -241,11 +241,13 @@ class DeliveryModel extends Model
         for ($i = 0; $i < count($no_pengiriman); $i++) {
             if ($no_pengiriman[$i]->no_pengiriman) {
                 $query = " and jumlah_detail_penerimaan >= ifnull( jumlah_detail_pengiriman,0) ";
+                break;
             } else {
                 $query = " and jumlah_detail_penerimaan > ifnull( jumlah_detail_pengiriman,0)";
             }
         }
-
+        // dump($no_pengiriman);
+        // dd($query);
 
 
 
@@ -267,21 +269,23 @@ class DeliveryModel extends Model
     }
 
 
-    public function print($no_penerimaan)
+    public function print($no_pengiriman)
     {
         return DB::table('transaksi')
             ->join("pelanggan", "transaksi.id_pelanggan", "=", "pelanggan.id_pelanggan")
             ->join("pengguna", "transaksi.id", "=", "pengguna.id")
             ->join('penawaran', "penawaran.id_transaksi", "=", "transaksi.id_transaksi")
+            ->join('penjualan', "penjualan.id_transaksi", "=", "transaksi.id_transaksi")
             ->join('pengiriman', "pengiriman.id_transaksi", "=", "transaksi.id_transaksi")
             ->join('detail_transaksi_pengiriman', "detail_transaksi_pengiriman.id_pengiriman", "=", "pengiriman.id_pengiriman")
             ->join('detail_transaksi_penawaran', "detail_transaksi_penawaran.id_penawaran", "=", "penawaran.id_penawaran")
             ->join("produk", "detail_transaksi_pengiriman.id_produk", "=", "produk.id_produk")
             ->join('penerimaan_barang', 'pengiriman.id_penerimaan_barang', '=', 'penerimaan_barang.id_penerimaan_barang')
-            ->where('no_penerimaan', $no_penerimaan)
+            ->join('detail_transaksi_penjualan','penjualan.id_penjualan', 'detail_transaksi_penjualan.id_penjualan')
+            ->where('no_pengiriman', $no_pengiriman)
             ->groupBy('detail_transaksi_pengiriman.id_produk')
             ->orderBy('tgl_pengiriman', 'asc')
-            ->get();;
+            ->get();
     }
 
 

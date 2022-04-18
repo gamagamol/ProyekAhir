@@ -119,7 +119,7 @@
                                 {{ $p->panjang_transaksi }}
                             </td>
                             <td>
-                                {{ $p->jumlah_detail_pengiriman }}
+                                {{ $p->jumlah_detail_penjualan }}
                             </td>
 
                             <td>

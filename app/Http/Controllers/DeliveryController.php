@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\GoodsController;
+use App\Models\SalesModel;
 
 class DeliveryController extends Controller
 {
@@ -18,6 +19,7 @@ class DeliveryController extends Controller
         $this->model = new DeliveryModel();
         $this->QuotationController = new QuotationController;
         $this->GoodsController = new GoodsController;
+        $this->SalesModel=new SalesModel();
     }
     public function index()
     {
@@ -204,6 +206,8 @@ class DeliveryController extends Controller
                 break;
             }
         }
+
+        // dd($penerimaan);
 
 
 
@@ -432,19 +436,20 @@ class DeliveryController extends Controller
 
 
         $no_transaksi = str_replace('-', '/', $no_transaksi);
-
-        $tgl_pengiriman= $this->model->detail($no_transaksi);
-        $tgl_pengiriman=end($tgl_pengiriman);
-        $tgl_pengiriman=$tgl_pengiriman->tgl_pengiriman;
+        // dd($no_transaksi);
+        $tgl_pengiriman = $this->model->detail($no_transaksi);
+        $tgl_pengiriman = end($tgl_pengiriman);
+        $tgl_pengiriman = $tgl_pengiriman->tgl_pengiriman;
         
-        $data=$this->detail($no_transaksi);
-        // dd($data['data']);
+       $data= $this->model->print($no_transaksi);
+
+            // dd($tgl_pengiriman);
 
 
         $data = [
             'tittle' => "Print Delivery Document",
-            'data' => $data['data'],
-            'tgl_pengiriman'=>$tgl_pengiriman
+            'data' => $data,
+            'tgl_pengiriman' => $tgl_pengiriman
         ];
 
         return view('delivery.print', $data);
