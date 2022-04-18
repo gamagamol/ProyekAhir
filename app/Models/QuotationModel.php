@@ -11,6 +11,10 @@ class QuotationModel extends Model
     use HasFactory;
     public function index($id = null)
     {
+        if ($id=='ALL') {
+         $id='';
+        }
+
         if ($id){
 
             return DB::table('penawaran')
@@ -20,10 +24,7 @@ class QuotationModel extends Model
                 ->join('pelanggan','transaksi.id_pelanggan','=', 'pelanggan.id_pelanggan')
                 ->join('pengguna','transaksi.id','=', 'pengguna.id')
                 ->groupBy("kode_transaksi")
-                ->where([
-                    ['status_transaksi', '=', 'quotation'],
-                    ['no_penawaran','=',$id]
-                ])
+                ->where('no_penawaran', '=', $id)
                 ->orderBy("tgl_penawaran", "asc")
                 ->paginate(5);
         }

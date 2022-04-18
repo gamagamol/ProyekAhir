@@ -18,6 +18,7 @@
                         <form action={{ url('quotation') }} method="GET" id="serch-form">
                             <select class="form-control form-select" aria-label="Default select example" name='serch'
                                 id="serch">
+                                <option value="ALL">All</option>
                                 @foreach ($deta as $d)
                                     <option value={{ $d->no_penawaran }}>{{ $d->no_penawaran }}</option>
                                 @endforeach

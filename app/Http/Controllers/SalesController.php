@@ -24,10 +24,11 @@ class SalesController extends Controller
             $data = $this->SalesModel->index();
 
         }
+        // dump(DB::table('penjualan')->distinct()->select('no_penjualan')->get());
         $data = [
             'tittle' => 'Sales Order',
             "data" => $data,
-            "deta"=>$this->SalesModel->index()
+            "deta"=> DB::table('penjualan')->distinct()->select('no_penjualan')->get()
 
 
         ];

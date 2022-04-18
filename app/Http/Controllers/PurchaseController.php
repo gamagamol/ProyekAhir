@@ -246,7 +246,7 @@ class PurchaseController extends Controller
                         'id_penjualan' => $produk[$i]['id_penjualan'],
                         'id_transaksi' => $id_transaksi[$i],
                         'no_pembelian' => $anp,
-                        'tgl_pembelian' => $tgl_penjualan
+                        'tgl_pembelian' => $tgl_pembelian
                     ];
 
 
@@ -275,7 +275,7 @@ class PurchaseController extends Controller
                     'id_penjualan' => $quos->id_penjualan,
                     'id_transaksi' => $quos->id_transaksi,
                     'no_pembelian' => $no_pembelian,
-                    'tgl_pembelian' => $tgl_penjualan
+                    'tgl_pembelian' => $tgl_pembelian
                 ];
 
 

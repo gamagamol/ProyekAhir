@@ -16,7 +16,8 @@
                         <form action={{ url('sales') }} method="GET" id="serch-form">
                             <select class="form-control form-select" aria-label="Default select example" name='serch'
                                 id="serch">
-                                @foreach ($data as $d)
+                                <option value="ALL">All</option>
+                                @foreach ($deta as $d)
                                     <option value={{ $d->no_penjualan }}>{{ $d->no_penjualan }}</option>
                                 @endforeach
                             </select>
