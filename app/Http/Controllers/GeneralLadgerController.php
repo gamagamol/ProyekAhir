@@ -71,7 +71,6 @@ class GeneralLadgerController extends Controller
 
 
 
-
         $data = [
             'tittle' => "General Ledger",
             'data' => $this->model->index(),

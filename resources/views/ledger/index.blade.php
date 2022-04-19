@@ -57,7 +57,6 @@
                             @else
                                 <td> {{ ' ' }} </td>
                                 <td> {{ 'Rp.' . number_format($saldo_awal_kas, 2, ',', '.') }} </td>
-
                             @endif
                         </tr>
 
@@ -78,11 +77,10 @@
                                     <td>{{ '' }}</td>
                                     <td>{{ 'Rp.' . number_format($k->nominal, 2, ',', '.') }}</td>
 
-                                    @if ($saldo_awal_kas>0)
-                                    <?php $total_kas = $saldo_awal_kas - $k->nominal; ?>
+                                    @if ($saldo_awal_kas > 0)
+                                        <?php $total_kas = $saldo_awal_kas - $k->nominal; ?>
                                     @else
-                                    <?php $total_kas = $total_kas - $k->nominal; ?>
-
+                                        <?php $total_kas = $total_kas - $k->nominal; ?>
                                     @endif
 
                                     <td>{{ '' }}</td>
@@ -120,7 +118,6 @@
                         </tr>
 
 
-                        <?php $total_piutang = 0; ?>
                         <tr>
                             <td>{{ date('Y') . '-01-01' }}</td>
                             <td>Beginning Balance</td>
@@ -133,10 +130,10 @@
                             @else
                                 <td> {{ ' ' }} </td>
                                 <td> {{ 'Rp.' . number_format($saldo_awal_piutang, 2, ',', '.') }} </td>
-
                             @endif
                         </tr>
 
+                        <?php $total_piutang = 0; ?>
 
                         @foreach ($piutang as $k)
                             <tr>
@@ -145,10 +142,10 @@
                                 <td>{{ $k->kode_akun }}</td>
                                 @if ($k->posisi_db_cr == 'debit')
                                     <td>{{ 'Rp.' . number_format($k->nominal, 2, ',', '.') }}</td>
-
                                     <td>{{ '' }}</td>
 
-                                    <?php $total_piutang = $saldo_awal_piutang + $k->nominal; ?>
+                                    <?php $total_piutang += $saldo_awal_piutang + $k->nominal; ?>
+
 
                                     <td>{{ 'Rp.' . number_format($total_piutang, 2, ',', '.') }}</td>
                                     <td>{{ '' }}</td>
@@ -157,11 +154,9 @@
                                     <td>{{ 'Rp.' . number_format($k->nominal, 2, ',', '.') }}</td>
 
                                     @if ($saldo_awal_piutang > 0)
-
-                                        <?php $total_piutang = $saldo_awal_piutang - $k->nominal; ?>
+                                        <?php $total_piutang -= $saldo_awal_piutang - $k->nominal; ?>
                                     @else
-                                        <?php $total_piutang = $k->nominal - $k->nominal; ?>
-
+                                        <?php $total_piutang -= $k->nominal; ?>
                                     @endif
 
                                     <td>{{ '' }}</td>
@@ -214,7 +209,6 @@
                             @else
                                 <td> {{ ' ' }} </td>
                                 <td> {{ 'Rp.' . number_format($saldo_awal_utang, 2, ',', '.') }} </td>
-
                             @endif
                         </tr>
 
@@ -293,7 +287,6 @@
                             @else
                                 <td> {{ ' ' }} </td>
                                 <td> {{ 'Rp.' . number_format($saldo_awal_ppn, 2, ',', '.') }} </td>
-
                             @endif
                         </tr>
                         @foreach ($ppn as $k)
@@ -305,7 +298,7 @@
                                     <td>{{ '' }}</td>
                                     <td>{{ 'Rp.' . number_format($k->nominal, 2, ',', '.') }}</td>
 
-                                    <?php $total_ppn = $saldo_awal_ppn + $k->nominal; ?>
+                                    <?php $total_ppn += $saldo_awal_ppn + $k->nominal; ?>
 
                                     <td>{{ '' }}</td>
                                     <td>{{ 'Rp.' . number_format($total_ppn, 2, ',', '.') }}</td>
@@ -314,7 +307,7 @@
                                     <td>{{ '' }}</td>
 
 
-                                    <?php $total_ppn = $saldo_awal_ppn - $k->nominal; ?>
+                                    <?php $total_ppn -= $k->nominal; ?>
 
                                     <td>{{ 'Rp.' . number_format($total_ppn, 2, ',', '.') }}</td>
                                     <td>{{ '' }}</td>
@@ -369,7 +362,6 @@
                             @else
                                 <td> {{ ' ' }} </td>
                                 <td> {{ 'Rp.' . number_format($saldo_awal_ongkir, 2, ',', '.') }} </td>
-
                             @endif
                         </tr>
                         @foreach ($ongkir as $k)
@@ -382,19 +374,19 @@
                                     <td>{{ 'Rp.' . number_format($k->nominal, 2, ',', '.') }}</td>
 
 
-                                    <?php $total_ongkir = $saldo_awal_ongkir + $k->nominal; ?>
+                                    <?php $total_ongkir += $saldo_awal_ongkir + $k->nominal; ?>
 
                                     <td>{{ '' }}</td>
                                     <td>{{ 'Rp.' . number_format($total_ongkir, 2, ',', '.') }}</td>
                                 @else
-                                    <td>{{ '' }}</td>
                                     <td>{{ 'Rp.' . number_format($k->nominal, 2, ',', '.') }}</td>
-
-
-                                    <?php $total_ongkir = $saldo_awal_ongkir - $k->nominal; ?>
-
                                     <td>{{ '' }}</td>
+
+
+                                    <?php $total_ongkir -= $k->nominal; ?>
+
                                     <td>{{ 'Rp.' . number_format($total_ongkir, 2, ',', '.') }}</td>
+                                    <td>{{ '' }}</td>
                                 @endif
                             </tr>
                         @endforeach
@@ -405,6 +397,8 @@
 
                     </table>
                     <br><br>
+
+
                     <table class="table table-bordered text-center mx-auto" id="dataTable" width="100%" cellspacing="0">
 
                         <tr>
@@ -439,7 +433,6 @@
                             @else
                                 <td> {{ 'Rp.' . number_format($saldo_awal_penjualan, 2, ',', '.') }} </td>
                                 <td> {{ ' ' }} </td>
-
                             @endif
                         </tr>
                         @foreach ($revenue as $k)
@@ -461,7 +454,7 @@
                                     <td>{{ 'Rp.' . number_format($k->nominal, 2, ',', '.') }}</td>
 
 
-                                    <?php $total = $k->nominal + $saldo_awal_penjualan; ?>
+                                    <?php $total += $k->nominal + $saldo_awal_penjualan; ?>
 
                                     <td>{{ '' }}</td>
                                     <td>{{ 'Rp.' . number_format($total, 2, ',', '.') }}</td>
@@ -508,7 +501,6 @@
                             @else
                                 <td> {{ ' ' }} </td>
                                 <td> {{ 'Rp.' . number_format($saldo_awal_pembelian, 2, ',', '.') }} </td>
-
                             @endif
                         </tr>
 

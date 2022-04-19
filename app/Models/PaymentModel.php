@@ -117,6 +117,7 @@ class PaymentModel extends Model
       
 
         // perubahan jurnal
+
         if ($nominal==null) {
             $nominal = DB::table('jurnal')
                 ->select('nominal')
@@ -125,7 +126,6 @@ class PaymentModel extends Model
                 ->first();
             $nominal = $nominal->nominal;  
         }
-  
 
         $jurnal = [
             [
@@ -143,8 +143,60 @@ class PaymentModel extends Model
                 'posisi_db_cr' => "kredit"
             ],
         ];
-
         DB::table('jurnal')->insert($jurnal);
+
+
+        // $total_nominal = 0;
+        // $total_ppn = 0;
+        // $total_ongkir = 0;
+        // $total = 0;
+        // for ($i = 0; $i < count($id_transaksi);
+        //     $i++
+        // ) {
+
+        //     $nominal = DB::table('transaksi')
+        //         ->selectRaw('total,ppn,ongkir,subtotal')
+        //         ->where('id_transaksi', "=", $id_transaksi[$i])
+        //         ->first();
+        //     $total_nominal += $nominal->subtotal;
+        //     $total_ppn += $nominal->ppn;
+        //     $total_ongkir = $nominal->ongkir;
+        //     $total += $total_nominal+$total_ppn+$total_ongkir;
+        // }
+
+
+        
+        // $jurnal = [
+        //     [
+        //         "id_transaksi" => $id_transaksi[0],
+        //         'kode_akun' => 111,
+        //         'tgl_jurnal' => $data_pembayaran[0]['tgl_pembayaran'],
+        //         'nominal' => $total_nominal,
+        //         'posisi_db_cr' => "debit"
+        //     ],
+        //     [
+        //         "id_transaksi" => $id_transaksi[0],
+        //         'kode_akun' => 211,
+        //         'tgl_jurnal' => $data_pembayaran[0]['tgl_pembayaran'],
+        //         'nominal' => $total_ppn,
+        //         'posisi_db_cr' => "debit"
+        //     ],
+        //     [
+        //         "id_transaksi" => $id_transaksi[0],
+        //         'kode_akun' => 212,
+        //         'tgl_jurnal' => $data_pembayaran[0]['tgl_pembayaran'],
+        //         'nominal' => $total_ongkir,
+        //         'posisi_db_cr' => "debit"
+        //     ],
+        //     [
+        //         "id_transaksi" => $id_transaksi[0],
+        //         'kode_akun' => 112,
+        //         'tgl_jurnal' => $data_pembayaran[0]['tgl_pembayaran'],
+        //         'nominal' => $total,
+        //         'posisi_db_cr' => "kredit"
+        //     ],
+        // ];
+        // DB::table('jurnal')->insert($jurnal);
     }
 
     public function show($no_penerimaan)

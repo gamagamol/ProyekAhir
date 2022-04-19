@@ -137,7 +137,7 @@ class BillPaymentModel extends Model
             $total_nominal += $nominal->subtotal;
             $total_ppn += $nominal->ppn;
             $total_ongkir = $nominal->ongkir;
-            $total += $nominal->total;
+            $total += $total_nominal + $total_ppn + $total_ongkir;
         }
 
 
