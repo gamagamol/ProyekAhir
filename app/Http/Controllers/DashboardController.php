@@ -42,14 +42,16 @@ class DashboardController extends Controller
             $saldo_awal_penjualan = $saldo_awal[4]->saldo_awal;
         }
 
-        // how make total sales
+        
+        $sales =
+        DB::select("SELECT sum(subtotal) as sales from transaksi
+        join pelanggan on transaksi.id_pelanggan=pelanggan.id_pelanggan
+        join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
+        join tagihan on tagihan.id_transaksi=transaksi.id_transaksi");
+     
 
 
-        $total_sales = $this->RDSM->index();
-        $sales=0;
-        foreach ($total_sales as $r) {
-            $sales = $sales + $r->total;
-        }
+       
 
 
 
@@ -79,7 +81,7 @@ class DashboardController extends Controller
         }
         $data = [
             'tittle' => "DashBoard",
-            'sales' => $sales,
+            'sales' => $sales[0]->sales,
             'recivable' => DB::table('transaksi')->where('status_transaksi', '=', 'bill')->sum('total'),
             'grafik' => $this->DM->grafik(),
             'tagihan'=> $tagihan,

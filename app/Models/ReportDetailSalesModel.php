@@ -11,21 +11,12 @@ class ReportDetailSalesModel extends Model
     use HasFactory;
     public function index()
     {
-        // return DB::table('transaksi')
-        //     ->selectRaw('DISTINCT nama_pelanggan,no_penjualan,no_tagihan,tgl_tagihan,subtotal,total,sum(total) as total_keseluruhan')
-        //     ->join('penjualan', 'penjualan.id_transaksi', "=", 'transaksi.id_transaksi')
-        //     ->join("tagihan", "tagihan.id_transaksi", "=", "transaksi.id_transaksi")
-        //     ->join("pelanggan", "transaksi.id_pelanggan", "=", "pelanggan.id_pelanggan")
-        //     ->groupBy('transaksi.id_pelanggan')
-
-        //     ->get();
-
-
-     return DB::select("SELECT tgl_tagihan,nama_pelanggan,no_penjualan,no_tagihan,subtotal from transaksi
+        return DB::select("SELECT tgl_tagihan,nama_pelanggan,no_penjualan,no_tagihan,subtotal from transaksi
         join pelanggan on transaksi.id_pelanggan=pelanggan.id_pelanggan
         join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
         join tagihan on tagihan.id_transaksi=transaksi.id_transaksi");
     }
+
     public function total()
     {
         return DB::table('transaksi')
@@ -53,7 +44,7 @@ class ReportDetailSalesModel extends Model
                 ->leftJoin('pelanggan', 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
                 ->leftJoin('pengguna', 'pengguna.id', '=', 'transaksi.id')
                 ->groupBy('kode_transaksi')
-                ->having('no_penjualan','=', $no_penjualan)
+                ->having('no_penjualan', '=', $no_penjualan)
                 ->paginate(5);
         } else {
 
