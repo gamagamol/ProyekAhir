@@ -428,11 +428,11 @@
                             <td>{{ ' ' }} </td>
                             <td>{{ ' ' }} </td>
                             @if ($saldo_awal_penjualan > 0)
+                            <td> {{ 'Rp.' . number_format($saldo_awal_penjualan, 2, ',', '.') }} </td>
                                 <td> {{ ' ' }} </td>
-                                <td> {{ 'Rp.' . number_format($saldo_awal_penjualan, 2, ',', '.') }} </td>
                             @else
-                                <td> {{ 'Rp.' . number_format($saldo_awal_penjualan, 2, ',', '.') }} </td>
-                                <td> {{ ' ' }} </td>
+                            <td> {{ ' ' }} </td>
+                            <td> {{ 'Rp.' . number_format($saldo_awal_penjualan, 2, ',', '.') }} </td>
                             @endif
                         </tr>
                         @foreach ($revenue as $k)
@@ -441,14 +441,13 @@
                                 <td>{{ $k->nama_akun }}</td>
                                 <td>{{ $k->kode_akun }}</td>
                                 @if ($k->posisi_db_cr == 'debit')
+                                <td>{{ '' }}</td>
                                     <td>{{ 'Rp.' . number_format($k->nominal, 2, ',', '.') }}</td>
-
-                                    <td>{{ '' }}</td>
 
                                     <?php $total = $saldo_awal_penjualan + $k->nominal; ?>
 
-                                    <td>{{ 'Rp.' . number_format($total, 2, ',', '.') }}</td>
                                     <td>{{ '' }}</td>
+                                    <td>{{ 'Rp.' . number_format($total, 2, ',', '.') }}</td>
                                 @else
                                     <td>{{ '' }}</td>
                                     <td>{{ 'Rp.' . number_format($k->nominal, 2, ',', '.') }}</td>
