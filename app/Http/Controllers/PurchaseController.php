@@ -59,7 +59,7 @@ class PurchaseController extends Controller
         $kode_transaksi = $request->input('kode_transaksi');
         $id_transaksi = $request->input('id_transaksi');
         $tgl_pembelian = $request->input('tgl_pembelian');
-        $id_pemasok = $request->input('id_pemasok');
+        $id_pemasok =  $request->input('id_pemasok');
         $unit = $request->input('unit');
         $quotation = $this->PurchaseModel->edit($kode_transaksi);
         $tgl_penjualan = $quotation[0]->tgl_penjualan;
@@ -71,9 +71,7 @@ class PurchaseController extends Controller
         $bentuk_produk = $request->input('bentuk_produk');
         $layanan = $request->input('layanan');
         $harga = $request->input('harga');
-
         $jumlah_unit = $request->input('jumlah');
-
         $produk = [];
         $arr_produk = [];
         //    check array apa bukan
@@ -82,11 +80,10 @@ class PurchaseController extends Controller
 
             // Validation Proses
 
-
             for ($ip = 0; $ip < count($id_pemasok); $ip++) {
                 if ($id_pemasok[$ip] == "null") {
                     return redirect()->back()->with("failed", "Choose Your Supplier ");
-                } 
+                }
             }
             // dd($id_pemasok);
 
@@ -107,7 +104,7 @@ class PurchaseController extends Controller
             }
 
             // dd($unit);
-          
+
 
             // mengisi var produk
             for ($ipo = 0; $ipo < count($id_produk); $ipo++) {
@@ -189,13 +186,12 @@ class PurchaseController extends Controller
                     }
                 }
             }
-        }
-        else{
-            if ($request->input('id_pemasok')==null) {
+        } else {
+            if ($request->input('id_pemasok') == null) {
                 return redirect()->back()->with("failed", "Please click the add button for choose your supplier ");
             }
         }
-   
+
 
 
         $rules = [
@@ -218,9 +214,15 @@ class PurchaseController extends Controller
         $array_no_pembelian = [];
 
         // Persiapan no penjualan
+        // check id pemasok nya duplikat atau engga?
+        if (is_array($id_pemasok)) {
+            if (count(array_flip($id_pemasok)) === 1) {
+                $id_pemasok = $id_pemasok[0];
+            }
+        }
         $no_pembelian = $this->PurchaseModel->no_pembelian($tgl_pembelian, $id_pemasok);
 
-        if (is_array($id_pemasok)) {
+        if (is_array($no_pembelian)) {
 
             foreach ($no_pembelian as $np) {
                 $no_quotation = explode('-', $tgl_pembelian);
@@ -236,37 +238,73 @@ class PurchaseController extends Controller
 
         // pengisian array data penjualan
         // mencari harga dan total
-        if (is_array($id_pemasok)) {
 
-            $i = 0;
-            foreach ($array_no_pembelian as $anp) {
-                if ($id_produk[$i] == $produk[$i]['id_produk']) {
+        if (is_array($unit)) {
+            if (gettype($id_pemasok) == 'array') {
 
-                    $data_pembelian[$i] = [
-                        'id_penjualan' => $produk[$i]['id_penjualan'],
-                        'id_transaksi' => $id_transaksi[$i],
-                        'no_pembelian' => $anp,
-                        'tgl_pembelian' => $tgl_pembelian
-                    ];
+                $i = 0;
+                foreach ($array_no_pembelian as $anp) {
+                    if ($id_produk[$i] == $produk[$i]['id_produk']) {
 
-
-
-                    $data_detail_pembelian[$i] = [
-                        'id_pembelian' => 0,
-                        'id_produk' => $id_produk[$i],
-                        'jumlah_detail_pembelian' => $unit[$i],
-                        'harga_detail_pembelian' => $produk[$i]['harga'],
-                        'total_detail_pembelian' => ($produk[$i]['harga'] * $produk[$i]['berat']) + (($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11),
-                        'berat_detail_pembelian' => $produk[$i]['berat'],
-                        'subtotal_detail_pembelian' => $produk[$i]['harga'] * $produk[$i]['berat'],
-                        'ppn_detail_pembelian' => ($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11,
+                        $data_pembelian[$i] = [
+                            'id_penjualan' => $produk[$i]['id_penjualan'],
+                            'id_transaksi' => $id_transaksi[$i],
+                            'no_pembelian' => $anp,
+                            'tgl_pembelian' => $tgl_pembelian
+                        ];
 
 
 
-                    ];
+                        $data_detail_pembelian[$i] = [
+                            'id_pembelian' => 0,
+                            'id_produk' => $id_produk[$i],
+                            'jumlah_detail_pembelian' => $unit[$i],
+                            'harga_detail_pembelian' => $produk[$i]['harga'],
+                            'total_detail_pembelian' => ($produk[$i]['harga'] * $produk[$i]['berat']) + (($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11),
+                            'berat_detail_pembelian' => $produk[$i]['berat'],
+                            'subtotal_detail_pembelian' => $produk[$i]['harga'] * $produk[$i]['berat'],
+                            'ppn_detail_pembelian' => ($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11,
+
+
+
+                        ];
+                    }
+
+                    $i++;
                 }
+            } else {
 
-                $i++;
+
+                $i = 0;
+                foreach ($arr_produk as $anp) {
+                    if ($id_produk[$i] == $produk[$i]['id_produk']) {
+
+                        $data_pembelian[$i] = [
+                            'id_penjualan' => $produk[$i]['id_penjualan'],
+                            'id_transaksi' => $id_transaksi[$i],
+                            'no_pembelian' => $no_pembelian,
+                            'tgl_pembelian' => $tgl_pembelian
+                        ];
+
+
+
+                        $data_detail_pembelian[$i] = [
+                            'id_pembelian' => 0,
+                            'id_produk' => $id_produk[$i],
+                            'jumlah_detail_pembelian' => $unit[$i],
+                            'harga_detail_pembelian' => $produk[$i]['harga'],
+                            'total_detail_pembelian' => ($produk[$i]['harga'] * $produk[$i]['berat']) + (($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11),
+                            'berat_detail_pembelian' => $produk[$i]['berat'],
+                            'subtotal_detail_pembelian' => $produk[$i]['harga'] * $produk[$i]['berat'],
+                            'ppn_detail_pembelian' => ($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11,
+
+
+
+                        ];
+                    }
+
+                    $i++;
+                }
             }
         } else {
             $i = 0;
@@ -297,8 +335,8 @@ class PurchaseController extends Controller
             }
         }
         // jangan di hapus untuk check isi array
-        // dump($data_pembelian);
-        // dd($data_detail_pembelian);
+        dump($data_pembelian);
+        dd($data_detail_pembelian);
 
 
         $no_pembelian = $this->PurchaseModel->insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok, $kode_transaksi);

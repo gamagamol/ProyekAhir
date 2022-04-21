@@ -22,7 +22,7 @@
 
                         </div>
                         {{-- jangan hapus dulu penting --}}
-                        <div class="col-md-3 mt-2">
+                        <div class="col-md-3 mt-2" id="select-pemasok" >
                             <select class="form-control @error('id_pemasok') is-invalid @enderror" id="id_pemasok"
                                 name="id_pemasok" onchange="drop()" value="{{ old('id_pemasok') }}">
 
@@ -224,9 +224,12 @@
 
             $('#CreateSupplier').append(html)
 
-            $('#CreateSupplier').removeAttr('hidden');
+            $('#CreateSupplier').removeAttr('hidden',true)
+
+            $('#select-pemasok').attr('hidden',true)
 
             click++
+
         }
 
         function MoveCreate() {

@@ -41,24 +41,6 @@ class PurchaseModel extends Model
     public function show($kode_transaksi)
     {
 
-
-        // return DB::select("SELECT *,
-        //     sum(ifnull(jumlah_detail_pembelian,0)) as total_unit_pembelian ,sum(total_detail_pembelian)
-        //     FROM penjualan join detail_transaksi_penjualan 
-        //     on penjualan.id_penjualan=detail_transaksi_penjualan.id_penjualan
-        //     join transaksi on transaksi.id_transaksi=penjualan.id_transaksi
-        //     left outer join pembelian on pembelian.id_transaksi=transaksi.id_transaksi
-        //     LEFT OUTER join detail_transaksi_pembelian 
-        //     on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
-        //     join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
-        //     join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
-        //     join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
-        //     join pengguna on pengguna.id=transaksi.id
-        //     join produk on detail_transaksi_penjualan.id_produk=produk.id_produk
-
-        //     group by kode_transaksi,detail_transaksi_penjualan.id_produk 
-        //     having jumlah_detail_penjualan > sum(ifnull(jumlah_detail_pembelian,0)) and kode_transaksi='$kode_transaksi'");
-
         return DB::select("SELECT *,transaksi.id_transaksi,jumlah_detail_penjualan,jumlah_detail_pembelian  from transaksi 
         join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
         join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
@@ -76,14 +58,7 @@ class PurchaseModel extends Model
 
     public function edit($kode_transaksi)
     {
-        // return DB::table('transaksi')
-        //     ->selectRaw('transaksi.id_transaksi,penjualan.id_penjualan,penjualan.tgl_penjualan,penjualan.no_penjualan,detail_transaksi_penjualan.id_produk,detail_transaksi_penjualan.jumlah_detail_penjualan,transaksi.harga,transaksi.berat')
-        //     ->join('penjualan', 'penjualan.id_transaksi', '=', 'transaksi.id_transaksi')
-        //     ->join('detail_transaksi_penjualan', 'detail_transaksi_penjualan.id_penjualan', '=', 'penjualan.id_penjualan')
-        //     ->where('kode_transaksi', '=', $kode_transaksi)
-        //     ->get();
-
-
+      
         return DB::select("SELECT penawaran.id_penawaran,transaksi.id_transaksi,penjualan.id_penjualan,penjualan.tgl_penjualan,penjualan.no_penjualan
         ,detail_transaksi_penjualan.id_produk,detail_transaksi_penjualan.jumlah_detail_penjualan
         ,transaksi.harga,transaksi.berat,jumlah_detail_pembelian,
