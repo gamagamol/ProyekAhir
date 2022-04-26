@@ -36,7 +36,7 @@ CREATE TABLE `akun` (
 
 LOCK TABLES `akun` WRITE;
 /*!40000 ALTER TABLE `akun` DISABLE KEYS */;
-INSERT INTO `akun` VALUES (111,'CASH',11),(112,'ACCOUNT RECIEVABLE',11),(200,'ACCOUNTS PAYABLE',2),(211,'VAT DEBT',21),(212,'CARRYINNG LOAD DEBT',22),(411,'SALES',4),(500,'PURCHASE',5);
+INSERT INTO `akun` VALUES (111,'CASH',11),(112,'ACCOUNT RECIEVABLE',11),(200,'ACCOUNTS PAYABLE',2),(211,'VAT DEBT',21),(212,'CARRYING LOAD DEBT',22),(411,'SALES',4),(500,'PURCHASE',5);
 /*!40000 ALTER TABLE `akun` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -64,7 +64,7 @@ CREATE TABLE `detail_penerimaan_barang` (
 
 LOCK TABLES `detail_penerimaan_barang` WRITE;
 /*!40000 ALTER TABLE `detail_penerimaan_barang` DISABLE KEYS */;
-INSERT INTO `detail_penerimaan_barang` VALUES (193,2,10),(194,1,10),(195,2,10);
+INSERT INTO `detail_penerimaan_barang` VALUES (230,2,10),(231,10,10),(232,1,10);
 /*!40000 ALTER TABLE `detail_penerimaan_barang` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -92,7 +92,7 @@ CREATE TABLE `detail_transaksi_pembayaran` (
 
 LOCK TABLES `detail_transaksi_pembayaran` WRITE;
 /*!40000 ALTER TABLE `detail_transaksi_pembayaran` DISABLE KEYS */;
-INSERT INTO `detail_transaksi_pembayaran` VALUES (111,1),(110,2),(112,2);
+INSERT INTO `detail_transaksi_pembayaran` VALUES (136,1),(134,2),(135,10);
 /*!40000 ALTER TABLE `detail_transaksi_pembayaran` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -112,6 +112,7 @@ CREATE TABLE `detail_transaksi_pembelian` (
   `berat_detail_pembelian` float NOT NULL,
   `subtotal_detail_pembelian` int NOT NULL,
   `ppn_detail_pembelian` int NOT NULL,
+  `sisa_detail_penjualan` int NOT NULL,
   KEY `id_produk` (`id_produk`),
   KEY `detail_transaksi_pembelian_ibfk_1_idx` (`id_pembelian`),
   CONSTRAINT `detail_transaksi_pembelian_ibfk_1` FOREIGN KEY (`id_pembelian`) REFERENCES `pembelian` (`id_pembelian`),
@@ -125,7 +126,7 @@ CREATE TABLE `detail_transaksi_pembelian` (
 
 LOCK TABLES `detail_transaksi_pembelian` WRITE;
 /*!40000 ALTER TABLE `detail_transaksi_pembelian` DISABLE KEYS */;
-INSERT INTO `detail_transaksi_pembelian` VALUES (259,2,10,100000,6937500,62.5,6250000,687500),(260,1,10,100000,10279710,92.61,9261000,1018710),(261,2,10,100000,6937500,62.5,6250000,687500);
+INSERT INTO `detail_transaksi_pembelian` VALUES (302,2,10,100000,6937500,62.5,6250000,687500,0),(303,10,10,100000,10279710,92.61,9261000,1018710,0),(304,1,10,100000,6937500,62.5,6250000,687500,0);
 /*!40000 ALTER TABLE `detail_transaksi_pembelian` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -153,7 +154,7 @@ CREATE TABLE `detail_transaksi_penawaran` (
 
 LOCK TABLES `detail_transaksi_penawaran` WRITE;
 /*!40000 ALTER TABLE `detail_transaksi_penawaran` DISABLE KEYS */;
-INSERT INTO `detail_transaksi_penawaran` VALUES (266,1),(265,2),(267,2);
+INSERT INTO `detail_transaksi_penawaran` VALUES (310,1),(308,2),(309,10);
 /*!40000 ALTER TABLE `detail_transaksi_penawaran` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -186,7 +187,7 @@ CREATE TABLE `detail_transaksi_pengiriman` (
 
 LOCK TABLES `detail_transaksi_pengiriman` WRITE;
 /*!40000 ALTER TABLE `detail_transaksi_pengiriman` DISABLE KEYS */;
-INSERT INTO `detail_transaksi_pengiriman` VALUES (390,2,10,0,62.5,687500,6250000,6937500),(391,1,10,0,92.61,1018710,9261000,10279710),(392,2,10,0,62.5,687500,6250000,6937500);
+INSERT INTO `detail_transaksi_pengiriman` VALUES (435,2,5,5,31.25,343750,3125000,3468750),(436,10,5,5,46.31,509410,4631000,5140410),(437,2,5,0,31.25,343750,3125000,3468750),(438,10,5,0,46.31,509410,4631000,5140410),(439,1,10,0,62.5,687500,6250000,6937500);
 /*!40000 ALTER TABLE `detail_transaksi_pengiriman` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -215,7 +216,7 @@ CREATE TABLE `detail_transaksi_penjualan` (
 
 LOCK TABLES `detail_transaksi_penjualan` WRITE;
 /*!40000 ALTER TABLE `detail_transaksi_penjualan` DISABLE KEYS */;
-INSERT INTO `detail_transaksi_penjualan` VALUES (227,2,10),(228,1,10),(229,2,10);
+INSERT INTO `detail_transaksi_penjualan` VALUES (270,2,10),(271,10,10),(272,1,10);
 /*!40000 ALTER TABLE `detail_transaksi_penjualan` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -238,7 +239,7 @@ CREATE TABLE `jurnal` (
   KEY `fk_jurnal_tranasksi` (`id_transaksi`),
   CONSTRAINT `fk_jurnal_akun` FOREIGN KEY (`kode_akun`) REFERENCES `akun` (`kode_akun`),
   CONSTRAINT `fk_jurnal_tranasksi` FOREIGN KEY (`id_transaksi`) REFERENCES `transaksi` (`id_transaksi`)
-) ENGINE=InnoDB AUTO_INCREMENT=223 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=345 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -247,7 +248,7 @@ CREATE TABLE `jurnal` (
 
 LOCK TABLES `jurnal` WRITE;
 /*!40000 ALTER TABLE `jurnal` DISABLE KEYS */;
-INSERT INTO `jurnal` VALUES (211,286,112,'2022-04-14',17217200,'debit'),(212,286,211,'2022-04-14',1706210,'kredit'),(213,286,212,'2022-04-14',10000,'kredit'),(214,286,411,'2022-04-14',15511000,'kredit'),(215,286,111,'2022-04-14',17217200,'debit'),(216,286,112,'2022-04-14',17217200,'kredit'),(217,288,112,'2022-04-14',6937500,'debit'),(218,288,211,'2022-04-14',687500,'kredit'),(219,288,212,'2022-04-14',10000,'kredit'),(220,288,411,'2022-04-14',6250000,'kredit'),(221,288,111,'2022-04-14',6937500,'debit'),(222,288,112,'2022-04-14',6937500,'kredit');
+INSERT INTO `jurnal` VALUES (335,329,112,'2022-04-25',24275820,'debit'),(336,329,211,'2022-04-25',2393820,'kredit'),(337,329,212,'2022-04-25',120000,'kredit'),(338,329,411,'2022-04-25',21762000,'kredit'),(339,329,111,'2022-04-25',24275820,'debit'),(340,329,112,'2022-04-25',24275820,'kredit'),(341,329,211,'2022-04-25',2393820,'debit'),(342,329,111,'2022-04-25',2393820,'kredit'),(343,329,212,'2022-04-25',120000,'debit'),(344,329,111,'2022-04-25',120000,'kredit');
 /*!40000 ALTER TABLE `jurnal` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -274,7 +275,7 @@ CREATE TABLE `pelanggan` (
 
 LOCK TABLES `pelanggan` WRITE;
 /*!40000 ALTER TABLE `pelanggan` DISABLE KEYS */;
-INSERT INTO `pelanggan` VALUES ('P001','Mol\'s tecnology','jalan jakarta 4 no.7,RT 03/RW02 ANTAPANI KULON BANDUNG','Gama Ariefsadya','gamaariefsadya@gmail.com'),('P002','Mol\'s Academy','bandung','Gama Gamol','gamaariefsadya@gmail.com');
+INSERT INTO `pelanggan` VALUES ('P001','MOL\'S','JALAN JAKARTA 4 NO.7,RT 03/RW02 ANTAPANI KULON JAKARTA','GAMA','gamaariefsadya@gmail.com'),('P002','Mol\'s Academy','bandung','Gama Gamol','gamaariefsadya@gmail.com');
 /*!40000 ALTER TABLE `pelanggan` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -334,7 +335,7 @@ CREATE TABLE `pembantu_penawaran` (
   `ppn` int NOT NULL,
   `total` int NOT NULL,
   PRIMARY KEY (`id_pembantu`)
-) ENGINE=InnoDB AUTO_INCREMENT=299 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=342 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -361,7 +362,7 @@ CREATE TABLE `pembayaran` (
   PRIMARY KEY (`id_pembayaran`),
   UNIQUE KEY `id_transaksi` (`id_transaksi`),
   CONSTRAINT `fk_pembayaran_transaksi` FOREIGN KEY (`id_transaksi`) REFERENCES `transaksi` (`id_transaksi`)
-) ENGINE=InnoDB AUTO_INCREMENT=113 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=137 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -370,7 +371,7 @@ CREATE TABLE `pembayaran` (
 
 LOCK TABLES `pembayaran` WRITE;
 /*!40000 ALTER TABLE `pembayaran` DISABLE KEYS */;
-INSERT INTO `pembayaran` VALUES (110,286,'PYT/1/2022/04/14','2022-04-14'),(111,287,'PYT/1/2022/04/14','2022-04-14'),(112,288,'PYT/2/2022/04/14','2022-04-14');
+INSERT INTO `pembayaran` VALUES (134,329,'PYT/1/2022/04/25','2022-04-25'),(135,330,'PYT/1/2022/04/25','2022-04-25'),(136,331,'PYT/1/2022/04/25','2022-04-25');
 /*!40000 ALTER TABLE `pembayaran` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -422,7 +423,7 @@ CREATE TABLE `pembelian` (
   PRIMARY KEY (`id_pembelian`),
   KEY `pembelian_ibfk_1` (`id_transaksi`),
   CONSTRAINT `pembelian_ibfk_1` FOREIGN KEY (`id_transaksi`) REFERENCES `transaksi` (`id_transaksi`)
-) ENGINE=InnoDB AUTO_INCREMENT=262 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=305 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -431,7 +432,7 @@ CREATE TABLE `pembelian` (
 
 LOCK TABLES `pembelian` WRITE;
 /*!40000 ALTER TABLE `pembelian` DISABLE KEYS */;
-INSERT INTO `pembelian` VALUES (259,227,286,'PO/1/2022/04/14','2022-04-14'),(260,228,287,'PO/1/2022/04/14','2022-04-14'),(261,229,288,'PO/2/2022/04/14','2022-04-14');
+INSERT INTO `pembelian` VALUES (302,270,329,'PO/1/2022/04/25','2022-04-25'),(303,271,330,'PO/1/2022/04/25','2022-04-25'),(304,272,331,'PO/1/2022/04/25','2022-04-25');
 /*!40000 ALTER TABLE `pembelian` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -453,7 +454,7 @@ CREATE TABLE `penawaran` (
   PRIMARY KEY (`id_penawaran`),
   UNIQUE KEY `id_transaksi` (`id_transaksi`),
   CONSTRAINT `fk_penawaran_transaksi` FOREIGN KEY (`id_transaksi`) REFERENCES `transaksi` (`id_transaksi`)
-) ENGINE=InnoDB AUTO_INCREMENT=268 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=311 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -462,7 +463,7 @@ CREATE TABLE `penawaran` (
 
 LOCK TABLES `penawaran` WRITE;
 /*!40000 ALTER TABLE `penawaran` DISABLE KEYS */;
-INSERT INTO `penawaran` VALUES (265,286,'QTH/1/2022/04/14','2022-04-14',100,100,100),(266,287,'QTH/1/2022/04/14','2022-04-14',100,0,100),(267,288,'QTH/2/2022/04/14','2022-04-14',100,100,100);
+INSERT INTO `penawaran` VALUES (308,329,'QTH/1/2022/04/25','2022-04-25',100,100,100),(309,330,'QTH/1/2022/04/25','2022-04-25',100,100,100),(310,331,'QTH/1/2022/04/25','2022-04-25',100,0,100);
 /*!40000 ALTER TABLE `penawaran` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -480,7 +481,7 @@ CREATE TABLE `penerimaan_barang` (
   `no_penerimaan` varchar(100) NOT NULL,
   `tgl_penerimaan` date NOT NULL,
   PRIMARY KEY (`id_penerimaan_barang`)
-) ENGINE=InnoDB AUTO_INCREMENT=196 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=233 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -489,7 +490,7 @@ CREATE TABLE `penerimaan_barang` (
 
 LOCK TABLES `penerimaan_barang` WRITE;
 /*!40000 ALTER TABLE `penerimaan_barang` DISABLE KEYS */;
-INSERT INTO `penerimaan_barang` VALUES (193,259,286,'GR/1/2022/04/14','2022-04-14'),(194,260,287,'GR/1/2022/04/14','2022-04-14'),(195,261,288,'GR/2/2022/04/14','2022-04-14');
+INSERT INTO `penerimaan_barang` VALUES (230,302,329,'GR/1/2022/04/25','2022-04-25'),(231,303,330,'GR/1/2022/04/25','2022-04-25'),(232,304,331,'GR/1/2022/04/25','2022-04-25');
 /*!40000 ALTER TABLE `penerimaan_barang` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -540,7 +541,7 @@ CREATE TABLE `pengiriman` (
   KEY `fk_pengiriman_transaksi_idx` (`id_transaksi`),
   CONSTRAINT `fk_pengiriman_penjualan` FOREIGN KEY (`id_penjualan`) REFERENCES `penjualan` (`id_penjualan`),
   CONSTRAINT `fk_pengiriman_transaksi` FOREIGN KEY (`id_transaksi`) REFERENCES `transaksi` (`id_transaksi`)
-) ENGINE=InnoDB AUTO_INCREMENT=393 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=440 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -549,7 +550,7 @@ CREATE TABLE `pengiriman` (
 
 LOCK TABLES `pengiriman` WRITE;
 /*!40000 ALTER TABLE `pengiriman` DISABLE KEYS */;
-INSERT INTO `pengiriman` VALUES (390,193,286,227,'DO/1/2022/04/14','2022-04-14'),(391,194,287,228,'DO/1/2022/04/14','2022-04-14'),(392,195,288,229,'DO/2/2022/04/14','2022-04-14');
+INSERT INTO `pengiriman` VALUES (435,230,329,270,'DO/1/2022/04/25','2022-04-25'),(436,231,330,271,'DO/1/2022/04/25','2022-04-25'),(437,230,329,270,'DO/1/2022/04/25','2022-04-25'),(438,231,330,271,'DO/1/2022/04/25','2022-04-25'),(439,232,331,272,'DO/1/2022/04/25','2022-04-25');
 /*!40000 ALTER TABLE `pengiriman` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -568,7 +569,7 @@ CREATE TABLE `penjualan` (
   PRIMARY KEY (`id_penjualan`),
   UNIQUE KEY `id_transaksi` (`id_transaksi`),
   CONSTRAINT `fk_penjualan_transaksi` FOREIGN KEY (`id_transaksi`) REFERENCES `transaksi` (`id_transaksi`)
-) ENGINE=InnoDB AUTO_INCREMENT=230 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=273 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -577,7 +578,7 @@ CREATE TABLE `penjualan` (
 
 LOCK TABLES `penjualan` WRITE;
 /*!40000 ALTER TABLE `penjualan` DISABLE KEYS */;
-INSERT INTO `penjualan` VALUES (227,286,'SO/1/2022/04/14','2022-04-14'),(228,287,'SO/1/2022/04/14','2022-04-14'),(229,288,'SO/2/2022/04/14','2022-04-14');
+INSERT INTO `penjualan` VALUES (270,329,'SO/1/2022/04/25','2022-04-25'),(271,330,'SO/1/2022/04/25','2022-04-25'),(272,331,'SO/1/2022/04/25','2022-04-25');
 /*!40000 ALTER TABLE `penjualan` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -625,7 +626,7 @@ CREATE TABLE `tagihan` (
   UNIQUE KEY `id_pengiriman` (`id_pengiriman`),
   CONSTRAINT `fk_tagihan_pengiriman` FOREIGN KEY (`id_pengiriman`) REFERENCES `pengiriman` (`id_pengiriman`),
   CONSTRAINT `fk_tagihan_transaksi` FOREIGN KEY (`id_transaksi`) REFERENCES `transaksi` (`id_transaksi`)
-) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=173 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -634,7 +635,7 @@ CREATE TABLE `tagihan` (
 
 LOCK TABLES `tagihan` WRITE;
 /*!40000 ALTER TABLE `tagihan` DISABLE KEYS */;
-INSERT INTO `tagihan` VALUES (129,286,390,'INV/1/2022/04/14','2022-04-14'),(130,287,391,'INV/1/2022/04/14','2022-04-14'),(131,288,392,'INV/2/2022/04/14','2022-04-14');
+INSERT INTO `tagihan` VALUES (170,329,437,'INV/1/2022/04/25','2022-04-25'),(171,330,438,'INV/1/2022/04/25','2022-04-25'),(172,331,439,'INV/1/2022/04/25','2022-04-25');
 /*!40000 ALTER TABLE `tagihan` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -669,7 +670,7 @@ CREATE TABLE `transaksi` (
   KEY `fk_pengguna_tagihan` (`id`),
   CONSTRAINT `fk_tra_pelanggan` FOREIGN KEY (`id_pelanggan`) REFERENCES `pelanggan` (`id_pelanggan`),
   CONSTRAINT `fk_tra_pengguna` FOREIGN KEY (`id`) REFERENCES `pengguna` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=289 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=332 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -678,7 +679,7 @@ CREATE TABLE `transaksi` (
 
 LOCK TABLES `transaksi` WRITE;
 /*!40000 ALTER TABLE `transaksi` DISABLE KEYS */;
-INSERT INTO `transaksi` VALUES (286,0,'PJ1','CUTTING',100,100,100,62.5,100000,10,6250000,6937500,'payment','P001','PE-01',687500,10000,2),(287,0,'PJ1','MILLING',100,0,100,92.61,100000,10,9261000,10279700,'payment','P001','PE-01',1018710,10000,2),(288,0,'PJ2','CUTTING',100,100,100,62.5,100000,10,6250000,6937500,'payment','P001','PE-02',687500,10000,2);
+INSERT INTO `transaksi` VALUES (329,0,'PJ1','CUTTING',100,100,100,62.5,100000,10,6250000,6937500,'payment','P001','PE-01',687500,120000,2),(330,0,'PJ1','MILLING',100,100,100,92.61,100000,10,9261000,10279700,'payment','P001','PE-01',1018710,120000,2),(331,0,'PJ1','CUTTING',100,0,100,62.5,100000,10,6250000,6937500,'payment','P001','PE-01',687500,120000,2);
 /*!40000 ALTER TABLE `transaksi` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -691,4 +692,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-15  9:43:14
+-- Dump completed on 2022-04-26  9:02:54
