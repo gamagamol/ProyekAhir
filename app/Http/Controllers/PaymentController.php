@@ -120,7 +120,7 @@ class PaymentController extends Controller
                 }
             }
         }
-
+        // dd($id_transaksi);
        
 
         $this->model->insert($id_transaksi, $data_pembayaran, $data_detail_pembayaran,$nominal);

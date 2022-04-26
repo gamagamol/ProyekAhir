@@ -28,7 +28,7 @@ class BillPaymentController extends Controller
         } else {
             $data = $this->model->index();
         }
-       
+
 
         $data = [
             'tittle' => "Bill Payment ",
@@ -46,17 +46,17 @@ class BillPaymentController extends Controller
         // $array = $this->model->create($id_transaksi, $tgl_pengiriman);
         // $id_transaksi = $array['id_transaksi'];
         // $data = $array['data'];
-        $no_pengiriman= str_replace("-", "/", $no_pengiriman);
+        $no_pengiriman = str_replace("-", "/", $no_pengiriman);
         $data = $this->model->show($no_pengiriman);
         // dump($no_pengiriman);
         // dd($data);
-        $tgl_pengiriman=end($data);
-        $tgl_pengiriman=$tgl_pengiriman->tgl_pengiriman;
+        $tgl_pengiriman = end($data);
+        $tgl_pengiriman = $tgl_pengiriman->tgl_pengiriman;
 
         $data = [
             "tittle" => "Bill payment",
             'data' => $data,
-            'tgl_pengiriman'=> $tgl_pengiriman
+            'tgl_pengiriman' => $tgl_pengiriman
         ];
         return view('bill.create', $data);
     }
@@ -73,10 +73,10 @@ class BillPaymentController extends Controller
             DB::table('pengiriman')
             ->select('tgl_pengiriman')
             ->where('no_pengiriman', "=", $no_pengiriman[0])
-            ->orderBy('tgl_pengiriman','desc')
+            ->orderBy('tgl_pengiriman', 'desc')
             ->first();
 
-      
+
         $tgl_pengiriman = $tgl_pengiriman->tgl_pengiriman;
         $rules = [
             'tgl_pembayaran' => " after_or_equal:$tgl_pengiriman",
@@ -124,8 +124,9 @@ class BillPaymentController extends Controller
             $data_tagihan[$i] = ${"data_tagihan$i"};
         }
 
-            // check varibael final
-            // dd($data_tagihan);
+        // check varibael final
+        // dump($id_transaksi);
+        // dd($data_tagihan);
 
 
         $this->model->insert($data_transaksi, $data_tagihan, $id_transaksi);
@@ -149,19 +150,18 @@ class BillPaymentController extends Controller
         $no_tagihan = str_replace('-', '/', $no_tagihan);
         // dd($no_tagihan);
         $total = $this->model->detail($no_tagihan);
-        $ttl=0;
+        $ttl = 0;
         foreach ($total as $t) {
-          $ttl+= $t->total;
-            
+            $ttl += $t->total;
         }
-      $dueDate=$this->model->index($no_tagihan);
-  
+        $dueDate = $this->model->index($no_tagihan);
+
 
         $data = [
             'tittle' => "Print INVOICE",
             'data' => $this->model->detail($no_tagihan),
             'total_penyebut' => $total = penyebut($ttl),
-            'due_date'=>$dueDate[0]->DUE_DATE
+            'due_date' => $dueDate[0]->DUE_DATE
 
         ];
         return view('bill.print', $data);

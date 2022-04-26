@@ -14,20 +14,20 @@ class BillPaymentModel extends Model
     {
         if ($id) {
             return DB::table('transaksi')
-            ->selectRaw("tgl_tagihan,nama_pelanggan,no_tagihan,berat,total,layanan,nama_pengguna, DATE_ADD(tgl_tagihan, INTERVAL 31 DAY) AS DUE_DATE,no_pengiriman,kode_transaksi,no_penerimaan")
-            ->join("pelanggan", "transaksi.id_pelanggan", "=", "pelanggan.id_pelanggan")
-            ->join("pengguna", "transaksi.id", "=", "pengguna.id")
-            ->join('penawaran', "penawaran.id_transaksi", "=", "transaksi.id_transaksi")
-            ->join('penerimaan_barang', 'penerimaan_barang.id_transaksi', '=', 'transaksi.id_transaksi')
-            ->join('pengiriman', "pengiriman.id_transaksi", "=", "transaksi.id_transaksi")
-            ->join('detail_transaksi_pengiriman', "detail_transaksi_pengiriman.id_pengiriman", "=", "pengiriman.id_pengiriman")
-            ->join('detail_transaksi_penawaran', "detail_transaksi_penawaran.id_penawaran", "=", "penawaran.id_penawaran")
-            ->join("produk", "detail_transaksi_pengiriman.id_produk", "=", "produk.id_produk")
-            ->join("tagihan", "tagihan.id_transaksi", "=", "transaksi.id_transaksi")
-            ->where('no_tagihan', "=", "$id")
-            ->groupBy('tgl_tagihan', "no_tagihan")
-            ->orderBy('tgl_tagihan', 'asc')
-            ->paginate(1);
+                ->selectRaw("tgl_tagihan,nama_pelanggan,no_tagihan,berat,total,layanan,nama_pengguna, DATE_ADD(tgl_tagihan, INTERVAL 31 DAY) AS DUE_DATE,no_pengiriman,kode_transaksi,no_penerimaan")
+                ->join("pelanggan", "transaksi.id_pelanggan", "=", "pelanggan.id_pelanggan")
+                ->join("pengguna", "transaksi.id", "=", "pengguna.id")
+                ->join('penawaran', "penawaran.id_transaksi", "=", "transaksi.id_transaksi")
+                ->join('penerimaan_barang', 'penerimaan_barang.id_transaksi', '=', 'transaksi.id_transaksi')
+                ->join('pengiriman', "pengiriman.id_transaksi", "=", "transaksi.id_transaksi")
+                ->join('detail_transaksi_pengiriman', "detail_transaksi_pengiriman.id_pengiriman", "=", "pengiriman.id_pengiriman")
+                ->join('detail_transaksi_penawaran', "detail_transaksi_penawaran.id_penawaran", "=", "penawaran.id_penawaran")
+                ->join("produk", "detail_transaksi_pengiriman.id_produk", "=", "produk.id_produk")
+                ->join("tagihan", "tagihan.id_transaksi", "=", "transaksi.id_transaksi")
+                ->where('no_tagihan', "=", "$id")
+                ->groupBy('tgl_tagihan', "no_tagihan")
+                ->orderBy('tgl_tagihan', 'asc')
+                ->paginate(1);
         } else {
 
             return DB::table('transaksi')
@@ -35,7 +35,7 @@ class BillPaymentModel extends Model
                 ->join("pelanggan", "transaksi.id_pelanggan", "=", "pelanggan.id_pelanggan")
                 ->join("pengguna", "transaksi.id", "=", "pengguna.id")
                 ->join('penawaran', "penawaran.id_transaksi", "=", "transaksi.id_transaksi")
-               ->join('penerimaan_barang','penerimaan_barang.id_transaksi','=','transaksi.id_transaksi')
+                ->join('penerimaan_barang', 'penerimaan_barang.id_transaksi', '=', 'transaksi.id_transaksi')
                 ->join('pengiriman', "pengiriman.id_transaksi", "=", "transaksi.id_transaksi")
                 ->join('detail_transaksi_pengiriman', "detail_transaksi_pengiriman.id_pengiriman", "=", "pengiriman.id_pengiriman")
                 ->join('detail_transaksi_penawaran', "detail_transaksi_penawaran.id_penawaran", "=", "penawaran.id_penawaran")
@@ -124,23 +124,27 @@ class BillPaymentModel extends Model
         // DB::table('detail_transaksi_pembayaran')->insert($data_detail_pembayaran);
 
         //   prepare insert to jurnal
-        $total_nominal = 0;
+
+        // cari nominal jurnal
+
+
+        $id_transaksi_akir = count($id_transaksi) - 1;
+
+        $subtotal = 0;
         $total_ppn = 0;
         $total_ongkir = 0;
         $total = 0;
-        for ($i = 0; $i < count($id_transaksi); $i++) {
+        $nominal = DB::select("SELECT  sum( ppn_detail_pengiriman) as ppn,sum( subtotal_detail_pengiriman) as subtotal,sum(total_detail_pengiriman)+ongkir as total,ongkir
+            from transaksi 
+            join pengiriman on pengiriman.id_transaksi=transaksi.id_transaksi
+            join detail_transaksi_pengiriman
+            on pengiriman.id_pengiriman = detail_transaksi_pengiriman.id_pengiriman
+            where pengiriman.id_transaksi between $id_transaksi[0] and $id_transaksi[$id_transaksi_akir]");
 
-            $nominal = DB::table('transaksi')
-                ->selectRaw('total,ppn,ongkir,subtotal')
-                ->where('id_transaksi', "=", $id_transaksi[$i])
-                ->first();
-            $total_nominal += $nominal->subtotal;
-            $total_ppn += $nominal->ppn;
-            $total_ongkir = $nominal->ongkir;
-            $total += $total_nominal + $total_ppn + $total_ongkir;
-        }
-
-
+        $total_ppn = $nominal[0]->ppn;
+        $subtotal = $nominal[0]->subtotal;
+        $total_ongkir = $nominal[0]->ongkir;
+        $total = $nominal[0]->total;
 
         // jurnal tagihan
         $jurnal = [
@@ -169,27 +173,17 @@ class BillPaymentModel extends Model
                 "id_transaksi" => $id_transaksi[0],
                 'kode_akun' => 411,
                 'tgl_jurnal' => $data_tagihan[0]['tgl_tagihan'],
-                'nominal' => $total_nominal,
+                'nominal' => $subtotal,
                 'posisi_db_cr' => "kredit"
             ],
         ];
+
         DB::table('jurnal')->insert($jurnal);
     }
 
     public function detail($no_tagihan)
     {
-        // return DB::table('transaksi')
-        //     ->join("pelanggan", "transaksi.id_pelanggan", "=", "pelanggan.id_pelanggan")
-        //     ->join("pengguna", "transaksi.id", "=", "pengguna.id")
-        //     ->join('penawaran', "penawaran.id_transaksi", "=", "transaksi.id_transaksi")
-        //     ->join('pembelian', "pembelian.id_transaksi", "=", "transaksi.id_transaksi")
-        //     ->join('pengiriman', "pengiriman.id_transaksi", "=", "transaksi.id_transaksi")
-        //     ->join('detail_transaksi_pengiriman', "detail_transaksi_pengiriman.id_pengiriman", "=", "pengiriman.id_pengiriman")
-        //     ->join('detail_transaksi_penawaran', "detail_transaksi_penawaran.id_penawaran", "=", "penawaran.id_penawaran")
-        //     ->join("produk", "detail_transaksi_pengiriman.id_produk", "=", "produk.id_produk")
-        //     ->join("tagihan", "tagihan.id_transaksi", "=", "transaksi.id_transaksi")
-        //     ->where('no_tagihan', "=", $no_tagihan)
-        //     ->get();
+
 
         return  DB::select(
             "SELECT *,penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan , penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,jumlah_detail_penerimaan,
@@ -212,12 +206,12 @@ class BillPaymentModel extends Model
             join pembelian on pembelian.id_transaksi=transaksi.id_transaksi
 			where no_tagihan='$no_tagihan' 
             group by transaksi.id_transaksi"
-            );
+        );
     }
 
     public function show($no_penerimaan)
     {
-            return  DB::select("SELECT *,penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan , penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,jumlah_detail_penerimaan,
+        return  DB::select("SELECT *,penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan , penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,jumlah_detail_penerimaan,
             case 
             when jumlah_detail_pengiriman > 0 then sum(jumlah_detail_pengiriman)
             end as
@@ -234,6 +228,8 @@ class BillPaymentModel extends Model
             join pengguna on pengguna.id=transaksi.id
             join produk on detail_penerimaan_barang.id_produk=produk.id_produk
 			where no_penerimaan='$no_penerimaan'  and jumlah_detail_penerimaan >= jumlah_detail_pengiriman
-            group by transaksi.id_transaksi");
+            group by transaksi.id_transaksi
+            order by transaksi.id_transaksi asc
+            ");
     }
 }
