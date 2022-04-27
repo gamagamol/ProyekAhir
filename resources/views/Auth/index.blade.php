@@ -31,15 +31,15 @@
            
             <div class="col-xl-10 col-lg-12 col-md-9">
                 
-                <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card o-hidden border-0 shadow-lg my-5 mt-5">
                     <div class="card-body p-0">
                         <!-- Nested Row within Card Body -->
                         <div class="row">
-                            
+                             <div class="col-lg-6 d-none d-lg-block" style="background: url(http://127.0.0.1:8000/assets/img/bg-login.png); background-position: center; background-size: cover" ></div> 
                             <div class="col">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                                        <h1 class="h4 text-gray-900 mb-4" style="font-family: Arial, Helvetica, sans-serif;font-size: 2em">Welcome Back!</h1>
                                         @if (session()->has('failed'))
                                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                             <strong>{{ session('failed') }}</strong>
@@ -72,7 +72,7 @@
                                                 @enderror
                                             </div>
                                   
-                                      <button type=submit name=submit class="btn btn-primary btn-user btn-block">submit</button>
+                                      <button type=submit name=submit class="btn btn-primary btn-user btn-block" style="font-size: 2em">submit</button>
                                       
                                     </form>
                                    

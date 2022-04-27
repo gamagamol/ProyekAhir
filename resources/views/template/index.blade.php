@@ -93,7 +93,7 @@ $notif = $notif->notif();
                         <a class="collapse-item" href="{{ url('product') }}"
                             @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>Product</a>
                         <a class="collapse-item" href="{{ url('custumor') }}"
-                            @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>Custumor</a>
+                            @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>Customer</a>
                         <a class="collapse-item" href="{{ url('COA') }}"
                             @if (Auth::user()->status_pengguna != 'ACCOUNTING_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>Chart of Account</a>
                         <a class="collapse-item" href="{{ url('supplier') }}"
@@ -117,13 +117,17 @@ $notif = $notif->notif();
                         <a class="collapse-item" href="{{ url('quotation') }}">Quotation</a>
                         <a class="collapse-item" href="{{ url('sales') }}">Sales Order</a>
                         <a class="collapse-item" href="{{ url('purchase') }}"
-                            @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{"hidden"}} @endif>Purchase Order</a>
-                        <a class="collapse-item" href="{{ url('goods') }}"  @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{"hidden"}} @endif>Goods Receipt</a>
-                        <a class="collapse-item" href="{{ url('delivery') }}"  >Delivery</a>
-                        <a class="collapse-item" href="{{ url('bill') }}"  @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{"hidden"}} @endif>Bill Payment</a>
-                        <a class="collapse-item" href="{{ url('payment') }}"  @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{"hidden"}} @endif>Payment</a>
-                        <a class="collapse-item" href="{{ url('paymentvendor') }}"  @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{"hidden"}} @endif>Debt Payment </a>
-                        <a class="collapse-item" href="{{ url('status_transaksi') }}"  >Transaction Status </a>
+                            @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{ 'hidden' }} @endif>Purchase Order</a>
+                        <a class="collapse-item" href="{{ url('goods') }}"
+                            @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{ 'hidden' }} @endif>Goods Receipt</a>
+                        <a class="collapse-item" href="{{ url('delivery') }}">Delivery</a>
+                        <a class="collapse-item" href="{{ url('bill') }}"
+                            @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{ 'hidden' }} @endif>Bill Payment</a>
+                        <a class="collapse-item" href="{{ url('payment') }}"
+                            @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{ 'hidden' }} @endif>Payment</a>
+                        <a class="collapse-item" href="{{ url('paymentvendor') }}"
+                            @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{ 'hidden' }} @endif>Debt Payment </a>
+                        <a class="collapse-item" href="{{ url('status_transaksi') }}">Transaction Status </a>
 
 
 
@@ -279,7 +283,7 @@ $notif = $notif->notif();
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; PT.Ibaraki Kogyo Hanan Indonesia 2021</span>
+                        <span>Copyright &copy; Prosamagi</span>
                     </div>
                 </div>
             </footer>
