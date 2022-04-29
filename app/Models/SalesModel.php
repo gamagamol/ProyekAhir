@@ -39,7 +39,7 @@ class SalesModel extends Model
                join produk on detail_transaksi_penjualan.id_produk=produk.id_produk
                     $query
                group by no_penjualan,penjualan.id_penjualan
-               -- having jumlah_detail_penjualan > sum(ifnull(jumlah_detail_pembelian,0))
+               having jumlah_detail_penjualan > sum(ifnull(jumlah_detail_pembelian,0))
                order by tgl_penjualan desc,no_penjualan desc
                "
 

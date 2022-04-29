@@ -87,7 +87,7 @@ class PurchaseModel extends Model
             for ($i = 0; $i < count($id_pemasok); $i++) {
                 $no_pembelian = DB::select("SELECT ifnull(max(substring(no_pembelian,4,1)),0)+1 as no_pembelian from transaksi 
                  join pembelian on transaksi.id_transaksi = pembelian.id_transaksi
-                where tgl_pembelian = '$tgl_pembelian' and id_pemasok =$id_pemasok[$i]");
+                where tgl_pembelian = '$tgl_pembelian' ");
 
                 $no_pembelian = $no_pembelian[0]->no_pembelian;
                 array_push($arr_pembelian, (int)$no_pembelian);
@@ -112,31 +112,27 @@ class PurchaseModel extends Model
     public function insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok, $kemungkinan, $nominal = null)
     {
 
+        $update_data_transaksi = [
+            'status_transaksi' => 'purchase',
+            'id_pemasok' => $id_pemasok
+        ];
+        if (count($id_transaksi) > 1) {
+
+
+            for ($i = 0; $i < count($id_transaksi); $i++) {
+
+                DB::table('transaksi')
+                    ->where('id_transaksi', $id_transaksi[$i])
+                    ->update($update_data_transaksi);
+            }
+        } else {
+            DB::table('transaksi')->where('id_transaksi', $id_transaksi[0])->update($update_data_transaksi);
+        }
+
+        DB::table('pembelian')->insert($data_pembelian);
 
 
         if ($kemungkinan == 'A') {
-
-
-            if (count($id_transaksi) > 1) {
-
-                $update_data_transaksi = [
-                    'status_transaksi' => 'purchase',
-                    'id_pemasok' => $id_pemasok
-                ];
-                for ($i = 0; $i < count($id_transaksi); $i++) {
-
-                    DB::table('transaksi')
-                        ->where('id_transaksi', $id_transaksi[$i])
-                        ->update($update_data_transaksi);
-                }
-            }
-
-
-
-
-
-            // insert data pembelian ke dalam database
-            DB::table('pembelian')->insert($data_pembelian);
 
 
             // ambil id pembelian
@@ -159,23 +155,32 @@ class PurchaseModel extends Model
                     $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
                 }
             }
+        } elseif ($kemungkinan == 'B') {
 
-            DB::table('detail_transaksi_pembelian')->insert($data_detail_pembelian);
+            for ($i = 0; $i < count($data_pembelian); $i++) {
+                $id_pembelian = DB::table('pembelian')
+                    ->where('id_penjualan', $data_pembelian[$i]['id_penjualan'])
+                    ->max('id_pembelian');
+
+                $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
+            }
         }
 
+        DB::table('detail_transaksi_pembelian')->insert($data_detail_pembelian);
 
 
 
 
         // kodingan jurnal pembelian utang
 
-    
+
 
         if ($nominal) {
-            $total_pembelian=0;
+            $total_pembelian = 0;
         } else {
             $total_pembelian = 0;
             foreach ($data_detail_pembelian as $ddp) {
+                // dump($ddp['total_detail_pembelian']);
                 $total_pembelian += $ddp['total_detail_pembelian'];
             }
         }
@@ -198,10 +203,10 @@ class PurchaseModel extends Model
                 'posisi_db_cr' => "kredit"
             ],
         ];
-
+        // dump($data_detail_pembelian);
         // dd($jurnal);
-        DB::table('jurnal')->insert($jurnal);
 
+        DB::table('jurnal')->insert($jurnal);
     }
 
     public function detail($no_pembelian)

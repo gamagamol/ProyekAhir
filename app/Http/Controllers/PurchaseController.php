@@ -150,12 +150,13 @@ class PurchaseController extends Controller
                                 'id_produk' => $quo->id_produk,
                                 'id_penawaran' => $quo->id_penawaran,
                                 'unit' => $total_unit_produk += $prdk['unit'],
-                                'harga' => $total_harga_produk += $prdk['harga'],
+                                'jumlah' => $prdk['unit'],
+                                'harga' => $prdk['harga'],
                                 'berat' => $prdk['berat'],
-                                'subtotal' => $prdk['harga']*$prdk['harga'],
-                                'ppn' => 0,
-                                 'total_detail_pembelian' => $quo->total,
-
+                                'subtotal' => $prdk['harga'] * $prdk['berat'],
+                                'ppn' => ($prdk['harga'] * $prdk['berat']) * 0.11,
+                                'total' => $prdk['harga'] * $prdk['berat']+(($prdk['harga'] * $prdk['berat']) * 0.11),
+                                'sisa_detail_penjualan'=>$prdk['jumlah_unit']-$prdk['unit']
                             ];
                             $ipdk++;
                         }
@@ -163,6 +164,7 @@ class PurchaseController extends Controller
                 }
             }
             // chek iteem array produk
+            // dump($produk);
             // dd($arr_produk);
 
             foreach ($arr_produk as $apdk) {
@@ -201,7 +203,6 @@ class PurchaseController extends Controller
         }
 
 
-        dd($arr_produk);
 
 
         $rules = [
@@ -234,21 +235,27 @@ class PurchaseController extends Controller
         // check banyaknya id pemasok yang masok
 
         $no_pembelian = $this->PurchaseModel->no_pembelian($tgl_pembelian, $id_pemasok);
-        $tgl_exploade = explode('-', $tgl_pembelian);
-        if (gettype($id_pemasok) != 'string') {
 
+        $tgl_exploade = explode('-', $tgl_pembelian);
+        if (gettype($id_pemasok) != 'string' && count(array_flip($id_pemasok)) == 2) {
+
+
+
+            $i = 0;
             foreach ($no_pembelian as $nop) {
+                $nop = $nop + $i;
                 $no_purchase = "PO/$nop/$tgl_exploade[0]/$tgl_exploade[1]/$tgl_exploade[2]";
                 array_push($array_no_pembelian, $no_purchase);
+                $i++;
             }
+        } elseif (gettype($id_pemasok) != 'string' && count(array_flip($id_pemasok)) == 1) {
+            $no_purchase = "PO/$no_pembelian[0]/$tgl_exploade[0]/$tgl_exploade[1]/$tgl_exploade[2]";
+            array_push($array_no_pembelian, $no_purchase);
         } else {
 
             $no_purchase = "PO/$no_pembelian/$tgl_exploade[0]/$tgl_exploade[1]/$tgl_exploade[2]";
             array_push($array_no_pembelian, $no_purchase);
         }
-
-
-
 
         //    Mengisi array data pembelian dan detail pembelian
         // Kemungkinan yang bisa terjadi dalam pemebelian:
@@ -289,9 +296,33 @@ class PurchaseController extends Controller
             $kemungkinan = 'A';
         } else if ($array_pemasok == 1 && $unit != null) {
 
-            dd($produk);
+            $i = 0;
             foreach ($arr_produk as $ap) {
+                $data_pembelian[$i] = [
+                    'id_penjualan' => $ap['id_penjualan'],
+                    'id_transaksi' => $ap['id_transaksi'],
+                    'no_pembelian' => $array_no_pembelian[0],
+                    'tgl_pembelian' => $tgl_pembelian
+                ];
+
+
+
+                $data_detail_pembelian[$i] = [
+                    'id_pembelian' => 0,
+                    'id_produk' => $ap['id_produk'],
+                    'jumlah_detail_pembelian' => $ap['jumlah'],
+                    'harga_detail_pembelian' => $ap['harga'],
+                    'total_detail_pembelian' => $ap['total'],
+                    'berat_detail_pembelian' => $ap['berat'],
+                    'subtotal_detail_pembelian' => $ap['subtotal'],
+                    'ppn_detail_pembelian' => $ap['ppn'],
+                    'sisa_detail_penjualan'=>$ap['sisa_detail_penjualan'],
+                ];
+
+                $i++;
             }
+            $id_pemasok = $id_pemasok[0];
+            $kemungkinan = 'B';
         } elseif ($array_pemasok == 2 && $unit != null) {
 
             dump("kemungkinan C");
@@ -300,8 +331,11 @@ class PurchaseController extends Controller
 
 
         // check isi array
-        dd($unit);
-
+        // dump($produk);
+        // dump($arr_produk);
+        // dump($array_no_pembelian);
+        // dump($data_pembelian);
+        // dd($data_detail_pembelian);
 
 
 
