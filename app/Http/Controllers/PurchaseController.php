@@ -228,8 +228,7 @@ class PurchaseController extends Controller
         // Dasar pembentukan no pembelian
 
 
-        // $no_quotation = explode('-', $tgl_pembelian);
-        // $no_pembelian = "PO/$no_pembelian[0]/$no_quotation[0]/$no_quotation[1]/$no_quotation[2]";
+   
 
 
         // check banyaknya id pemasok yang masok
@@ -237,8 +236,8 @@ class PurchaseController extends Controller
         $no_pembelian = $this->PurchaseModel->no_pembelian($tgl_pembelian, $id_pemasok);
 
         $tgl_exploade = explode('-', $tgl_pembelian);
+       
         if (gettype($id_pemasok) != 'string' && count(array_flip($id_pemasok)) == 2) {
-
 
 
             $i = 0;
@@ -267,6 +266,11 @@ class PurchaseController extends Controller
         }
 
         if (gettype($id_pemasok) == 'string' && $unit == null) {
+          
+     
+          
+          
+          
             $i = 0;
             foreach ($quotation as $quo) {
                 $data_pembelian[$i] = [
@@ -281,12 +285,13 @@ class PurchaseController extends Controller
                 $data_detail_pembelian[$i] = [
                     'id_pembelian' => 0,
                     'id_produk' => $quo->id_produk,
-                    'jumlah_detail_pembelian' => $quo->jumlah_detail_penjualan,
+                    'jumlah_detail_pembelian' => $quo->jumlah_unit,
                     'harga_detail_pembelian' => $quo->harga,
-                    'total_detail_pembelian' => $quo->total,
+                    'total_detail_pembelian' => ($quo->harga * $quo->berat)+(($quo->harga * $quo->berat) * 0.11),
                     'berat_detail_pembelian' => $quo->berat,
-                    'subtotal_detail_pembelian' => $quo->subtotal,
-                    'ppn_detail_pembelian' => $quo->subtotal * 0.11,
+                    'subtotal_detail_pembelian' => $quo->harga*$quo->berat,
+                    'ppn_detail_pembelian' => ($quo->harga * $quo->berat) * 0.11,
+                    'sisa_detail_penjualan'=>0
                 ];
 
                 $id_transaksi[]
@@ -324,8 +329,33 @@ class PurchaseController extends Controller
             $id_pemasok = $id_pemasok[0];
             $kemungkinan = 'B';
         } elseif ($array_pemasok == 2 && $unit != null) {
+            $i = 0;
+            foreach ($arr_produk as $ap) {
+                $data_pembelian[$i] = [
+                    'id_penjualan' => $ap['id_penjualan'],
+                    'id_transaksi' => $ap['id_transaksi'],
+                    'no_pembelian' => $array_no_pembelian[$i],
+                    'tgl_pembelian' => $tgl_pembelian
+                ];
 
-            dump("kemungkinan C");
+
+
+                $data_detail_pembelian[$i] = [
+                    'id_pembelian' => 0,
+                    'id_produk' => $ap['id_produk'],
+                    'jumlah_detail_pembelian' => $ap['jumlah'],
+                    'harga_detail_pembelian' => $ap['harga'],
+                    'total_detail_pembelian' => $ap['total'],
+                    'berat_detail_pembelian' => $ap['berat'],
+                    'subtotal_detail_pembelian' => $ap['subtotal'],
+                    'ppn_detail_pembelian' => $ap['ppn'],
+                    'sisa_detail_penjualan' => $ap['sisa_detail_penjualan'],
+                ];
+
+                $i++;
+            }
+            
+            // dump("kemungkinan C");
             $kemungkinan = 'C';
         }
 

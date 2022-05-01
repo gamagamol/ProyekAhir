@@ -60,11 +60,16 @@ class PurchaseModel extends Model
 
         return DB::select("SELECT penawaran.id_penawaran,transaksi.id_transaksi,penjualan.id_penjualan,penjualan.tgl_penjualan,penjualan.no_penjualan
         ,detail_transaksi_penjualan.id_produk,detail_transaksi_penjualan.jumlah_detail_penjualan
-        ,transaksi.harga,transaksi.berat,jumlah_detail_pembelian,
+        ,transaksi.harga,case
+        when no_pembelian is not null then berat-berat_detail_pembelian
+         else transaksi.berat
+        end as berat,
+        jumlah_detail_pembelian,
         case 
         when jumlah_detail_pembelian is not null then jumlah_detail_penjualan - jumlah_detail_pembelian
         else jumlah_detail_penjualan
-        end as jumlah_unit,subtotal,total
+        end as jumlah_unit,subtotal,
+         total,no_pembelian
         from transaksi 
         join  penjualan on penjualan.id_transaksi=transaksi.id_transaksi
         join detail_transaksi_penjualan on detail_transaksi_penjualan.id_penjualan = penjualan.id_penjualan
@@ -112,11 +117,24 @@ class PurchaseModel extends Model
     public function insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok, $kemungkinan, $nominal = null)
     {
 
-        $update_data_transaksi = [
-            'status_transaksi' => 'purchase',
-            'id_pemasok' => $id_pemasok
-        ];
-        if (count($id_transaksi) > 1) {
+        if (gettype($id_pemasok) == 'array') {
+            $update_data_transaksi = [];
+            for ($i = 0; $i < count($id_pemasok); $i++) {
+                $update_data_transaksi[$i] = [
+                    'status_transaksi' => 'purchase',
+                    'id_pemasok' => $id_pemasok[$i]
+                ];
+            }
+        } else {
+            $update_data_transaksi = [
+                'status_transaksi' => 'purchase',
+                'id_pemasok' => $id_pemasok
+            ];
+        }
+
+
+
+        if (count($id_transaksi) > 1 && gettype($id_pemasok) == 'string') {
 
 
             for ($i = 0; $i < count($id_transaksi); $i++) {
@@ -125,7 +143,14 @@ class PurchaseModel extends Model
                     ->where('id_transaksi', $id_transaksi[$i])
                     ->update($update_data_transaksi);
             }
-        } else {
+        } elseif (count($id_transaksi) > 1 && gettype($id_pemasok) == 'array') {
+            for ($i = 0; $i < count($id_transaksi); $i++) {
+
+                DB::table('transaksi')
+                    ->where('id_transaksi', $id_transaksi[$i])
+                    ->update($update_data_transaksi[$i]);
+            }
+        } else if (count($id_transaksi) < 1 && gettype($id_pemasok) == 'string') {
             DB::table('transaksi')->where('id_transaksi', $id_transaksi[0])->update($update_data_transaksi);
         }
 
@@ -138,15 +163,13 @@ class PurchaseModel extends Model
             // ambil id pembelian
             if (count($data_pembelian) > 1) {
 
-                $id_penjualan_end = end($data_pembelian);
-                $id_penjualan_end = $id_penjualan_end['id_penjualan'];
-                $id_penjualan_start = $data_pembelian[0]['id_penjualan'];
 
+                for ($i = 0; $i < count($data_pembelian); $i++) {
+                    $id_pembelian = DB::table('pembelian')
+                        ->where('id_penjualan', $data_pembelian[$i]['id_penjualan'])
+                        ->max('id_pembelian');
 
-                $id_pembelian =  DB::select("SELECT id_pembelian as id_pembelian FROM pembelian WHERE id_penjualan BETWEEN   $id_penjualan_start AND $id_penjualan_end");
-
-                for ($i = 0; $i < count($data_detail_pembelian); $i++) {
-                    $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian[$i]->id_pembelian;
+                    $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
                 }
             } else {
 
@@ -155,7 +178,7 @@ class PurchaseModel extends Model
                     $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
                 }
             }
-        } elseif ($kemungkinan == 'B') {
+        } elseif ($kemungkinan == 'B' || $kemungkinan == 'C') {
 
             for ($i = 0; $i < count($data_pembelian); $i++) {
                 $id_pembelian = DB::table('pembelian')
@@ -174,16 +197,14 @@ class PurchaseModel extends Model
         // kodingan jurnal pembelian utang
 
 
+        // dd($data_detail_pembelian);
 
-        if ($nominal) {
-            $total_pembelian = 0;
-        } else {
-            $total_pembelian = 0;
-            foreach ($data_detail_pembelian as $ddp) {
-                // dump($ddp['total_detail_pembelian']);
-                $total_pembelian += $ddp['total_detail_pembelian'];
-            }
+        $total_pembelian = 0;
+        foreach ($data_detail_pembelian as $ddp) {
+            // dump($ddp['total_detail_pembelian']);
+            $total_pembelian += $ddp['total_detail_pembelian'];
         }
+
 
 
 

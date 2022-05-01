@@ -27,7 +27,7 @@ class SalesModel extends Model
 
 
           return DB::select(
-               "SELECT distinct tgl_penjualan,no_penjualan,nomor_pekerjaan,nama_pelanggan,nama_pengguna,kode_transaksi,jumlah_detail_penjualan,jumlah_detail_pembelian from transaksi 
+               "SELECT distinct tgl_penjualan,no_penjualan,nomor_pekerjaan,nama_pelanggan,nama_pengguna,kode_transaksi,jumlah_detail_penjualan,sum(jumlah_detail_pembelian) as jumlah_detail_pembelian from transaksi 
                join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
                join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
                join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
@@ -39,7 +39,7 @@ class SalesModel extends Model
                join produk on detail_transaksi_penjualan.id_produk=produk.id_produk
                     $query
                group by no_penjualan,penjualan.id_penjualan
-               having jumlah_detail_penjualan > sum(ifnull(jumlah_detail_pembelian,0))
+               -- having jumlah_detail_penjualan > sum(ifnull(jumlah_detail_pembelian,0))
                order by tgl_penjualan desc,no_penjualan desc
                "
 
