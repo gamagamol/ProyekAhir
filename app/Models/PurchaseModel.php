@@ -232,16 +232,15 @@ class PurchaseModel extends Model
 
     public function detail($no_pembelian)
     {
-        return DB::table('transaksi')
-            ->join('pembelian', 'pembelian.id_transaksi', '=', 'transaksi.id_transaksi')
-            ->join('detail_transaksi_pembelian', 'detail_transaksi_pembelian.id_pembelian', '=', 'pembelian.id_pembelian')
-            ->join('produk', 'detail_transaksi_pembelian.id_produk', '=', 'produk.id_produk')
-            ->join('pelanggan', 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
-            ->join('pengguna', 'transaksi.id', '=', 'pengguna.id')
-            ->join('pemasok', 'transaksi.id_pemasok', '=', 'pemasok.id_pemasok')
-            ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
-
-            ->where('pembelian.no_pembelian', "=", $no_pembelian)
-            ->get();
+        return DB::select("SELECT * FROM pembelian 
+        join detail_transaksi_pembelian on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
+        join penjualan on penjualan.id_penjualan=pembelian.id_penjualan
+        join detail_transaksi_penjualan on penjualan.id_penjualan = detail_transaksi_penjualan.id_penjualan
+        join transaksi on transaksi.id_transaksi=pembelian.id_transaksi
+        join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
+        join pelanggan on pelanggan.id_pelanggan = transaksi.id_pelanggan
+        join pemasok on pemasok.id_pemasok = transaksi.id_pemasok
+        join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
+        where no_pembelian='$no_pembelian'");
     }
 }

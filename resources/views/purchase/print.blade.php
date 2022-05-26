@@ -121,7 +121,7 @@
                                 {{ $p->panjang_transaksi }}
                             </td>
                             <td>
-                                {{ $p->jumlah }}
+                                {{ $p->jumlah_detail_penjualan }}
                             </td>
 
                             <td>
@@ -137,16 +137,16 @@
                                 {{ $p->panjang_penawaran }}
                             </td>
                             <td>
-                                {{ $p->jumlah }}
+                                {{ $p->jumlah_detail_pembelian }}
                             </td>
                             <td>
-                                {{ $p->berat }}
+                                {{ $p->berat_detail_pembelian }}
                             </td>
                             <td>
                                 {{ 'Rp' . number_format($p->harga) }}
                             </td>
                             <td>
-                                {{ 'Rp' . number_format($p->subtotal) }}
+                                {{ 'Rp' . number_format($p->subtotal_detail_pembelian) }}
                             </td>
                             <td>
                                 {{ $p->layanan }}
@@ -155,12 +155,12 @@
                     @endforeach
                 </table>
                 <h5 class="text-end mb-5">
-                    {{ 'Amount  : Rp' . number_format($p->subtotal) }} <br>
-                    {{ ' Vat    : Rp' . number_format($p->ppn) }} <br>
-                    {{ ' Total  : Rp' . number_format($p->total) }}</h5>
+                    {{ 'Amount  : Rp' . number_format($subtotal) }} <br>
+                    {{ ' Vat    : Rp' . number_format($ppn) }} <br>
+                    {{ ' Total  : Rp' . number_format($total) }}</h5>
 
                 <h5 class="text-decoration-underline "> Terbilang:</h5>
-                <h6> {{ $total }} </h6>
+                <h6> {{ $penyebut }} </h6>
 
             </div>
         </div>

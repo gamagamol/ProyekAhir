@@ -389,16 +389,27 @@ class PurchaseController extends Controller
 
     public function print($no_transaksi)
     {
-        $total = $this->PurchaseModel->detail(str_replace("-", "/", $no_transaksi));
+        $data = $this->PurchaseModel->detail(str_replace("-", "/", $no_transaksi));
 
-        foreach ($total as $t) {
+        $subtotal=0;
+        $ppn=0;
+        $total=0;
+        foreach ($data as $t) {
 
-            $total = penyebut($t->total);
+            $total +=$t->total_detail_pembelian;
+            $subtotal +=$t->subtotal_detail_pembelian;
+            $ppn +=$t->ppn_detail_pembelian;
         }
+        $penyebut=penyebut($total);
+
+
         $data = [
             'tittle' => "Print purchase Order",
             'data' => $this->PurchaseModel->detail(str_replace("-", "/", $no_transaksi)),
-            'total' => $total
+            'total' => $total,
+            'subtotal' => $subtotal,
+            'ppn' => $ppn,
+            'penyebut'=>$penyebut
         ];
         return view('purchase.print', $data);
     }
