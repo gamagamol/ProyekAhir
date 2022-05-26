@@ -77,7 +77,7 @@
                                         {{ $p->panjang_transaksi }}
                                     </td>
                                     <td>
-                                        {{ $p->jumlah }}
+                                        {{ $p->jumlah_detail_penerimaan }}
                                     </td>
 
                                     <td>
@@ -93,7 +93,7 @@
                                         {{ $p->panjang_penawaran }}
                                     </td>
                                     <td>
-                                        {{ $p->jumlah }}
+                                        {{ $p->jumlah_detail_penerimaan }}
                                     </td>
                                     <td>
                                         {{ $p->berat }}
@@ -105,14 +105,14 @@
                                         {{ 'Rp' . number_format($p->ongkir) }}
                                     </td>
                                     <td>
-                                        {{ 'Rp' . number_format($p->subtotal) }}
+                                        {{ 'Rp' . number_format($p->subtotal_detail_pembelian) }}
                                     </td>
                                     <td>
-                                        {{ 'Rp' . number_format($p->ppn) }}
+                                        {{ 'Rp' . number_format($p->ppn_detail_pembelian) }}
 
                                     </td>
                                     <td>
-                                        {{ 'Rp' . number_format($p->total) }}
+                                        {{ 'Rp' . number_format($p->total_detail_pembelian) }}
                                     </td>
                                     <td>
                                         {{ $p->layanan }}
