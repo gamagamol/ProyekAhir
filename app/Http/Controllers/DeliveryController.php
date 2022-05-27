@@ -57,6 +57,7 @@ class DeliveryController extends Controller
         $id_transaksi = $request->post('id_transaksi');
         $no_penerimaan = $request->input('no_penerimaan');
         $penerimaan = $this->model->edit($no_penerimaan);
+       
         $tgl_penerimaan = $penerimaan[0]->tgl_penerimaan;
         $unit = $request->input('unit');
         $id_produk = $request->input('id_produk');
