@@ -27,7 +27,7 @@ class GoodsModel extends Model
                 join transaksi on penerimaan_barang.id_transaksi = transaksi.id_transaksi
                 left join pengiriman on pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
                 left join detail_transaksi_pengiriman on pengiriman.id_pengiriman = detail_transaksi_pengiriman.id_pengiriman
-                where no_pengiriman=b.no_pengiriman
+                  where no_penerimaan=b.no_penerimaan
 
                 )jumlah_detail_pengiriman ,
                 (SELECT sum(jumlah_detail_penerimaan) FROM ibaraki_db.detail_penerimaan_barang join penerimaan_barang on penerimaan_barang.id_penerimaan_barang = detail_penerimaan_barang.id_penerimaan_barang
