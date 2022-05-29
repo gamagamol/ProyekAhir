@@ -96,7 +96,7 @@
                                         {{ $p->jumlah_detail_penerimaan }}
                                     </td>
                                     <td>
-                                        {{ $p->berat }}
+                                        {{ $p->berat_detail_pembelian }}
                                     </td>
                                     <td>
                                         {{ 'Rp' . number_format($p->harga) }}
@@ -128,9 +128,9 @@
 
                                 </tr>
                                 <?php
-                                $subtotal += $p->subtotal;
-                                $ppn += $p->ppn;
-                                $total += $p->total;
+                                $subtotal += $p->subtotal_detail_pembelian;
+                                $ppn += $p->ppn_detail_pembelian;
+                                $total += $p->total_detail_pembelian;
                                 
                                 ?>
                             @endforeach

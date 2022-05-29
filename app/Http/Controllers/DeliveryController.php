@@ -57,7 +57,7 @@ class DeliveryController extends Controller
         $id_transaksi = $request->post('id_transaksi');
         $no_penerimaan = $request->input('no_penerimaan');
         $penerimaan = $this->model->edit($no_penerimaan);
-       
+
         $tgl_penerimaan = $penerimaan[0]->tgl_penerimaan;
         $unit = $request->input('unit');
         $id_produk = $request->input('id_produk');
@@ -208,20 +208,13 @@ class DeliveryController extends Controller
             }
         }
 
-        // dd($penerimaan);
 
 
 
-        if ($no_pengiriman) {
-            $no_pengiriman = $no_pengiriman;
-            array_push($arr_no_pengiriman, $no_pengiriman);
-        } else {
 
-            $no_pengiriman = $this->model->no_delivery($tgl_penerimaan, $unit);
-
-
-            if (is_array($no_pengiriman)) {
-
+        $no_pengiriman = $this->model->no_delivery($tgl_pengiriman, $unit);
+        if ($request->select_all != 'select_all') {
+            if (gettype($no_pengiriman) == 'array') {
 
                 foreach ($no_pengiriman as $anp) {
 
@@ -237,18 +230,19 @@ class DeliveryController extends Controller
                 $pengiriman = "DO/$no_pengiriman/$no_purchase[0]/$no_purchase[1]/$no_purchase[2]";
                 array_push($arr_no_pengiriman, $pengiriman);
             }
+        } else {
+            $no_purchase = explode(
+                '-',
+                $tgl_pengiriman
+            );
+            $pengiriman = "DO/$no_pengiriman/$no_purchase[0]/$no_purchase[1]/$no_purchase[2]";
+            array_push($arr_no_pengiriman, $pengiriman);
         }
 
+    
 
-        //    if (count($id_transaksi)==1) {
-        //        $penerimaan = $this->model->edit1($no_penerimaan,$id_transaksi[0]);
-        //     }else{
 
-        //         $penerimaan = $this->model->edit1($no_penerimaan);
 
-        //    }
-
-        // dd($penerimaan);
 
         if ($unit) {
 
@@ -342,6 +336,7 @@ class DeliveryController extends Controller
                                 $pcss->sisa_detail_penerimaan,
 
                             );
+
                             $data_detail_pengiriman[$i] = [
                                 'id_pengiriman' => 0,
                                 'id_produk' => $pcss->id_produk,
@@ -365,16 +360,16 @@ class DeliveryController extends Controller
                                 'jumlah_detail_pengiriman' => (int) $pcss->jumlah_detail_penerimaan,
                                 'sisa_detail_pengiriman' => 0,
                                 // perhitungan berat
-                                'berat_detail_pengiriman' => $pcss->berat,
-                                'ppn_detail_pengiriman' => ($pcss->harga * $pcss->berat) * 0.11,
-                                'subtotal_detail_pengiriman' => $pcss->harga * $pcss->berat,
-                                'total_detail_pengiriman' => ($pcss->harga * $pcss->berat) + (($pcss->harga * $pcss->berat) * 0.11)
+                                'berat_detail_pengiriman' => $pcss->berat_detail_pembelian,
+                                'ppn_detail_pengiriman' => ($pcss->harga * $pcss->berat_detail_pembelian) * 0.11,
+                                'subtotal_detail_pengiriman' => $pcss->harga * $pcss->berat_detail_pembelian,
+                                'total_detail_pengiriman' => ($pcss->harga * $pcss->berat_detail_pembelian) + (($pcss->harga * $pcss->berat_detail_pembelian) * 0.11)
 
 
                             ];
 
                             $jumlah_item = $pcss->jumlah_detail_penerimaan;
-                            $berat_item = $pcss->berat;
+                            $berat_item = $pcss->berat_detail_pembelian;
                         }
 
                         $data[$i] = [
@@ -424,6 +419,7 @@ class DeliveryController extends Controller
     {
 
         $data = $this->model->detail(str_replace("-", "/", $no_pengiriman));
+        
         $data = [
             'tittle' => "Detail Delivery Order",
             'data' => $data
@@ -438,7 +434,7 @@ class DeliveryController extends Controller
         $tgl_pengiriman = $this->model->detail($no_transaksi);
         $tgl_pengiriman = end($tgl_pengiriman);
         $tgl_pengiriman = $tgl_pengiriman->tgl_pengiriman;
-        $data=$this->model->print($no_transaksi);
+        $data = $this->model->print($no_transaksi);
         $data = [
             'tittle' => "Print Delivery Document",
             'data' => $data,

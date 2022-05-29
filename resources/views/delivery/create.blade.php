@@ -78,6 +78,8 @@
                             </tr>
                             @csrf
                             <?php $i = 1; ?>
+                            <input type="text" name="select_all" id="fill_sa" hidden>
+
                             @foreach ($data as $d)
                                 <tr>
 
@@ -95,31 +97,31 @@
                                     <td>{{ $d->jumlah_detail_penerimaan }}</td>
                                     <td>{{ $d->jumlah_detail_pengiriman }}</td>
                                     <td>{{ $d->nama_pelanggan }}</td>
-                                    <td id={{"ClickCreateSupplier$i"}} >
+                                    <td id={{ "ClickCreateSupplier$i" }}>
                                         <i class="fa fa-plus-circle" aria-hidden="true" onclick="CreateSupplier('{{ $d->id_produk }}',
-                                                '{{ $d->nama_produk }}',
-                                                '{{ $d->no_penerimaan }}',
-                                                '{{ $d->id_transaksi }}',
-                                                '{{ $d->id_penawaran }}',
-                                                '{{ $d->id_penerimaan_barang }}',
-                                                '{{ $d->tebal_transaksi }}',
-                                                '{{ $d->lebar_transaksi }}',
-                                                '{{ $d->panjang_transaksi }}',
-                                                '{{ $d->bentuk_produk }}',
-                                                '{{ $d->layanan }}',
-                                                '{{ $d->jumlah_detail_penerimaan }}',
-                                                '{{ $d->harga }}',
+                                                    '{{ $d->nama_produk }}',
+                                                    '{{ $d->no_penerimaan }}',
+                                                    '{{ $d->id_transaksi }}',
+                                                    '{{ $d->id_penawaran }}',
+                                                    '{{ $d->id_penerimaan_barang }}',
+                                                    '{{ $d->tebal_transaksi }}',
+                                                    '{{ $d->lebar_transaksi }}',
+                                                    '{{ $d->panjang_transaksi }}',
+                                                    '{{ $d->bentuk_produk }}',
+                                                    '{{ $d->layanan }}',
+                                                    '{{ $d->jumlah_detail_penerimaan }}',
+                                                    '{{ $d->harga }}',
 
-                                              
-                                                
-                                                )" id={{"IconClickCreateSupplier$i"}}  ></i>
+                                                  
+                                                    
+                                                    )" id={{ "IconClickCreateSupplier$i" }}></i>
 
                                     </td>
 
 
 
                                 </tr>
-                                <?php $i++ ?>
+                                <?php $i++; ?>
                             @endforeach
                             <input type="text" value="{{ count($data) }}" hidden id="lenght_data">
                         </table>
@@ -171,10 +173,13 @@
                 for (let i = 1; i <= select; i++) {
                     if ($('#select' + i).is(":checked")) {
                         $('#select' + i).prop('checked', false);
+                        $('#fill_sa').removeAttr('value')
 
                     } else {
 
                         $('#select' + i).prop('checked', true);
+                        $('#fill_sa').attr('value', 'select_all')
+
                     }
 
                 }
@@ -185,10 +190,10 @@
             // end cheked
 
         });
-        
+
         function CreateSupplier(IdProduk, NamaProduk, NoPenerimaan, IdTransaksi, IdPenawaran, IdPenerimaanBarang,
-        TebalTransaksi, LebarTransaksi, PanjangTransaksi, BentukProduk, Layanan, JumlahDetailPenerimaan) {
-                let click = 1;
+            TebalTransaksi, LebarTransaksi, PanjangTransaksi, BentukProduk, Layanan, JumlahDetailPenerimaan) {
+            let click = 1;
 
 
             let html = ``
@@ -233,11 +238,11 @@
             console.log(click);
             if (click > 2) {
                 $('#ClickCreateSupplier').click(
-                ()=>{
-                    console.log(click);
-                  $('#ClickCreateSupplier1').attr('hidden',true)
-                }
-                
+                    () => {
+                        console.log(click);
+                        $('#ClickCreateSupplier1').attr('hidden', true)
+                    }
+
                 )
             }
         }
