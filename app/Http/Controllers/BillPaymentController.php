@@ -46,10 +46,10 @@ class BillPaymentController extends Controller
        
         $no_pengiriman = str_replace("-", "/", $no_pengiriman);
         $data = $this->model->show($no_pengiriman);
-       
+        
+        
         $tgl_pengiriman = end($data);
-        $tgl_pengiriman = $tgl_pengiriman->tgl_pengiriman;
-
+        $tgl_pengiriman = $tgl_pengiriman->tgl_pengiriman_max;
         $data = [
             "tittle" => "Bill payment",
             'data' => $data,

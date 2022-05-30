@@ -218,7 +218,15 @@ class BillPaymentModel extends Model
             end as
             sudah_terkirim,
             jumlah_detail_pengiriman,
-            sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM ibaraki_db.transaksi 
+            sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk,
+               (select max(tgl_pengiriman) from pengiriman join penerimaan_barang 
+            on penerimaan_barang.id_penerimaan_barang=pengiriman.id_penerimaan_barang
+            join pembelian on pembelian.id_pembelian =penerimaan_barang.id_pembelian
+            join penjualan on penjualan.id_penjualan = pembelian.id_penjualan
+            where no_penjualan='$no_penerimaan'
+            ) as tgl_pengiriman_max
+            
+             FROM transaksi 
 			join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
 			join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
             join pembelian on pembelian.id_penjualan = penjualan.id_penjualan
