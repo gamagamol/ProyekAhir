@@ -116,6 +116,7 @@ class PurchaseModel extends Model
 
     public function insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok, $kemungkinan, $nominal = null)
     {
+     
 
         if (gettype($id_pemasok) == 'array') {
             $update_data_transaksi = [];
@@ -134,8 +135,7 @@ class PurchaseModel extends Model
 
 
 
-        if (count($id_transaksi) > 1 && gettype($id_pemasok) == 'string') {
-
+        if (count($id_transaksi) >= 1 && gettype($id_pemasok) == 'string') {
 
             for ($i = 0; $i < count($id_transaksi); $i++) {
 
@@ -144,6 +144,7 @@ class PurchaseModel extends Model
                     ->update($update_data_transaksi);
             }
         } elseif (count($id_transaksi) > 1 && gettype($id_pemasok) == 'array') {
+
             for ($i = 0; $i < count($id_transaksi); $i++) {
 
                 DB::table('transaksi')
@@ -151,8 +152,10 @@ class PurchaseModel extends Model
                     ->update($update_data_transaksi[$i]);
             }
         } else if (count($id_transaksi) < 1 && gettype($id_pemasok) == 'string') {
+
             DB::table('transaksi')->where('id_transaksi', $id_transaksi[0])->update($update_data_transaksi);
         }
+     
 
         DB::table('pembelian')->insert($data_pembelian);
 

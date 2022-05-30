@@ -51,7 +51,7 @@
                             <tr>
                                 <td> {{ $loop->iteration }}</td>
                                 <td style="min-width:120px">{{ $d->tgl_pengiriman }}</td>
-                                <td>{{ $d->no_pembelian }}</td>
+                                <td>{{ $d->no_penjualan }}</td>
                                 <td>{{ $d->nomor_pekerjaan }}</td>
                                 <td>{{ $d->nama_pelanggan }}</td>
                                 <td>{{ $d->nama_pengguna }}</td>
@@ -60,20 +60,20 @@
 
 
                                     
-                                <a href="{{ url('show', str_replace('/', '-', $d->no_pembelian)) }}"
+                                <a href="{{ url('show', str_replace('/', '-', $d->no_penjualan)) }}"
                                     class="btn btn-primary mt-1"  @if ($d->jumlah_detail_pengiriman == $d->jumlah_detail_penerimaan && $d->status_transaksi !='delivery')
                                        {{'hidden'}}
                                    @endif>
                                     Bill Payment </a>
 
-                                    <a href="{{ url('delivery/detail', str_replace('/', '-', $d->no_pembelian)) }}"
+                                    <a href="{{ url('delivery/detail', str_replace('/', '-', $d->no_penjualan)) }}"
                                         class="btn btn-info mt-1">
                                         Detail </a>
                                 </td>
                                 <td>
                                   
                                     @if ($d->jumlah_detail_penerimaan == $d->jumlah_detail_pengiriman)
-                                        <a href={{ url('delivery/print', str_replace('/', '-', $d->no_pengiriman)) }}
+                                        <a href={{ url('delivery/print', str_replace('/', '-', $d->no_penjualan)) }}
                                             class="btn btn-primary" target='_blank'>Print </a>
                                     @else
                                         <i class="fas fa-clock fs-1 mt-2"></i>

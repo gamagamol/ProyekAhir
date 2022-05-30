@@ -211,25 +211,27 @@ class BillPaymentModel extends Model
 
     public function show($no_penerimaan)
     {
-        return  DB::select("SELECT *,penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan , penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,jumlah_detail_penerimaan,
+       
+        return DB::select("SELECT *,penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan , penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,jumlah_detail_penerimaan,
             case 
             when jumlah_detail_pengiriman > 0 then sum(jumlah_detail_pengiriman)
             end as
             sudah_terkirim,
             jumlah_detail_pengiriman,
             sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM ibaraki_db.transaksi 
-            join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
-            join penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
+			join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+			join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
+            join pembelian on pembelian.id_penjualan = penjualan.id_penjualan
+            join detail_transaksi_pembelian on pembelian.id_pembelian = detail_transaksi_pembelian.id_pembelian
+            join penerimaan_barang on penerimaan_barang.id_pembelian=pembelian.id_pembelian
             join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
-            join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
-            left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
+            left join pengiriman on pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
             left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
             join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
             join pengguna on pengguna.id=transaksi.id
             join produk on detail_penerimaan_barang.id_produk=produk.id_produk
-			where no_penerimaan='$no_penerimaan'  and jumlah_detail_penerimaan >= jumlah_detail_pengiriman
+			where no_penjualan='$no_penerimaan'  and jumlah_detail_penerimaan >= jumlah_detail_pengiriman
             group by transaksi.id_transaksi
-            order by transaksi.id_transaksi asc
-            ");
+            order by transaksi.id_transaksi asc");
     }
 }

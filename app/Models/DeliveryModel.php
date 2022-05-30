@@ -20,19 +20,21 @@ class DeliveryModel extends Model
             $query = "";
         }
 
-
-        
-        // return DB::select("SELECT b.*,(SELECT sum(jumlah_detail_penerimaan) FROM penerimaan_barang 
-        //         join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
-        //         where b.no_penerimaan=penerimaan_barang .no_penerimaan
-        //         group by no_penerimaan) as jumlah_detail_penerimaan,
-        //         (select sum(jumlah_detail_pengiriman) from pengiriman 
-        //         join detail_transaksi_pengiriman on pengiriman.id_pengiriman = detail_transaksi_pengiriman.id_pengiriman 
-        //         where b.no_pengiriman=pengiriman.no_pengiriman
+        // return DB::select("SELECT b.*,(select sum( jumlah_detail_penerimaan)  from penerimaan_barang 
+		// 		join pembelian on penerimaan_barang.id_pembelian=pembelian.id_pembelian            
+		// 		join penjualan on  pembelian.id_penjualan=penjualan.id_penjualan  
+		// 		join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+		// 		where no_pembelian=b.no_pembelian) as jumlah_detail_penerimaan,
+        //         (select sum( jumlah_detail_pengiriman)  from pengiriman
+		// 			join penerimaan_barang on penerimaan_barang.id_penerimaan_barang=pengiriman.id_penerimaan_barang 
+		// 			join pembelian on penerimaan_barang.id_pembelian=pembelian.id_pembelian            
+		// 			join penjualan on  pembelian.id_penjualan=penjualan.id_penjualan  
+		// 			join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman = pengiriman.id_pengiriman
+		// 			where no_pembelian=b.no_pembelian
         //         ) as jumlah_detail_pengiriman
                 
         //         from(
-        //         select transaksi.id_transaksi,max(tgl_pengiriman) as tgl_pengiriman,no_pengiriman,nomor_pekerjaan,nama_pelanggan,nama_pengguna,no_penerimaan ,status_transaksi from transaksi
+        //         select transaksi.id_transaksi,max(tgl_pengiriman) as tgl_pengiriman,no_pengiriman,nomor_pekerjaan,nama_pelanggan,nama_pengguna ,status_transaksi,no_pembelian from transaksi
         //         join penawaran on penawaran.id_transaksi = transaksi.id_transaksi    
         //         join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
         //         join pembelian on penjualan.id_penjualan=pembelian.id_penjualan
@@ -43,8 +45,8 @@ class DeliveryModel extends Model
         //         join produk on detail_penerimaan_barang.id_produk = produk.id_produk
         //         join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
         //         join pengguna on pengguna.id=transaksi.id
-        //          $query
-        //         group by no_pengiriman
+              
+        //         group by no_pembelian
         //         order by tgl_pengiriman desc,no_pengiriman desc
         //                     ) b
         //         where b.no_pengiriman is not null");
@@ -53,17 +55,18 @@ class DeliveryModel extends Model
 				join pembelian on penerimaan_barang.id_pembelian=pembelian.id_pembelian            
 				join penjualan on  pembelian.id_penjualan=penjualan.id_penjualan  
 				join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
-				where no_pembelian=b.no_pembelian) as jumlah_detail_penerimaan,
+				where no_penjualan=b.no_penjualan) as jumlah_detail_penerimaan,
                 (select sum( jumlah_detail_pengiriman)  from pengiriman
 					join penerimaan_barang on penerimaan_barang.id_penerimaan_barang=pengiriman.id_penerimaan_barang 
 					join pembelian on penerimaan_barang.id_pembelian=pembelian.id_pembelian            
 					join penjualan on  pembelian.id_penjualan=penjualan.id_penjualan  
 					join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman = pengiriman.id_pengiriman
-					where no_pembelian=b.no_pembelian
+					where no_penjualan=b.no_penjualan
                 ) as jumlah_detail_pengiriman
                 
                 from(
-                select transaksi.id_transaksi,max(tgl_pengiriman) as tgl_pengiriman,no_pengiriman,nomor_pekerjaan,nama_pelanggan,nama_pengguna ,status_transaksi,no_pembelian from transaksi
+                select transaksi.id_transaksi,max(tgl_pengiriman) as tgl_pengiriman,no_pengiriman,
+                nomor_pekerjaan,nama_pelanggan,nama_pengguna ,status_transaksi,no_penjualan from transaksi
                 join penawaran on penawaran.id_transaksi = transaksi.id_transaksi    
                 join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
                 join pembelian on penjualan.id_penjualan=pembelian.id_penjualan
@@ -75,7 +78,7 @@ class DeliveryModel extends Model
                 join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
                 join pengguna on pengguna.id=transaksi.id
               
-                group by no_pembelian
+                group by no_penjualan
                 order by tgl_pengiriman desc,no_pengiriman desc
                             ) b
                 where b.no_pengiriman is not null");
@@ -258,7 +261,7 @@ class DeliveryModel extends Model
             join pengiriman on penerimaan_barang.id_penerimaan_barang=pengiriman.id_penerimaan_barang
             join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman
             join produk on detail_penerimaan_barang.id_produk = produk.id_produk
-            where no_pembelian ='PO/3/2022/05/26'
+            where no_penjualan ='$no_pengiriman'
             Order BY tgl_pengiriman asc,no_pengiriman asc
 
         
@@ -296,7 +299,7 @@ class DeliveryModel extends Model
         return DB::select(
             "SELECT  *,penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan ,penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran, jumlah_detail_penerimaan,
          jumlah_detail_pengiriman as jumlah_detail_pengiriman,jumlah_detail_penerimaan- jumlah_detail_pengiriman as sisa_detail_penerimaan
-            ,tgl_penerimaan,detail_penerimaan_barang.id_produk,harga FROM ibaraki_db.transaksi 
+            ,tgl_penerimaan,detail_penerimaan_barang.id_produk,harga FROM transaksi 
          join penawaran on penawaran.id_transaksi = transaksi.id_transaksi    
         join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
         join pembelian on penjualan.id_penjualan=pembelian.id_penjualan
@@ -316,6 +319,8 @@ class DeliveryModel extends Model
     public function print($no_pengiriman)
     {
 
+        
+
         return DB::select("SELECT 
                 (select max(tgl_pengiriman) as tgl_pengiriman from pengiriman 
                 join detail_transaksi_pengiriman on pengiriman.id_pengiriman=detail_transaksi_pengiriman.id_pengiriman
@@ -324,18 +329,20 @@ class DeliveryModel extends Model
                 group by produk.id_produk) tgl_pengiriman,b.*
                 FROM (
                 SELECT max(pengiriman.id_pengiriman) as id_pengiriman,no_pengiriman,transaksi.*,produk.*,nama_pelanggan,alamat_pelanggan,perwakilan,nama_pengguna,no_penjualan,jumlah_detail_penjualan FROM transaksi 
-                join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
+            join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
+            join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
+            join pembelian on pembelian.id_penjualan = penjualan.id_penjualan
+            join detail_transaksi_pembelian on  pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
+            join penerimaan_barang on penerimaan_barang.id_pembelian = pembelian.id_pembelian
                 join detail_transaksi_penjualan on detail_transaksi_penjualan.id_penjualan=penjualan.id_penjualan
-                join pengiriman on pengiriman.id_transaksi=transaksi.id_transaksi
+                join pengiriman on pengiriman.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
                 join detail_transaksi_pengiriman on pengiriman.id_pengiriman=detail_transaksi_pengiriman.id_pengiriman
                 join produk on produk.id_produk = detail_transaksi_pengiriman.id_produk
                 join pelanggan on pelanggan.id_pelanggan = transaksi.id_pelanggan
                 join pengguna on pengguna.id=transaksi.id
-                where no_pengiriman ='$no_pengiriman'
-                group by produk.id_produk) b 
-                order by tgl_pengiriman asc
-                
-                ") ;
+                where no_penjualan ='$no_pengiriman'
+                group by transaksi.id_transaksi) b 
+                order by tgl_pengiriman asc");
 
 
     }
