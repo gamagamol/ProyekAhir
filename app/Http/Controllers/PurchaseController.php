@@ -364,6 +364,8 @@ class PurchaseController extends Controller
         // dump($produk);
         // dump($arr_produk);
         // dump($array_no_pembelian);
+        // dump($quotation);
+        // dump($kemungkinan);
         // dump($data_pembelian);
         // dd($data_detail_pembelian);
 
