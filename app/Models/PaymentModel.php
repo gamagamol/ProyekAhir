@@ -125,7 +125,7 @@ class PaymentModel extends Model
 
         $nominal = DB::select("
         
-        SELECT  sum( ppn_detail_pengiriman) as ppn,sum( subtotal_detail_pengiriman) as subtotal,sum(total_detail_pengiriman)+ongkir as total,ongkir
+        SELECT  sum( ppn) as ppn,sum( subtotal) as subtotal,sum(total)+ongkir as total,ongkir
             from transaksi 
             join pengiriman on pengiriman.id_transaksi=transaksi.id_transaksi
             join detail_transaksi_pengiriman on pengiriman.id_pengiriman = detail_transaksi_pengiriman.id_pengiriman

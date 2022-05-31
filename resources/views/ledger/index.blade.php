@@ -68,9 +68,7 @@
                                 @if ($k->posisi_db_cr == 'debit')
                                     <td>{{ 'Rp.' . number_format($k->nominal, 2, ',', '.') }}</td>
                                     <td>{{ '' }}</td>
-
-                                    <?php $total_kas = $total_kas + $k->nominal + $saldo_awal_kas; ?>
-
+                                    <?php $total_kas += $k->nominal + $saldo_awal_kas; ?>
                                     <td>{{ 'Rp.' . number_format($total_kas, 2, ',', '.') }}</td>
                                     <td>{{ '' }}</td>
                                 @else
