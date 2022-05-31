@@ -55,10 +55,10 @@
                                      {{" "}}
                                  </td>
                                @endif
-                                <td>{{ 'Rp.' . number_format($d->subtotal, 2, ',', '.') }}</td>
+                                <td>{{ 'Rp.' . number_format($d->subtotal_detail_pembelian, 2, ',', '.') }}</td>
 
                             </tr>
-                            <?php $total = $total + $d->subtotal; ?>
+                            <?php $total = $total + $d->subtotal_detail_pembelian; ?>
                         @endforeach
                         <tr>
                             <td colspan="6">{{ 'TOTAL' }}</td>
