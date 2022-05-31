@@ -46,8 +46,8 @@
                                 <td>{{ $d->tgl_pembelian }}</td>
                                 <td>{{ $d->no_pembayaran_vendor }}</td>
                                 <td>{{ $d->tgl_pembayaran_vendor }}</td>
-                                <td>{{ 'Rp.' . number_format($d->subtotal, 2, ',', '.') }}</td>
-                                <?php $total=$total+$d->subtotal ?>
+                                <td>{{ 'Rp.' . number_format($d->subtotal_detail_pembelian, 2, ',', '.') }}</td>
+                                <?php $total+=$d->subtotal_detail_pembelian ?>
                             </tr>
                             @endforeach
                             <tr>

@@ -160,15 +160,14 @@ class PaymentVendorModel extends Model
                 ->paginate(1);
         } else {
             return DB::table('transaksi')
-
-                ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
-                ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', '=', 'penawaran.id_penawaran')
-                ->join("produk", 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')
-                ->join("pemasok", 'transaksi.id_pemasok', '=', 'pemasok.id_pemasok')
-                ->join('pembelian', "pembelian.id_transaksi", "transaksi.id_transaksi")
-                ->join('pembayaranvendor', "pembayaranvendor.id_transaksi", "transaksi.id_transaksi")
+                ->selectRaw('nama_pemasok,no_pembelian,tgl_pembelian,no_pembayaran_vendor,tgl_pembayaran_vendor,sum(subtotal_detail_pembelian) as subtotal_detail_pembelian')
+                ->join('pemasok','pemasok.id_pemasok','transaksi.id_pemasok')
+                ->join('penjualan','penjualan.id_transaksi','transaksi.id_transaksi')
+                ->join('pembelian','pembelian.id_penjualan','penjualan.id_penjualan')
+                ->join('pembayaranvendor','pembelian.id_pembelian','pembayaranvendor.id_pembelian')
+                ->join('detail_transaksi_pembelian','pembelian.id_pembelian','detail_transaksi_pembelian.id_pembelian')
                 ->groupBy('no_pembelian')
-                ->paginate(5);
+                ->get();
         }
     }
 }
