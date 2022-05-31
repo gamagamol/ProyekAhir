@@ -79,7 +79,7 @@ class PaymentVendorController extends Controller
             ];
         }
 
-        dd($data_pembelian);
+        // dd($data_pembelian);
 
         $this->model->insert($data_pembelian);
         return redirect('paymentvendor/report/report')->with('success', 'Payment to vendor has been success');

@@ -95,11 +95,13 @@ class PaymentVendorModel extends Model
         
 
         $total = DB::table('pembelian')
-            ->selectRaw('sum(subtotal_detail_pembelian)-ongkir as total')
+            ->selectRaw('sum(subtotal_detail_pembelian) as total')
             ->join('transaksi','transaksi.id_transaksi','pembelian.id_transaksi')
             ->join('detail_transaksi_pembelian','pembelian.id_pembelian','detail_transaksi_pembelian.id_pembelian')
             ->where('no_pembelian', '=', $data_pembayaran_vendor[0]['no_pembayaran_vendor'])
             ->first();
+
+            // dd($total);
 
 
 

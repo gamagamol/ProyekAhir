@@ -74,9 +74,8 @@
                                         <td>{{ 'Rp.' . number_format($d->subtotal_detail_pembelian) }}</td>
                                        
                                        
-                                        <?php $total += $d->total_detail_pembelian; ?>
-                                        <?php $total_ppn += $d->ppn_detail_pembelian; ?>
-                                        <?php $total_ongkir = $d->ongkir; ?>
+                                        <?php $total += $d->subtotal_detail_pembelian; ?>
+                                       
 
 
                                     </tr>
