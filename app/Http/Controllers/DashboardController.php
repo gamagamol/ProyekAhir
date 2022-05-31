@@ -48,12 +48,6 @@ class DashboardController extends Controller
         join pelanggan on transaksi.id_pelanggan=pelanggan.id_pelanggan
         join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
         join tagihan on tagihan.id_transaksi=transaksi.id_transaksi");
-     
-
-
-       
-
-
 
         // how make total AR
 
