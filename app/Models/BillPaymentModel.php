@@ -229,6 +229,7 @@ class BillPaymentModel extends Model
              FROM transaksi 
 			join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
 			join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
+            join detail_transaksi_penjualan on penjualan.id_penjualan = detail_transaksi_penjualan.id_penjualan
             join pembelian on pembelian.id_penjualan = penjualan.id_penjualan
             join detail_transaksi_pembelian on pembelian.id_pembelian = detail_transaksi_pembelian.id_pembelian
             join penerimaan_barang on penerimaan_barang.id_pembelian=pembelian.id_pembelian

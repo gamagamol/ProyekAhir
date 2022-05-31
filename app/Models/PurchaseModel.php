@@ -60,10 +60,7 @@ class PurchaseModel extends Model
 
         return DB::select("SELECT penawaran.id_penawaran,transaksi.id_transaksi,penjualan.id_penjualan,penjualan.tgl_penjualan,penjualan.no_penjualan
         ,detail_transaksi_penjualan.id_produk,detail_transaksi_penjualan.jumlah_detail_penjualan
-        ,transaksi.harga,case
-        when no_pembelian is not null then berat-berat_detail_pembelian
-         else transaksi.berat
-        end as berat,
+        ,transaksi.harga,transaksi.harga,berat-ifnull( berat_detail_pembelian,0) as berat,
         jumlah_detail_pembelian,
         case 
         when jumlah_detail_pembelian is not null then jumlah_detail_penjualan - jumlah_detail_pembelian
@@ -205,7 +202,7 @@ class PurchaseModel extends Model
         $total_pembelian = 0;
         foreach ($data_detail_pembelian as $ddp) {
             // dump($ddp['total_detail_pembelian']);
-            $total_pembelian += $ddp['total_detail_pembelian'];
+            $total_pembelian += $ddp['subtotal_detail_pembelian'];
         }
 
 

@@ -36,6 +36,8 @@ class PaymentVendorController extends Controller
     public function show($no_pembelian)
     {
         $no_pembelian = str_replace('-', '/', $no_pembelian);
+
+        // dd($this->model->show($no_pembelian));
         $data = [
             'tittle' => "Create Paymnet To Vendor",
             'data' => $this->model->show($no_pembelian),
@@ -76,6 +78,9 @@ class PaymentVendorController extends Controller
                 'tgl_pembayaran_vendor' => $tgl_pembelian
             ];
         }
+
+        dd($data_pembelian);
+
         $this->model->insert($data_pembelian);
         return redirect('paymentvendor/report/report')->with('success', 'Payment to vendor has been success');
     }

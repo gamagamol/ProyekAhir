@@ -267,10 +267,6 @@ class PurchaseController extends Controller
 
         if (gettype($id_pemasok) == 'string' && $unit == null) {
           
-     
-          
-          
-          
             $i = 0;
             foreach ($quotation as $quo) {
                 $data_pembelian[$i] = [

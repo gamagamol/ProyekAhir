@@ -37,11 +37,8 @@
                             <td>No</td>
                             <td>Supplier</td>
                             <td>Date</td>
-                            <td>No PO</td>
+                            <td>No Purchase Order</td>
                             <td>Job Number</td>
-                            <td>Weight (kg)</td>
-                            <td>Total Amount</td>
-                            <td>Processing</td>
                             <td>Prepared</td>
                             <td>Action</td>
 
@@ -58,10 +55,7 @@
                                 <td>{{ $d->no_pembelian }}</td>
                                 <td>{{ $d->nomor_pekerjaan }}</td>
 
-                                <td>{{ $d->berat }}</td>
-
-                                <td>{{ 'Rp.' . number_format($d->total=+$d->total) }}</td>
-                                <td>{{ $d->layanan }}</td>
+                                
                                 <td>{{ $d->nama_pengguna }}</td>
                                 <td>
 

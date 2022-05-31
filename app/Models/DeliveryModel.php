@@ -274,6 +274,7 @@ class DeliveryModel extends Model
 
     public function edit($no_penerimaan)
     {
+        // dd($no_penerimaan);
         
         $no_pengiriman =
             DB::select("SELECT distinct no_pengiriman FROM ibaraki_db.penerimaan_barang

@@ -59,7 +59,7 @@
                             @foreach ($data as $d)
                                 <?php
                                 $sudah_terkirim += $d->sudah_terkirim;
-                                $total_unit += $d->jumlah_detail_pembelian;
+                                $total_unit += $d->jumlah_detail_penjualan;
                                 ?>
                                 <tr>
                                     <td hidden> <input type="text" value={{ $d->id_transaksi }} name="id_transaksi[]">
