@@ -99,6 +99,8 @@ class DashboardController extends Controller
                     'length'=>count($this->DM->notif()),
                     'data'=> $this->DM->notif(),
                 ];
+
+                // dd($array);
                 return $array; 
         }
     }

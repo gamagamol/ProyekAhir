@@ -26,7 +26,7 @@ class DashboardModel extends Model
 
     public function persentase_tagihan()
     {
-       return DB::select("SELECT 
+        return DB::select("SELECT 
             distinct (select 
             count(kode_transaksi) 
             from transaksi where status_transaksi='payment') / (select 
@@ -60,23 +60,23 @@ class DashboardModel extends Model
             ->get()
             ->toArray();
 
-        $ar = DB::table('transaksi')
-            ->selectRaw("no_tagihan as no_transaksi,tgl_tagihan, DATE_ADD(tgl_tagihan, INTERVAL 31 DAY) AS DUE_DATE,nama_pelanggan, total, Datediff( CURDATE(),tgl_tagihan),tgl_tagihan, 
-            total AS total_selisih")
-            ->join('pelanggan', 'transaksi.id_pelanggan', "=", "pelanggan.id_pelanggan")
-            ->join('penawaran', 'penawaran.id_transaksi', "=", "transaksi.id_transaksi")
-            ->join('tagihan', 'tagihan.id_transaksi', "=", "transaksi.id_transaksi")
-            ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', "=", "penawaran.id_penawaran")
-            ->where('status_transaksi', "=", "bill")
-            ->whereRaw('Datediff( CURDATE(),tgl_tagihan) >= 30')
-            ->groupBy('no_tagihan')
-            ->orderBy("DUE_DATE", "asc")
-            ->limit(2)
-            ->get()
-            ->toArray();
-        
-            $array=array_merge($ap,$ar);
-         return $array;
+        $ar = DB::select("SELECT no_tagihan as no_transaksi,tgl_tagihan,  DATE_ADD(tgl_tagihan, INTERVAL 31 DAY) AS DUE_DATE,nama_pelanggan, sum(total) as total,abs( Datediff( CURDATE(),tgl_tagihan) )as selisih, 
+           sum( total) AS total_selisih from transaksi 
+           join pelanggan on transaksi.id_pelanggan = pelanggan.id_pelanggan
+            join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
+            join pembelian on pembelian.id_penjualan=penjualan.id_penjualan
+            join penerimaan_barang on penerimaan_barang.id_pembelian = pembelian.id_pembelian
+             join  pengiriman on pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang 
+          join  detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman =  pengiriman.id_pengiriman
+      join tagihan on pengiriman.id_pengiriman = tagihan.id_pengiriman
+            where status_transaksi='bill   '
+            group by no_tagihan
+            order by tgl_tagihan desc
+            limit 1
+           ");
+
+        $array = array_merge($ap, $ar);
+        return $array;
         //  return $ap;
     }
 }
