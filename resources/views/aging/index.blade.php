@@ -41,7 +41,7 @@
                         </tr>
                         @foreach ($data as $d)
                             @if ($d->selisih >= 0 && $d->selisih < 30)
-                                <?php $BackgroundColor = 'class='; ?>
+                                <?php $BackgroundColor = 'class=bg-success style=color:white'; ?>
                             @elseif ($d->selisih >= 31 && $d->selisih <= 60)
                                 <?php $BackgroundColor = 'class=bg-danger style=color:white '; ?>
                             @elseif ($d->selisih >= 61 && $d->selisih <= 90)

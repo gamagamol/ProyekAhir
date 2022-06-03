@@ -15,16 +15,22 @@ class AgingScheduleModel extends Model
     {
        
 
-        return DB::table('transaksi')
-            ->selectRaw("no_tagihan,tgl_tagihan, DATE_ADD(tgl_tagihan, INTERVAL 31 DAY) AS DUE_DATE,nama_pelanggan, sum(total) as total, Datediff( CURDATE(),tgl_tagihan) as selisih,tgl_tagihan, 
-           sum( total) AS total_selisih")
-            ->join('pelanggan', 'transaksi.id_pelanggan', "=", "pelanggan.id_pelanggan")
-            ->join('penawaran', 'penawaran.id_transaksi', "=", "transaksi.id_transaksi")
-            ->join('tagihan', 'tagihan.id_transaksi', "=", "transaksi.id_transaksi")
-            ->join('pengiriman','tagihan.id_pengiriman','=','pengiriman.id_pengiriman')
-            ->join('detail_transaksi_pengiriman', 'detail_transaksi_pengiriman.id_pengiriman', "=", "pengiriman.id_pengiriman")
-            ->where('status_transaksi', "=", "bill")
-            ->groupBy('no_tagihan','tgl_tagihan')
-            ->get();
+        return DB::select("select no_tagihan,tgl_tagihan,  DATE_ADD(tgl_tagihan, INTERVAL 31 DAY) AS DUE_DATE,nama_pelanggan, sum(total) as total,abs( Datediff( CURDATE(),tgl_tagihan) )as selisih, 
+           sum( total) AS total_selisih from transaksi 
+           join pelanggan on transaksi.id_pelanggan = pelanggan.id_pelanggan
+         
+            join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
+            join pembelian on pembelian.id_penjualan=penjualan.id_penjualan
+            join penerimaan_barang on penerimaan_barang.id_pembelian = pembelian.id_pembelian
+             join  pengiriman on pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang 
+          join  detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman =  pengiriman.id_pengiriman
+      join tagihan on pengiriman.id_pengiriman = tagihan.id_pengiriman
+         
+            where status_transaksi='bill'
+            group by no_tagihan
+            order by tgl_tagihan desc
+         
+           
+           ");
     }
 }
