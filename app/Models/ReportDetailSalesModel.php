@@ -9,12 +9,22 @@ use Illuminate\Support\Facades\DB;
 class ReportDetailSalesModel extends Model
 {
     use HasFactory;
-    public function index()
+    public function index($search=null)
     {
+
+        if($search){
+            $query="where pelanggan.id_pelanggan = '$search'";
+        }else{
+            $query="";
+        }
+        
+
         return DB::select("SELECT tgl_tagihan,nama_pelanggan,no_penjualan,no_tagihan,subtotal from transaksi
         join pelanggan on transaksi.id_pelanggan=pelanggan.id_pelanggan
         join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
-        join tagihan on tagihan.id_transaksi=transaksi.id_transaksi");
+        join tagihan on tagihan.id_transaksi=transaksi.id_transaksi
+        $query
+        ");
     }
 
     public function total()

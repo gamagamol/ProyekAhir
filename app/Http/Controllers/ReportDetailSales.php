@@ -16,10 +16,23 @@ class ReportDetailSales extends Controller
     }
 
     public function index()
-    {
+    {   
+        $serch= request()->get('search');
+        if ($serch) {
+            // dd($serch);
+            if(request()->get('search')=='All'){
+               $data= $this->model->index();
+            }else{
+                $data =  $this->model->index($serch);
+            }
+        }else{
+            $data =  $this->model->index();
+
+        }
+
         $data = [
             'tittle' => " Report Detail Sales",
-            'data' => $this->model->index(),
+            'data' => $data,
             'custumor' => DB::table('pelanggan')->get(),
         ];
         return view('report.revenue', $data);

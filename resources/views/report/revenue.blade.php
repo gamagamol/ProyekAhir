@@ -6,10 +6,17 @@
                 <h6 class="m-0 font-weight-bold text-primary">Sales Detail Report </h6>
             </div>
 
-            <form action="" method="post">
+             <form action={{ url('SDR') }} method="GET" id="serch-form">
                 <div class="form-group col-md-6 ml-2 mt-2">
-                    <input type="text" name='cari' class="form-control " id="formGroupExampleInput"
-                        placeholder="Find Your Custumor" autocomplete="off" autofocus>
+                    <select class="custom-select" name="search">
+                      
+                        <option value="All">All</option>
+                       
+                        @foreach ($custumor as $c)
+                            <option value={{$c->id_pelanggan}}>{{$c->nama_pelanggan}}</option>
+                        @endforeach
+
+                    </select>
                 </div>
                 <button type=submit name=submit class="btn btn-primary ml-4">submit</button>
             </form>
@@ -31,22 +38,22 @@
                         <?php $total = 0; ?>
 
                         @foreach ($data as $d)
-                                <tr>
-                                    <td> {{ $loop->iteration }} </td>
-                                    <td> {{ $d->nama_pelanggan }} </td>
-                                    <td>{{ $d->no_penjualan }}</td>
-                                    <td>{{ $d->no_tagihan }}</td>
-                                    <td>{{ $d->tgl_tagihan }}</td>
-                                    <td>{{ 'Rp.' . number_format($d->subtotal, 2, ',', '.') }}</td>
-                                    <td>{{ 'Rp.' . number_format($d->subtotal, 2, ',', '.') }}</td>
+                            <tr>
+                                <td> {{ $loop->iteration }} </td>
+                                <td> {{ $d->nama_pelanggan }} </td>
+                                <td>{{ $d->no_penjualan }}</td>
+                                <td>{{ $d->no_tagihan }}</td>
+                                <td>{{ $d->tgl_tagihan }}</td>
+                                <td>{{ 'Rp.' . number_format($d->subtotal, 2, ',', '.') }}</td>
+                                <td>{{ 'Rp.' . number_format($d->subtotal, 2, ',', '.') }}</td>
 
-                                </tr>
-                                <?php $total=$d->subtotal+$total; ?>
-                                @endforeach
-                                <tr>
-                                    <td colspan="6">{{"TOTAL"}}</td>
-                                    <td>{{'Rp.' . number_format($total, 2, ',', '.')}}</td>
-                                </tr>
+                            </tr>
+                            <?php $total = $d->subtotal + $total; ?>
+                        @endforeach
+                        <tr>
+                            <td colspan="6">{{ 'TOTAL' }}</td>
+                            <td>{{ 'Rp.' . number_format($total, 2, ',', '.') }}</td>
+                        </tr>
 
                         </tr>
                         <?php $no++; ?>
