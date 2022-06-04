@@ -24,7 +24,12 @@ class BillPaymentController extends Controller
     {
         $serch = request()->get('serch');
         if ($serch) {
-            $data = $this->model->index($serch);
+            if ($serch == 'All') {
+                $data = $this->model->index();
+            } else {
+
+                $data = $this->model->index($serch);
+            }
         } else {
             $data = $this->model->index();
         }

@@ -15,7 +15,9 @@ class DeliveryModel extends Model
     {
 
         if ($id) {
-            $query = "  where status_transaksi='delivery' and no_pengiriman = '$id'";
+            $query = "  and  no_pengiriman = '$id'";
+     
+
         } else {
             $query = "";
         }
@@ -34,11 +36,12 @@ class DeliveryModel extends Model
                 join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
                 left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
                 left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
-                $query
                 group by no_pengiriman
                 order by tgl_pengiriman desc,no_pengiriman desc
                             ) b
-                where b.no_pengiriman is not null
+                where b.no_pengiriman is not null 
+                $query
+                
              "
         );
     }

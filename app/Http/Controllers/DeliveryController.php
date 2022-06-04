@@ -25,6 +25,7 @@ class DeliveryController extends Controller
     {
         $serch = request()->get('serch');
         if ($serch) {
+            // dd($serch);
             $data = $this->model->index($serch);
         } else {
             $data = $this->model->index();

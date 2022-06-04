@@ -14,7 +14,7 @@ class BillPaymentModel extends Model
     {
         if ($id) {
             return DB::table('transaksi')
-                ->selectRaw("tgl_tagihan,nama_pelanggan,no_tagihan,berat,total,layanan,nama_pengguna, DATE_ADD(tgl_tagihan, INTERVAL 31 DAY) AS DUE_DATE,no_pengiriman,kode_transaksi,no_penerimaan")
+                ->selectRaw("tgl_tagihan,nama_pelanggan,no_tagihan,berat,total,layanan,nama_pengguna, DATE_ADD(tgl_tagihan, INTERVAL 31 DAY) AS DUE_DATE,no_pengiriman,kode_transaksi,no_penerimaan,status_transaksi")
                 ->join("pelanggan", "transaksi.id_pelanggan", "=", "pelanggan.id_pelanggan")
                 ->join("pengguna", "transaksi.id", "=", "pengguna.id")
                 ->join('penawaran', "penawaran.id_transaksi", "=", "transaksi.id_transaksi")
@@ -26,7 +26,7 @@ class BillPaymentModel extends Model
                 ->join("tagihan", "tagihan.id_transaksi", "=", "transaksi.id_transaksi")
                 ->where('no_tagihan', "=", "$id")
                 ->groupBy('tgl_tagihan', "no_tagihan")
-                ->orderBy('tgl_tagihan', 'asc')
+                ->orderByRaw('tgl_tagihan desc,no_tagihan desc')
                 ->paginate(1);
         } else {
 
