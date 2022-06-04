@@ -21,7 +21,13 @@ class PaymentController extends Controller
     {
         $serch = request()->get('serch');
         if ($serch) {
-            $data = $this->model->index($serch);
+            if(request()->get('serch')=='All'){
+                $data = $this->model->index();
+
+            }else{
+                
+                $data = $this->model->index($serch);
+            }
         } else {
             $data = $this->model->index();
         }

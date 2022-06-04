@@ -23,8 +23,10 @@ class PaymentModel extends Model
                 ->join("produk", "detail_transaksi_pengiriman.id_produk", "=", "produk.id_produk")
                 ->join('pembayaran', "pembayaran.id_transaksi", "=", "transaksi.id_transaksi")
                 ->join('penerimaan_barang', 'pengiriman.id_penerimaan_barang', '=', 'penerimaan_barang.id_penerimaan_barang')
-                ->where("no_pembayaran", "=", $id)
-                ->paginate(1);
+                ->where('no_pembayaran',"$id")
+                ->groupBy("no_pembayaran", "tgl_pembayaran")
+                ->orderBy("tgl_pembayaran", "asc")
+                ->paginate(5);
         } else {
 
             return DB::table('transaksi')
@@ -39,8 +41,6 @@ class PaymentModel extends Model
                 ->join('penerimaan_barang', 'pengiriman.id_penerimaan_barang','=','penerimaan_barang.id_penerimaan_barang')
                 ->groupBy("no_pembayaran", "tgl_pembayaran")
                 ->orderBy("tgl_pembayaran", "asc")
-
-           
                 ->paginate(5);
         }
     }

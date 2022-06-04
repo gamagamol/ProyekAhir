@@ -18,6 +18,7 @@
                         <form action={{ url('payment') }} method="GET" id="serch-form">
                             <select class="form-control form-select" aria-label="Default select example" name='serch'
                                 id="serch">
+                                <option value="All">All</option>
                                 @foreach ($deta as $d)
                                     <option value={{ $d->no_pembayaran }}>{{ $d->no_pembayaran }}</option>
                                 @endforeach
