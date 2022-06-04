@@ -21,7 +21,13 @@ class AgingScheduleController extends Controller
     {
         $id_pelanggan = request()->get('id_pelanggan');
         if ($id_pelanggan) {
-            $data = $this->model->index($id_pelanggan);
+            if(request()->get('id_pelanggan')=='All'){
+                $data = $this->model->index();
+
+            }else{
+
+                $data = $this->model->index($id_pelanggan);
+            }
         } else {
             $data = $this->model->index();
         }

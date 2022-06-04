@@ -9,6 +9,7 @@
             <form action="" method="get">
                 <div class="form-group col-md-6 ml-2 mt-2">
                     <select name="id_pelanggan" id="" class="form-control">
+                        <option value="All"> All</option>
                         @foreach ($pelanggan as $p)
                             <option value={{ $p->id_pelanggan }}>{{ $p->nama_pelanggan }}</option>
                         @endforeach
