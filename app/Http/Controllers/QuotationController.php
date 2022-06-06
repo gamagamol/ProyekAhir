@@ -147,6 +147,10 @@ class QuotationController extends Controller
             $jumlah = $request->input("jumlah");
             $layanan = $request->input("layanan");
 
+            if((int)$lebar_transaksi<=0 && $bentuk_produk=='FLAT'){
+                return redirect()->back()->withErrors(['lebar_transaksi'=>'Fill Width more then 0'])->withInput();
+            }
+            
             // Logika penentuan berat
             // deklarasi
             $berat=$this->CalculateWeight($bentuk_produk,$layanan,$tebal_transaksi,$lebar_transaksi,$panjang_transaksi,$jumlah);
