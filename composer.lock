@@ -822,6 +822,7 @@
         },
         {
             "name": "guzzlehttp/guzzle",
+<<<<<<< HEAD
             "version": "7.4.2",
             "source": {
                 "type": "git",
@@ -832,6 +833,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/guzzle/guzzle/zipball/ac1ec1cd9b5624694c3a40be801d94137afb12b4",
                 "reference": "ac1ec1cd9b5624694c3a40be801d94137afb12b4",
+=======
+            "version": "7.4.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/guzzle.git",
+                "reference": "74a8602c6faec9ef74b7a9391ac82c5e65b1cdab"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/74a8602c6faec9ef74b7a9391ac82c5e65b1cdab",
+                "reference": "74a8602c6faec9ef74b7a9391ac82c5e65b1cdab",
+>>>>>>> wandi
                 "shasum": ""
             },
             "require": {
@@ -926,7 +939,11 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
+<<<<<<< HEAD
                 "source": "https://github.com/guzzle/guzzle/tree/7.4.2"
+=======
+                "source": "https://github.com/guzzle/guzzle/tree/7.4.3"
+>>>>>>> wandi
             },
             "funding": [
                 {
@@ -942,7 +959,11 @@
                     "type": "tidelift"
                 }
             ],
+<<<<<<< HEAD
             "time": "2022-03-20T14:16:28+00:00"
+=======
+            "time": "2022-05-25T13:24:33+00:00"
+>>>>>>> wandi
         },
         {
             "name": "guzzlehttp/promises",
@@ -1145,6 +1166,7 @@
         },
         {
             "name": "laravel/framework",
+<<<<<<< HEAD
             "version": "v8.83.13",
             "source": {
                 "type": "git",
@@ -1155,6 +1177,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/laravel/framework/zipball/1eed68ec70c98d1a7a6f0fcedbea10cb6dd69a20",
                 "reference": "1eed68ec70c98d1a7a6f0fcedbea10cb6dd69a20",
+=======
+            "version": "v8.83.14",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/framework.git",
+                "reference": "141cf126f1746c7264f59aa78c923a84eaab501e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/141cf126f1746c7264f59aa78c923a84eaab501e",
+                "reference": "141cf126f1746c7264f59aa78c923a84eaab501e",
+>>>>>>> wandi
                 "shasum": ""
             },
             "require": {
@@ -1314,7 +1348,11 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
+<<<<<<< HEAD
             "time": "2022-05-17T14:08:01+00:00"
+=======
+            "time": "2022-05-24T14:04:02+00:00"
+>>>>>>> wandi
         },
         {
             "name": "laravel/sanctum",
@@ -6670,6 +6708,7 @@
         },
         {
             "name": "laravel/sail",
+<<<<<<< HEAD
             "version": "v1.14.6",
             "source": {
                 "type": "git",
@@ -6680,6 +6719,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/laravel/sail/zipball/f00f3a8f83e71436d473cda7700ae7b4b68d26cc",
                 "reference": "f00f3a8f83e71436d473cda7700ae7b4b68d26cc",
+=======
+            "version": "v1.14.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/sail.git",
+                "reference": "c049316f9bcb02598607307f18b514b66202b639"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/sail/zipball/c049316f9bcb02598607307f18b514b66202b639",
+                "reference": "c049316f9bcb02598607307f18b514b66202b639",
+>>>>>>> wandi
                 "shasum": ""
             },
             "require": {
@@ -6726,7 +6777,11 @@
                 "issues": "https://github.com/laravel/sail/issues",
                 "source": "https://github.com/laravel/sail"
             },
+<<<<<<< HEAD
             "time": "2022-05-18T15:56:59+00:00"
+=======
+            "time": "2022-05-21T17:14:14+00:00"
+>>>>>>> wandi
         },
         {
             "name": "mockery/mockery",
@@ -7286,6 +7341,7 @@
         },
         {
             "name": "phpstan/phpstan",
+<<<<<<< HEAD
             "version": "1.6.8",
             "source": {
                 "type": "git",
@@ -7296,6 +7352,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/phpstan/phpstan/zipball/d76498c5531232cb8386ceb6004f7e013138d3ba",
                 "reference": "d76498c5531232cb8386ceb6004f7e013138d3ba",
+=======
+            "version": "1.7.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpstan/phpstan.git",
+                "reference": "e3baed2ee2ef322e0f9b8fe8f87fdbe024c7c719"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e3baed2ee2ef322e0f9b8fe8f87fdbe024c7c719",
+                "reference": "e3baed2ee2ef322e0f9b8fe8f87fdbe024c7c719",
+>>>>>>> wandi
                 "shasum": ""
             },
             "require": {
@@ -7321,7 +7389,11 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
+<<<<<<< HEAD
                 "source": "https://github.com/phpstan/phpstan/tree/1.6.8"
+=======
+                "source": "https://github.com/phpstan/phpstan/tree/1.7.1"
+>>>>>>> wandi
             },
             "funding": [
                 {
@@ -7341,7 +7413,11 @@
                     "type": "tidelift"
                 }
             ],
+<<<<<<< HEAD
             "time": "2022-05-10T06:54:21+00:00"
+=======
+            "time": "2022-05-24T09:05:09+00:00"
+>>>>>>> wandi
         },
         {
             "name": "phpunit/php-code-coverage",

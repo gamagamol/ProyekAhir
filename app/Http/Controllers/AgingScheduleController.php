@@ -41,6 +41,10 @@ class AgingScheduleController extends Controller
         }
         // dd(date('Y-m-d'));
         // dd($data);
+<<<<<<< HEAD
+=======
+
+>>>>>>> wandi
         $data = [
             'tittle' => "Aging Schedule",
             'data' => $data,

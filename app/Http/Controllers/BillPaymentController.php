@@ -48,16 +48,14 @@ class BillPaymentController extends Controller
     public function show($no_pengiriman)
     {
 
-        // $array = $this->model->create($id_transaksi, $tgl_pengiriman);
-        // $id_transaksi = $array['id_transaksi'];
-        // $data = $array['data'];
+       
         $no_pengiriman = str_replace("-", "/", $no_pengiriman);
         $data = $this->model->show($no_pengiriman);
-        // dump($no_pengiriman);
-        // dd($data);
-        $tgl_pengiriman = end($data);
-        $tgl_pengiriman = $tgl_pengiriman->tgl_pengiriman;
 
+        // dd($data);
+        
+        $tgl_pengiriman = end($data);
+        $tgl_pengiriman = $tgl_pengiriman->tgl_pengiriman_max;
         $data = [
             "tittle" => "Bill payment",
             'data' => $data,

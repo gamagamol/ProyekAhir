@@ -19,7 +19,8 @@
                             <input type="date" name="tgl_pembelian" class="form-control"
                                 value={{ $data[0]->tgl_penjualan }}>
                             <input type="text" value="{{ $data[0]->kode_transaksi }}" name="kode_transaksi" hidden>
-
+                            <input type="text" value="{{ $data[0]->no_penjualan }}" name="no_penjualan" hidden>
+                           
                         </div>
                         {{-- jangan hapus dulu penting --}}
                         <div class="col-md-3 mt-2" id="select-pemasok" >

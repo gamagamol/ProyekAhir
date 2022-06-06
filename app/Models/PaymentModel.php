@@ -87,7 +87,7 @@ class PaymentModel extends Model
             ->get();
     }
 
-    public function insert($id_transaksi, $data_pembayaran, $data_detail_pembayaran,$nominal=null)
+    public function insert($id_transaksi, $data_pembayaran, $data_detail_pembayaran,$no_tagihan)
     {
         // mengubah data transaksi
 
@@ -114,21 +114,29 @@ class PaymentModel extends Model
             DB::table('detail_transaksi_pembayaran')->insert($data_detail_pembayaran[$i]);
         }
 
-      
+
+
+
+
 
         // perubahan jurnal
 
-       
 
-            $nominal = DB::table('jurnal')
-              ->select('nominal')
-              ->where('id_transaksi','=',$id_transaksi[0])
-                ->get();
 
-                // dd($nominal);
-            $nominal_piutang=$nominal[0]->nominal;
-            $nominal_ppn=$nominal[1]->nominal;
-            $nominal_ongkir=$nominal[2]->nominal;
+        $nominal = DB::select("
+        
+        SELECT  sum( ppn) as ppn,sum( subtotal) as subtotal,sum(total)+ongkir as total,ongkir
+            from transaksi 
+            join pengiriman on pengiriman.id_transaksi=transaksi.id_transaksi
+            join detail_transaksi_pengiriman on pengiriman.id_pengiriman = detail_transaksi_pengiriman.id_pengiriman
+            join tagihan on tagihan.id_pengiriman = pengiriman.id_pengiriman
+            where no_tagihan ='$no_tagihan[0]'
+        ");
+
+        // dd($nominal);
+        $nominal_piutang = $nominal[0]->total;
+        $nominal_ppn = $nominal[0]->ppn;
+        $nominal_ongkir = $nominal[0]->ongkir;
 
         $jurnal = [
             [

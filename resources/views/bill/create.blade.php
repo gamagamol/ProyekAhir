@@ -17,7 +17,7 @@
                     <div class="row">
                         <div class="col-md-3 mt-2">
                             <input type="date" required name="tgl_pembayaran" class="form-control"
-                                value={{$tgl_pengiriman }}>
+                                value={{ $tgl_pengiriman }}>
                         </div>
                     </div>
                 </div>
@@ -54,14 +54,13 @@
                             <?php
                             $selesai = false;
                             $sudah_terkirim = 0;
-                            $total_unit=0;
+                            $total_unit = 0;
                             ?>
                             @foreach ($data as $d)
                                 <?php
                                 $sudah_terkirim += $d->sudah_terkirim;
-                                $total_unit += $d->jumlah;
+                                $total_unit += $d->jumlah_detail_penjualan;
                                 ?>
-
                                 <tr>
                                     <td hidden> <input type="text" value={{ $d->id_transaksi }} name="id_transaksi[]">
                                     </td>
@@ -107,10 +106,8 @@
                     <div class="container">
                         <div class="row">
                             <div class="col">
-                                @if ($total_unit== $sudah_terkirim)
-                                    
-                                
-                                <button type=submit name=submit class="btn btn-primary">submit</button>
+                                @if ($total_unit == $sudah_terkirim)
+                                    <button type=submit name=submit class="btn btn-primary">submit</button>
                                 @endif
                                 <a href={{ url()->previous() }} class="btn btn-primary"> Back</a>
                             </div>

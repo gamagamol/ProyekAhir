@@ -113,23 +113,23 @@ class PaymentController extends Controller
         }
         // dd($id_transaksi);
         // dd($id_transaksi);
-        $nominal=0;
-        if (count($id_transaksi)>1) {
-            for ($i=0; $i <count($id_transaksi) ; $i++) { 
-                    $id_jurnal = DB::table('jurnal')
-                    ->select('nominal')
-                    ->where('id_transaksi', "=", $id_transaksi[$i])
-                    ->where('kode_akun', "=", 112)
-                    ->first();
-                    if ($id_jurnal) {
-                        $nominal=$id_jurnal->nominal;
-                }
-            }
-        }
+        // $nominal=0;
+        // if (count($id_transaksi)>1) {
+        //     for ($i=0; $i <count($id_transaksi) ; $i++) { 
+        //             $id_jurnal = DB::table('jurnal')
+        //             ->select('nominal')
+        //             ->where('id_transaksi', "=", $id_transaksi[$i])
+        //             ->where('kode_akun', "=", 112)
+        //             ->first();
+        //             if ($id_jurnal) {
+        //                 $nominal=$id_jurnal->nominal;
+        //         }
+        //     }
+        // }
         // dd($id_transaksi);
        
 
-        $this->model->insert($id_transaksi, $data_pembayaran, $data_detail_pembayaran,$nominal);
+        $this->model->insert($id_transaksi, $data_pembayaran, $data_detail_pembayaran,$request->input('no_tagihan'));
 
         return redirect('payment')->with('success', " Data Entered Successfully");
     }

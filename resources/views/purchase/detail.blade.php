@@ -126,9 +126,9 @@
 
                                 </tr>
                                 <?php
-                                $subtotal += $p->subtotal;
-                                $ppn += $p->ppn;
-                                $total += $p->total;
+                                $subtotal += $p->subtotal_detail_pembelian;
+                                $ppn += $p->ppn_detail_pembelian;
+                                $total += $p->total_detail_pembelian;
                                 
                                 ?>
                             @endforeach
