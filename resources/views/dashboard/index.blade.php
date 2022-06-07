@@ -55,16 +55,16 @@
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Payment 
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Payment
                                 </div>
                                 <div class="row no-gutters align-items-center">
                                     <div class="col-auto">
-                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{"$tagihan%"}}</div>
+                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ "$tagihan%" }}</div>
                                     </div>
-                                    <div class="col">
+                                    <div class="col-auto text-center">
                                         <div class="progress progress-sm mr-2">
-                                            <div class="progress-bar bg-info" role="progressbar" style="width: 50%"
-                                                aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                            <div class="progress-bar bg-info" role="progressbar"
+                                                style={{ 'width:'.$tagihan.'px' }}></div>
                                         </div>
                                     </div>
                                 </div>
@@ -77,7 +77,7 @@
                 </div>
             </div>
 
-           
+
         </div>
 
         <!-- Content Row -->
@@ -102,10 +102,10 @@
                 </div>
             </div> --}}
 
-        </div>
+    </div>
 
-        <!-- Content Row -->
-        <div class="container">
+    <!-- Content Row -->
+    <div class="container">
 
         <div class="row">
 
@@ -143,9 +143,7 @@
                                 <div class="progress-bar bg-warning" role="progressbar" style={{ 'width:0%' }}
                                     aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
-
                         @else
-
                             <h4 class="small font-weight-bold">Sales Order <span
                                     class="float-right">{{ $grafik->sales . '%' }}</span></h4>
                             <div class="progress mb-4">
@@ -159,11 +157,10 @@
                             <h4 class="small font-weight-bold">Purchase Order <span
                                     class="float-right">{{ 0 . '%' }}</span></h4>
                             <div class="progress mb-4">
-                                <div class="progress-bar" role="progressbar" style={{ 'width:0%' }}
-                                    aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar" role="progressbar" style={{ 'width:0%' }} aria-valuenow="60"
+                                    aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         @else
-
                             <h4 class="small font-weight-bold">Purchase Order <span
                                     class="float-right">{{ $grafik->purchase . '%' }}</span></h4>
                             <div class="progress mb-4">
@@ -212,7 +209,6 @@
                                     aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         @else
-
                             <h4 class="small font-weight-bold">Bill Payment <span
                                     class="float-right">{{ $grafik->bill . '%' }}</span></h4>
                             <div class="progress mb-4">
@@ -229,7 +225,6 @@
                                     aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         @else
-
                             <h4 class="small font-weight-bold">Payment Order <span
                                     class="float-right">{{ $grafik->payment . '%' }}</span>
                             </h4>
@@ -251,7 +246,7 @@
         </div>
 
     </div>
-        </div>
+    </div>
 
     <!-- /.container-fluid -->
 

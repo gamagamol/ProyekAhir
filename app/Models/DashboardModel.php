@@ -69,7 +69,7 @@ class DashboardModel extends Model
              join  pengiriman on pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang 
           join  detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman =  pengiriman.id_pengiriman
       join tagihan on pengiriman.id_pengiriman = tagihan.id_pengiriman
-            where status_transaksi='bill   '
+            where status_transaksi='bill and abs( Datediff( CURDATE(),tgl_tagihan) ) >=15'
             group by no_tagihan
             order by tgl_tagihan desc
             limit 1
