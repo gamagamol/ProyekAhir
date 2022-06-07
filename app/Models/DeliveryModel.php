@@ -76,16 +76,6 @@ class DeliveryModel extends Model
                 join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
                 left join pengiriman on pengiriman.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
                 left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
-<<<<<<< HEAD
-                group by no_pengiriman
-                order by tgl_pengiriman desc,no_pengiriman desc
-                            ) b
-                where b.no_pengiriman is not null 
-                $query
-                
-             "
-        );
-=======
                 join produk on detail_penerimaan_barang.id_produk = produk.id_produk
                 join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
                 join pengguna on pengguna.id=transaksi.id
@@ -94,7 +84,6 @@ class DeliveryModel extends Model
                 order by tgl_pengiriman desc,no_pengiriman desc
                             ) b
                 where b.no_pengiriman is not null");
->>>>>>> wandi
     }
 
     public function show($no_penerimaan)
