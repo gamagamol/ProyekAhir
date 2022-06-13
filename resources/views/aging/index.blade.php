@@ -40,18 +40,18 @@
                             <td style="text-align: center">61-90</td>
 
                         </tr>
-                        
+
                         @foreach ($data as $d)
-                            @if ($d->selisih >= 0 && $d->selisih < 30)
+                            @if ($d->selisih >= 0 && $d->selisih < 15)
                                 <?php $BackgroundColor = 'class=bg-success style=color:white '; ?>
-                            @elseif ($d->selisih >= 31 && $d->selisih <= 60)
+                            @elseif ($d->selisih >= 15 && $d->selisih <= 31)
                                 <?php $BackgroundColor = 'class=bg-warning style=color:white '; ?>
-                            @elseif ($d->selisih >= 61 && $d->selisih <= 90)
+                            @elseif ($d->selisih >= 31 && $d->selisih <= 90)
                                 <?php $BackgroundColor = 'class=bg-danger style=color:white '; ?>
                             @endif
-                           
-                          
-                          
+
+
+
 
                             <tr {{ $BackgroundColor }}>
                                 <td>{{ $d->nama_pelanggan }}</td>
