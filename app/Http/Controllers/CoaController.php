@@ -79,7 +79,7 @@ class CoaController extends Controller
         }
         $validated = [
             'kode_akun' => strtoupper($request->input('kode_akun')),
-            'nama_akun' => strtoupper($request->input('nama_akun')),
+            'nama_akun' => $request->input('nama_akun'),
             'header_akun' => strtoupper($request->input('header_akun')),
         ];
 
@@ -100,7 +100,7 @@ class CoaController extends Controller
 
 
 
-    public function update(Request $request,)
+    public function update(Request $request)
     {
         $kode = $request->input('kode_akun');
         $rules = [
@@ -121,7 +121,7 @@ class CoaController extends Controller
         }
         $validated = [
             'kode_akun' => strtoupper($request->input('kode_akun')),
-            'nama_akun' => strtoupper($request->input('nama_akun')),
+            'nama_akun' => $request->input('nama_akun'),
             'header_akun' => strtoupper($request->input('header_akun')),
         ];
 

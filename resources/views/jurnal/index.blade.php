@@ -34,7 +34,7 @@
                                     <td>{{ $d->tgl_jurnal }}</td>
                                     <td>{{ $d->nama_akun }}</td>
                                     <td style="text-align: center">{{ $d->kode_akun }}</td>
-                                    <td style="text-align: left">{{ 'Rp.' . number_format($d->nominal) }}</td>
+                                    <td style="text-align: right">{{ 'Rp.' . number_format($d->nominal) }}</td>
                                     <td>{{ ' ' }}</td>
                                 </tr>
                                 <?php $total_debit=$total_debit+$d->nominal; ?>
@@ -51,12 +51,7 @@
                             @endif
                         @endforeach
                         
-                            <tr>
-                                <td colspan="3" class="text-center" >  TOTAL</td>
-                                <td class="text-center">{{ 'Rp.' . number_format($total_kredit) }}</td>
-                                <td class="text-center">{{ 'Rp.' . number_format($total_debit) }}</td>
-                            </tr>
-
+                           
                     </table>
                 </div>
 

@@ -3,7 +3,11 @@
     <div class="container">
         <div class="card shadow mb-4">
             <div class="card-header py-3 mt-2">
-                <h6 class="m-0 font-weight-bold text-primary">Aging Schedule</h6>
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fa fa-bars" aria-hidden="true" id='legenda'></i>
+                    Aging Schedule
+                </h6>
+
             </div>
 
             <form action="" method="get">
@@ -17,6 +21,9 @@
                 </div>
                 <button type=submit name=submit class="btn btn-primary ml-4">submit</button>
             </form>
+
+
+
             <div class="card-body">
 
 
@@ -83,4 +90,58 @@
             </div>
         </div>
     </div>
+
+    <div class="modal" tabindex="-1" id="modal-legenda">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">legenda</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table ">
+                        <thead>
+                            <tr>
+                                <th>Color</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-success">Green</td>
+                                <th>
+                                    If the row in your aging schedule table is green, it means that the age of your
+                                    receivables transaction ranges from 0 to 15 days</th>
+                            </tr>
+                            <tr>
+                                <th class="text-warning">Yellow</th>
+                                <th>
+                                    If the row in your aging schedule table is yellow, which means your receivables transaction age ranges from 15 to 30 days, then you can send an email to the customer by pressing the letter icon on the billing menu as a form of reminding your customer.
+                                </th>
+                            </tr>
+                            <tr>
+                                <th class="text-danger">Red</th>
+                                <th>
+                                    If the row in your aging schedule table is red, which means the age of your receivable transaction is within 30 to 90 days, then you can send an email to the customer by pressing the letter icon on the billing menu as a form of reminding your customer.
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $('#legenda').click(() => {
+            $('#modal-legenda').modal('show')
+        })
+    </script>
 @endsection()

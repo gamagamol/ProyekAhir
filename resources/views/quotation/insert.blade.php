@@ -232,7 +232,7 @@
 
                             <div class="col-md-3 " style="margin-top:35px">
                                 <div class="form-group mt-2 rounded">
-                                    <button type=submit name=tambah class="btn btn-primary" id="tambah">Add Item's</button>
+                                    <button type=submit name=tambah class="btn btn-primary" id="tambah">Add Item</button>
 
                                     <a class="btn btn-primary ml-3" id="selesai" onclick="selesai()">finished</a>
 

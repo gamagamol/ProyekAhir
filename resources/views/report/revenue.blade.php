@@ -44,15 +44,15 @@
                                 <td>{{ $d->no_penjualan }}</td>
                                 <td>{{ $d->no_tagihan }}</td>
                                 <td>{{ $d->tgl_tagihan }}</td>
-                                <td>{{ 'Rp.' . number_format($d->subtotal, 2, ',', '.') }}</td>
-                                <td>{{ 'Rp.' . number_format($d->subtotal, 2, ',', '.') }}</td>
+                                <td class="text-right">{{ 'Rp.' . number_format($d->subtotal, 2, ',', '.') }}</td>
+                                <td class="text-right">{{ 'Rp.' . number_format($d->subtotal, 2, ',', '.') }}</td>
 
                             </tr>
                             <?php $total = $d->subtotal + $total; ?>
                         @endforeach
                         <tr>
                             <td colspan="6">{{ 'TOTAL' }}</td>
-                            <td>{{ 'Rp.' . number_format($total, 2, ',', '.') }}</td>
+                            <td class="text-right">{{ 'Rp.' . number_format($total, 2, ',', '.') }}</td>
                         </tr>
 
                         </tr>
