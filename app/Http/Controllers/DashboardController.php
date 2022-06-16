@@ -73,12 +73,32 @@ class DashboardController extends Controller
         }else{
             $tagihan=0;
         }
+
+        // menghitung total utang
+
+      $total_utang=  DB::select("select (
+            select sum(total_detail_pembelian) as total_pembayaran_vendor from pembelian 
+            join detail_transaksi_pembelian on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
+            left join pembayaranvendor on pembelian.id_pembelian=pembayaranvendor.id_pembelian where idpembayaranvendor is  null
+            ) - (
+            select sum(total_detail_pembelian) as total_pembayaran_vendor from pembelian 
+            join detail_transaksi_pembelian on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
+            left join pembayaranvendor on pembelian.id_pembelian=pembayaranvendor.id_pembelian where idpembayaranvendor is not null
+            )  total_utang
+            from pembelian
+            limit 1
+            ");
+            
+            
+
+
         $data = [
             'tittle' => "DashBoard",
             'sales' => $sales[0]->sales,
             'recivable' => DB::table('transaksi')->where('status_transaksi', '=', 'bill')->sum('total'),
             'grafik' => $this->DM->grafik(),
             'tagihan'=> $tagihan,
+            'payable'=> $total_utang[0]->total_utang
         ];
         return view("dashboard.index", $data);
     }
