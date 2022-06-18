@@ -88,6 +88,7 @@ class QuotationController extends Controller
             'nomor_pekerjaan' => $nomor_pekerjaan,
             'history' => $history,
             'kode_transaksi' => $transaction_code->kode_transaksi,
+            'services'=>DB::table('layanan')->get()
 
         ];
         return view('quotation.insert', $data);

@@ -189,7 +189,7 @@
                     {{ 'Amount          : Rp' . number_format($subtotal) }} <br>
                     {{ ' Vat            : Rp' . number_format($subtotal*0.11) }} <br>
                     {{ ' Shippment      : Rp' . number_format($data[0]->ongkir) }} <br>
-                    {{ ' Total          : Rp' . number_format($total+$ongkir) }}
+                    {{ ' Total          : Rp' . number_format($total+$data[0]->ongkir) }}
                 </h5>
 
 

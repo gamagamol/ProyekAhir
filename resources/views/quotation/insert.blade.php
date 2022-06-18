@@ -179,8 +179,11 @@
                                     <select class="form-control @error('layanan') is-invalid @enderror" id="layanan"
                                         name="layanan">
 
-                                        <option value="CUTTING">Raw Material</option>
-                                        <option value="MILLING">Milling</option>
+                                        @foreach ($services as $service)
+                                            <option value= {{strtoupper($service->nama_layanan)}}>
+                                            {{$service->nama_layanan}}
+                                            </option>
+                                        @endforeach
 
 
                                     </select>
@@ -366,7 +369,7 @@
                     @endforeach
                     <tr>
                         <td colspan='18'>Total Quotation</td>
-                        <td>{{ 'Rp' . number_format($total) }}</td>
+                        <td>{{ 'Rp' . number_format($total+$pembantu[0]->ongkir_pembantu) }}</td>
                     </tr>
                 @endif
 

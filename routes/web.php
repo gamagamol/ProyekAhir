@@ -21,6 +21,8 @@ use App\Http\Controllers\PurchaseReportController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\PaymentVendorController;
+
+use App\Http\Controllers\ServicesController;
 // Auth
 Route::get('/', [AuthController::class, 'index'])->name('login')->middleware(['guest', 'revalidate']);
 Route::post('login', [AuthController::class, 'authenticate']);
@@ -36,6 +38,7 @@ Route::resource('product', ProductController::class)->middleware(['auth', 'reval
 Route::resource('custumor', CustumorController::class)->middleware(['auth', 'revalidate']);
 
 Route::resource('supplier', SupplierController::class)->middleware(['auth', 'revalidate']);
+Route::resource('services', ServicesController::class)->middleware(['auth', 'revalidate']);
 // transaksi
 Route::resource('quotation', QuotationController::class)->middleware(['auth', 'revalidate']);
 Route::post('quotation_insert', [QuotationController::class, "insert"]);
