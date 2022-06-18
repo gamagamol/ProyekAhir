@@ -92,7 +92,7 @@
                                 <td colspan='12'>TOTAL</td>
                                 <td>{{'Rp.'.number_format($subtotal)}}</td>
                                 <td>{{'Rp.'.number_format($ppn)}}</td>
-                                <td>{{'Rp.'.number_format($total)}}</td>
+                                <td>{{'Rp.'.number_format($total+$data[0]->ongkir)}}</td>
                             </tr>
                         </table>
                     </div>

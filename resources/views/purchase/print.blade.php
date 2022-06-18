@@ -157,7 +157,7 @@
                 <h5 class="text-end mb-5">
                     {{ 'Amount  : Rp' . number_format($subtotal) }} <br>
                     {{ ' Vat    : Rp' . number_format($ppn) }} <br>
-                    {{ ' Total  : Rp' . number_format($total) }}</h5>
+                    {{ ' Total  : Rp' . number_format($total+$data[0]->ongkir) }}</h5>
 
                 <h5 class="text-decoration-underline "> Terbilang:</h5>
                 <h6> {{ $penyebut }} </h6>

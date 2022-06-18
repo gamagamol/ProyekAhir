@@ -31,12 +31,12 @@ class EmailController extends Controller
 
         $dueDate = $this->model->index($no_tagihan);
 
-
+        
 
         // CETAK PDF
         $details = [
             'perwakilan' => $data[0]->perwakilan,
-            'total'=>$total,
+            'total'=> $total + $data[0]->ongkir,
             'data' => $data,
             'due_date'=>$dueDate[0]->DUE_DATE
 
