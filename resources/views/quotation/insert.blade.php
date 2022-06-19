@@ -367,9 +367,13 @@
                         <?php $i++; ?>
                         <?php $total = $total + $p->total; ?>
                     @endforeach
+                    @if (count($pembantu)>0)
+                        <?php $total+=$pembantu[0]->ongkir_pembantu?>
+                    @endif
+             
                     <tr>
                         <td colspan='18'>Total Quotation</td>
-                        <td>{{ 'Rp' . number_format($total+$pembantu[0]->ongkir_pembantu) }}</td>
+                        <td>{{ 'Rp' . number_format($total) }}</td>
                     </tr>
                 @endif
 
