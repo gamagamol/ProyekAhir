@@ -145,7 +145,7 @@
                                     aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         @else
-                            <h4 class="small font-weight-bold">Quotation Order <span
+                            <h4 class="small font-weight-bold">Quotation  <span
                                     class="float-right">{{ $grafik->quotation . '%' }}</span></h4>
                             <div class="progress mb-4">
                                 <div class="progress-bar bg-danger" role="progressbar"
@@ -155,14 +155,14 @@
                         @endif
 
                         @if (is_null($grafik))
-                            <h4 class="small font-weight-bold">Sales Order <span
+                            <h4 class="small font-weight-bold">Sales  <span
                                     class="float-right">{{ 0 . '%' }}</span></h4>
                             <div class="progress mb-4">
                                 <div class="progress-bar bg-warning" role="progressbar" style={{ 'width:0%' }}
                                     aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         @else
-                            <h4 class="small font-weight-bold">Sales Order <span
+                            <h4 class="small font-weight-bold">Sales  <span
                                     class="float-right">{{ $grafik->sales . '%' }}</span></h4>
                             <div class="progress mb-4">
                                 <div class="progress-bar bg-warning" role="progressbar"
@@ -172,14 +172,14 @@
                         @endif
 
                         @if (is_null($grafik))
-                            <h4 class="small font-weight-bold">Purchase Order <span
+                            <h4 class="small font-weight-bold">Purchase  <span
                                     class="float-right">{{ 0 . '%' }}</span></h4>
                             <div class="progress mb-4">
                                 <div class="progress-bar" role="progressbar" style={{ 'width:0%' }} aria-valuenow="60"
                                     aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         @else
-                            <h4 class="small font-weight-bold">Purchase Order <span
+                            <h4 class="small font-weight-bold">Purchase  <span
                                     class="float-right">{{ $grafik->purchase . '%' }}</span></h4>
                             <div class="progress mb-4">
                                 <div class="progress-bar" role="progressbar" style={{ "width:$grafik->purchase%" }}
@@ -203,14 +203,14 @@
                         @endif
 
                         @if (is_null($grafik))
-                            <h4 class="small font-weight-bold">Delivery Order <span
+                            <h4 class="small font-weight-bold">Delivery  <span
                                     class="float-right">{{ 0 . '%' }}</span></h4>
                             <div class="progress mb-4">
                                 <div class="progress-bar bg-info" role="progressbar" style={{ 'width:0%' }}
                                     aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         @else
-                            <h4 class="small font-weight-bold">Delivery Order <span
+                            <h4 class="small font-weight-bold">Delivery  <span
                                     class="float-right">{{ $grafik->delivery . '%' }}</span></h4>
                             <div class="progress mb-4">
                                 <div class="progress-bar bg-info" role="progressbar"
@@ -235,7 +235,7 @@
                             </div>
                         @endif
                         @if (is_null($grafik))
-                            <h4 class="small font-weight-bold">Payment Order <span
+                            <h4 class="small font-weight-bold">Payment  <span
                                     class="float-right">{{ 0 . '%' }}</span>
                             </h4>
                             <div class="progress">
@@ -243,7 +243,7 @@
                                     aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         @else
-                            <h4 class="small font-weight-bold">Payment Order <span
+                            <h4 class="small font-weight-bold">Payment  <span
                                     class="float-right">{{ $grafik->payment . '%' }}</span>
                             </h4>
                             <div class="progress">
