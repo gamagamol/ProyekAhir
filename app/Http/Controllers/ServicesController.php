@@ -52,7 +52,7 @@ class ServicesController extends Controller
     public function store(Request $request)
     {
             $request->validate([
-                'nama_layanan'=>'required'
+                'nama_layanan'=>'required|unique:layanan,nama_layanan'
             ]);
 
            Services::insert(['nama_layanan'=>$request->nama_layanan]);
@@ -84,7 +84,7 @@ class ServicesController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'nama_layanan'=>'required'
+            'nama_layanan'=> 'required|unique:layanan,nama_layanan'
         ]);
         $data= ['nama_layanan'=> $request->nama_layanan];
         DB::table('layanan')->where('id_layanan',$request->id_layanan)->update($data);
