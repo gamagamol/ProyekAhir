@@ -4,7 +4,7 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3 mt-2">
                 <h6 class="m-0 font-weight-bold text-primary">
-                    <i class="fa fa-bars" aria-hidden="true" id='legenda'></i>
+                    {{-- <i class="fa fa-bars" aria-hidden="true" ></i> --}}
                     Aging Schedule
                 </h6>
 
@@ -24,10 +24,29 @@
 
 
 
+
+
             <div class="card-body">
+                <div class="" id='legenda'>
 
+                    <div class="row">
 
-                <a href="{{ url('export') }}" class="btn btn-success my-3" style="margin-left: 90%"> <i
+                        <div class="col-md-2 bg-success mt-3"></div>
+                        <div class="col-md-2 text-center mt-3 font-weight-bold" id='legenda'>0-15 Days</div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-2 bg-warning mt-3"></div>
+                        <div class="col-md-2 text-center mt-3 font-weight-bold">15-30 Days</div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-2 bg-danger mt-3"></div>
+                        <div class="col-md-2 text-center mt-3 font-weight-bold"> 30-90 Days</div>
+                    </div>
+                </div>
+
+                <a href="{{ url('export') }}" class="btn btn-success mb-3" style="margin-left: 90%"> <i
                         class="fas fa-file-excel"></i>
                     Excel</a>
                 <div class="table-responsive text-center">
@@ -42,12 +61,11 @@
                         </tr>
 
                         <tr>
-                            <td style="text-align: center">0-30</td>
-                            <td style="text-align: center">31-60</td>
-                            <td style="text-align: center">61-90</td>
+                            <td style="text-align: center">0-15</td>
+                            <td style="text-align: center">15-31</td>
+                            <td style="text-align: center">31-90</td>
 
                         </tr>
-
                         @foreach ($data as $d)
                             @if ($d->selisih >= 0 && $d->selisih < 15)
                                 <?php $BackgroundColor = 'class=bg-success style=color:white '; ?>
@@ -58,8 +76,6 @@
                             @endif
 
 
-
-
                             <tr {{ $BackgroundColor }}>
                                 <td>{{ $d->nama_pelanggan }}</td>
                                 <td>{{ $d->no_tagihan }}</td>
@@ -68,15 +84,15 @@
                                 <td>{{ 'Rp.' . number_format($d->total, 2, ',', '.') }}</td>
 
 
-                                @if ($d->selisih >= 0 && $d->selisih < 30)
+                                @if ($d->selisih >= 0 && $d->selisih < 15)
                                     <td>{{ 'Rp.' . number_format($d->total_selisih, 2, ',', '.') }}</td>
                                     <td>{{ ' ' }}</td>
                                     <td>{{ ' ' }}</td>
-                                @elseif ($d->selisih >= 31 && $d->selisih <= 60)
+                                @elseif ($d->selisih >= 15 && $d->selisih <= 31)
                                     <td>{{ ' ' }}</td>
                                     <td>{{ 'Rp.' . number_format($d->total_selisih, 2, ',', '.') }}</td>
                                     <td>{{ ' ' }}</td>
-                                @elseif ($d->selisih >= 61 && $d->selisih <= 90)
+                                @elseif ($d->selisih >= 31 && $d->selisih <= 90)
                                     <td>{{ ' ' }}</td>
                                     <td>{{ ' ' }}</td>
                                     <td>{{ 'Rp.' . number_format($d->total_selisih, 2, ',', '.') }}</td>
@@ -118,13 +134,17 @@
                             <tr>
                                 <th class="text-warning">Yellow</th>
                                 <th>
-                                    If the row in your aging schedule table is yellow, which means your receivables transaction age ranges from 15 to 30 days, then you can send an email to the customer by pressing the letter icon on the billing menu as a form of reminding your customer.
+                                    If the row in your aging schedule table is yellow, which means your receivables
+                                    transaction age ranges from 15 to 30 days, then you can send an email to the customer by
+                                    pressing the letter icon on the billing menu as a form of reminding your customer.
                                 </th>
                             </tr>
                             <tr>
                                 <th class="text-danger">Red</th>
                                 <th>
-                                    If the row in your aging schedule table is red, which means the age of your receivable transaction is within 30 to 90 days, then you can send an email to the customer by pressing the letter icon on the billing menu as a form of reminding your customer.
+                                    If the row in your aging schedule table is red, which means the age of your receivable
+                                    transaction is within 30 to 90 days, then you can send an email to the customer by
+                                    pressing the letter icon on the billing menu as a form of reminding your customer.
                                 </th>
                             </tr>
                         </tbody>

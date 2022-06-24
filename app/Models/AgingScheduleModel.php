@@ -13,7 +13,7 @@ class AgingScheduleModel extends Model
     use HasFactory;
     public function index($id_pelanggan = null)
     {
-       
+
 
         return DB::select("select no_tagihan,tgl_tagihan,  DATE_ADD(tgl_tagihan, INTERVAL 31 DAY) AS DUE_DATE,nama_pelanggan, sum(total) as total,abs( Datediff( CURDATE(),tgl_tagihan) )as selisih, 
            sum( total) AS total_selisih from transaksi 

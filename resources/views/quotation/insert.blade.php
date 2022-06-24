@@ -118,7 +118,7 @@
                             <div class="col-md-3">
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2" id="tebal_label">Inquiry
-                                        thick/Diameter</label>
+                                        thick/Diameter (mm)</label>
                                     <input type="number" class="form-control @error('tebal_transaksi') is-invalid @enderror"
                                         name="tebal_transaksi" id="tebal_transaksi" value="{{ old('tebal_transaksi') }}"
                                         min="0">
@@ -131,7 +131,7 @@
                             </div>
                             <div class="col-md-3 ">
                                 <div class="form-group mt-2 rounded" id="lebar">
-                                    <label for="example1" class="mt-2">Inquiry Widht</label>
+                                    <label for="example1" class="mt-2">Inquiry Widht (mm)</label>
                                     <input type="number" class="form-control @error('lebar_transaksi') is-invalid @enderror"
                                         name="lebar_transaksi" id="lebar_transaksi" value="{{ old('lebar_transaksi') }}"
                                         min="0">
@@ -144,7 +144,7 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group mt-2 rounded">
-                                    <label for="example1" class="mt-2"> Inquiry Length</label>
+                                    <label for="example1" class="mt-2"> Inquiry Length (mm)</label>
                                     <input type="number"
                                         class="form-control @error('panjang_transaksi') is-invalid @enderror"
                                         name="panjang_transaksi" id="panjang_transaksi"

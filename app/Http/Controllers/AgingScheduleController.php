@@ -21,10 +21,9 @@ class AgingScheduleController extends Controller
     {
         $id_pelanggan = request()->get('id_pelanggan');
         if ($id_pelanggan) {
-            if(request()->get('id_pelanggan')=='All'){
+            if (request()->get('id_pelanggan') == 'All') {
                 $data = $this->model->index();
-
-            }else{
+            } else {
 
                 $data = $this->model->index($id_pelanggan);
             }
@@ -40,7 +39,7 @@ class AgingScheduleController extends Controller
             $pelanggan = 0;
         }
         // dd(date('Y-m-d'));
-        // dd($data);
+
         $data = [
             'tittle' => "Aging Schedule",
             'data' => $data,

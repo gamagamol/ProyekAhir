@@ -1,6 +1,5 @@
 @extends('template.index')
 @section('content')
-
     <!-- Begin Page Content -->
     <div class="container">
 
@@ -18,12 +17,13 @@
 
                 <div class="table-responsive">
 
-                    <a href="{{ url('ledger/create') }}" class="btn btn-primary " style="margin-left: 90%"> <i class="fas fa-filter"></i> Filter</a>
+                    <a href="{{ url('ledger/create') }}" class="btn btn-primary " style="margin-left: 90%"> <i
+                            class="fas fa-filter"></i> Filter</a>
 
                     <table class="table table-bordered text-center mx-auto" id="dataTable" width="100%" cellspacing="0">
 
                         <tr>
-                            <td class="bg-info text-white">Account : {{ $kas[0]->nama_akun }}</td>
+                            <td class="bg-info text-white">Account : {{ $kode_akun }}</td>
                         </tr>
                         <tr aria-rowspan="2">
                             <td rowspan="2">
@@ -40,29 +40,111 @@
                             <td>Debit</td>
                             <td>Credit</td>
                         </tr>
-                        <?php $total_kas = 0; ?>
+
+                        <?php
+                      
+                       
+                       $beginning_balance=explode('-',$tanggal[0]);
+                        $beginning_balance="31-$beginning_balance[1]-$beginning_balance[0]";
+
+                           ?>
+
+                        <tr>
+                            <td>{{$beginning_balance}}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            @if ($kode_akun == 411)
+                                @if ($saldo_awal)
+                                    <td></td>
+                                    <td>{{ 'Rp.' . ' ' . number_format($saldo_awal) }}</td>
+                                @else
+                                    <td></td>
+                                    <td>Rp. 0</td>
+                                @endif
+                            @else
+                                @if ($saldo_awal)
+                                    <td>{{ 'Rp.' . ' ' . number_format($saldo_awal) }}</td>
+                                    <td></td>
+                                @else
+                                    <td>Rp. 0</td>
+                                    <td></td>
+                                @endif
+                            @endif
+
+                        </tr>
+                        <?php $total = 0; ?>
                         @foreach ($kas as $k)
                             <tr>
                                 <td>{{ $k->tgl_jurnal }}</td>
                                 <td>{{ $k->nama_akun }}</td>
                                 <td>{{ $k->kode_akun }}</td>
-                                @if ($k->posisi_db_cr == 'debit')
-                                    <td>{{ 'Rp.' . number_format($k->nominal, 2, ',', '.') }}</td>
-                                    <td>{{ '' }}</td>
+                                {{-- check kode _akun --}}
+                                @if ($kode_akun == 411)
+                                    {{-- check posisi akun --}}
+                                    @if ($k->posisi_db_cr == 'debit')
+                                        {{-- ceheck kode akun --}}
+                                        <td>{{ 'Rp.' . ' ' . number_format($k->nominal) }}</td>
+                                        <td>{{ ' ' }}</td>
+                                        {{-- check perhitung --}}
+                                        <?php
+                                        if ($saldo_awal) {
+                                            $total = $saldo_awal - $k->nominal;
+                                        } else {
+                                            $total -= $k->nominal;
+                                        }
+                                        ?>
+                                        <td>{{ 'Rp.' . ' ' . number_format($k->nominal) }}</td>
+                                        <td>{{ ' ' }}</td>
+                                    @else
+                                        <td>{{ ' ' }}</td>
+                                        <td>{{ 'Rp.' . ' ' . number_format($k->nominal) }}</td>
 
-                                    <?php $total_kas = $total_kas + $k->nominal; ?>
 
-                                    <td>{{ 'Rp.' . number_format($total_kas, 2, ',', '.') }}</td>
-                                    <td>{{ '' }}</td>
+                                        {{-- check perhitung --}}
+                                        <?php
+                                        if ($saldo_awal) {
+                                            $total = $saldo_awal + $k->nominal;
+                                        } else {
+                                            $total += $k->nominal;
+                                        }
+                                        ?>
+                                        <td>{{ ' ' }}</td>
+                                        <td>{{ 'Rp.' . ' ' . number_format($k->nominal) }}</td>
+                                    @endif
                                 @else
-                                    <td>{{ '' }}</td>
-                                    <td>{{ 'Rp.' . number_format($k->nominal, 2, ',', '.') }}</td>
+                                    {{-- check posisi akun --}}
+                                    @if ($k->posisi_db_cr == 'debit')
+                                        {{-- ceheck kode akun --}}
+                                        <td>{{ 'Rp.' . ' ' . number_format($k->nominal) }}</td>
+                                        <td>{{ ' ' }}</td>
+                                        {{-- check perhitung --}}
+                                        <?php
+                                        if ($saldo_awal) {
+                                            $total = $saldo_awal + $k->nominal;
+                                        } else {
+                                            $total += $k->nominal;
+                                        }
+                                        ?>
+                                        <td>{{ 'Rp.' . ' ' . number_format($total) }}</td>
+                                        <td>{{ ' ' }}</td>
+                                    @else
+                                        <td>{{ ' ' }}</td>
+                                        <td>{{ 'Rp.' . ' ' . number_format($k->nominal) }}</td>
 
 
-                                    <?php $total_kas = $total_kas - $k->nominal; ?>
-
-                                    <td>{{ '' }}</td>
-                                    <td>{{ 'Rp.' . number_format($total_kas, 2, ',', '.') }}</td>
+                                        {{-- check perhitung --}}
+                                        <?php
+                                        if ($saldo_awal) {
+                                            $total = $saldo_awal - $k->nominal;
+                                        } else {
+                                            $total = $total - $k->nominal;
+                                        }
+                                        ?>
+                                        <td>{{ ' ' }}</td>
+                                        <td>{{ 'Rp.' . ' ' . number_format($total) }}</td>
+                                    @endif
                                 @endif
                             </tr>
                         @endforeach
@@ -73,9 +155,9 @@
 
                     </table>
 
-                <a href={{url("ledger")}} class="btn btn-primary"> Back</a>
+                    <a href={{ url('ledger') }} class="btn btn-primary"> Back</a>
 
-                
+
 
 
 

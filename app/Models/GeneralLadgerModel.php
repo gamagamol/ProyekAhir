@@ -60,4 +60,55 @@ class GeneralLadgerModel extends Model
             ->whereRaw("jurnal.kode_akun=$kode_akun AND tgl_jurnal BETWEEN '$tgl1' AND '$tgl2' ")
             ->get();
     }
+
+
+    public function saldo_awal_show($kode_akun, $tgl)
+    {
+        $tgl = explode('-', $tgl);
+        for ($i = 1; $i < 12; $i++) {
+            $bulan = $tgl[1] - $i;
+            $tahun = $tgl[0];
+            $tanggal = "$tahun-0$bulan-01";
+            $saldo_awal = DB::select("Select * from jurnal where month(tgl_jurnal)=month('$tanggal') and kode_akun=$kode_akun order by tgl_jurnal asc");
+
+            if (count($saldo_awal) > 0) {
+                break;
+            } else {
+                continue;
+            }
+        }
+
+
+
+
+
+
+
+
+        if (count($saldo_awal) > 0) {
+
+            $total_saldo = 0;
+            foreach ($saldo_awal as $sa) {
+                // check kode akun
+                if ($sa->kode_akun == 411) {
+                    if ($sa->posisi_db_cr == 'debit') {
+                        $total_saldo -= $sa->nominal;
+                    } else {
+                        $total_saldo += $sa->nominal;
+                    }
+                } else {
+                    // check posisi akun
+
+                    if ($sa->posisi_db_cr == 'debit') {
+                        $total_saldo += $sa->nominal;
+                    } else {
+                        $total_saldo -= $sa->nominal;
+                    }
+                }
+            }
+            return $total_saldo;
+        } else {
+            $total_saldo = 0;
+        }
+    }
 }

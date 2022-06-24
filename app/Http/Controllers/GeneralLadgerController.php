@@ -133,10 +133,20 @@ class GeneralLadgerController extends Controller
 
     public function show($array)
     {
+        
+      
         $data = [
             'tittle' => "General Ladger",
             'kas' => $this->model->show($array),
+            'saldo_awal'=>$this->model->saldo_awal_show($array['kode_akun'],$array['tgl1']),
+            'kode_akun'=>$array['kode_akun'],
+            'tanggal'=>[$array['tgl1'], $array['tgl2'],],
         ];
+        // dd($data);
+
+        
+       
+        
         return view('ledger.show', $data);
     }
 }
