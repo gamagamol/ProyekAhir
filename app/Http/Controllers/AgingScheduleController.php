@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+
 use App\Models\AgingScheduleModel;
 use Illuminate\Support\Facades\DB;
 use App\Exports\AgingExport;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\Testmail;
+
 
 class AgingScheduleController extends Controller
 {

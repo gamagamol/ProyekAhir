@@ -218,8 +218,16 @@ FROM ibaraki_db.transaksi
             having sum(jumlah_detail_penerimaan) >= sum(jumlah_detail_pengiriman)
             
             
-     
-            
+//kartu stock
+select
+d.name,s.date as tgl_penjualan,s.qty as jumlah_penjualan,s.harga_penjualan,s.total as total_penjualan,
+d.name,p.date as tgl_pembelian,p.qty as jumlah_pembelian,p.total as total_pembelian,p.harga_pembelian,
+d.name,pr.date as tgl_retur_pembelian ,pr.harga_retur_pembelian,pr.qty jumlah_retur_pembelian, pr.total as total_retur_pembelian
+from sales s
+join drugs d on d.id=s.id_drug
+left join purchase p on p.id_drug = d.id
+left join purchase_return pr on pr.id_drug = d.id
+order by tgl_penjualan asc
         
    
            

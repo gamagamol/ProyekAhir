@@ -1,4 +1,4 @@
-@extends('template.index')
+div@extends('template.index')
 @section('content')
     <!-- Begin Page Content -->
     <div class="container-fluid">
@@ -82,7 +82,7 @@
                                     <div class="col-auto text-center">
                                         <div class="progress progress-sm mr-2">
                                             <div class="progress-bar bg-info" role="progressbar"
-                                                style={{ 'width:'.$tagihan.'px' }}></div>
+                                                style={{ 'width:' . $tagihan . 'px' }}></div>
                                         </div>
                                     </div>
                                 </div>
@@ -145,7 +145,7 @@
                                     aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         @else
-                            <h4 class="small font-weight-bold">Quotation  <span
+                            <h4 class="small font-weight-bold">Quotation <span
                                     class="float-right">{{ $grafik->quotation . '%' }}</span></h4>
                             <div class="progress mb-4">
                                 <div class="progress-bar bg-danger" role="progressbar"
@@ -155,31 +155,30 @@
                         @endif
 
                         @if (is_null($grafik))
-                            <h4 class="small font-weight-bold">Sales  <span
-                                    class="float-right">{{ 0 . '%' }}</span></h4>
+                            <h4 class="small font-weight-bold">Sales <span class="float-right">{{ 0 . '%' }}</span>
+                            </h4>
                             <div class="progress mb-4">
                                 <div class="progress-bar bg-warning" role="progressbar" style={{ 'width:0%' }}
                                     aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         @else
-                            <h4 class="small font-weight-bold">Sales  <span
+                            <h4 class="small font-weight-bold">Sales <span
                                     class="float-right">{{ $grafik->sales . '%' }}</span></h4>
                             <div class="progress mb-4">
-                                <div class="progress-bar bg-warning" role="progressbar"
-                                    style={{ "width:$grafik->sales%" }} aria-valuenow="40" aria-valuemin="0"
-                                    aria-valuemax="100"></div>
+                                <div class="progress-bar bg-warning" role="progressbar" style={{ "width:$grafik->sales%" }}
+                                    aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         @endif
 
                         @if (is_null($grafik))
-                            <h4 class="small font-weight-bold">Purchase  <span
+                            <h4 class="small font-weight-bold">Purchase <span
                                     class="float-right">{{ 0 . '%' }}</span></h4>
                             <div class="progress mb-4">
                                 <div class="progress-bar" role="progressbar" style={{ 'width:0%' }} aria-valuenow="60"
                                     aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         @else
-                            <h4 class="small font-weight-bold">Purchase  <span
+                            <h4 class="small font-weight-bold">Purchase <span
                                     class="float-right">{{ $grafik->purchase . '%' }}</span></h4>
                             <div class="progress mb-4">
                                 <div class="progress-bar" role="progressbar" style={{ "width:$grafik->purchase%" }}
@@ -203,14 +202,14 @@
                         @endif
 
                         @if (is_null($grafik))
-                            <h4 class="small font-weight-bold">Delivery  <span
+                            <h4 class="small font-weight-bold">Delivery <span
                                     class="float-right">{{ 0 . '%' }}</span></h4>
                             <div class="progress mb-4">
                                 <div class="progress-bar bg-info" role="progressbar" style={{ 'width:0%' }}
                                     aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         @else
-                            <h4 class="small font-weight-bold">Delivery  <span
+                            <h4 class="small font-weight-bold">Delivery <span
                                     class="float-right">{{ $grafik->delivery . '%' }}</span></h4>
                             <div class="progress mb-4">
                                 <div class="progress-bar bg-info" role="progressbar"
@@ -235,7 +234,7 @@
                             </div>
                         @endif
                         @if (is_null($grafik))
-                            <h4 class="small font-weight-bold">Payment  <span
+                            <h4 class="small font-weight-bold">Payment <span
                                     class="float-right">{{ 0 . '%' }}</span>
                             </h4>
                             <div class="progress">
@@ -243,7 +242,7 @@
                                     aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         @else
-                            <h4 class="small font-weight-bold">Payment  <span
+                            <h4 class="small font-weight-bold">Payment <span
                                     class="float-right">{{ $grafik->payment . '%' }}</span>
                             </h4>
                             <div class="progress">
@@ -275,4 +274,6 @@
 
     </div>
     <!-- End of Content Wrapper -->
+
+    
 @endsection
