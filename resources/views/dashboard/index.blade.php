@@ -1,4 +1,4 @@
-div@extends('template.index')
+@extends('template.index')
 @section('content')
     <!-- Begin Page Content -->
     <div class="container-fluid">

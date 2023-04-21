@@ -22,6 +22,7 @@ class DashboardController extends Controller
         // persiapan data 
         $data = $this->model->index();
         $saldo_awal = $this->model->saldo_awal();
+        // dd($saldo_awal);
         $revenue = [];
         $piutang = [];
         for ($i = 0; $i < count($data); $i++) {
@@ -33,13 +34,14 @@ class DashboardController extends Controller
                 $piutang[$i] = $data[$i];
             }
         }
+
         $saldo_awal_piutang = $this->model->saldo_awal_piutang();
         if ($saldo_awal->count() == 0) {
             $saldo_awal_penjualan = 0;
         } else {
 
             //   persiapan saldo awal
-            $saldo_awal_penjualan = $saldo_awal[4]->saldo_awal;
+            $saldo_awal_penjualan = $saldo_awal[3]->saldo_awal;
         }
 
 
@@ -104,6 +106,7 @@ class DashboardController extends Controller
             'tagihan' => $tagihan,
             'payable' => $payable
         ];
+        // dd($data);
         return view("dashboard.index", $data);
     }
 

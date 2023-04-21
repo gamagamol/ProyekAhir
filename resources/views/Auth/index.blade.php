@@ -35,10 +35,9 @@
                     <div class="card-body p-0">
                         <!-- Nested Row within Card Body -->
                         <div class="row">
-
                                 <div class="col-lg-6 d-none d-lg-block mt-5"
                                     style="">
-                                    <img src="http://127.0.0.1:8000/assets/img/bg-login.png" alt="" width="500px">
+                                    <img src='<?=asset('img/bg-login.png')  ?>' alt="" width="500px">
                                 </div>
                             <div class="col mt-5">
                                 <div class="p-5">

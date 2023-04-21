@@ -55,7 +55,7 @@ class ServicesController extends Controller
                 'nama_layanan'=>'required|unique:layanan,nama_layanan'
             ]);
 
-           Services::insert(['nama_layanan'=>$request->nama_layanan]);
+           Services::insert(['nama_layanan'=>strtoupper($request->nama_layanan)]);
            return redirect('services')->with('success','Success to insert service data');
     }
 
@@ -86,7 +86,7 @@ class ServicesController extends Controller
         $request->validate([
             'nama_layanan'=> 'required|unique:layanan,nama_layanan'
         ]);
-        $data= ['nama_layanan'=> $request->nama_layanan];
+        $data= ['nama_layanan'=>strtoupper( $request->nama_layanan)];
         DB::table('layanan')->where('id_layanan',$request->id_layanan)->update($data);
         return redirect('services')->with('success', 'Success to update service data');
 
