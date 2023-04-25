@@ -1,6 +1,6 @@
 @extends('template.index')
 @section('content')
-{{-- @dd($data) --}}
+    {{-- @dd($data) --}}
     <div class="container">
         @if (session()->has('failed'))
             <div class="alert alert-danger" role="alert">
@@ -20,10 +20,10 @@
                                 value={{ $data[0]->tgl_penjualan }}>
                             <input type="text" value="{{ $data[0]->kode_transaksi }}" name="kode_transaksi" hidden>
                             <input type="text" value="{{ $data[0]->no_penjualan }}" name="no_penjualan" hidden>
-                           
+
                         </div>
                         {{-- jangan hapus dulu penting --}}
-                        <div class="col-md-3 mt-2" id="select-pemasok" >
+                        <div class="col-md-3 mt-2" id="select-pemasok">
                             <select class="form-control @error('id_pemasok') is-invalid @enderror" id="id_pemasok"
                                 name="id_pemasok" onchange="drop()" value="{{ old('id_pemasok') }}">
 
@@ -51,7 +51,8 @@
 
                         <div class="col mt-5">
                             <div class="table-responsive text-center">
-                                <table class="table table-bordered" width="100%" cellspacing="0" id="CreateSupplier" hidden>
+                                <table class="table table-bordered" width="100%" cellspacing="0" id="CreateSupplier"
+                                    hidden>
                                     <tr>
                                         <td>No</td>
                                         <td hidden>id produk</td>
@@ -69,14 +70,14 @@
 
 
                     </div>
-                    
+
                 </div>
                 <div class="card-body">
 
                     <div class="table-responsive text-center">
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 
-                          
+
 
                             <tr>
                                 <td>No</td>
@@ -87,7 +88,7 @@
                                 <td>QTY(Sales) </td>
                                 <td>QTY(Purchase) </td>
                                 <td>customer</td>
-                                <td  id="RTS">Supplier</td>
+                                <td id="RTS">Supplier</td>
                             </tr>
                             @csrf
                             <?php $i = 1; ?>
@@ -96,14 +97,14 @@
                                 if ($d->jumlah_detail_pembelian > 0 && $d->berat_detail_pembelian > 0) {
                                     $jumlah = $d->jumlah_detail_penjualan - $d->jumlah_detail_pembelian;
                                     $berat = $d->berat - $d->berat_detail_pembelian;
-                                    $subtotal=$d->subtotal-$d->subtotal_detail_pembelian;
-                                    $ppn=$subtotal*0.1;
+                                    $subtotal = $d->subtotal - $d->subtotal_detail_pembelian;
+                                    $ppn = $subtotal * 0.1;
                                 } else {
                                     $jumlah = $d->jumlah;
                                     $berat = $d->berat;
-                                    $subtotal=$d->subtotal;
-                                    $ppn=$d->ppn;
-                                    $total=$d->total;
+                                    $subtotal = $d->subtotal;
+                                    $ppn = $d->ppn;
+                                    $total = $d->total;
                                 }
                                 
                                 ?>
@@ -121,10 +122,10 @@
                                     <td>{{ $d->jumlah_detail_pembelian }}</td>
                                     {{-- purchase --}}
 
-                                   
-                                    
+
+
                                     <td>{{ $d->nama_pelanggan }}</td>
-                                    <td  id="CTS">
+                                    <td id="CTS">
                                         <i class="fa fa-plus-circle" aria-hidden="true"
                                             onclick="CreateSupplier('{{ $d->id_produk }}','{{ $d->nama_produk }}','{{ $d->no_penjualan }}','{{ $d->id_transaksi }}','{{ $d->tebal_transaksi }}','{{ $d->lebar_transaksi }}','{{ $d->panjang_transaksi }}','{{ $d->bentuk_produk }}','{{ $d->layanan }}','{{ $jumlah }}','{{ $d->id_penawaran }}')"></i>
 
@@ -178,7 +179,7 @@
         let click = 1
 
         function CreateSupplier(IdProduk, NamaProduk, NoPenjualan, IdTransaksi, TebalTransaksi, LebarTransaksi,
-            PanjangTransaksi, BentukProduk, Layanan,Jumlah,IdPenawaran) {
+            PanjangTransaksi, BentukProduk, Layanan, Jumlah, IdPenawaran) {
             let Supplier = {!! json_encode($supplier->toArray(), JSON_HEX_TAG) !!}
 
 
@@ -225,9 +226,11 @@
 
             $('#CreateSupplier').append(html)
 
-            $('#CreateSupplier').removeAttr('hidden',true)
+           
 
-            $('#select-pemasok').attr('hidden',true)
+            $('#CreateSupplier').removeAttr('hidden', true)
+
+            $('#select-pemasok').attr('hidden', true)
 
             click++
 
