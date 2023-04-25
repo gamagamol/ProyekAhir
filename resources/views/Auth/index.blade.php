@@ -37,7 +37,7 @@
                         <div class="row">
                                 <div class="col-lg-6 d-none d-lg-block mt-5"
                                     style="">
-                                    <img src='<?=asset('img/bg-login.png')  ?>' alt="" width="500px">
+                                    <img src='assets/img/bg-login.png' alt="" width="500px">
                                 </div>
                             <div class="col mt-5">
                                 <div class="p-5">
