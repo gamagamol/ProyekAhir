@@ -197,7 +197,7 @@
             html +=
                 `<td hidden> <input type="text" name="panjang_transaksi[]" class="form-control text-center" value='${PanjangTransaksi}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
             html +=
-                `<td> <input type="number" name="harga[]" class="form-control" size="4" placeholder="Price" min='0'></td>`
+                `<td> <input type="number" name="harga[]" class="form-control" size="4" placeholder="Price" min='0' id='harga'></td>`
             html +=
                 `<td> <input type="number" name="unit[]" class="form-control" size="3" placeholder="Unit" min='0' ></td>`
 
@@ -226,11 +226,13 @@
 
             $('#CreateSupplier').append(html)
 
-           
+
 
             $('#CreateSupplier').removeAttr('hidden', true)
 
             $('#select-pemasok').attr('hidden', true)
+
+            
 
             click++
 

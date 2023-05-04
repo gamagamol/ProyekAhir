@@ -21,15 +21,17 @@ use App\Http\Controllers\PurchaseReportController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\PaymentVendorController;
-
+use App\Http\Controllers\pegawaiController;
 use App\Http\Controllers\ServicesController;
+
+
 // Auth
 Route::get('/', [AuthController::class, 'index'])->name('login')->middleware(['guest', 'revalidate']);
 Route::post('login', [AuthController::class, 'authenticate']);
 Route::any('logout', [AuthController::class, 'logout']);
 
-Route::get('dashboard',[DashboardController::class,'index']);
-Route::get('dashboard/notif',[DashboardController::class,'notif']);
+Route::get('dashboard', [DashboardController::class, 'index']);
+Route::get('dashboard/notif', [DashboardController::class, 'notif']);
 
 // Materdata
 Route::resource('COA', CoaController::class)->middleware(['auth', 'revalidate']);
@@ -39,6 +41,11 @@ Route::resource('custumor', CustumorController::class)->middleware(['auth', 'rev
 
 Route::resource('supplier', SupplierController::class)->middleware(['auth', 'revalidate']);
 Route::resource('services', ServicesController::class)->middleware(['auth', 'revalidate']);
+
+Route::resource('pegawai', pegawaiController::class)->middleware(['auth', 'revalidate']);
+
+Route::get('pegawai/delete/{id}', [pegawaiController::class, "delete"])->middleware(['auth', 'revalidate']);
+
 // transaksi
 Route::resource('quotation', QuotationController::class)->middleware(['auth', 'revalidate']);
 Route::post('quotation_insert', [QuotationController::class, "insert"]);
@@ -62,7 +69,7 @@ Route::get('goods/detail/{no_tagihan}', [GoodsController::class, "detail"]);
 
 Route::resource('delivery', DeliveryController::class)->middleware(['auth', 'revalidate']);
 Route::get('delivery/detail/{no_tagihan}', [DeliveryController::class, "detail"]);
-Route::get('delivery/print/{no_delivery}',[DeliveryController::class,'print']);
+Route::get('delivery/print/{no_delivery}', [DeliveryController::class, 'print']);
 
 Route::resource('bill', BillPaymentController::class)->middleware(['auth', 'revalidate']);
 
@@ -70,31 +77,31 @@ Route::resource('bill', BillPaymentController::class)->middleware(['auth', 'reva
 Route::get('show/{no_tagihan}', [BillPaymentController::class, "show"]);
 
 Route::get('bill/detail/{no_tagihan}', [BillPaymentController::class, "detail"]);
-Route::get('bill/print/{no_transaksi}',[BillPaymentController::class,'print']);
+Route::get('bill/print/{no_transaksi}', [BillPaymentController::class, 'print']);
 
 Route::resource('payment', PaymentController::class)->middleware(['auth', 'revalidate']);
 Route::get('payment/show/{kode}', [PaymentController::class, "show"]);
-Route::get('payment/detail/{no_pembayaran}',[PaymentController::class,"detail"]);
+Route::get('payment/detail/{no_pembayaran}', [PaymentController::class, "detail"]);
 Route::get('payment/print/{no_pembayaran}', [PaymentController::class, "print"]);
 
 Route::resource('paymentvendor', PaymentVendorController::class)->middleware(['auth', 'revalidate']);
 Route::get('paymentvendor/show/{kode}/{tgl}', [PaymentVendorController::class, "show"]);
-Route::get('paymentvendor/detail/{no_pembayaran}',[PaymentVendorController::class,"detail"]);
+Route::get('paymentvendor/detail/{no_pembayaran}', [PaymentVendorController::class, "detail"]);
 
-Route::get('paymentvendor/report/report',[PaymentVendorController::class,"report"]);
+Route::get('paymentvendor/report/report', [PaymentVendorController::class, "report"]);
 
 // Laporan
 
 Route::resource('journal', JurnalController::class)->middleware(['auth', 'revalidate']);
 Route::resource('aging', AgingScheduleController::class)->middleware(['auth', 'revalidate']);
-Route::get('export',[AgingScheduleController::class,'export']);
+Route::get('export', [AgingScheduleController::class, 'export']);
 Route::resource('ledger', GeneralLadgerController::class)->middleware(['auth', 'revalidate']);
 Route::resource('SDR', ReportDetailSales::class)->middleware(['auth', 'revalidate']);
 Route::resource('PCR', PurchaseReportController::class)->middleware(['auth', 'revalidate']);
 
 // email
-Route::get('email/{id}',[EmailController::class,'email']);
-Route::post('mail/store',[EmailController::class,'store']);
+Route::get('email/{id}', [EmailController::class, 'email']);
+Route::post('mail/store', [EmailController::class, 'store']);
 
 // status transaksi
-Route::get('status_transaksi',[ReportDetailSales::class, 'status_transaki']);
+Route::get('status_transaksi', [ReportDetailSales::class, 'status_transaki']);

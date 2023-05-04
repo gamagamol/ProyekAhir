@@ -83,7 +83,7 @@ class DeliveryModel extends Model
                 group by no_penjualan
                 order by tgl_pengiriman desc,no_pengiriman desc
                             ) b
-                where b.no_pengiriman is not null");
+                ");
     }
 
     public function show($no_penerimaan)

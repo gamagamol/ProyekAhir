@@ -30,6 +30,7 @@ class DeliveryController extends Controller
         } else {
             $data = $this->model->index();
         }
+        
 
         $data = [
             'tittle' => "Delivery Order",

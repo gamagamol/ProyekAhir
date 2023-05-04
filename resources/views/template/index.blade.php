@@ -101,6 +101,8 @@ $notif = $notif->notif();
                             @if (Auth::user()->status_pengguna != 'ACCOUNTING_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>Chart of Account</a>
                         <a class="collapse-item" href="{{ url('supplier') }}"
                             @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>Supplier</a>
+                        <a class="collapse-item" href="{{ url('pegawai') }}"
+                            @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>Pegawai</a>
                     </div>
                 </div>
             </li>
