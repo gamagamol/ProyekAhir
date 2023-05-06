@@ -1,6 +1,5 @@
 @extends('template.index')
 @section('content')
-
     <div class="container">
         @if (session()->has('success'))
             <div class="alert alert-success" role="alert">
@@ -41,6 +40,7 @@
                             <td>Processing</td>
                             <td>customer</td>
                             <td>Prepared</td>
+                            <td>Sales</td>
                             <td>Action</td>
                             <td>Document</td>
                         </tr>
@@ -54,19 +54,20 @@
 
                                 <td>{{ $d->nama_pelanggan }}</td>
                                 <td>{{ $d->nama_pengguna }}</td>
+                                <td>{{ $d->nama_pegawai }}</td>
                                 <td>
-                                   
-                                       
-                                    <a href="{{ url('sales', $d->kode_transaksi) }}" class="btn btn-primary mt-1" @if ($d->status_transaksi!='quotation')
-                                           {{'hidden'}}
-                                       @endif >
+
+
+                                    <a href="{{ url('sales', $d->kode_transaksi) }}" class="btn btn-primary mt-1"
+                                        @if ($d->status_transaksi != 'quotation') {{ 'hidden' }} @endif>
                                         Sales </a>
 
                                     <a href="{{ url('quotation', $d->kode_transaksi) }}" class="btn btn-info mt-1">
                                         Detail </a>
                                 </td>
                                 <td>
-                                    <a href={{ url('quotation/print', $d->kode_transaksi) }} class="btn btn-primary" target='_blank'>
+                                    <a href={{ url('quotation/print', $d->kode_transaksi) }} class="btn btn-primary"
+                                        target='_blank'>
                                         Print</a>
                                 </td>
 
@@ -78,6 +79,4 @@
             </div>
         </div>
     </div>
-
- 
 @endsection()

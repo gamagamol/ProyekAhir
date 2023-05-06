@@ -32,7 +32,8 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-3 ">
+
+                            <div class="col-md-3 " hidden>
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2">Transaction Code </label>
                                     <input type="text" class="form-control @error('kode_transaksi') is-invalid @enderror"
@@ -51,7 +52,8 @@
                             <div class="col-md-3 ">
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2">Job number</label>
-                                    <input type="text" class="form-control @error('nomor_pekerjaan') is-invalid @enderror"
+                                    <input type="text"
+                                        class="form-control @error('nomor_pekerjaan') is-invalid @enderror"
                                         name="nomor_pekerjaan" id="nomor_pekerjaan" value={{ old('nomor_pekerjaan') }}
                                         @if (count($pembantu) > 0) {{ $pembantu[0]->nomor_pekerjaan }} readonly @endif>
 
@@ -65,9 +67,36 @@
 
                             <div class="col-md-3 mt-3">
                                 <div class="form-group">
+                                    <label for="id_pegawai">Employee</label>
+                                    <select class="form-control @error('id_pegawai') is-invalid @enderror" id="id_pegawai"
+                                        name="id_pegawai" value="{{ old('id_pegawai') }}"
+                                        @if (count($pembantu) > 0) readonly @endif>
+                                        @if (count($pembantu) > 0)
+                                            <option value={{ $pembantu[0]->id_pegawai }}>{{ $nama_pegawai }}
+                                            </option>
+                                        @else
+                                            <option value={{ null }}>Select Your Employee</option>
+
+                                            @foreach ($pegawai as $p)
+                                                <option value="{{ $p->id_pegawai }}">{{ $p->nama_pegawai }}
+                                                </option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+
+                                    @error('id_pegawai')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 mt-3">
+                                <div class="form-group">
                                     <label for="id_pelanggan">Customer</label>
                                     <select class="form-control @error('id_pelanggan') is-invalid @enderror"
-                                        id="id_pelanggan" name="id_pelanggan" value="{{ old('id_pelanggan') }}">
+                                        id="id_pelanggan" name="id_pelanggan" value="{{ old('id_pelanggan') }}" @if (count($pembantu) > 0) readonly @endif>
                                         @if (count($pembantu) > 0)
                                             <option value={{ $pembantu[0]->id_pelanggan }}>{{ $nama_pelanggan }}
                                             </option>
@@ -119,7 +148,8 @@
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2" id="tebal_label">Inquiry
                                         thick/Diameter (mm)</label>
-                                    <input type="number" class="form-control @error('tebal_transaksi') is-invalid @enderror"
+                                    <input type="number"
+                                        class="form-control @error('tebal_transaksi') is-invalid @enderror"
                                         name="tebal_transaksi" id="tebal_transaksi" value="{{ old('tebal_transaksi') }}"
                                         min="0">
                                     @error('tebal_transaksi')
@@ -132,7 +162,8 @@
                             <div class="col-md-3 ">
                                 <div class="form-group mt-2 rounded" id="lebar">
                                     <label for="example1" class="mt-2">Inquiry Widht (mm)</label>
-                                    <input type="number" class="form-control @error('lebar_transaksi') is-invalid @enderror"
+                                    <input type="number"
+                                        class="form-control @error('lebar_transaksi') is-invalid @enderror"
                                         name="lebar_transaksi" id="lebar_transaksi" value="{{ old('lebar_transaksi') }}"
                                         min="0">
                                     @error('lebar_transaksi')
@@ -180,8 +211,8 @@
                                         name="layanan">
 
                                         @foreach ($services as $service)
-                                            <option value= {{strtoupper($service->nama_layanan)}}>
-                                            {{$service->nama_layanan}}
+                                            <option value={{ strtoupper($service->nama_layanan) }}>
+                                                {{ $service->nama_layanan }}
                                             </option>
                                         @endforeach
 
@@ -214,10 +245,9 @@
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2">Shipment</label>
                                     <input type="text" class="form-control @error('ongkir') is-invalid @enderror"
-                                        name="ongkir" id="ongkir"   
-                                         @if (count($pembantu) > 0) value= {{$pembantu[0]->ongkir_pembantu }} readonly @endif
-                                        value="{{ old('ongkir') }}" min="0"
-                                       >
+                                        name="ongkir" id="ongkir"
+                                        @if (count($pembantu) > 0) value= {{ $pembantu[0]->ongkir_pembantu }} readonly @endif
+                                        value="{{ old('ongkir') }}" min="0">
                                     @error('ongkir')
                                         <div class="invalid-feedback">
                                             {{ $message }}
@@ -235,7 +265,8 @@
 
                             <div class="col-md-3 " style="margin-top:35px">
                                 <div class="form-group mt-2 rounded">
-                                    <button type=submit name=tambah class="btn btn-primary" id="tambah">Add Item</button>
+                                    <button type=submit name=tambah class="btn btn-primary" id="tambah">Add
+                                        Item</button>
 
                                     <a class="btn btn-primary ml-3" id="selesai" onclick="selesai()">finished</a>
 
@@ -287,7 +318,7 @@
                         <tr>
 
                             <input type="text"
-                                value="{{ "$p->kode_transaksi|$p->tgl_pembantu|$p->nomor_pekerjaan|$p->nama_produk|$p->tebal_pembantu |$p->lebar_pembantu| $p->panjang_pembantu|$p->jumlah_pembantu|$p->nama_produk|$p->tebal_penawaran|$p->lebar_penawaran|$p->panjang_penawaran|$p->jumlah_pembantu|$p->berat_pembantu|$p->harga_pembantu|$p->ongkir_pembantu|$p->subtotal|$p->ppn|$p->total|$p->layanan_pembantu|$p->id_pelanggan|$p->id_user" }}"
+                                value="{{ "$p->kode_transaksi|$p->tgl_pembantu|$p->nomor_pekerjaan|$p->nama_produk|$p->tebal_pembantu |$p->lebar_pembantu| $p->panjang_pembantu|$p->jumlah_pembantu|$p->nama_produk|$p->tebal_penawaran|$p->lebar_penawaran|$p->panjang_penawaran|$p->jumlah_pembantu|$p->berat_pembantu|$p->harga_pembantu|$p->ongkir_pembantu|$p->subtotal|$p->ppn|$p->total|$p->layanan_pembantu|$p->id_pelanggan|$p->id_user|$p->id_pegawai" }}"
                                 name={{ "elemen$i" }} hidden>
 
                             <td>
@@ -367,10 +398,10 @@
                         <?php $i++; ?>
                         <?php $total = $total + $p->total; ?>
                     @endforeach
-                    @if (count($pembantu)>0)
-                        <?php $total+=$pembantu[0]->ongkir_pembantu?>
+                    @if (count($pembantu) > 0)
+                        <?php $total += $pembantu[0]->ongkir_pembantu; ?>
                     @endif
-             
+
                     <tr>
                         <td colspan='18'>Total Quotation</td>
                         <td>{{ 'Rp' . number_format($total) }}</td>

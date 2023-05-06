@@ -43,7 +43,22 @@ class pegawaiModel extends Model
         DB::table('pegawai')->where('id_pegawai', '=', $id)->update($data);
     }
 
-    public function getEmployeeById($id){
-        return DB::table('pegawai')->where('id_pegawai','=',$id)->first();
+    public function getEmployeeById($id)
+    {
+        return DB::table('pegawai')->where('id_pegawai', '=', $id)->first();
+    }
+
+
+    public function getEmployee($jabatan = null)
+    {
+        if ($jabatan) {
+            return DB::table('pegawai')
+                ->where('jabatan_pegawai', '=', $jabatan)
+                ->whereNull('deleted_at')
+                ->get();
+        }
+        return DB::table('pegawai')
+            ->whereNull('deleted_at')
+            ->get();
     }
 }

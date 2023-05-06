@@ -5,32 +5,34 @@ namespace App\Http\Controllers;
 use App\Models\Services;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
 class ServicesController extends Controller
 {
-    
+
     public function __construct()
     {
-        $this->services=new Services();
+        $this->services = new Services();
     }
 
 
     public function index()
     {
-        $serch=request()->get('cari');
-        if($serch){
-           
-            $data=$this->services->index($serch);
-        }else{
-            $data=$this->services->index();
+        $serch = request()->get('cari');
+        if ($serch) {
+
+            $data = $this->services->index($serch);
+        } else {
+            $data = $this->services->index();
         }
 
 
-        $data=[
-            'tittle'=>'List Services',
-            'data'=>$data,
-            'services'=> $data = $this->services->index()
+        $data = [
+            'tittle' => 'List Services',
+            'data' => $data,
+            'services' => $data = $this->services->index()
         ];
-        return view('services.index',$data);
+
+        return view('services.index', $data);
     }
 
     /**
@@ -40,7 +42,7 @@ class ServicesController extends Controller
      */
     public function create()
     {
-        return view('services.create',['tittle'=>'Create Services']);
+        return view('services.create', ['tittle' => 'Create Services']);
     }
 
     /**
@@ -51,12 +53,21 @@ class ServicesController extends Controller
      */
     public function store(Request $request)
     {
-            $request->validate([
-                'nama_layanan'=>'required|unique:layanan,nama_layanan'
-            ]);
+        $request->validate([
+            'nama_layanan' => 'required|unique:layanan,nama_layanan',
+            'perhitungan' => 'required'
+        ]);
 
-           Services::insert(['nama_layanan'=>strtoupper($request->nama_layanan)]);
-           return redirect('services')->with('success','Success to insert service data');
+        // dd([
+        //     'nama_layanan' => strtoupper($request->nama_layanan),
+        //     'perhitungan' => $request->perhitungan,
+        // ]);
+
+        Services::insert([
+            'nama_layanan' => strtoupper($request->nama_layanan),
+            'perhitungan' => $request->perhitungan,
+        ]);
+        return redirect('services')->with('success', 'Success to insert service data');
     }
 
     /**
@@ -67,29 +78,28 @@ class ServicesController extends Controller
      */
     public function show($id_layanan)
     {
-       
-        $data=[
-            'tittle'=>'Update Service',
-            'data'=>
+
+        $data = [
+            'tittle' => 'Update Service',
+            'data' =>
             Services::where('id_layanan', $id_layanan)->first()
 
         ];
 
-        return view('services.update',$data);
+        return view('services.update', $data);
     }
 
-  
 
-  
+
+
     public function update(Request $request)
     {
         $request->validate([
-            'nama_layanan'=> 'required|unique:layanan,nama_layanan'
+            'nama_layanan' => 'required|unique:layanan,nama_layanan'
         ]);
-        $data= ['nama_layanan'=>strtoupper( $request->nama_layanan)];
-        DB::table('layanan')->where('id_layanan',$request->id_layanan)->update($data);
+        $data = ['nama_layanan' => strtoupper($request->nama_layanan)];
+        DB::table('layanan')->where('id_layanan', $request->id_layanan)->update($data);
         return redirect('services')->with('success', 'Success to update service data');
-
     }
 
     /**

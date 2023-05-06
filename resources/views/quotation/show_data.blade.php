@@ -33,6 +33,7 @@
                                 <td>Total Amount</td>
                                 <td>Processing</td>
                                 <td>Custumor</td>
+                                <td>Sales</td>
 
                             </tr>
                             <?php
@@ -106,6 +107,9 @@
                                     </td>
                                     <td>
                                         {{ $p->nama_pelanggan }}
+                                    </td>
+                                    <td>
+                                        {{ $p->nama_pegawai }}
                                     </td>
 
 

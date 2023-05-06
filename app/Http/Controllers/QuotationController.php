@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\pegawaiModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\QuotationModel;
@@ -10,12 +11,14 @@ use Illuminate\Support\Facades\DB;
 class QuotationController extends Controller
 {
     public $QuotationModel;
+    public $pegawai;
 
 
 
     public function __construct()
     {
         $this->QuotationModel = new QuotationModel();
+        $this->pegawai = new pegawaiModel();
     }
     public function index()
     {
@@ -26,7 +29,7 @@ class QuotationController extends Controller
 
             $data = $this->QuotationModel->index();
         }
-
+        // dd($data);
         $data = [
             'tittle' => "Quotation Order",
             'data' => $data,
@@ -71,13 +74,25 @@ class QuotationController extends Controller
             $nomor_pekerjaan = 0;
         }
 
+
+        // nama pegawai
+
+        if (count($pembantu)) {
+            $id_pegawai = $pembantu[0]->id_pegawai;
+            $nama_pegawai = DB::table('pegawai')->select("nama_pegawai")->where("id_pegawai", "=", $id_pegawai)->first();
+            $nama_pegawai = $nama_pegawai->nama_pegawai;
+        } else {
+            $nama_pegawai = 0;
+        }
+
+
         // Transaction code 
 
         $transaction_code =
             DB::table('transaksi')
             ->selectRaw("DISTINCT concat('PJ',ifnull(MAX(cast( substr(kode_transaksi,3,3) AS FLOAT)),0)+1) AS kode_transaksi")
             ->first();
-         
+
 
         $data = [
             'tittle' => 'ADD Quotation',
@@ -85,12 +100,15 @@ class QuotationController extends Controller
             'pelanggan' => $pelanggan,
             'pembantu' => $pembantu,
             'nama_pelanggan' => $nama_pelanggan,
+            'nama_pegawai' => $nama_pegawai,
             'nomor_pekerjaan' => $nomor_pekerjaan,
             'history' => $history,
             'kode_transaksi' => $transaction_code->kode_transaksi,
-            'services'=>DB::table('layanan')->get()
+            'services' => DB::table('layanan')->get(),
+            'pegawai' => $this->pegawai->getEmployee('SALES'),
 
         ];
+        // print_r($data);
         return view('quotation.insert', $data);
     }
 
@@ -111,7 +129,8 @@ class QuotationController extends Controller
             'jumlah' => "required",
             'harga' => "required",
             'ongkir' => "required",
-            'tgl_penawaran' => "required"
+            'tgl_penawaran' => "required",
+            'id_pegawai' => "required",
 
         ];
         $message = [
@@ -126,7 +145,8 @@ class QuotationController extends Controller
             'ongkir.required' => "The SHIPPMENT field is required",
             'id_produk.required' => "The PRODUCT field is required!",
             'id_pelanggan.required' => "The CUSTUMOR field is required!",
-            'tgl_penawaran.required' => "The CUSTUMOR field is required!",
+            'tgl_penawaran.required' => "The Date field is required!",
+            'id_pegawai.required' => "The Employee field is required!",
 
 
         ];
@@ -139,7 +159,7 @@ class QuotationController extends Controller
             $produk = $request->input("id_produk");
             $produk = explode("|", $request->input('id_produk'));
             $nama_produk = $produk[0];
-            
+
             $p = DB::table('produk')->where("nama_produk", "=", $nama_produk)->first();
             $bentuk_produk = $p->bentuk_produk;
             $tebal_transaksi = $request->input("tebal_transaksi");
@@ -148,25 +168,27 @@ class QuotationController extends Controller
             $jumlah = $request->input("jumlah");
             $layanan = $request->input("layanan");
 
-            if((int)$lebar_transaksi<=0 && $bentuk_produk=='FLAT'){
-                return redirect()->back()->withErrors(['lebar_transaksi'=>'Fill Width more then 0'])->withInput();
+            if ((int)$lebar_transaksi <= 0 && $bentuk_produk == 'FLAT') {
+                return redirect()->back()->withErrors(['lebar_transaksi' => 'Fill Width more then 0'])->withInput();
             }
-            
+
             // Logika penentuan berat
             // deklarasi
-            $berat=$this->CalculateWeight($bentuk_produk,$layanan,$tebal_transaksi,$lebar_transaksi,$panjang_transaksi,$jumlah);
-          
+
+            $berat = $this->CalculateWeight($bentuk_produk, $layanan, $tebal_transaksi, $lebar_transaksi, $panjang_transaksi, $jumlah);
+
 
 
             $subtotal = $berat * str_replace('.', "", $request->input('harga'));
 
             $ppn = $subtotal * 0.11;
-            $total = $subtotal + $ppn ;
+            $total = $subtotal + $ppn;
             $data = [
                 'kode_transaksi' => strtoupper($request->input("kode_transaksi")),
                 'tgl_pembantu' => $request->input("tgl_penawaran"),
                 'nomor_pekerjaan' => $request->input("nomor_pekerjaan"),
                 'id_pelanggan' => $request->input("id_pelanggan"),
+                'id_pegawai' => $request->input("id_pegawai"),
                 'nama_produk' => $nama_produk,
                 'tebal_pembantu' => $request->input("tebal_transaksi"),
                 'lebar_pembantu' => $request->input("lebar_transaksi"),
@@ -187,6 +209,7 @@ class QuotationController extends Controller
 
             ];
 
+
             $this->QuotationModel->insert_pembantu($data);
 
 
@@ -203,6 +226,7 @@ class QuotationController extends Controller
 
 
             $array = $request->all();
+            // dump($array);
             unset($array["submit"]);
             unset($array["_token"]);
             $data_transaksi = [];
@@ -210,6 +234,7 @@ class QuotationController extends Controller
             $data_detail_penawaran = [];
             for ($i = 1; $i <= count($array); $i++) {
                 ${"array$i"} = explode("|", $array["elemen$i"]);
+
                 ${"elemen_transaksi$i"} = [
                     'id' => ${"array$i"}[21],
                     'kode_transaksi' => ${"array$i"}[0],
@@ -227,6 +252,7 @@ class QuotationController extends Controller
                     'nomor_pekerjaan' => ${"array$i"}[2],
                     'ppn' => (float)${"array$i"}[17],
                     'ongkir' => (float) ${"array$i"}[15],
+                    'id_pegawai' => (int) ${"array$i"}[22],
                 ];
 
 
@@ -258,7 +284,7 @@ class QuotationController extends Controller
             $tgl_penawaran = $request->input('elemen1');
             $tgl_penawaran = explode("|", $tgl_penawaran);
             $tgl_penawaran = $tgl_penawaran[1];
-
+            // dd($data_transaksi);
             $no_quotation = $this->QuotationModel->insert($data_transaksi, $data_penawaran, $data_detail_penawaran, $tgl_penawaran);
 
             return redirect("show_data")->with("success", "Data Entered Successfully, You Quotation number $no_quotation");
@@ -269,6 +295,7 @@ class QuotationController extends Controller
     public function show_data()
     {
         $quotation_data = $this->QuotationModel->show_data();
+        // dd($quotation_data);
         $data = [
             'tittle' => "Show Data Quotation Success",
             'data' => $quotation_data
@@ -280,6 +307,7 @@ class QuotationController extends Controller
     {
 
         $quotation_data = $this->QuotationModel->show($kode_transaksi);
+        // dd($quotation_data);
 
         $data = [
             'tittle' => "Show Data Quotation Success",
@@ -296,19 +324,18 @@ class QuotationController extends Controller
 
     public function print($no_transaksi)
     {
-        
-        $data=[
-            'tittle'=>'print Quotation',
-            'data'=>$this->QuotationModel->show($no_transaksi),
+
+        $data = [
+            'tittle' => 'print Quotation',
+            'data' => $this->QuotationModel->show($no_transaksi),
         ];
-        return view('quotation.print',$data);
-
-
+        return view('quotation.print', $data);
     }
 
 
 
-    public function CalculateWeight($bentuk_produk,$layanan,$tebal_transaksi,$lebar_transaksi,$panjang_transaksi,$jumlah){
+    public function CalculateWeight($bentuk_produk, $layanan, $tebal_transaksi, $lebar_transaksi, $panjang_transaksi, $jumlah)
+    {
         switch ($bentuk_produk) {
             case "FLAT":
                 if ($layanan == "CUTTING") {
@@ -318,7 +345,7 @@ class QuotationController extends Controller
                     $panjang_penawaran = $panjang_transaksi;
 
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
-                   return  $berat = number_format($berat, 2, '.', '');
+                    return  $berat = number_format($berat, 2, '.', '');
                 }
                 if ($layanan == "MILLING") {
                     //    membuat ukuran dan berat pxl 0,00008
@@ -327,7 +354,7 @@ class QuotationController extends Controller
                     $panjang_penawaran = $panjang_transaksi + 5;
 
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.000008;
-                  return  $berat = number_format($berat, 2, '.', '');
+                    return  $berat = number_format($berat, 2, '.', '');
                 }
                 break;
             case 'CYLINDER':

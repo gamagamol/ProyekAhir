@@ -11,18 +11,19 @@ class QuotationModel extends Model
     use HasFactory;
     public function index($id = null)
     {
-        if ($id=='ALL') {
-         $id='';
+        if ($id == 'ALL') {
+            $id = '';
         }
 
-        if ($id){
+        if ($id) {
 
             return DB::table('penawaran')
-    
+
                 ->join("transaksi", "penawaran.id_transaksi", "=", "transaksi.id_transaksi")
                 ->join("detail_transaksi_penawaran", "penawaran.id_penawaran", "=", "detail_transaksi_penawaran.id_penawaran")
-                ->join('pelanggan','transaksi.id_pelanggan','=', 'pelanggan.id_pelanggan')
-                ->join('pengguna','transaksi.id','=', 'pengguna.id')
+                ->join('pelanggan', 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
+                ->join('pengguna', 'transaksi.id', '=', 'pengguna.id')
+                ->join('pegawai', 'transaksi.id_pegawai', '=', 'pegawai.id_pegawai')
                 ->groupBy("kode_transaksi")
                 ->where('no_penawaran', '=', $id)
                 ->orderBy("tgl_penawaran", "asc")
@@ -32,8 +33,9 @@ class QuotationModel extends Model
 
             ->join("transaksi", "penawaran.id_transaksi", "=", "transaksi.id_transaksi")
             ->join("detail_transaksi_penawaran", "penawaran.id_penawaran", "=", "detail_transaksi_penawaran.id_penawaran")
-            ->join('pelanggan','transaksi.id_pelanggan','=', 'pelanggan.id_pelanggan')
-            ->join('pengguna','transaksi.id','=', 'pengguna.id')
+            ->join('pelanggan', 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
+            ->join('pengguna', 'transaksi.id', '=', 'pengguna.id')
+            ->join('pegawai', 'transaksi.id_pegawai', '=', 'pegawai.id_pegawai')
             ->groupBy("kode_transaksi")
             // ->where('status_transaksi', '=', 'quotation')
             ->orderByRaw("tgl_penawaran desc,no_penawaran desc")
@@ -147,6 +149,7 @@ class QuotationModel extends Model
             ->join('produk', 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')
             ->join('pelanggan', 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
             ->join('pengguna', 'transaksi.id', '=', 'pengguna.id')
+            ->join('pegawai', 'transaksi.id_pegawai', '=', 'pegawai.id_pegawai')
             ->where([['kode_transaksi', '=', $kode_transaksi], ['status_transaksi', '=', "quotation"]])
             ->get();
     }
@@ -159,6 +162,7 @@ class QuotationModel extends Model
             ->join('produk', 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')
             ->join('pelanggan', 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
             ->join('pengguna', 'transaksi.id', '=', 'pengguna.id')
+            ->join('pegawai', 'transaksi.id_pegawai', '=', 'pegawai.id_pegawai')
             ->where('kode_transaksi', '=', $kode_transaksi)
             ->get();
     }
