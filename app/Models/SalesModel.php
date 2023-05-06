@@ -20,7 +20,7 @@ class SalesModel extends Model
                } else {
                     $query = "where no_penjualan='$id'";
                }
-          }else{
+          } else {
                $query = "";
           }
 
@@ -62,8 +62,18 @@ class SalesModel extends Model
                ->get();
      }
 
-     public function edit($kode_transaksi)
+     public function edit($kode_transaksi, $id_transaksi = null)
      {
+
+          if ($id_transaksi) {
+               return DB::table('transaksi')
+                    ->selectRaw('transaksi.id_transaksi,penawaran.id_penawaran,penawaran.tgl_penawaran,penawaran.no_penawaran,detail_transaksi_penawaran.id_produk,transaksi.jumlah')
+                    ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
+                    ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', '=', 'penawaran.id_penawaran')
+                    ->whereIn('transaksi.id_transaksi', $id_transaksi)
+                    ->get();
+          }
+
           return DB::table('transaksi')
                ->selectRaw('transaksi.id_transaksi,penawaran.id_penawaran,penawaran.tgl_penawaran,penawaran.no_penawaran,detail_transaksi_penawaran.id_produk,transaksi.jumlah')
                ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')

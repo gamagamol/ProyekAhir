@@ -34,6 +34,7 @@
                                 <td>Processing</td>
                                 <td>Custumor</td>
                                 <td>Sales</td>
+                                <td>Selected</td>
 
                             </tr>
                             <?php
@@ -111,7 +112,13 @@
                                     <td>
                                         {{ $p->nama_pegawai }}
                                     </td>
-
+                                    <td>
+                                        @if ($p->tidak_terpakai == 0)
+                                            <i class="fa fa-check text-success" aria-hidden="true"></i>
+                                        @else
+                                            <i class="fa fa-ban text-danger" aria-hidden="true"></i>
+                                        @endif
+                                    </td>
 
 
                                 </tr>
@@ -126,9 +133,9 @@
 
                             <tr>
                                 <td colspan='15'>TOTAL</td>
-                                <td>{{'Rp.'.number_format($subtotal)}}</td>
-                                <td>{{'Rp.'.number_format($ppn)}}</td>
-                                <td>{{'Rp.'.number_format($total +$data[0]->ongkir)}}</td>
+                                <td>{{ 'Rp.' . number_format($subtotal) }}</td>
+                                <td>{{ 'Rp.' . number_format($ppn) }}</td>
+                                <td>{{ 'Rp.' . number_format($total + $data[0]->ongkir) }}</td>
                             </tr>
 
                         </table>

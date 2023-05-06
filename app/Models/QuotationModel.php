@@ -166,4 +166,12 @@ class QuotationModel extends Model
             ->where('kode_transaksi', '=', $kode_transaksi)
             ->get();
     }
+
+    public function updateIdTidakTerpakai($id_transaksi, $data)
+    {
+        // dump($id_transaksi);
+        // dd($data);
+        DB::table('transaksi')->whereIn('id_transaksi', $id_transaksi)->update($data);
+        DB::table('penawaran')->whereIn('id_transaksi', $id_transaksi)->update($data);
+    }
 }

@@ -20,6 +20,11 @@
                             <input type="text" value="{{ $data[0]->kode_transaksi }}" name="kode_transaksi" hidden>
 
                         </div>
+                        <div class="col-md-3 mt-3">
+                            Check All
+                            <input type="checkbox" id="check_all" class="mx-2">
+
+                        </div>
                     </div>
                 </div>
                 <div class="card-body">
@@ -49,17 +54,18 @@
 
                             </tr>
                             @csrf
-                            <?php 
-
-                            $i = 1; 
-                                $subtotal = 0;
-                                $ppn = 0;
-                                $total = 0;
+                            <?php
+                            
+                            $i = 1;
+                            $subtotal = 0;
+                            $ppn = 0;
+                            $total = 0;
                             ?>
                             @foreach ($data as $d)
                                 <tr>
 
-                                    <td>{{ $loop->iteration }}</td>
+                                    <td><input type="checkbox" name="id_transaksi[]" id='id_transaksi'
+                                            value="{{ $d->id_transaksi }}"></td>
                                     <td style="min-width:120px">{{ $d->tgl_penawaran }}</td>
                                     <td>{{ $d->no_penawaran }}</td>
                                     <td>{{ $d->nomor_pekerjaan }}</td>
@@ -80,7 +86,7 @@
 
 
                                 </tr>
-                              <?php
+                                <?php
                                 $subtotal += $d->subtotal;
                                 $ppn += $d->ppn;
                                 $total += $d->total;
@@ -90,9 +96,9 @@
 
                             <tr>
                                 <td colspan='12'>TOTAL</td>
-                                <td>{{'Rp.'.number_format($subtotal)}}</td>
-                                <td>{{'Rp.'.number_format($ppn)}}</td>
-                                <td>{{'Rp.'.number_format($total+$data[0]->ongkir)}}</td>
+                                <td>{{ 'Rp.' . number_format($subtotal) }}</td>
+                                <td>{{ 'Rp.' . number_format($ppn) }}</td>
+                                <td>{{ 'Rp.' . number_format($total + $data[0]->ongkir) }}</td>
                             </tr>
                         </table>
                     </div>
@@ -123,7 +129,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Are you sure to continue the transaction? please check the details first! </p>
-                    <button type=submit name=submit class="btn btn-primary " >submit</button>
+                    <button type=submit name=submit class="btn btn-primary ">submit</button>
                     <a href="{{ url('quotation', $d->kode_transaksi) }}" class="btn btn-info mt-1">
                         Detail </a>
 
@@ -137,5 +143,13 @@
         function MoveCreate() {
             $('#modal').modal('show');
         }
+
+        $('#check_all').click(function() {
+            if ($(this).is(':checked')) {
+                $('input:checkbox').not(this).attr('checked', 'checked');
+            } else {
+                $('input:checkbox').removeAttr('checked');
+            }
+        })
     </script>
 @endsection()
