@@ -58,12 +58,10 @@
                                 <td>{{ $d->nama_pengguna }}</td>
                                 <td>
 
-                                    
 
                                     <a class="btn btn-primary" href="{{ url('goods', str_replace('/','-',$d->no_pembelian)) }}" @if ($d->jumlah_detail_penerimaan)
                                         {{'hidden'}}
-                                    @endif>
-
+                                    @endif >
                                         Good Recipt
                                     </a>
                                      <a href="{{ url('purchase/detail', str_replace('/','-',$d->no_pembelian)) }}" class="btn btn-info mt-1">

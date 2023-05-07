@@ -23,7 +23,7 @@ class PurchaseModel extends Model
             on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
             join transaksi on transaksi.id_transaksi=pembelian.id_transaksi
             join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
-			join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
+        	join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
             join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
             join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
             join pengguna on pengguna.id=transaksi.id
@@ -34,6 +34,17 @@ class PurchaseModel extends Model
             group by no_pembelian
             -- having jumlah_detail_penerimaan is null
              order by tgl_pembelian desc,no_pembelian desc
+         "
+        );
+        return DB::select(
+            "SELECT p.*,t.nomor_pekerjaan,pe.nama_pelanggan,pm.nama_pemasok,pg.nama_pengguna,dtp.jumlah_detail_penerimaan from pembelian p
+            join transaksi t on p.id_transaksi = t.id_transaksi
+            join pelanggan pe on pe.id_pelanggan=t.id_pelanggan
+            join pemasok pm on pm.id_pemasok = t.id_pemasok
+            join pengguna pg on pg.id=t.id
+             left join penerimaan_barang pmb on pmb.id_transaksi = t.id_transaksi
+            left join detail_penerimaan_barang dtp on dtp.id_penerimaan_barang=pmb.id_penerimaan_barang
+            order by p.id_pembelian desc
          "
         );
     }
@@ -73,7 +84,7 @@ class PurchaseModel extends Model
         left join pembelian on pembelian.id_penjualan=penjualan.id_penjualan
         left join detail_transaksi_pembelian on detail_transaksi_pembelian.id_pembelian=pembelian.id_pembelian
         join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
-         where kode_transaksi='$kode_transaksi'
+         where kode_transaksi='$kode_transaksi' 
         group by id_penjualan
         having jumlah_detail_penjualan>sum(ifnull(jumlah_detail_pembelian,0))
         
@@ -113,7 +124,7 @@ class PurchaseModel extends Model
 
     public function insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok, $kemungkinan, $nominal = null)
     {
-     
+
 
         if (gettype($id_pemasok) == 'array') {
             $update_data_transaksi = [];
@@ -152,7 +163,7 @@ class PurchaseModel extends Model
 
             DB::table('transaksi')->where('id_transaksi', $id_transaksi[0])->update($update_data_transaksi);
         }
-     
+
 
         DB::table('pembelian')->insert($data_pembelian);
 
@@ -180,12 +191,15 @@ class PurchaseModel extends Model
             }
         } elseif ($kemungkinan == 'B' || $kemungkinan == 'C') {
 
+
+
             for ($i = 0; $i < count($data_pembelian); $i++) {
                 $id_pembelian = DB::table('pembelian')
-                    ->where('id_penjualan', $data_pembelian[$i]['id_penjualan'])
-                    ->max('id_pembelian');
+                    ->where('no_pembelian', $data_pembelian[$i]['no_pembelian'])
+                    ->first();
+                // dd($id_pembelian);
 
-                $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
+                $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian->id_pembelian;
             }
         }
 
@@ -232,6 +246,7 @@ class PurchaseModel extends Model
 
     public function detail($no_pembelian)
     {
+
         return DB::select("SELECT * FROM pembelian 
         join detail_transaksi_pembelian on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
         join penjualan on penjualan.id_penjualan=pembelian.id_penjualan
@@ -241,6 +256,7 @@ class PurchaseModel extends Model
         join pelanggan on pelanggan.id_pelanggan = transaksi.id_pelanggan
         join pemasok on pemasok.id_pemasok = transaksi.id_pemasok
         join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
-        where no_pembelian='$no_pembelian'");
+        where no_pembelian='$no_pembelian' 
+        ");
     }
 }

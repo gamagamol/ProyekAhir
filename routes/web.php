@@ -23,6 +23,7 @@ use App\Http\Controllers\EmailController;
 use App\Http\Controllers\PaymentVendorController;
 use App\Http\Controllers\pegawaiController;
 use App\Http\Controllers\ServicesController;
+use App\Http\Controllers\TransaksiController;
 
 
 // Auth
@@ -89,6 +90,12 @@ Route::get('paymentvendor/show/{kode}/{tgl}', [PaymentVendorController::class, "
 Route::get('paymentvendor/detail/{no_pembayaran}', [PaymentVendorController::class, "detail"]);
 
 Route::get('paymentvendor/report/report', [PaymentVendorController::class, "report"]);
+
+
+
+Route::get('transaksi/getTransaksiAJAX/{id}', [TransaksiController::class, 'getTransaksiAJAX']);
+
+
 
 // Laporan
 

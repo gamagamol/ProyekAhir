@@ -96,7 +96,8 @@
                                 <div class="form-group">
                                     <label for="id_pelanggan">Customer</label>
                                     <select class="form-control @error('id_pelanggan') is-invalid @enderror"
-                                        id="id_pelanggan" name="id_pelanggan" value="{{ old('id_pelanggan') }}" @if (count($pembantu) > 0) readonly @endif>
+                                        id="id_pelanggan" name="id_pelanggan" value="{{ old('id_pelanggan') }}"
+                                        @if (count($pembantu) > 0) readonly @endif>
                                         @if (count($pembantu) > 0)
                                             <option value={{ $pembantu[0]->id_pelanggan }}>{{ $nama_pelanggan }}
                                             </option>
@@ -147,7 +148,7 @@
                             <div class="col-md-3">
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2" id="tebal_label">Inquiry
-                                        thick/Diameter (mm)</label>
+                                        thick (mm)</label>
                                     <input type="number"
                                         class="form-control @error('tebal_transaksi') is-invalid @enderror"
                                         name="tebal_transaksi" id="tebal_transaksi" value="{{ old('tebal_transaksi') }}"
@@ -263,12 +264,21 @@
                         <div class="row">
                             <input type="text" name="id" id="id" value="{{ Auth::user()->id }}" hidden>
 
-                            <div class="col-md-3 " style="margin-top:35px">
+                            <div class="col-md-5 " style="margin-top:35px">
                                 <div class="form-group mt-2 rounded">
-                                    <button type=submit name=tambah class="btn btn-primary" id="tambah">Add
-                                        Item</button>
+                                    <div class="row">
+                                        <div class="col">
+                                            <button type=submit name=tambah class="btn btn-primary" id="tambah">Add
+                                                Item</button>
+                                        </div>
+                                        <div class="col">
 
-                                    <a class="btn btn-primary ml-3" id="selesai" onclick="selesai()">finished</a>
+                                            <a class="btn btn-primary ml-3" id="selesai"
+                                                onclick="selesai()">finished</a>
+                                        </div>
+                                    </div>
+
+
 
 
 

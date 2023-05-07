@@ -55,32 +55,36 @@ class SalesController extends Controller
         $tgl_quotation = $quotation[0]->tgl_penawaran;
         $rules = [
             'tgl_penjualan' => " after_or_equal:$tgl_quotation",
+            // 'id_transaksi[]'=>'required'
         ];
         $message = [
-            "tgl_penjualan.after_or_equal" => "Choose a date after the quotation date or equal"
+            "tgl_penjualan.after_or_equal" => "Choose a date after the quotation date or equal",
+            // "id_transaksi[].required" => "Pelase choose your item please"
         ];
         $validated = Validator::make($request->all(), $rules, $message);
         if ($validated->fails()) {
             return redirect()->back()->with("failed", "Choose a date after the quotation date or equal");
         }
 
+        if (!isset($request->id_transaksi)) {
+            return redirect()->back()->with("failed", "Choose Item First !");
+
+        }
+
         if (count($quotation) != count($request->id_transaksi)) {
-
-            $id_transaksi_tidak_terpakai = [];
-
-            for ($j = 0; $j < count($quotation); $j++) {
-                foreach ($request->id_transaksi as $id_transaksi) {
-                    if ($id_transaksi != $quotation[$j]->id_transaksi) {
-                        array_push($id_transaksi_tidak_terpakai, $quotation[$j]->id_transaksi);
-                    }
-                }
+            $id_transaksi_quotation = [];
+            foreach ($quotation as $quo) {
+                array_push($id_transaksi_quotation, $quo->id_transaksi);
             }
+
+            $id_transaksi_tidak_terpakai = array_diff($id_transaksi_quotation, $request->id_transaksi);
 
             $this->quotationModel->updateIdTidakTerpakai($id_transaksi_tidak_terpakai, ['tidak_terpakai' => 1]);
 
-
             $quotation = $this->SalesModel->edit($kode_transaksi, $request->id_transaksi);
         }
+
+        // dd('test');
 
 
 
@@ -133,6 +137,7 @@ class SalesController extends Controller
     {
 
         $data = $this->SalesModel->detail(str_replace("-", "/", $no_penjualan));
+        // dd($data);ur
         $data = [
             'tittle' => "Detail Sales Order",
             'data' => $data

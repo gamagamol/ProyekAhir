@@ -50,15 +50,17 @@
                     <div class="row">
 
                         <div class="col mt-5">
-                            <div class="table-responsive text-center">
-                                <table class="table table-bordered" width="100%" cellspacing="0" id="CreateSupplier"
-                                    hidden>
+
+                            <div class="table-responsive text-center" style="overflow-x: auto">
+                                <table class="table table-bordered text-center" cellspacing="0" id="CreateSupplier"
+                                    style="width: 1700px" hidden>
                                     <tr>
                                         <td>No</td>
                                         <td hidden>id produk</td>
                                         <td>No Sales</td>
                                         <td>Grade</td>
-                                        {{-- <td colspan="3">Material Size</td> --}}
+                                        <td colspan="3">Material Size</td>
+                                        <td>Weight(kg)</td>
                                         <td>Price</td>
                                         <td>QTY</td>
                                         <td>supplier</td>
@@ -66,6 +68,7 @@
 
                                 </table>
                             </div>
+
                         </div>
 
 
@@ -75,16 +78,14 @@
                 <div class="card-body">
 
                     <div class="table-responsive text-center">
-                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-
-
-
+                        <table class="table table-bordered" id="dataTable" cellspacing="0">
                             <tr>
                                 <td>No</td>
                                 <td>Date</td>
                                 <td>No Sales</td>
                                 <td>Grade</td>
                                 <td colspan="3">Material Size</td>
+                                <td>Weight(kg)</td>
                                 <td>QTY(Sales) </td>
                                 <td>QTY(Purchase) </td>
                                 <td>customer</td>
@@ -117,6 +118,7 @@
                                     <td>{{ $d->tebal_transaksi }}</td>
                                     <td>{{ $d->lebar_transaksi }}</td>
                                     <td>{{ $d->panjang_transaksi }}</td>
+                                    <td>{{ $d->berat }}</td>
                                     {{-- sales --}}
                                     <td>{{ $d->jumlah_detail_penjualan }}</td>
                                     <td>{{ $d->jumlah_detail_pembelian }}</td>
@@ -127,7 +129,7 @@
                                     <td>{{ $d->nama_pelanggan }}</td>
                                     <td id="CTS">
                                         <i class="fa fa-plus-circle" aria-hidden="true"
-                                            onclick="CreateSupplier('{{ $d->id_produk }}','{{ $d->nama_produk }}','{{ $d->no_penjualan }}','{{ $d->id_transaksi }}','{{ $d->tebal_transaksi }}','{{ $d->lebar_transaksi }}','{{ $d->panjang_transaksi }}','{{ $d->bentuk_produk }}','{{ $d->layanan }}','{{ $jumlah }}','{{ $d->id_penawaran }}')"></i>
+                                            onclick="CreateSupplier('{{ $d->id_produk }}','{{ $d->nama_produk }}','{{ $d->no_penjualan }}','{{ $d->id_transaksi }}','{{ $d->tebal_transaksi }}','{{ $d->lebar_transaksi }}','{{ $d->panjang_transaksi }}','{{ $d->bentuk_produk }}','{{ $d->layanan }}','{{ $jumlah }}','{{ $d->id_penawaran }}','{{ $d->berat }}')"></i>
 
                                     </td>
 
@@ -174,38 +176,57 @@
     </div>
     </div>
 
-
+    <script src="{{ asset('assets/js/custom/purchase.js') }}"></script>
     <script>
         let click = 1
 
         function CreateSupplier(IdProduk, NamaProduk, NoPenjualan, IdTransaksi, TebalTransaksi, LebarTransaksi,
-            PanjangTransaksi, BentukProduk, Layanan, Jumlah, IdPenawaran) {
+            PanjangTransaksi, BentukProduk, Layanan, Jumlah, IdPenawaran, berat) {
             let Supplier = {!! json_encode($supplier->toArray(), JSON_HEX_TAG) !!}
-
+            let url = `{{ url('transaksi/getTransaksiAJAX/${IdTransaksi}') }}`
 
             let html = ``
             html += `<tr>`
             html += `<td>${click}</td>`
             html +=
-                `<td style='width:200px'> <input type="text" name="no_penjualan[]" class="form-control" value='${NoPenjualan}' readonly  style="border-width:0px;background-color:white;width=500px"></td>`
+                `<td style="width: 500px;" > <input type="text" name="no_penjualan[]" class="form-control" value='${NoPenjualan}' readonly  style="border-width:0px;background-color:white;width=150px"></td>`
             html +=
-                `<td style='width:150px' > <input type="text" name="nama_produk[]" class="form-control text-center" value='${NamaProduk}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
+                `<td style="width: 200px;" > <input type="text" name="nama_produk[]" class="form-control text-center" value='${NamaProduk}' readonly size="3" style="border-width:0px;background-color:white;width=150px"></td>`
             html +=
-                `<td hidden > <input type="text" name="tebal_transaksi[]" class="form-control" value='${TebalTransaksi}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
+                `<td   style="width: 200px;"hidden > <input type="text" name="tebal_transaksi[]" class="form-control" value='${TebalTransaksi}'   style="border-width:0px;background-color:white;width=150px"></td>`
             html +=
-                `<td hidden> <input type="text" name="lebar_transaksi[]" class="form-control" value='${LebarTransaksi}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
+                `<td  style="width: 200px;"hidden> <input type="text" name="lebar_transaksi[]" class="form-control" value='${LebarTransaksi}'   style="border-width:0px;background-color:white;width=150px"></td>`
             html +=
-                `<td hidden> <input type="text" name="panjang_transaksi[]" class="form-control text-center" value='${PanjangTransaksi}' readonly size="3" style="border-width:0px;background-color:white;"></td>`
-            html +=
-                `<td> <input type="number" name="harga[]" class="form-control" size="4" placeholder="Price" min='0' id='harga'></td>`
-            html +=
-                `<td> <input type="number" name="unit[]" class="form-control" size="3" placeholder="Unit" min='0' ></td>`
+                `<td style="width: 200px;"hidden > <input type="text" name="panjang_transaksi[]" class="form-control text-center" value='${PanjangTransaksi}'   style="border-width:0px;background-color:white;width=150px"></td>`
 
-            html += `<td> <select class='form-control ' id='id_pemasok' name='id_pemasok[]'>`
+
+            html +=
+                `<td   style="width: 200px;" > <input type="text" name="tebal_transaksi_asli[]" class="form-control"    style="border-width:0px;background-color:white;width=150px"></td>`
+            html +=
+                `<td  style="width: 200px;"> <input type="text" name="lebar_transaksi_asli[]" class="form-control"   style="border-width:0px;background-color:white;width=150px"></td>`
+            html +=
+                `<td style="width: 200px;" > <input type="text" name="panjang_transaksi_asli[]" class="form-control text-center"    style="border-width:0px;background-color:white;width=150px"></td>`
+
+
+
+
+
+            html +=
+                `<td  style="width: 200px;"hidden > <input type="text" name="berat[]" class="form-control text-center" value='${berat}'   style="border-width:0px;background-color:white;width=150px"></td>`
+            html +=
+                `<td  style="width: 200px;" > <input type="text" name="berat_asli[]" class="form-control text-center" style="border-width:0px;background-color:white;width=150px"></td>`
+            html +=
+                `<td style="width: 500px;" > <input type="number" name="harga[]" class="form-control" size="4" placeholder="Price" min='0' id='harga' style="border-width:0px;background-color:white;width=150px"></td>`
+            html +=
+                `<td style="width: 200px;"> <input type="number" name="unit[]" class="form-control" size="3" placeholder="Unit" min='0' style="border-width:0px;background-color:white;width=150px" ></td>`
+
+            html +=
+                `<td style="width: 200px;"> <select class='form-control ' id='id_pemasok' name='id_pemasok[]'>`
             html += ` <option value=null>Select Your Supplier</option>`
 
             for (let i = 0; i < Supplier.length; i++) {
-                html += ` <option value=${Supplier[i].id_pemasok} size="1">${Supplier[i].nama_pemasok}</option>`
+                html +=
+                    ` <option value=${Supplier[i].id_pemasok} size="1">${Supplier[i].nama_pemasok}</option>`
             }
             html += `</select></td>`
 
@@ -224,33 +245,22 @@
 
             html += `</tr>`
 
+
             $('#CreateSupplier').append(html)
-
-
-
             $('#CreateSupplier').removeAttr('hidden', true)
 
             $('#select-pemasok').attr('hidden', true)
 
-            
-
             click++
+
+
+
+
 
         }
 
         function MoveCreate() {
             $('#modal').modal('show');
         }
-
-        // function MultiSupplier() {
-        //     $('#CTS').removeAttr('hidden');
-        //     $('#RTS').removeAttr('hidden');
-        //     // $('#MultiSupplier').addattr('hidden');
-        //     $('#MultiSupplier').attr('hidden', 'true');
-
-
-
-
-        // }
     </script>
 @endsection()

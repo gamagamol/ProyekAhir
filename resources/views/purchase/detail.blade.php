@@ -67,14 +67,14 @@
                                         {{ $p->nama_produk }}
                                     </td>
                                     <td>
-                                        {{ $p->tebal_transaksi }}
+                                        {{ $p->tebal_detail_pembelian > 0 ? $p->tebal_detail_pembelian : $p->tebal_transaksi }}
                                     </td>
                                     <td>
-                                        {{ $p->lebar_transaksi }}
+                                        {{ $p->lebar_transaksi > 0 ? $p->lebar_detail_pembelian : $p->lebar_transaksi }}
                                     </td>
 
                                     <td>
-                                        {{ $p->panjang_transaksi }}
+                                        {{ $p->panjang_detail_pembelian > 0 ? $p->panjang_detail_pembelian : $p->panjang_transaksi }}
                                     </td>
                                     <td>
                                         {{ $p->jumlah_detail_pembelian }}
@@ -137,7 +137,7 @@
                                 <td colspan='15'>TOTAL</td>
                                 <td>{{ 'Rp.' . number_format($subtotal) }}</td>
                                 <td>{{ 'Rp.' . number_format($ppn) }}</td>
-                                <td>{{ 'Rp.' . number_format($total+$data[0]->ongkir) }}</td>
+                                <td>{{ 'Rp.' . number_format($total + $data[0]->ongkir) }}</td>
                             </tr>
 
                         </table>

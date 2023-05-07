@@ -21,18 +21,13 @@
 
 -- query untuk show model  purchase
 
--- SELECT *,jumlah_detail_penjualan,jumlah_detail_pembelian from transaksi 
---         join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
---         join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
---         join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
---         join detail_transaksi_penjualan on penjualan.id_penjualan=detail_transaksi_penjualan.id_penjualan
---         left join pembelian on pembelian.id_penjualan=penjualan.id_penjualan
---         left join detail_transaksi_pembelian on detail_transaksi_pembelian.id_pembelian=pembelian.id_pembelian
---         join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
---         join pengguna on pengguna.id=transaksi.id
---         join produk on detail_transaksi_penjualan.id_produk=produk.id_produk
---         group by penjualan.id_penjualan
---         having   jumlah_detail_penjualan> sum(ifnull(jumlah_detail_pembelian,0))
+select p.*,t.nomor_pekerjaan,pe.nama_pelanggan,pm.nama_pemasok,pg.nama_pengguna from pembelian p
+join transaksi t on p.id_transaksi = t.id_transaksi
+join pelanggan pe on pe.id_pelanggan=t.id_pelanggan
+join pemasok pm on pm.id_pemasok = t.id_pemasok
+join pengguna pg on pg.id=t.id
+order by p.id_pembelian desc
+
 
 
 

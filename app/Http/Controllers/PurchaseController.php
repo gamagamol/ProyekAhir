@@ -42,13 +42,12 @@ class PurchaseController extends Controller
     public function show($kode_transaksi)
     {
 
-        // dd($this->PurchaseModel->show($kode_transaksi));
-
         $data = [
             'tittle' => "Create purchase",
             "data" => $this->PurchaseModel->show($kode_transaksi),
             "supplier" => DB::table('pemasok')->get(),
         ];
+        // dd($data);
         return view('purchase.create', $data);
     }
 
@@ -65,9 +64,19 @@ class PurchaseController extends Controller
         $tgl_penjualan = $quotation[0]->tgl_penjualan;
         $id_produk = $request->input('id_produk');
         $id_penawaran = $request->input('id_penawaran');
+        // ukuran sales
         $tebal_transaksi = $request->input('tebal_transaksi');
         $lebar_transaksi = $request->input('lebar_transaksi');
         $panjang_transaksi = $request->input('panjang_transaksi');
+        $berat = $request->input('berat');
+        // ukuran pembelian
+        $tebal_transaksi_asli = $request->input('tebal_transaksi_asli');
+        $lebar_transaksi_asli = $request->input('lebar_transaksi_asli');
+        $panjang_transaksi_asli = $request->input('panjang_transaksi_asli');
+        $berat_asli = $request->input('berat_asli');
+
+
+
         $bentuk_produk = $request->input('bentuk_produk');
         $layanan = $request->input('layanan');
         $harga = $request->input('harga');
@@ -114,21 +123,40 @@ class PurchaseController extends Controller
                     if ($quoi->id_produk == $id_produk[$ipo]) {
                         if ($quoi->id_penawaran == $id_penawaran[$ipo]) {
 
-                            $produk[$ipo] = [
-                                'id_produk' => $id_produk[$ipo],
-                                'id_penjualan' => $quoi->id_penjualan,
-                                'id_penawaran' => $quoi->id_penawaran,
-                                'unit' => (int) $unit[$ipo],
-                                'harga' => (int)$harga[$ipo],
-                                'berat' => (float) $this->qc->CalculateWeight(
+                            if ($berat_asli[$ipo] != null) {
+                                $berat_produk = (float)$berat_asli[$ipo];
+                            } else {
+                                $berat_produk = (float) $this->qc->CalculateWeight(
                                     $bentuk_produk[$ipo],
                                     $layanan[$ipo],
                                     $tebal_transaksi[$ipo],
                                     $lebar_transaksi[$ipo],
                                     $panjang_transaksi[$ipo],
                                     (int) $unit[$ipo]
-                                ),
+                                );
+                            }
+
+
+
+                            $panjang_produk = ($panjang_transaksi[$ipo] != (float)$panjang_transaksi_asli[$ipo]) ? $panjang_transaksi_asli[$ipo] : null;
+
+                            $lebar_produk = ($lebar_transaksi[$ipo] != (float)$lebar_transaksi_asli[$ipo]) ? $lebar_transaksi_asli[$ipo] : null;
+
+                            $tebal_produk = ($tebal_transaksi[$ipo] != (float)$tebal_transaksi_asli[$ipo]) ? $tebal_transaksi_asli[$ipo] : null;
+
+
+                            $produk[$ipo] = [
+                                'id_produk' => $id_produk[$ipo],
+                                'id_penjualan' => $quoi->id_penjualan,
+                                'id_penawaran' => $quoi->id_penawaran,
+                                'unit' => (int) $unit[$ipo],
+                                'harga' => (int)$harga[$ipo],
+                                'berat' => $berat_produk,
                                 'jumlah_unit' => $jumlah_unit[$ipo],
+                                'panjang_detail_pembelian' => (float) $panjang_produk,
+                                'lebar_detail_pembelian' => (float)$lebar_produk,
+                                'tebal_detail_pembelian' => (float) $tebal_produk,
+
                             ];
                         }
                     }
@@ -155,8 +183,11 @@ class PurchaseController extends Controller
                                 'berat' => $prdk['berat'],
                                 'subtotal' => $prdk['harga'] * $prdk['berat'],
                                 'ppn' => ($prdk['harga'] * $prdk['berat']) * 0.11,
-                                'total' => $prdk['harga'] * $prdk['berat']+(($prdk['harga'] * $prdk['berat']) * 0.11),
-                                'sisa_detail_penjualan'=>$prdk['jumlah_unit']-$prdk['unit']
+                                'total' => $prdk['harga'] * $prdk['berat'] + (($prdk['harga'] * $prdk['berat']) * 0.11),
+                                'sisa_detail_penjualan' => $prdk['jumlah_unit'] - $prdk['unit'],
+                                'panjang_detail_pembelian' => $prdk['panjang_detail_pembelian'],
+                                'lebar_detail_pembelian' => $prdk['lebar_detail_pembelian'],
+                                'tebal_detail_pembelian' => $prdk['tebal_detail_pembelian'],
                             ];
                             $ipdk++;
                         }
@@ -228,7 +259,7 @@ class PurchaseController extends Controller
         // Dasar pembentukan no pembelian
 
 
-   
+
 
 
         // check banyaknya id pemasok yang masok
@@ -236,7 +267,7 @@ class PurchaseController extends Controller
         $no_pembelian = $this->PurchaseModel->no_pembelian($tgl_pembelian, $id_pemasok);
 
         $tgl_exploade = explode('-', $tgl_pembelian);
-       
+
         if (gettype($id_pemasok) != 'string' && count(array_flip($id_pemasok)) == 2) {
 
 
@@ -266,7 +297,7 @@ class PurchaseController extends Controller
         }
 
         if (gettype($id_pemasok) == 'string' && $unit == null) {
-          
+
             $i = 0;
             foreach ($quotation as $quo) {
                 $data_pembelian[$i] = [
@@ -283,11 +314,13 @@ class PurchaseController extends Controller
                     'id_produk' => $quo->id_produk,
                     'jumlah_detail_pembelian' => $quo->jumlah_unit,
                     'harga_detail_pembelian' => $quo->harga,
-                    'total_detail_pembelian' => ($quo->harga * $quo->berat)+(($quo->harga * $quo->berat) * 0.11),
+                    'total_detail_pembelian' => ($quo->harga * $quo->berat) + (($quo->harga * $quo->berat) * 0.11),
                     'berat_detail_pembelian' => $quo->berat,
-                    'subtotal_detail_pembelian' => $quo->harga*$quo->berat,
+                    'subtotal_detail_pembelian' => $quo->harga * $quo->berat,
                     'ppn_detail_pembelian' => ($quo->harga * $quo->berat) * 0.11,
-                    'sisa_detail_penjualan'=>0
+                    'sisa_detail_penjualan' => 0,
+
+
                 ];
 
                 $id_transaksi[]
@@ -306,7 +339,7 @@ class PurchaseController extends Controller
                     'tgl_pembelian' => $tgl_pembelian
                 ];
 
-
+                // dump($ap);
 
                 $data_detail_pembelian[$i] = [
                     'id_pembelian' => 0,
@@ -317,7 +350,12 @@ class PurchaseController extends Controller
                     'berat_detail_pembelian' => $ap['berat'],
                     'subtotal_detail_pembelian' => $ap['subtotal'],
                     'ppn_detail_pembelian' => $ap['ppn'],
-                    'sisa_detail_penjualan'=>$ap['sisa_detail_penjualan'],
+                    'sisa_detail_penjualan' => $ap['sisa_detail_penjualan'],
+                    'panjang_detail_pembelian' => $ap['panjang_detail_pembelian'],
+                    'lebar_detail_pembelian' => $ap['lebar_detail_pembelian'],
+                    'tebal_detail_pembelian' => $ap['tebal_detail_pembelian'],
+
+
                 ];
 
                 $i++;
@@ -325,8 +363,10 @@ class PurchaseController extends Controller
             $id_pemasok = $id_pemasok[0];
             $kemungkinan = 'B';
         } elseif ($array_pemasok == 2 && $unit != null) {
+            // echo 'masuk sini';
             $i = 0;
             foreach ($arr_produk as $ap) {
+                // dump($ap);
                 $data_pembelian[$i] = [
                     'id_penjualan' => $ap['id_penjualan'],
                     'id_transaksi' => $ap['id_transaksi'],
@@ -346,11 +386,14 @@ class PurchaseController extends Controller
                     'subtotal_detail_pembelian' => $ap['subtotal'],
                     'ppn_detail_pembelian' => $ap['ppn'],
                     'sisa_detail_penjualan' => $ap['sisa_detail_penjualan'],
+                    'panjang_detail_pembelian' => $ap['panjang_detail_pembelian'],
+                    'lebar_detail_pembelian' => $ap['lebar_detail_pembelian'],
+                    'tebal_detail_pembelian' => $ap['tebal_detail_pembelian'],
                 ];
 
                 $i++;
             }
-            
+
             // dump("kemungkinan C");
             $kemungkinan = 'C';
         }
@@ -362,6 +405,7 @@ class PurchaseController extends Controller
         // dump($array_no_pembelian);
         // dump($quotation);
         // dump($kemungkinan);
+        // dump($request->input());
         // dump($data_pembelian);
         // dd($data_detail_pembelian);
 
@@ -381,6 +425,7 @@ class PurchaseController extends Controller
             'tittle' => "Detail purchase Order",
             'data' => $data
         ];
+        // dd($data);
         return view('purchase.detail', $data);
     }
 
@@ -389,16 +434,16 @@ class PurchaseController extends Controller
     {
         $data = $this->PurchaseModel->detail(str_replace("-", "/", $no_transaksi));
 
-        $subtotal=0;
-        $ppn=0;
-        $total=0;
+        $subtotal = 0;
+        $ppn = 0;
+        $total = 0;
         foreach ($data as $t) {
 
-            $total +=$t->total_detail_pembelian;
-            $subtotal +=$t->subtotal_detail_pembelian;
-            $ppn +=$t->ppn_detail_pembelian;
+            $total += $t->total_detail_pembelian;
+            $subtotal += $t->subtotal_detail_pembelian;
+            $ppn += $t->ppn_detail_pembelian;
         }
-        $penyebut=penyebut($total);
+        $penyebut = penyebut($total);
 
 
         $data = [
@@ -407,8 +452,10 @@ class PurchaseController extends Controller
             'total' => $total,
             'subtotal' => $subtotal,
             'ppn' => $ppn,
-            'penyebut'=>$penyebut
+            'penyebut' => $penyebut
         ];
+
+        // dd($data);
         return view('purchase.print', $data);
     }
 }
