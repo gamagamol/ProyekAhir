@@ -18,24 +18,24 @@ class PurchaseModel extends Model
         }
 
 
-        return DB::select(
-            "SELECT * FROM pembelian join detail_transaksi_pembelian 
-            on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
-            join transaksi on transaksi.id_transaksi=pembelian.id_transaksi
-            join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
-        	join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
-            join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
-            join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
-            join pengguna on pengguna.id=transaksi.id
-            left join penerimaan_barang on penerimaan_barang.id_pembelian=pembelian.id_pembelian
-            left join detail_penerimaan_barang on penerimaan_barang.id_penerimaan_barang=detail_penerimaan_barang.id_penerimaan_barang
-          left   join pemasok on transaksi.id_pemasok  = pemasok.id_pemasok
-           $query
-            group by no_pembelian
-            -- having jumlah_detail_penerimaan is null
-             order by tgl_pembelian desc,no_pembelian desc
-         "
-        );
+        // return DB::select(
+        //     "SELECT * FROM pembelian join detail_transaksi_pembelian 
+        //     on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
+        //     join transaksi on transaksi.id_transaksi=pembelian.id_transaksi
+        //     join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
+        // 	join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
+        //     join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
+        //     join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+        //     join pengguna on pengguna.id=transaksi.id
+        //     left join penerimaan_barang on penerimaan_barang.id_pembelian=pembelian.id_pembelian
+        //     left join detail_penerimaan_barang on penerimaan_barang.id_penerimaan_barang=detail_penerimaan_barang.id_penerimaan_barang
+        //   left   join pemasok on transaksi.id_pemasok  = pemasok.id_pemasok
+        //    $query
+        //     group by no_pembelian
+        //     -- having jumlah_detail_penerimaan is null
+        //      order by tgl_pembelian desc,no_pembelian desc
+        //  "
+        // );
         return DB::select(
             "SELECT p.*,t.nomor_pekerjaan,pe.nama_pelanggan,pm.nama_pemasok,pg.nama_pengguna,dtp.jumlah_detail_penerimaan from pembelian p
             join transaksi t on p.id_transaksi = t.id_transaksi
