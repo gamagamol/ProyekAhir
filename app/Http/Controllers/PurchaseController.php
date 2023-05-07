@@ -156,6 +156,7 @@ class PurchaseController extends Controller
                                 'panjang_detail_pembelian' => (float) $panjang_produk,
                                 'lebar_detail_pembelian' => (float)$lebar_produk,
                                 'tebal_detail_pembelian' => (float) $tebal_produk,
+                                'id_pemasok' => $id_pemasok[$ipo],
 
                             ];
                         }
@@ -188,6 +189,7 @@ class PurchaseController extends Controller
                                 'panjang_detail_pembelian' => $prdk['panjang_detail_pembelian'],
                                 'lebar_detail_pembelian' => $prdk['lebar_detail_pembelian'],
                                 'tebal_detail_pembelian' => $prdk['tebal_detail_pembelian'],
+                                'id_pemasok' => $prdk['id_pemasok'],
                             ];
                             $ipdk++;
                         }
@@ -304,7 +306,8 @@ class PurchaseController extends Controller
                     'id_penjualan' => $quo->id_penjualan,
                     'id_transaksi' => $quo->id_transaksi,
                     'no_pembelian' => $array_no_pembelian[0],
-                    'tgl_pembelian' => $tgl_pembelian
+                    'tgl_pembelian' => $tgl_pembelian,
+                    'id_pemasok' => $id_pemasok[0]
                 ];
 
 
@@ -336,7 +339,8 @@ class PurchaseController extends Controller
                     'id_penjualan' => $ap['id_penjualan'],
                     'id_transaksi' => $ap['id_transaksi'],
                     'no_pembelian' => $array_no_pembelian[0],
-                    'tgl_pembelian' => $tgl_pembelian
+                    'tgl_pembelian' => $tgl_pembelian,
+                    'id_pemasok' => $ap['id_pemasok']
                 ];
 
                 // dump($ap);
@@ -371,7 +375,9 @@ class PurchaseController extends Controller
                     'id_penjualan' => $ap['id_penjualan'],
                     'id_transaksi' => $ap['id_transaksi'],
                     'no_pembelian' => $array_no_pembelian[$i],
-                    'tgl_pembelian' => $tgl_pembelian
+                    'tgl_pembelian' => $tgl_pembelian,
+                    'id_pemasok' => $ap['id_pemasok']
+
                 ];
 
 

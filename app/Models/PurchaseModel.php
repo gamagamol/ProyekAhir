@@ -40,10 +40,11 @@ class PurchaseModel extends Model
             "SELECT p.*,t.nomor_pekerjaan,pe.nama_pelanggan,pm.nama_pemasok,pg.nama_pengguna,dtp.jumlah_detail_penerimaan from pembelian p
             join transaksi t on p.id_transaksi = t.id_transaksi
             join pelanggan pe on pe.id_pelanggan=t.id_pelanggan
-            join pemasok pm on pm.id_pemasok = t.id_pemasok
+            join pemasok pm on pm.id_pemasok = p.id_pemasok
             join pengguna pg on pg.id=t.id
-             left join penerimaan_barang pmb on pmb.id_transaksi = t.id_transaksi
+             left join penerimaan_barang pmb on pmb.id_pembelian = p.id_pembelian
             left join detail_penerimaan_barang dtp on dtp.id_penerimaan_barang=pmb.id_penerimaan_barang
+            $query
             order by p.id_pembelian desc
          "
         );
@@ -131,13 +132,13 @@ class PurchaseModel extends Model
             for ($i = 0; $i < count($id_pemasok); $i++) {
                 $update_data_transaksi[$i] = [
                     'status_transaksi' => 'purchase',
-                    'id_pemasok' => $id_pemasok[$i]
+                    // 'id_pemasok' => $id_pemasok[$i]
                 ];
             }
         } else {
             $update_data_transaksi = [
                 'status_transaksi' => 'purchase',
-                'id_pemasok' => $id_pemasok
+                // 'id_pemasok' => $id_pemasok
             ];
         }
 
@@ -254,7 +255,7 @@ class PurchaseModel extends Model
         join transaksi on transaksi.id_transaksi=pembelian.id_transaksi
         join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
         join pelanggan on pelanggan.id_pelanggan = transaksi.id_pelanggan
-        join pemasok on pemasok.id_pemasok = transaksi.id_pemasok
+        join pemasok on pemasok.id_pemasok = pembelian.id_pemasok
         join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
         where no_pembelian='$no_pembelian' 
         ");

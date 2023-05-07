@@ -1,6 +1,5 @@
 @extends('template.index')
 @section('content')
-
     @if (session()->has('success'))
         <div class="alert alert-success" role="alert">
             {{ session('success') }}
@@ -18,7 +17,7 @@
                         <form action={{ url('delivery') }} method="GET" id="serch-form">
                             <select class="form-control form-select" aria-label="Default select example" name='serch'
                                 id="serch">
-                                  <option value=''>All</option>
+                                <option value=''>All</option>
                                 @foreach ($deta as $d)
                                     <option value={{ $d->no_pengiriman }}>{{ $d->no_pengiriman }}</option>
                                 @endforeach
@@ -51,33 +50,40 @@
                             <tr>
                                 <td> {{ $loop->iteration }}</td>
                                 <td style="min-width:120px">{{ $d->tgl_pengiriman }}</td>
-                                <td>{{ $d->no_penjualan }}</td>
                                 <td>{{ $d->nomor_pekerjaan }}</td>
+                                <td>{{ $d->no_pengiriman }}</td>
                                 <td>{{ $d->nama_pelanggan }}</td>
                                 <td>{{ $d->nama_pengguna }}</td>
                                 <td>
-                                  
 
 
-                                    
-                                <a href="{{ url('show', str_replace('/', '-', $d->no_penjualan)) }}"
-                                    class="btn btn-primary mt-1"  @if ($d->jumlah_detail_pengiriman == $d->jumlah_detail_penerimaan && $d->status_transaksi !='delivery')
+
+
+                                    {{-- <a href="{{ url('show', str_replace('/', '-', $d->no_penjualan)) }}"
+                                    class="btn btn-primary mt-1"  @if ($d->jumlah_detail_pengiriman == $d->jumlah_detail_penerimaan && $d->status_transaksi != 'delivery')
                                        {{'hidden'}}
                                    @endif>
-                                    Bill Payment </a>
+                                    Bill Payment </a> --}}
 
-                                    <a href="{{ url('delivery/detail', str_replace('/', '-', $d->no_penjualan)) }}"
+                                    {{-- <a href="{{ url('show', str_replace('/', '-', $d->no_pengiriman)) }}"
+                                        class="btn btn-primary mt-1">
+                                        Bill Payment </a> --}}
+
+                                    <a href="{{ url('delivery/detail', str_replace('/', '-', $d->no_pengiriman)) }}"
                                         class="btn btn-info mt-1">
                                         Detail </a>
                                 </td>
                                 <td>
-                                  
-                                    @if ($d->jumlah_detail_penerimaan == $d->jumlah_detail_pengiriman)
-                                        <a href={{ url('delivery/print', str_replace('/', '-', $d->no_penjualan)) }}
+
+                                    {{-- @if ($d->jumlah_detail_penerimaan == $d->jumlah_detail_pengiriman)
+                                        <a href={{ url('delivery/print', str_replace('/', '-', $d->no_pengiriman)) }}
                                             class="btn btn-primary" target='_blank'>Print </a>
                                     @else
                                         <i class="fas fa-clock fs-1 mt-2"></i>
-                                    @endif
+                                    @endif --}}
+                                    <a href={{ url('delivery/print', str_replace('/', '-', $d->no_pengiriman)) }}
+                                        class="btn btn-primary" target='_blank'>Print </a>
+
 
 
                                 </td>

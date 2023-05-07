@@ -14,6 +14,9 @@ class DeliveryController extends Controller
 {
     public $model;
     public $PDF;
+    public $QuotationController;
+    public $GoodsController;
+    public $SalesModel;
     public function __construct()
     {
         $this->model = new DeliveryModel();
@@ -30,7 +33,7 @@ class DeliveryController extends Controller
         } else {
             $data = $this->model->index();
         }
-        
+
 
         $data = [
             'tittle' => "Delivery Order",
@@ -241,7 +244,7 @@ class DeliveryController extends Controller
             array_push($arr_no_pengiriman, $pengiriman);
         }
 
-    
+
 
 
 
@@ -421,7 +424,6 @@ class DeliveryController extends Controller
     {
 
         $data = $this->model->detail(str_replace("-", "/", $no_pengiriman));
-        // dd($data);
         $data = [
             'tittle' => "Detail Delivery Order",
             'data' => $data
@@ -434,7 +436,7 @@ class DeliveryController extends Controller
     {
         $no_transaksi = str_replace('-', '/', $no_transaksi);
         $tgl_pengiriman = $this->model->detail($no_transaksi);
-      
+
         $tgl_pengiriman = end($tgl_pengiriman);
         $tgl_pengiriman = $tgl_pengiriman->tgl_pengiriman;
         $data = $this->model->print($no_transaksi);
