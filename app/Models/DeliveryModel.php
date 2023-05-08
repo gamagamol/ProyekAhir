@@ -55,7 +55,7 @@ class DeliveryModel extends Model
         //                     ) b
         //         ");
         // dd($query);
-      
+
         return DB::select("
         select pi.tgl_pengiriman,pi.no_pengiriman,t.nomor_pekerjaan,nama_pelanggan,nama_pengguna,t.status_transaksi from pengiriman pi
         join transaksi t on t.id_transaksi = pi.id_transaksi
@@ -111,6 +111,7 @@ class DeliveryModel extends Model
         //     $query
         //     "
         // );
+
         return DB::select(
             "SELECT   *,penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan ,
             penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,jumlah_detail_penerimaan,
@@ -232,6 +233,7 @@ class DeliveryModel extends Model
     public function detail($no_pengiriman)
     {
 
+
         return  DB::select(
             "SELECT * FROM transaksi
             join pelanggan on transaksi.id_pelanggan = pelanggan.id_pelanggan
@@ -278,12 +280,12 @@ class DeliveryModel extends Model
         // dump($no_pengiriman);
         // dd($query);
 
-
+        // echo "masuk sini";
 
         return DB::select(
             "SELECT  *,penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan ,penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran, jumlah_detail_penerimaan,
          jumlah_detail_pengiriman as jumlah_detail_pengiriman,jumlah_detail_penerimaan- jumlah_detail_pengiriman as sisa_detail_penerimaan
-            ,tgl_penerimaan,detail_penerimaan_barang.id_produk,harga FROM transaksi 
+            ,tgl_penerimaan,detail_penerimaan_barang.id_produk,harga,pembelian.id_pembelian FROM transaksi 
          join penawaran on penawaran.id_transaksi = transaksi.id_transaksi    
         join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
         join pembelian on penjualan.id_penjualan=pembelian.id_penjualan

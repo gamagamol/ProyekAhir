@@ -32,6 +32,7 @@ class GoodsController extends Controller
 
 
         ];
+        // dd($data);
         return view('goods.index', $data);
     }
 
@@ -42,6 +43,7 @@ class GoodsController extends Controller
             'tittle' => "Create Goods Receipt",
             "data" => $this->goods->show($no_pembelian),
         ];
+        
         return view('goods.create', $data);
     }
 

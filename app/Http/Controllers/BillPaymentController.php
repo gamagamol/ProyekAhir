@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BillPaymentModel;
+use App\Models\PurchaseModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -16,9 +17,11 @@ use function app\helper\penyebut;
 class BillPaymentController extends Controller
 {
     protected $model;
+    protected $pembelianModel;
     public function __construct()
     {
         $this->model = new BillPaymentModel();
+        $this->pembelianModel = new PurchaseModel();
     }
     public function index()
     {
@@ -45,22 +48,16 @@ class BillPaymentController extends Controller
 
 
 
-    public function show($no_pengiriman)
+    public function show()
     {
 
-       
-        $no_pengiriman = str_replace("-", "/", $no_pengiriman);
-        $data = $this->model->show($no_pengiriman);
-
-        // dd($data);
-        
-        $tgl_pengiriman = end($data);
-        $tgl_pengiriman = $tgl_pengiriman->tgl_pengiriman_max;
         $data = [
             "tittle" => "Bill payment",
-            'data' => $data,
-            'tgl_pengiriman' => $tgl_pengiriman
+            'no_penjualan' => $this->model->getNoSalesForBill()
         ];
+
+        // dd($data);
+
         return view('bill.create', $data);
     }
 
@@ -168,6 +165,15 @@ class BillPaymentController extends Controller
 
         ];
         return view('bill.print', $data);
+    }
+
+    protected function getSalesDetail($no_penjualan)
+    {
+
+        // echo str_replace('-', '/', $no_penjualan);die;
+        $data = $this->model->show(str_replace('-', '/', $no_penjualan));
+        // dd($data);
+        return response()->json($data);
     }
 
 

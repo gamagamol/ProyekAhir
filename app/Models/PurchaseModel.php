@@ -45,6 +45,7 @@ class PurchaseModel extends Model
              left join penerimaan_barang pmb on pmb.id_pembelian = p.id_pembelian
             left join detail_penerimaan_barang dtp on dtp.id_penerimaan_barang=pmb.id_penerimaan_barang
             $query
+            group by no_pembelian
             order by p.id_pembelian desc
          "
         );
@@ -259,5 +260,19 @@ class PurchaseModel extends Model
         join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
         where no_pembelian='$no_pembelian' 
         ");
+    }
+
+    public function getNoPurchase()
+    {
+        return DB::table('pembelian')
+        ->select('no_pembelian')
+        ->join('transaksi','transaksi.id_transaksi','=','pembelian.id_transaksi')
+        ->join('penjualan','penjualan.id_transaksi','=','transaksi.id_transaksi')
+        ->join('penerimaan_barang','penerimaan_barang.id_pembelian','=','pembelian.id_pembelian')
+        ->join('pengiriman','pengiriman.id_penerimaan_barang','=','penerimaan_barang.id_penerimaan_barang')
+        ->leftJoin('detail_transaksi_pengiriman', 'detail_transaksi_pengiriman.id_pengiriman','=', 'pengiriman.id_pengiriman')
+        ->where('sisa_detail_pengiriman','=','0')
+        ->whereNotIn('status_transaksi',['bill','payment'])
+        ->get();
     }
 }

@@ -209,9 +209,11 @@ class BillPaymentModel extends Model
         );
     }
 
-    public function show($no_penerimaan)
+    public function show($no_penjualan)
     {
-       
+        // echo 'masuk sini';
+
+
         return DB::select("SELECT *,penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan , penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,jumlah_detail_penerimaan,
             case 
             when jumlah_detail_pengiriman > 0 then sum(jumlah_detail_pengiriman)
@@ -223,7 +225,7 @@ class BillPaymentModel extends Model
             on penerimaan_barang.id_penerimaan_barang=pengiriman.id_penerimaan_barang
             join pembelian on pembelian.id_pembelian =penerimaan_barang.id_pembelian
             join penjualan on penjualan.id_penjualan = pembelian.id_penjualan
-            where no_penjualan='$no_penerimaan'
+            where no_penjualan='$no_penjualan'
             ) as tgl_pengiriman_max
             
              FROM transaksi 
@@ -239,8 +241,55 @@ class BillPaymentModel extends Model
             join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
             join pengguna on pengguna.id=transaksi.id
             join produk on detail_penerimaan_barang.id_produk=produk.id_produk
-			where no_penjualan='$no_penerimaan'  and jumlah_detail_penerimaan >= jumlah_detail_pengiriman
+			where no_penjualan='$no_penjualan'  and jumlah_detail_penerimaan >= jumlah_detail_pengiriman
             group by transaksi.id_transaksi
             order by transaksi.id_transaksi asc");
+    }
+
+
+    public function getNoSalesForBill()
+    {
+        return DB::select("
+        SELECT b.no_penjualan,
+                (select sum( jumlah_detail_pengiriman) from penerimaan_barang 
+                join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+                join transaksi on penerimaan_barang.id_transaksi = transaksi.id_transaksi
+                left join pengiriman on pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+                left join detail_transaksi_pengiriman on pengiriman.id_pengiriman = detail_transaksi_pengiriman.id_pengiriman
+                join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
+                  where no_penjualan=b.no_penjualan
+
+                )jumlah_detail_pengiriman ,
+                (SELECT sum(jumlah_detail_penerimaan) FROM transaksi 
+                 join penjualan on penjualan.id_transaksi = transaksi.id_transaksi
+                 join pembelian on pembelian.id_penjualan = penjualan.id_penjualan
+				join penerimaan_barang on penerimaan_barang.id_pembelian = pembelian.id_pembelian
+                join detail_penerimaan_barang on penerimaan_barang.id_penerimaan_barang = detail_penerimaan_barang.id_penerimaan_barang
+                where no_penjualan=b.no_penjualan
+                ) jumlah_detail_penerimaan
+                from(
+            SELECT distinct transaksi.id_transaksi,nomor_pekerjaan, no_penerimaan,no_pengiriman, 
+            pengiriman.id_penerimaan_barang, jumlah_detail_penerimaan,
+            sum(jumlah_detail_pengiriman) as jumlah_detail_pengiriman,sisa_detail_pengiriman,
+            nama_pelanggan,nama_pengguna,tgl_penerimaan,no_pembelian,no_penjualan FROM transaksi
+            join penerimaan_barang on penerimaan_barang.id_transaksi = transaksi.id_transaksi
+            join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
+            left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
+            left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
+             join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+            join pengguna on pengguna.id=transaksi.id
+            join pembelian on pembelian.id_transaksi = transaksi.id_transaksi
+            join pemasok on pembelian.id_pemasok =  pemasok.id_pemasok
+            join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
+           where status_transaksi not in ('bill','payment')
+            group by no_penjualan
+           ) b
+        
+           where jumlah_detail_penerimaan = jumlah_detail_penerimaan
+          group by b.no_penjualan
+          having jumlah_detail_penerimaan = jumlah_detail_pengiriman 
+      
+       
+      ");
     }
 }

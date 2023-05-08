@@ -35,6 +35,7 @@
                         <tr>
                             <td>No</td>
                             <td>Date</td>
+                            <td>No Purchase</td>
                             <td>No Goods Recipt </td>
                             <td>Job number</td>
                             <td>customer</td>
@@ -49,6 +50,7 @@
                             <tr>
                                 <td> {{ $loop->iteration }}</td>
                                 <td style="min-width:120px">{{ $d->tgl_penerimaan }}</td>
+                                <td>{{ $d->no_pembelian }}</td>
                                 <td>{{ $d->no_penerimaan }}</td>
                                 <td>{{ $d->nomor_pekerjaan }}</td>
                                 <td>{{ $d->nama_pelanggan }}</td>

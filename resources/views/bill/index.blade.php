@@ -33,8 +33,13 @@
                     </div>
                 </div>
             </div>
+
+
+
             <div class="card-body">
 
+                <a href="{{ url('show') }}" class="btn btn-primary mb-3">Create
+                    Bill Payment</a>
                 <div class="table-responsive text-center">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 

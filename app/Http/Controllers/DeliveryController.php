@@ -47,7 +47,6 @@ class DeliveryController extends Controller
     {
         $no_penerimaan = str_replace('-', '/', $no_penerimaan);
         $penerimaan = $this->model->show($no_penerimaan);
-        // dd($penerimaan);
         $data = [
             'tittle' => "Delivery Order",
             "data" => $penerimaan
@@ -62,6 +61,7 @@ class DeliveryController extends Controller
         $id_transaksi = $request->post('id_transaksi');
         $no_penerimaan = $request->input('no_penerimaan');
         $penerimaan = $this->model->edit($no_penerimaan);
+        // dd($penerimaan);
 
         $tgl_penerimaan = $penerimaan[0]->tgl_penerimaan;
         $unit = $request->input('unit');
@@ -74,7 +74,7 @@ class DeliveryController extends Controller
         $bentuk_produk = $request->input('bentuk_produk');
         $layanan = $request->input('layanan');
 
-        // dd($id_produk);
+        // dd($request->input());
         // persiapan array
         $produk = [];
         $arr_produk = [];
@@ -259,6 +259,7 @@ class DeliveryController extends Controller
                                 'id_penerimaan_barang' => $pcsss->id_penerimaan_barang,
                                 'id_transaksi' => $id_transaksi[$i],
                                 'id_penjualan' => $pcsss->id_penjualan,
+                                'id_pembelian' => $pcsss->id_pembelian,
                                 'no_pengiriman' => $arr_no_pengiriman[0],
                                 'tgl_pengiriman' => $tgl_pengiriman
                             ];
@@ -326,6 +327,7 @@ class DeliveryController extends Controller
                             'id_penerimaan_barang' => $pcss->id_penerimaan_barang,
                             'id_transaksi' => $pcss->id_transaksi,
                             'id_penjualan' => $pcss->id_penjualan,
+                            'id_pembelian' => $pcss->id_pembelian,
                             'no_pengiriman' => $arr_no_pengiriman[0],
                             'tgl_pengiriman' => $tgl_pengiriman
                         ];
@@ -404,7 +406,7 @@ class DeliveryController extends Controller
         // dump($penerimaan);
         // dump($data_pengiriman);
         // dd($data_detail_pengiriman);
-        // dd($data);
+        // dd($data_pengiriman);
 
 
         $this->model->insert_delivery($id_transaksi, $data_pengiriman, $data_detail_pengiriman, $unit);
