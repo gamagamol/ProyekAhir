@@ -32,17 +32,17 @@
                     <div class="row">
 
                         <div class="col-md-2 bg-success mt-3"></div>
-                        <div class="col-md-2 text-center mt-3 font-weight-bold" id='legenda'>0-15 Days</div>
+                        <div class="col-md-2 text-center mt-3 font-weight-bold" id='legenda'>0-30 Days</div>
                     </div>
                     <div class="row">
 
                         <div class="col-md-2 bg-warning mt-3"></div>
-                        <div class="col-md-2 text-center mt-3 font-weight-bold">15-30 Days</div>
+                        <div class="col-md-2 text-center mt-3 font-weight-bold">30-60 Days</div>
                     </div>
                     <div class="row">
 
                         <div class="col-md-2 bg-danger mt-3"></div>
-                        <div class="col-md-2 text-center mt-3 font-weight-bold"> 30-90 Days</div>
+                        <div class="col-md-2 text-center mt-3 font-weight-bold"> 60-90 Days</div>
                     </div>
                 </div>
 
@@ -61,17 +61,17 @@
                         </tr>
 
                         <tr>
-                            <td style="text-align: center">0-15</td>
-                            <td style="text-align: center">15-31</td>
-                            <td style="text-align: center">31-90</td>
+                            <td style="text-align: center">0-30</td>
+                            <td style="text-align: center">30-60</td>
+                            <td style="text-align: center">60-90</td>
 
                         </tr>
                         @foreach ($data as $d)
-                            @if ($d->selisih >= 0 && $d->selisih < 15)
+                            @if ($d->selisih >= 0 && $d->selisih < 30)
                                 <?php $BackgroundColor = 'class=bg-success style=color:white '; ?>
-                            @elseif ($d->selisih >= 15 && $d->selisih <= 31)
+                            @elseif ($d->selisih > 30 && $d->selisih <= 60)
                                 <?php $BackgroundColor = 'class=bg-warning style=color:white '; ?>
-                            @elseif ($d->selisih >= 31 && $d->selisih <= 90)
+                            @elseif ($d->selisih > 60 && $d->selisih < 90)
                                 <?php $BackgroundColor = 'class=bg-danger style=color:white '; ?>
                             @endif
 
@@ -84,15 +84,15 @@
                                 <td>{{ 'Rp.' . number_format($d->total, 2, ',', '.') }}</td>
 
 
-                                @if ($d->selisih >= 0 && $d->selisih < 15)
+                                @if ($d->selisih >= 0 && $d->selisih <= 30)
                                     <td>{{ 'Rp.' . number_format($d->total_selisih, 2, ',', '.') }}</td>
                                     <td>{{ ' ' }}</td>
                                     <td>{{ ' ' }}</td>
-                                @elseif ($d->selisih >= 15 && $d->selisih <= 31)
+                                @elseif ($d->selisih > 30 && $d->selisih <= 60)
                                     <td>{{ ' ' }}</td>
                                     <td>{{ 'Rp.' . number_format($d->total_selisih, 2, ',', '.') }}</td>
                                     <td>{{ ' ' }}</td>
-                                @elseif ($d->selisih >= 31 && $d->selisih <= 90)
+                                @elseif ($d->selisih > 60 && $d->selisih < 90)
                                     <td>{{ ' ' }}</td>
                                     <td>{{ ' ' }}</td>
                                     <td>{{ 'Rp.' . number_format($d->total_selisih, 2, ',', '.') }}</td>
@@ -129,13 +129,13 @@
                                 <td class="text-success">Green</td>
                                 <th>
                                     If the row in your aging schedule table is green, it means that the age of your
-                                    receivables transaction ranges from 0 to 15 days</th>
+                                    receivables transaction ranges from 0 to 30 days</th>
                             </tr>
                             <tr>
                                 <th class="text-warning">Yellow</th>
                                 <th>
                                     If the row in your aging schedule table is yellow, which means your receivables
-                                    transaction age ranges from 15 to 30 days, then you can send an email to the customer by
+                                    transaction age ranges from 30 to 60 days, then you can send an email to the customer by
                                     pressing the letter icon on the billing menu as a form of reminding your customer.
                                 </th>
                             </tr>
@@ -143,7 +143,7 @@
                                 <th class="text-danger">Red</th>
                                 <th>
                                     If the row in your aging schedule table is red, which means the age of your receivable
-                                    transaction is within 30 to 90 days, then you can send an email to the customer by
+                                    transaction is within 60 to 90 days, then you can send an email to the customer by
                                     pressing the letter icon on the billing menu as a form of reminding your customer.
                                 </th>
                             </tr>

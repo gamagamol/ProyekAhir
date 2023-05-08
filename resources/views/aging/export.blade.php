@@ -10,8 +10,8 @@
 
     <tr>
         <td>0-30</td>
-        <td>31-60</td>
-        <td>61-90</td>
+        <td>3-60</td>
+        <td>6-90</td>
 
     </tr>
     @foreach ($data as $d)
@@ -27,11 +27,11 @@
                 <td>{{ 'Rp.' . number_format($d->total_selisih, 2, ',', '.') }}</td>
                 <td>{{ ' ' }}</td>
                 <td>{{ ' ' }}</td>
-            @elseif ($d->selisih >= 31 && $d->selisih <= 60) <td>
+            @elseif ($d->selisih > 30 && $d->selisih <= 60) <td>
                 <td>{{ ' ' }}</td>
                 <td>{{ 'Rp.' . number_format($d->total_selisih, 2, ',', '.') }}</td>
                 <td>{{ ' ' }}</td>
-            @elseif ($d->selisih >= 61 && $d->selisih <= 90)
+            @elseif ($d->selisih > 60 && $d->selisih <= 90)
                 <td>{{ ' ' }}</td>
                 <td>{{ ' ' }}</td>
                 <td>{{ 'Rp.' . number_format($d->total_selisih, 2, ',', '.') }}</td>
