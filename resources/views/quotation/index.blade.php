@@ -67,7 +67,7 @@
                                 </td>
                                 <td>
                                     <a href={{ url('quotation/print', $d->kode_transaksi) }} class="btn btn-primary"
-                                        target='_blank'>
+                                      target='_blank' >
                                         Print</a>
                                 </td>
 

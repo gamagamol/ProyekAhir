@@ -13,7 +13,7 @@ class ReportDetailSalesModel extends Model
     {
 
         if($search){
-            $query="where pelanggan.id_pelanggan = '$search'";
+            $query="where  pelanggan.id_pelanggan = '$search'";
         }else{
             $query="";
         }

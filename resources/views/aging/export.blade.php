@@ -10,8 +10,8 @@
 
     <tr>
         <td>0-30</td>
-        <td>3-60</td>
-        <td>6-90</td>
+        <td>30-60</td>
+        <td>60-90</td>
 
     </tr>
     @foreach ($data as $d)

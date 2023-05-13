@@ -169,9 +169,122 @@ class QuotationModel extends Model
 
     public function updateIdTidakTerpakai($id_transaksi, $data)
     {
-        // dump($id_transaksi);
-        // dd($data);
+
         DB::table('transaksi')->whereIn('id_transaksi', $id_transaksi)->update($data);
         DB::table('penawaran')->whereIn('id_transaksi', $id_transaksi)->update($data);
+    }
+
+    public function quotationDetailReport($month = null, $date = null)
+    {
+
+        $query = '';
+        if ($month && $date == null) {
+            $query = "WHERE MONTH(p.tgl_penawaran)=$month";
+        } elseif ($date && $month == null) {
+            $query = "WHERE DAY(p.tgl_penawaran)=$date";
+        } elseif ($month && $date) {
+            $query = "WHERE MONTH(p.tgl_penawaran)=$month and DAY(p.tgl_penawaran)=$date";
+        }
+
+
+
+
+        return DB::select("select b.*, (select sum(jumlah) from transaksi 
+				join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
+				where no_penawaran=b.no_penawaran and penawaran.tidak_terpakai=0) jumlah_penjualan,
+				(SELECT sum(jumlah_detail_pembelian) FROM transaksi 
+				join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+                 join penjualan on penjualan.id_transaksi = penawaran.id_transaksi
+                 join pembelian on pembelian.id_penjualan = penjualan.id_penjualan
+                 LEFT join detail_transaksi_pembelian on detail_transaksi_pembelian.id_pembelian = pembelian.id_pembelian
+                where no_penawaran=b.no_penawaran) jumlah_pembelian,
+				(SELECT sum(jumlah_detail_penerimaan) FROM transaksi 
+				join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+                 join penjualan on penjualan.id_transaksi = penawaran.id_transaksi
+                 join pembelian on pembelian.id_penjualan = penjualan.id_penjualan
+				join penerimaan_barang on penerimaan_barang.id_pembelian = pembelian.id_pembelian
+                join detail_penerimaan_barang on penerimaan_barang.id_penerimaan_barang = detail_penerimaan_barang.id_penerimaan_barang
+                where no_penawaran=b.no_penawaran
+                ) jumlah_detail_penerimaan,
+                (SELECT sum( jumlah_detail_pengiriman) from penerimaan_barang 
+                join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+                join transaksi on penerimaan_barang.id_transaksi = transaksi.id_transaksi
+                join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
+                left join pengiriman on pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+                left join detail_transaksi_pengiriman on pengiriman.id_pengiriman = detail_transaksi_pengiriman.id_pengiriman
+                join penjualan on penjualan.id_transaksi=penawaran.id_transaksi
+				where penawaran.no_penawaran=b.no_penawaran
+                )jumlah_detail_pengiriman
+                from (
+						SELECT 
+						 t.id_transaksi,p.tgl_penawaran,p.no_penawaran,
+						tgl_penjualan,pj.id_penjualan,pj.no_penjualan,
+						t.tebal_transaksi,t.panjang_transaksi,lebar_transaksi,t.berat,
+						t.jumlah,t.harga,t.total,t.layanan,pemasok.nama_pemasok FROM ibaraki_db.transaksi t
+						join penawaran p on t.id_transaksi = p.id_transaksi
+						join penjualan pj on p.id_transaksi = pj.id_transaksi
+						left join pembelian pm on pm.id_penjualan = pj.id_penjualan
+						left join penerimaan_barang pb on pb.id_pembelian=pm.id_pembelian
+						left join pengiriman pg on pg.id_penerimaan_barang = pb.id_penerimaan_barang
+                        left join pemasok on pemasok.id_pemasok=pm.id_pemasok
+                        $query
+						group by p.no_penawaran
+                        
+						) b");
+    }
+
+
+
+    public function getDateQuotation()
+    {
+        return DB::select("SELECT tgl_penawaran as tanggal,month(tgl_penawaran) as bulan_penawaran,day(tgl_penawaran) as tgl_penawaran FROM ibaraki_db.transaksi t
+						join penawaran p on t.id_transaksi = p.id_transaksi
+						join penjualan pj on p.id_transaksi = pj.id_transaksi
+						left join pembelian pm on pm.id_penjualan = pj.id_penjualan
+						left join penerimaan_barang pb on pb.id_pembelian=pm.id_pembelian
+						left join pengiriman pg on pg.id_penerimaan_barang = pb.id_penerimaan_barang
+                        left join pemasok on pemasok.id_pemasok=pm.id_pemasok
+						group by p.no_penawaran");
+    }
+
+
+    public function customerOmzetReport($month = null, $date = null)
+    {
+
+        $query = '';
+        if ($month && $date == null) {
+            $query = "and MONTH(p.tgl_penawaran)=$month";
+        } elseif ($date && $month == null) {
+            $query = "and DAY(p.tgl_penawaran)=$date";
+        } elseif ($month && $date) {
+            $query = "and MONTH(p.tgl_penawaran)=$month and DAY(p.tgl_penawaran)=$date";
+        }
+
+
+
+
+        return  DB::select("
+        select b.*,(
+            select sum(subtotal) from transaksi 
+            join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
+            where no_penawaran = b.no_penawaran 
+            ) as total_penawaran, (
+            select sum(subtotal) from transaksi 
+            join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
+            where no_penawaran = b.no_penawaran and penawaran.tidak_terpakai=1
+            ) as total_penawaran_loss,(
+            select sum(subtotal)  from transaksi 
+            join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
+            join penjualan on transaksi.id_transaksi=penjualan.id_transaksi
+            where transaksi.tidak_terpakai=0 and no_penawaran=b.no_penawaran
+            ) as total_penjualan from (
+            SELECT  pg.id_pelanggan,nama_pegawai ,no_penawaran,no_penjualan,pg.nama_pelanggan FROM ibaraki_db.transaksi t
+            left join penawaran p on t.id_transaksi=p.id_transaksi
+            left join penjualan pj on t.id_transaksi = pj.id_transaksi
+            left join pelanggan pg on pg.id_pelanggan = t.id_pelanggan
+            left join pegawai pw on pw.id_pegawai = t.id_pegawai
+            where pw.jabatan_pegawai='SALES' $query
+            group by  pg.id_pelanggan
+            ) b ");
     }
 }

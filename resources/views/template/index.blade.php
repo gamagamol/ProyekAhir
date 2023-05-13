@@ -28,8 +28,7 @@ $notif = $notif->notif();
 
     {{-- masking --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"
-        integrity="sha256-yE5LLp5HSQ/z+hJeCqkz9hdjNkk1jaiGG0tDCraumnA=" crossorigin="anonymous">
-    </script>
+        integrity="sha256-yE5LLp5HSQ/z+hJeCqkz9hdjNkk1jaiGG0tDCraumnA=" crossorigin="anonymous"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
@@ -46,6 +45,11 @@ $notif = $notif->notif();
 
     <!-- Custom styles for this template-->
     <link href="{{ asset('assets/') }}/css/sb-admin-2.min.css" rel="stylesheet">
+
+    {{-- data table  --}}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+
+    
 
 
 </head>
@@ -82,7 +86,9 @@ $notif = $notif->notif();
             <li class="nav-item" id="nav-masterdata">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="true" aria-controls="collapseUtilities" id="masterdata-menu"
-                    @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'ACCOUNTING_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>
+                    @if (Auth::user()->status_pengguna != 'SALES_ADMIN' &&
+                            Auth::user()->status_pengguna != 'ACCOUNTING_ADMIN' &&
+                            Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>
                     <i class="fas fa-folder-open"></i>
                     <span>Master Data</span>
                 </a>
@@ -107,7 +113,9 @@ $notif = $notif->notif();
                 </div>
             </li>
             {{-- Transaction --}}
-            <li class="nav-item " @if (Auth::user()->status_pengguna != 'ACCOUNTING_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN' && Auth::user()->status_pengguna != 'SALES_ADMIN') hidden @endif>
+            <li class="nav-item " @if (Auth::user()->status_pengguna != 'ACCOUNTING_ADMIN' &&
+                    Auth::user()->status_pengguna != 'SUPER_ADMIN' &&
+                    Auth::user()->status_pengguna != 'SALES_ADMIN') hidden @endif>
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#Transaction"
                     aria-expanded="true" aria-controls="Transaction">
                     <i class="fas fa-hand-holding-usd"></i>
@@ -140,9 +148,11 @@ $notif = $notif->notif();
                 </div>
             </li>
             {{-- report --}}
-            <li class="nav-item" @if (Auth::user()->status_pengguna != 'OWNER' && Auth::user()->status_pengguna != 'SUPER_ADMIN' && Auth::user()->status_pengguna != 'ACCOUNTING_ADMIN') hidden @endif>
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#Report" aria-expanded="true"
-                    aria-controls="Report">
+            <li class="nav-item" @if (Auth::user()->status_pengguna != 'OWNER' &&
+                    Auth::user()->status_pengguna != 'SUPER_ADMIN' &&
+                    Auth::user()->status_pengguna != 'ACCOUNTING_ADMIN') hidden @endif>
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#Report"
+                    aria-expanded="true" aria-controls="Report">
                     <i class="fas fa-book"></i>
                     <span>Report</span>
                 </a>
@@ -153,10 +163,15 @@ $notif = $notif->notif();
                         <a class="collapse-item" href="{{ url('journal') }}">Journal</a>
                         <a class="collapse-item" href="{{ url('ledger') }}">General Ledger</a>
                         <a class="collapse-item" href="{{ url('aging') }}">Aging Schedule</a>
+                        <a class="collapse-item" href="{{ url('quotationReportDetail') }}">Quotation Detail
+                            Report</a>
+                        <a class="collapse-item" href="{{ url('customerOmzetReport') }}">Customer Omzet Report</a>
                         <a class="collapse-item" href="{{ url('SDR') }}">Sales Detail Report</a>
                         <a class="collapse-item" href="{{ url('PCR') }}">Purchase Detail Report</a>
                         <a class="collapse-item" href="{{ url('paymentvendor/report/report') }}">Payment To Vendor
                             Report</a>
+
+
 
                     </div>
                 </div>
@@ -191,7 +206,7 @@ $notif = $notif->notif();
                     <!-- Topbar Search -->
 
 
-                    
+
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
@@ -213,7 +228,8 @@ $notif = $notif->notif();
 
                                 @foreach ($notif['data'] as $n)
                                     @if (substr($n->no_transaksi, 0, 2) == 'PO')
-                                        <a class="dropdown-item d-flex align-items-center" href="{{ url('PCR') }}">
+                                        <a class="dropdown-item d-flex align-items-center"
+                                            href="{{ url('PCR') }}">
                                             <div class="mr-3">
                                                 <div class="icon-circle bg-danger">
                                                     <i class="fas fa-exclamation-triangle text-white"></i>
@@ -228,7 +244,8 @@ $notif = $notif->notif();
                                             </div>
                                         </a>
                                     @else
-                                        <a class="dropdown-item d-flex align-items-center" href="{{ url('aging') }}">
+                                        <a class="dropdown-item d-flex align-items-center"
+                                            href="{{ url('aging') }}">
                                             <div class="mr-3">
                                                 <div class="icon-circle bg-danger">
                                                     <i class="fas fa-exclamation-triangle text-white"></i>
@@ -266,7 +283,8 @@ $notif = $notif->notif();
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="logout" data-toggle="modal" data-target="#logoutModal">
+                                <a class="dropdown-item" href="logout" data-toggle="modal"
+                                    data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
@@ -338,6 +356,7 @@ $notif = $notif->notif();
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('assets/') }}/js/sb-admin-2.min.js"></script>
 
+    {{-- <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script> --}}
 
 
 

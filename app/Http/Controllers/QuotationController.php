@@ -7,12 +7,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\QuotationModel;
 use Illuminate\Support\Facades\DB;
+use Mpdf\Mpdf;
+use Mpdf\Output\Destination;
+use App\Exports\QuotationExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class QuotationController extends Controller
 {
     public $QuotationModel;
     public $pegawai;
-
+    public $pdf;
 
 
     public function __construct()
@@ -305,6 +309,7 @@ class QuotationController extends Controller
 
     public function show($kode_transaksi)
     {
+        // echo 'test';die;
 
         $quotation_data = $this->QuotationModel->show($kode_transaksi);
         // dd($quotation_data);
@@ -329,6 +334,8 @@ class QuotationController extends Controller
             'tittle' => 'print Quotation',
             'data' => $this->QuotationModel->show($no_transaksi),
         ];
+
+
         return view('quotation.print', $data);
     }
 
@@ -378,5 +385,121 @@ class QuotationController extends Controller
                 }
                 break;
         }
+    }
+
+
+
+    public function quotationReportDetail()
+    {
+
+        $data = '';
+
+        if (request()->input('month')) {
+            $month = explode('-', request()->input('month'))[1];
+
+            $data = $this->QuotationModel->quotationDetailReport($month);
+        } elseif (request()->input('date')) {
+            $date = explode('-', request()->input('date'))[2];
+
+            $data = $this->QuotationModel->quotationDetailReport(null, $date);
+        } elseif (request()->input('date') && request()->input('month')) {
+            $month = explode('-', request()->input('month'))[1];
+            $date = explode('-', request()->input('date'))[2];
+
+            $data = $this->QuotationModel->quotationDetailReport($month, $date);
+        } else {
+            $data = $this->QuotationModel->quotationDetailReport();
+        }
+
+        $data = [
+            'tittle' => 'Quotation Report Detail',
+            'data' => $data
+
+        ];
+
+        return view('quotation.report_detail', $data);
+    }
+
+    public function quotationReportDetailAjax()
+    {
+        $data = '';
+
+        if (request()->input('month') && !request()->input('date')) {
+            $month = explode('-', request()->input('month'))[1];
+
+            $data = $this->QuotationModel->quotationDetailReport($month);
+        } elseif (request()->input('date') && !request()->input('month')) {
+            $date = explode('-', request()->input('date'))[2];
+
+            $data = $this->QuotationModel->quotationDetailReport(null, $date);
+        } elseif (request()->input('date') && request()->input('month')) {
+            $month = explode('-', request()->input('month'))[1];
+            $date = explode('-', request()->input('date'))[2];
+
+            $data = $this->QuotationModel->quotationDetailReport($month, $date);
+        } else {
+            $data = $this->QuotationModel->quotationDetailReport();
+        }
+
+
+        return response()->json($data);
+    }
+
+    public function getDateQuotationAjax()
+    {
+        return response()->json($this->QuotationModel->getDateQuotation());
+    }
+
+    public function exportDetailReport($month = null, $date = null)
+    {
+
+
+
+        return Excel::download(new QuotationExport($month, $date, 'detail'), 'Quotation Detail Report.xlsx');
+    }
+
+    public function customerOmzetReport()
+    {
+        $data = [
+            'tittle' => 'Report Customer Omzet'
+        ];
+
+        return view('quotation.customer_omzet_report', $data);
+    }
+
+
+    public function customerOmzetReportAjax($month = null, $day = null)
+    {
+        $data = '';
+
+        if (request()->input('month') && !request()->input('date')) {
+            $month = explode('-', request()->input('month'))[1];
+
+            $data = $this->QuotationModel->customerOmzetReport($month);
+        } elseif (request()->input('date') && !request()->input('month')) {
+            $date = explode('-', request()->input('date'))[2];
+
+            $data = $this->QuotationModel->customerOmzetReport(null, $date);
+        } elseif (request()->input('date') && request()->input('month')) {
+            $month = explode('-', request()->input('month'))[1];
+            $date = explode('-', request()->input('date'))[2];
+
+            $data = $this->QuotationModel->customerOmzetReport($month, $date);
+        } else {
+            $data = $this->QuotationModel->customerOmzetReport();
+        }
+
+
+
+        return response()->json([
+            'message' => 'success',
+            'data' => $data
+
+        ]);
+    }
+
+    public function customerOmzetReportExport($month = null, $date = null)
+    {
+        return Excel::download(new QuotationExport($month, $date, 'customer_omzet'), 'Customer Omzet Report .xlsx');
     }
 }

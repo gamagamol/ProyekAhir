@@ -50,7 +50,18 @@ Route::get('pegawai/delete/{id}', [pegawaiController::class, "delete"])->middlew
 // transaksi
 Route::resource('quotation', QuotationController::class)->middleware(['auth', 'revalidate']);
 Route::post('quotation_insert', [QuotationController::class, "insert"]);
-Route::any('show_data', [QuotationController::class, "show_data"]);
+Route::get('quotationReportDetail', [QuotationController::class, 'quotationReportDetail']);
+// report Detail
+Route::get('quotationReportDetailAjax/{date?}', [QuotationController::class, 'quotationReportDetailAjax']);
+Route::get('getDateQuotationAjax', [QuotationController::class, 'getDateQuotationAjax']);
+Route::get('exportDetailReport/{month?}/{date?}', [QuotationController::class, 'exportDetailReport']);
+
+// report customer omzet
+Route::get('customerOmzetReport', [QuotationController::class, 'customerOmzetReport']);
+Route::get('customerOmzetReportAjax', [QuotationController::class, 'customerOmzetReportAjax']);
+Route::get('customerOmzetReportExport/{month?}/{date?}', [QuotationController::class, 'customerOmzetReportExport']);
+
+Route::get('show_data', [QuotationController::class, "show_data"]);
 Route::get('deleteq/{id}', [QuotationController::class, "delete"]);
 Route::get('quotation/print/{id}', [QuotationController::class, "print"]);
 
@@ -106,6 +117,7 @@ Route::get('export', [AgingScheduleController::class, 'export']);
 Route::resource('ledger', GeneralLadgerController::class)->middleware(['auth', 'revalidate']);
 Route::resource('SDR', ReportDetailSales::class)->middleware(['auth', 'revalidate']);
 Route::resource('PCR', PurchaseReportController::class)->middleware(['auth', 'revalidate']);
+
 
 // email
 Route::get('email/{id}', [EmailController::class, 'email']);
