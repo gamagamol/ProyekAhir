@@ -13,7 +13,7 @@ class ReportDetailSalesModel extends Model
     {
 
         if($search){
-            $query="where  pelanggan.id_pelanggan = '$search'";
+            $query="and  pelanggan.id_pelanggan = '$search'";
         }else{
             $query="";
         }
@@ -23,6 +23,7 @@ class ReportDetailSalesModel extends Model
         join pelanggan on transaksi.id_pelanggan=pelanggan.id_pelanggan
         join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
         join tagihan on tagihan.id_transaksi=transaksi.id_transaksi
+        where transaksi.tidak_terpakai=0 
         $query
         ");
     }

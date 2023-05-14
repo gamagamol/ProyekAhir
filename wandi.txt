@@ -1,1 +1,41 @@
-Penjelasan codingan
+select b.*, (select sum(jumlah) from transaksi 
+				join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
+				where no_penawaran=b.no_penawaran and penawaran.tidak_terpakai=0) jumlah_penjualan,
+				(SELECT sum(jumlah_detail_pembelian) FROM transaksi 
+				join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+                 join penjualan on penjualan.id_transaksi = penawaran.id_transaksi
+                 join pembelian on pembelian.id_penjualan = penjualan.id_penjualan
+                 LEFT join detail_transaksi_pembelian on detail_transaksi_pembelian.id_pembelian = pembelian.id_pembelian
+                where no_penawaran=b.no_penawaran) jumlah_pembelian,
+				(SELECT sum(jumlah_detail_penerimaan) FROM transaksi 
+				join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+                 join penjualan on penjualan.id_transaksi = penawaran.id_transaksi
+                 join pembelian on pembelian.id_penjualan = penjualan.id_penjualan
+				join penerimaan_barang on penerimaan_barang.id_pembelian = pembelian.id_pembelian
+                join detail_penerimaan_barang on penerimaan_barang.id_penerimaan_barang = detail_penerimaan_barang.id_penerimaan_barang
+                where no_penawaran=b.no_penawaran
+                ) jumlah_detail_penerimaan,
+                (SELECT sum( jumlah_detail_pengiriman) from penerimaan_barang 
+                join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+                join transaksi on penerimaan_barang.id_transaksi = transaksi.id_transaksi
+                join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
+                left join pengiriman on pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+                left join detail_transaksi_pengiriman on pengiriman.id_pengiriman = detail_transaksi_pengiriman.id_pengiriman
+                join penjualan on penjualan.id_transaksi=penawaran.id_transaksi
+				where penawaran.no_penawaran=b.no_penawaran
+                )jumlah_detail_pengiriman
+                from (
+						SELECT 
+						 t.id_transaksi,p.tgl_penawaran,p.no_penawaran,
+						tgl_penjualan,pj.id_penjualan,pj.no_penjualan,
+						t.tebal_transaksi,t.panjang_transaksi,lebar_transaksi,t.berat,
+						t.jumlah,t.harga,t.total,t.layanan,pemasok.nama_pemasok FROM ibaraki_db.transaksi t
+						join penawaran p on t.id_transaksi = p.id_transaksi
+						join penjualan pj on p.id_transaksi = pj.id_transaksi
+						left join pembelian pm on pm.id_penjualan = pj.id_penjualan
+						left join penerimaan_barang pb on pb.id_pembelian=pm.id_pembelian
+						left join pengiriman pg on pg.id_penerimaan_barang = pb.id_penerimaan_barang
+                        left join pemasok on pemasok.id_pemasok=pm.id_pemasok
+						group by pj.no_penjualan,tgl_penjualan
+                        
+						) b

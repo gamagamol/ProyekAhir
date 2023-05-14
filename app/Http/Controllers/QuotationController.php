@@ -502,4 +502,51 @@ class QuotationController extends Controller
     {
         return Excel::download(new QuotationExport($month, $date, 'customer_omzet'), 'Customer Omzet Report .xlsx');
     }
+
+    public function outStandingReport()
+    {
+        $data = [
+            'tittle' => 'Out Standing Report'
+        ];
+
+        return view('quotation.out_standing_report', $data);
+    }
+
+    public function outStandingReportAjax()
+    {
+
+
+        $data = '';
+
+        if (request()->input('month') && !request()->input('date')) {
+            $month = explode('-', request()->input('month'))[1];
+
+            $data = $this->QuotationModel->outStandingReport($month);
+        } elseif (request()->input('date') && !request()->input('month')) {
+            $date = explode('-', request()->input('date'))[2];
+
+            $data = $this->QuotationModel->outStandingReport(null, $date);
+        } elseif (request()->input('date') && request()->input('month')) {
+            $month = explode('-', request()->input('month'))[1];
+            $date = explode('-', request()->input('date'))[2];
+
+            $data = $this->QuotationModel->outStandingReport($month, $date);
+        } else {
+            $data = $this->QuotationModel->outStandingReport();
+        }
+
+
+
+        return response()->json([
+            'message' => 'success',
+            'data' => $data
+
+        ]);
+    }
+
+
+    public function outStandingReportExport($month = null, $date = null)
+    {
+        return Excel::download(new QuotationExport($month, $date, 'out_standing'), 'Out standing Report .xlsx');
+    }
 }

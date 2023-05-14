@@ -30,19 +30,21 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
 
         if ($this->type == 'detail') {
             $view = 'export_detail_report';
-            $data = $this->data($this->month, $this->date);
         }
 
         if ($this->type == 'customer_omzet') {
             $view = 'export_customer_omzet';
-            $data = $this->data($this->month, $this->date);
+        }
+
+        if ($this->type == 'out_standing') {
+            $view = 'export_out_standing_report';
         }
 
 
 
 
         return view('quotation.' . $view, [
-            'data' => $data,
+            'data' => $this->data($this->month, $this->date),
         ]);
     }
 
@@ -58,6 +60,9 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
         } else if ($this->type == 'customer_omzet') {
 
             $panjang_kolom = 'F';
+        } else if ($this->type == 'out_standing') {
+
+            $panjang_kolom = 'N';
         }
 
         $sheet->getStyle("A1:$panjang_kolom$jumlah_baris")->applyFromArray([
@@ -162,11 +167,38 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
             where pw.jabatan_pegawai='SALES' $where
             group by  pg.id_pelanggan
             ) b ";
+        } else if ($this->type == 'out_standing') {
+
+            if ($month != '0' && $date == null) {
+                $where = "WHERE MONTH(pj.tgl_penjualan)=$month";
+            } elseif ($date && $month == '0') {
+
+                $where = "WHERE DAY(pj.tgl_penjualan)=$date";
+            } elseif ($month != null && $date != null) {
+
+                $where = "WHERE MONTH(pj.tgl_penjualan)=$month and DAY(pj.tgl_penjualan)=$date";
+            }
+
+            $query = " SELECT t.id_transaksi,
+                        tgl_penjualan,pj.id_penjualan,pj.no_penjualan,
+                        t.tebal_transaksi,t.panjang_transaksi,lebar_transaksi,
+                        t.berat,t.jumlah,t.harga,t.total,t.layanan,
+                        pemasok.nama_pemasok,nama_produk,no_pengiriman,
+                        tgl_pengiriman,nama_pegawai,nama_pelanggan FROM ibaraki_db.transaksi t
+                        join penawaran p on t.id_transaksi = p.id_transaksi
+                        join penjualan pj on p.id_transaksi = pj.id_transaksi
+                        left join pembelian pm on pm.id_penjualan = pj.id_penjualan
+                        left join penerimaan_barang pb on pb.id_pembelian=pm.id_pembelian
+                        left join pengiriman pg on pg.id_penerimaan_barang = pb.id_penerimaan_barang
+                        left join pemasok on pemasok.id_pemasok=pm.id_pemasok
+                        left join detail_transaksi_penjualan on detail_transaksi_penjualan.id_penjualan = pj.id_penjualan
+                        left join produk on produk.id_produk = detail_transaksi_penjualan.id_produk
+                        left join pegawai on pegawai.id_pegawai = t.id_pegawai
+                        left join pelanggan on pelanggan.id_pelanggan = t.id_pelanggan
+                        where t.tidak_terpakai=0 and jabatan_pegawai='SALES' $where";
         }
 
 
-        // echo $query;
-        // die;
 
 
 

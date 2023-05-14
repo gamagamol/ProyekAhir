@@ -61,6 +61,12 @@ Route::get('customerOmzetReport', [QuotationController::class, 'customerOmzetRep
 Route::get('customerOmzetReportAjax', [QuotationController::class, 'customerOmzetReportAjax']);
 Route::get('customerOmzetReportExport/{month?}/{date?}', [QuotationController::class, 'customerOmzetReportExport']);
 
+// out standing 
+Route::get('outStandingReport', [QuotationController::class, 'outStandingReport']);
+Route::get('outStandingReportAjax', [QuotationController::class, 'outStandingReportAjax']);
+Route::get('outStandingReportExport/{month?}/{date?}', [QuotationController::class, 'outStandingReportExport']);
+
+
 Route::get('show_data', [QuotationController::class, "show_data"]);
 Route::get('deleteq/{id}', [QuotationController::class, "delete"]);
 Route::get('quotation/print/{id}', [QuotationController::class, "print"]);

@@ -21,14 +21,14 @@
                             <table class="table table-bordered text-center">
 
                                 <tr>
-                                    <td> Month</td>
+                                    <td>Month</td>
                                     <td>:</td>
                                     <td>
                                         <input type="month" class="form-control" name="month" id="month">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td> Day</td>
+                                    <td>Day</td>
                                     <td>:</td>
                                     <td>
                                         <input type="date" class="form-control" name="date" id="date">
@@ -67,12 +67,18 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Customer</th>
-                                <th>Sales Name</th>
-                                <th>QTN</th>
+                                <th>Sales Date</th>
+                                <th>Develivery Date</th>
+                                <th>Sales Number</th>
+                                <th>Develivery Number</th>
                                 <th>Sales</th>
-                                <th>Loss</th>
-
+                                <th>Grade</th>
+                                <th colspan="3">Matrial Size</th>
+                                <th>Weight</th>
+                                <th>Qty</th>
+                                <th>Process</th>
+                                <th>Customer</th>
+                                <th>Supplier</th>
                             </tr>
                         </thead>
                         <tbody id="Tbody">
@@ -99,45 +105,34 @@
         callBackend: function(data = null) {
             $.ajax({
 
-                url: `${baseUrl}/customerOmzetReportAjax`,
+                url: `${baseUrl}/outStandingReportAjax`,
                 type: 'GET',
                 data: data,
                 dataType: 'json',
                 success: function(data) {
                     html = ''
-                    let total_penawaran = 0
-                    let total_penawaran_loss = 0
-                    let total_penjualan = 0
-
+                    
                     data.data.map((d) => {
                         html += `<tr>`
-                        html += `<td>${ d.nama_pelanggan }</td>`
+                        html += `<td>${ d.tgl_penjualan }</td>`
+                        html += `<td>${ (d.tgl_pengiriman) ? d.tgl_pengiriman : '-' }</td>`
+                        html += `<td>${ d.no_penjualan }</td>`
+                        html += `<td>${ (d.no_pengiriman) ? d.no_pengiriman :'-' }</td>`
                         html += `<td>${ d.nama_pegawai }</td>`
-                        html +=
-                            `<td>Rp.${ new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format( d.total_penawaran) }</td>`
+                        html += `<td>${ d.nama_produk }</td>`
+                        html += `<td>${ d.panjang_transaksi }</td>`
+                        html += `<td>${ d.lebar_transaksi }</td>`
+                        html += `<td>${ d.tebal_transaksi }</td>`
+                        html += `<td>${ d.berat }</td>`
+                        html += `<td>${ d.jumlah }</td>`
+                        html += `<td>${ d.layanan }</td>`
+                        html += `<td>${ d.nama_pelanggan }</td>`
+                        html += `<td>${ d.nama_pemasok }</td>`
+                            
 
-
-                        html +=
-                            `<td>Rp.${new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(d.total_penjualan) }</td>`
-                        html +=
-                            `<td>Rp.${new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format( d.total_penawaran_loss )}</td>`
-
-                        html += `</tr>`
-
-                        total_penawaran += parseInt(d.total_penawaran)
-                        total_penawaran_loss += (d.total_penawaran_loss) ? parseInt(d
-                            .total_penawaran_loss) : 0
-                        total_penjualan += (d.total_penjualan) ? parseInt(d
-                            .total_penjualan) : 0
                     })
 
-                    html += `<tr>
-                            <td colspan='2' class='text-center'> Grand Total </td>
-                            <td> Rp.${new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(total_penawaran)} </td>
-                            <td> Rp.${new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(total_penjualan)} </td>
-                            <td> Rp.${new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(total_penawaran_loss)} </td>
-                            </tr>
-                        `
+                   
 
 
 
@@ -184,7 +179,7 @@
 
 
 
-            let url = `${baseUrl}/customerOmzetReportExport`
+            let url = `${baseUrl}/outStandingReportExport`
 
             $(this).attr('href', `${url}/${(month.length >1) ? month : 0}/${date}`)
         })
