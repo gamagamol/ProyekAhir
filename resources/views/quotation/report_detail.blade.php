@@ -138,7 +138,7 @@
                         html += `<td>${ d.jumlah }</td>`
                         html +=
                             `<td>Rp.${Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format( d.harga) }</td>`
-                        html += `<td>${ d.total }</td>`
+                        html += `<td>Rp.${Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format( d.total) }</td>`
                         html += `<td>${ d.layanan }</td>`
                         html += `<td>${ d.nama_pemasok }</td>`
                         html +=
