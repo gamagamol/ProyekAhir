@@ -13,30 +13,23 @@
 
             <div class="container">
                 <div class="row">
-
                     <div class="col-md-6 mt-3">
-
                         <div class="row">
-
                             <table class="table table-bordered text-center">
-
                                 <tr>
-                                    <td>Month</td>
+                                    <td>Quotation Month</td>
                                     <td>:</td>
                                     <td>
                                         <input type="month" class="form-control" name="month" id="month">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Day</td>
+                                    <td>Quotation Day</td>
                                     <td>:</td>
                                     <td>
                                         <input type="date" class="form-control" name="date" id="date">
                                     </td>
                                 </tr>
-
-
-
                             </table>
                         </div>
                         <div class="row">
@@ -47,11 +40,8 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
-
                 <div class="row">
-
 
                     <div class="col d-flex justify-content-end ">
                         <a class="btn btn-success" id="btn-export" href="#">
@@ -64,21 +54,21 @@
             <div class="card-body">
 
                 <div class="table-responsive text-center">
-                    <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0" style="width: 1200px">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th style="width:500px">Sales Date</th>
-                                <th >Develivery Date</th>
-                                <th >Sales Number</th>
-                                <th >Develivery Number</th>
-                                <th >Sales</th>
-                                <th >Grade</th>
-                                <th  colspan="3">Matrial Size</th>
-                                <th >Weight</th>
-                                <th >Qty</th>
-                                <th >Process</th>
-                                <th >Customer</th>
-                                <th >Supplier</th>
+                                <th>Date Quotation</th>
+                                <th>No Quotation</th>
+                                <th>Customer</th>
+                                <th>Sales Name</th>
+                                <th>Subtotal</th>
+                                <th>VAT 11%</th>
+                                <th>Shipment</th>
+                                <th>Total</th>
+                                <th>Date Sales</th>
+                                <th>No Sales</th>
+                                <th>Total Sales</th>
+
                             </tr>
                         </thead>
                         <tbody id="Tbody">
@@ -105,35 +95,28 @@
         callBackend: function(data = null) {
             $.ajax({
 
-                url: `${baseUrl}/outStandingReportAjax`,
+                url: `${baseUrl}/quotationReportAjax`,
                 type: 'GET',
                 data: data,
                 dataType: 'json',
                 success: function(data) {
                     html = ''
-                    
                     data.data.map((d) => {
-                        html += `<tr class='text-center'>`
-                        html += `<td>${ d.tgl_penjualan }</td>`
-                        html += `<td>${ (d.tgl_pengiriman) ? d.tgl_pengiriman : '-' }</td>`
-                        html += `<td>${ d.no_penjualan }</td>`
-                        html += `<td>${ (d.no_pengiriman) ? d.no_pengiriman :'-' }</td>`
-                        html += `<td>${ d.nama_pegawai }</td>`
-                        html += `<td>${ d.nama_produk }</td>`
-                        html += `<td>${ d.panjang_transaksi }</td>`
-                        html += `<td>${ d.lebar_transaksi }</td>`
-                        html += `<td>${ d.tebal_transaksi }</td>`
-                        html += `<td>${ d.berat }</td>`
-                        html += `<td>${ d.jumlah }</td>`
-                        html += `<td>${ d.layanan }</td>`
+                        html += `<tr>`
+                        html += `<td>${ d.tgl_penawaran }</td>`
+                        html += `<td>${ d.no_penawaran }</td>`
                         html += `<td>${ d.nama_pelanggan }</td>`
-                        html += `<td>${ (d.nama_pemasok) ? d.nama_pemasok :'-' }</td>`
-                            
-
+                        html += `<td>${ d.nama_pegawai }</td>`
+                        html += `<td>Rp.${ Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(d.subtotal) }</td>`
+                        html += `<td>Rp.${ Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(d.ppn) }</td>`
+                        html += `<td>Rp.${ Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(d.ongkir )}</td>`
+                        html += `<td>Rp.${ Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(d.total_transaksi )}</td>`
+                        html += `<td>${ d.tgl_penjualan }</td>`
+                        html += `<td>${ d.no_penjualan }</td>`
+                        html +=`<td>Rp.${Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format( d.total_penjualan) }</td>`
+                      
+                        html += `</tr>`
                     })
-
-                   
-
 
 
                     $('#Tbody').html(html)
@@ -159,12 +142,11 @@
             report.search()
         })
 
+
         $('#clear').click(function() {
             $('#month').val('')
             $('#date').val('')
         })
-
-
         $('#btn-export').click(function() {
             let month = $('#month').val().split('-')
             let date = $('#date').val().split('-')
@@ -179,7 +161,7 @@
 
 
 
-            let url = `${baseUrl}/outStandingReportExport`
+            let url = `${baseUrl}/quotationReportExport`
 
             $(this).attr('href', `${url}/${(month.length >1) ? month : 0}/${date}`)
         })

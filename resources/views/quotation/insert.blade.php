@@ -430,7 +430,7 @@
 
 
 
-
+{{-- 
     <h4 class="text-start mt-3">History Customer</h4>
     <div class="container mt-2">
         <div>
@@ -526,7 +526,7 @@
 
         </table>
 
-    </div>
+    </div> --}}
     </form>
     </div>
     </div>

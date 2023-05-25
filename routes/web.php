@@ -51,7 +51,7 @@ Route::get('pegawai/delete/{id}', [pegawaiController::class, "delete"])->middlew
 Route::resource('quotation', QuotationController::class)->middleware(['auth', 'revalidate']);
 Route::post('quotation_insert', [QuotationController::class, "insert"]);
 Route::get('quotationReportDetail', [QuotationController::class, 'quotationReportDetail']);
-// report Detail
+// report quotation Detail
 Route::get('quotationReportDetailAjax/{date?}', [QuotationController::class, 'quotationReportDetailAjax']);
 Route::get('getDateQuotationAjax', [QuotationController::class, 'getDateQuotationAjax']);
 Route::get('exportDetailReport/{month?}/{date?}', [QuotationController::class, 'exportDetailReport']);
@@ -61,11 +61,15 @@ Route::get('customerOmzetReport', [QuotationController::class, 'customerOmzetRep
 Route::get('customerOmzetReportAjax', [QuotationController::class, 'customerOmzetReportAjax']);
 Route::get('customerOmzetReportExport/{month?}/{date?}', [QuotationController::class, 'customerOmzetReportExport']);
 
-// out standing 
+// report out standing 
 Route::get('outStandingReport', [QuotationController::class, 'outStandingReport']);
 Route::get('outStandingReportAjax', [QuotationController::class, 'outStandingReportAjax']);
 Route::get('outStandingReportExport/{month?}/{date?}', [QuotationController::class, 'outStandingReportExport']);
 
+// report quotation vs po
+Route::get('quotationReport', [QuotationController::class, 'quotationReport']);
+Route::get('quotationReportAjax', [QuotationController::class, 'quotationReportAjax']);
+Route::get('quotationReportExport/{month?}/{date?}', [QuotationController::class, 'quotationReportExport']);
 
 Route::get('show_data', [QuotationController::class, "show_data"]);
 Route::get('deleteq/{id}', [QuotationController::class, "delete"]);

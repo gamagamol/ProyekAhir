@@ -228,7 +228,7 @@ class QuotationModel extends Model
 						left join pengiriman pg on pg.id_penerimaan_barang = pb.id_penerimaan_barang
                         left join pemasok on pemasok.id_pemasok=pm.id_pemasok
                         $query
-						group by p.no_penawaran
+					
                         
 						) b");
     }
@@ -322,5 +322,48 @@ class QuotationModel extends Model
        left join pelanggan on pelanggan.id_pelanggan = t.id_pelanggan
        where t.tidak_terpakai=0 and jabatan_pegawai='SALES' $query
         ");
+    }
+
+
+    public function quotationReport($month = null, $date = null)
+    {
+
+        // echo $month;
+        // echo $date;die;
+
+        $query = '';
+        if ($month && $date == null) {
+            $query = "AND MONTH(p.tgl_penawaran)=$month";
+        } elseif ($date && $month == null) {
+            $query = "AND DAY(p.tgl_penawaran)=$date";
+        } elseif ($month && $date) {
+            $query = "AND MONTH(p.tgl_penawaran)=$month and DAY(p.tgl_penawaran)=$date";
+        }
+
+       
+
+        return DB::select("select b.*,(select sum(total) from transaksi 
+                            join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
+                            where transaksi.tidak_terpakai=0 and no_penawaran=b.no_penawaran
+                            ) as total_penjualan
+                from (
+						SELECT 
+						 t.id_transaksi,p.tgl_penawaran,p.no_penawaran,
+						tgl_penjualan,pj.id_penjualan,pj.no_penjualan,
+						t.tebal_transaksi,t.panjang_transaksi,lebar_transaksi,t.berat,
+						t.jumlah,t.harga,t.total,t.layanan,pemasok.nama_pemasok,subtotal,ppn,ongkir,
+                        t.total as total_transaksi,nama_pelanggan,nama_pegawai
+                        FROM ibaraki_db.transaksi t
+						join penawaran p on t.id_transaksi = p.id_transaksi
+						join penjualan pj on p.id_transaksi = pj.id_transaksi
+						left join pembelian pm on pm.id_penjualan = pj.id_penjualan
+						left join penerimaan_barang pb on pb.id_pembelian=pm.id_pembelian
+						left join pengiriman pg on pg.id_penerimaan_barang = pb.id_penerimaan_barang
+                        left join pemasok on pemasok.id_pemasok=pm.id_pemasok
+                        left join pelanggan on pelanggan.id_pelanggan = t.id_pelanggan
+                        left join pegawai on pegawai.id_pegawai=t.id_pegawai
+                        where jabatan_pegawai='SALES'$query
+						group by p.no_penawaran
+						) b ");
     }
 }

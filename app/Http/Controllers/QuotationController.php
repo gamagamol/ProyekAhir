@@ -549,4 +549,49 @@ class QuotationController extends Controller
     {
         return Excel::download(new QuotationExport($month, $date, 'out_standing'), 'Out standing Report .xlsx');
     }
+
+
+    public function quotationReport()
+    {
+
+        $data=[
+            'tittle'=>"Quotation Vs PO Report"
+        ];
+        return view('quotation.quotation_report',$data);
+    }
+    public function quotationReportAjax()
+    {
+
+        $data = '';
+
+        if (request()->input('month') && !request()->input('date')) {
+            $month = explode('-', request()->input('month'))[1];
+
+            $data = $this->QuotationModel->quotationReport($month);
+        } elseif (request()->input('date') && !request()->input('month')) {
+            $date = explode('-', request()->input('date'))[2];
+
+            $data = $this->QuotationModel->quotationReport(null, $date);
+        } elseif (request()->input('date') && request()->input('month')) {
+            $month = explode('-', request()->input('month'))[1];
+            $date = explode('-', request()->input('date'))[2];
+
+            $data = $this->QuotationModel->quotationReport($month, $date);
+        } else {
+            $data = $this->QuotationModel->quotationReport();
+        }
+
+
+
+        return response()->json([
+            'message' => 'success',
+            'data' => $data
+
+        ]);
+    }
+
+    public function quotationReportExport($month = null, $date = null)
+    {
+        return Excel::download(new QuotationExport($month, $date, 'quotation'), 'Quotation VS PO Report.xlsx');
+    }
 }

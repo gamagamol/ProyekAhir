@@ -49,7 +49,7 @@ $notif = $notif->notif();
     {{-- data table  --}}
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
 
-    
+
 
 
 </head>
@@ -163,6 +163,8 @@ $notif = $notif->notif();
                         <a class="collapse-item" href="{{ url('journal') }}">Journal</a>
                         <a class="collapse-item" href="{{ url('ledger') }}">General Ledger</a>
                         <a class="collapse-item" href="{{ url('aging') }}">Aging Schedule</a>
+                        <a class="collapse-item" href="{{ url('quotationReport') }}">Quotation VS PO
+                            Report</a>
                         <a class="collapse-item" href="{{ url('quotationReportDetail') }}">Quotation Detail
                             Report</a>
                         <a class="collapse-item" href="{{ url('customerOmzetReport') }}">Customer Omzet Report</a>
