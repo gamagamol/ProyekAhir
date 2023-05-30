@@ -24,7 +24,7 @@ use App\Http\Controllers\PaymentVendorController;
 use App\Http\Controllers\pegawaiController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\TransaksiController;
-
+use Maatwebsite\Excel\Transactions\TransactionHandler;
 
 // Auth
 Route::get('/', [AuthController::class, 'index'])->name('login')->middleware(['guest', 'revalidate']);
@@ -135,3 +135,9 @@ Route::post('mail/store', [EmailController::class, 'store']);
 
 // status transaksi
 Route::get('status_transaksi', [ReportDetailSales::class, 'status_transaki']);
+// transacation number tracking
+
+Route::get('transaction_number_tracking', [TransaksiController::class, 'transactionNumberTracking']);
+Route::get('getTransactionNumberByDate/{date}', [TransaksiController::class, 'getTransactionNumberByDate']);
+
+

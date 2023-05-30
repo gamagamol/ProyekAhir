@@ -224,7 +224,26 @@ left join purchase p on p.id_drug = d.id
 left join purchase_return pr on pr.id_drug = d.id
 order by tgl_penjualan asc
         
-   
+
+
+
+   // tracking no transaksi
+
+select tgl_penawaran,no_penawaran,
+tgl_penjualan,no_penjualan,
+tgl_pembelian,no_pembelian,
+tgl_penerimaan_barang,no_penerimaan_barang,
+tgl_pengiriman,no_pengiriman,
+tgl_tagihan,no_tagihan,
+tgl_pembayaran,no_pembayaran
+from transaksi 
+left join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
+left join penjualan on transaksi.id_transaksi = penjualan.id_transaksi
+left join pembelian on pembelian.id_penjualan=penjualan.id_penjualan
+left join penerimaan_barang on penerimaan_barang.id_pembelian=pembelian.id_pembelian
+left join pengiriman on pengiriman.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
+left join tagihan on tagihan.id_pengiriman=pengiriman.id_pengiriman
+left join pembayaran on pembayaran.id_transaksi=transaksi.id_transaksi
            
 
 

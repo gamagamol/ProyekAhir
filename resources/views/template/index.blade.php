@@ -140,7 +140,6 @@ $notif = $notif->notif();
                             @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{ 'hidden' }} @endif>Payment</a>
                         <a class="collapse-item" href="{{ url('paymentvendor') }}"
                             @if (Auth::user()->status_pengguna == 'SALES_ADMIN') {{ 'hidden' }} @endif>Debt Payment </a>
-                        <a class="collapse-item" href="{{ url('status_transaksi') }}">Transaction Status </a>
 
 
 
@@ -160,8 +159,8 @@ $notif = $notif->notif();
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Report:</h6>
-                        <a class="collapse-item" href="{{ url('journal') }}">Journal</a>
-                        <a class="collapse-item" href="{{ url('ledger') }}">General Ledger</a>
+                        {{-- <a class="collapse-item" href="{{ url('journal') }}">Journal</a> --}}
+                        {{-- <a class="collapse-item" href="{{ url('ledger') }}">General Ledger</a> --}}
                         <a class="collapse-item" href="{{ url('aging') }}">Aging Schedule</a>
                         <a class="collapse-item" href="{{ url('quotationReport') }}">Quotation VS PO
                             Report</a>
@@ -173,6 +172,8 @@ $notif = $notif->notif();
                         <a class="collapse-item" href="{{ url('PCR') }}">Purchase Detail Report</a>
                         <a class="collapse-item" href="{{ url('paymentvendor/report/report') }}">Payment To Vendor
                             Report</a>
+                        <a class="collapse-item" href="{{ url('status_transaksi') }}">Transaction Status </a>
+                        <a class="collapse-item" href="{{ url('transaction_number_tracking') }}">Transaction Tracking </a>
 
 
 

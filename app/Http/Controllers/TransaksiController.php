@@ -93,7 +93,22 @@ class TransaksiController extends Controller
 
     public function getTransaksiAJAX(Request $request)
     {
-            $data=$this->transaksiModel->getTransaksi($request->id_transaksi);
-            return response()->json($data);
+        $data = $this->transaksiModel->getTransaksi($request->id_transaksi);
+        return response()->json($data);
+    }
+
+    public function transactionNumberTracking()
+    {
+        $data = [
+            'tittle' => 'Transaction Tracking Number',
+            'data' => $this->transaksiModel->transactionNumberTracking()
+        ];
+        return view('transaction.index', $data);
+    }
+
+    public function getTransactionNumberByDate($date)
+    {
+
+        return response()->json(['data' => $this->transaksiModel->transactionNumberTracking($date)]);
     }
 }

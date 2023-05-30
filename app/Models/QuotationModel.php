@@ -267,16 +267,16 @@ class QuotationModel extends Model
         select b.*,(
             select sum(subtotal) from transaksi 
             join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
-            where no_penawaran = b.no_penawaran 
+            where id_pelanggan = b.id_pelanggan 
             ) as total_penawaran, (
             select sum(subtotal) from transaksi 
             join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
-            where no_penawaran = b.no_penawaran and penawaran.tidak_terpakai=1
+            where id_pelanggan = b.id_pelanggan and penawaran.tidak_terpakai=1
             ) as total_penawaran_loss,(
             select sum(subtotal)  from transaksi 
             join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
             join penjualan on transaksi.id_transaksi=penjualan.id_transaksi
-            where transaksi.tidak_terpakai=0 and no_penawaran=b.no_penawaran
+            where transaksi.tidak_terpakai=0 and id_pelanggan = b.id_pelanggan
             ) as total_penjualan from (
             SELECT  pg.id_pelanggan,nama_pegawai ,no_penawaran,no_penjualan,pg.nama_pelanggan FROM ibaraki_db.transaksi t
             left join penawaran p on t.id_transaksi=p.id_transaksi
