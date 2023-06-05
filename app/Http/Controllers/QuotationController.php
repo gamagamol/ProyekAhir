@@ -354,6 +354,17 @@ class QuotationController extends Controller
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
                     return  $berat = number_format($berat, 2, '.', '');
                 }
+
+                if ($layanan == "NF") {
+                    //    membuat ukuran dan berat pxl 0,0000625
+                    $tebal_penawaran = $tebal_transaksi;
+                    $lebar_penawaran = $lebar_transaksi;
+                    $panjang_penawaran = $panjang_transaksi;
+
+                    $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
+                    return  $berat = number_format($berat, 2, '.', '');
+                }
+
                 if ($layanan == "MILLING") {
                     //    membuat ukuran dan berat pxl 0,00008
                     $tebal_penawaran = $tebal_transaksi + 5;
@@ -372,6 +383,15 @@ class QuotationController extends Controller
                     $panjang_penawaran = $panjang_transaksi;
 
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
+                    return  $berat = number_format($berat, 2, '.', '');
+                }
+                if ($layanan == "NF") {
+                    //    membuat ukuran dan berat pxl 0,0000625
+                    $tebal_penawaran = $tebal_transaksi;
+                    $lebar_penawaran = 0;
+                    $panjang_penawaran = $panjang_transaksi;
+
+                    $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
                     return  $berat = number_format($berat, 2, '.', '');
                 }
                 if ($layanan == "MILLING") {

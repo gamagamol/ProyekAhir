@@ -71,7 +71,7 @@ class DeliveryModel extends Model
     {
 
         $no_pengiriman =
-            DB::select("SELECT distinct no_pengiriman FROM ibaraki_db.penerimaan_barang
+            DB::select("SELECT distinct no_pengiriman FROM penerimaan_barang
             join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang= penerimaan_barang.id_penerimaan_barang
             left join pengiriman on pengiriman.id_penerimaan_barang =penerimaan_barang.id_penerimaan_barang
             where no_penerimaan='$no_penerimaan'");
@@ -97,7 +97,7 @@ class DeliveryModel extends Model
         //     end as
         //     sudah_terkirim,
         //     jumlah_detail_pengiriman,
-        //     sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM ibaraki_db.transaksi 
+        //     sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM transaksi 
         //     join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
         //     join penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
         //     join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
@@ -120,7 +120,7 @@ class DeliveryModel extends Model
             end as
             sudah_terkirim,
             jumlah_detail_pengiriman,
-            sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM ibaraki_db.transaksi 
+            sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM transaksi 
             join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
             join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
             join pembelian on pembelian.id_penjualan=penjualan.id_penjualan
@@ -262,7 +262,7 @@ class DeliveryModel extends Model
         // dd($no_penerimaan);
 
         $no_pengiriman =
-            DB::select("SELECT distinct no_pengiriman FROM ibaraki_db.penerimaan_barang
+            DB::select("SELECT distinct no_pengiriman FROM penerimaan_barang
             join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang= penerimaan_barang.id_penerimaan_barang
             left join pengiriman on pengiriman.id_penerimaan_barang =penerimaan_barang.id_penerimaan_barang
             

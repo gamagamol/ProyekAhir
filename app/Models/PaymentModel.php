@@ -53,7 +53,7 @@ class PaymentModel extends Model
             end as
             sudah_terkirim,
             jumlah_detail_pengiriman,
-            sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM ibaraki_db.transaksi 
+            sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM transaksi 
             join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
             join penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
             join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
@@ -198,7 +198,7 @@ class PaymentModel extends Model
             end as
             sudah_terkirim,
             jumlah_detail_pengiriman,
-            sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM ibaraki_db.transaksi 
+            sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM transaksi 
             join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
             join penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
             join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang

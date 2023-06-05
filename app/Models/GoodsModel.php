@@ -29,7 +29,7 @@ class GoodsModel extends Model
                   where no_penerimaan=b.no_penerimaan
 
                 )jumlah_detail_pengiriman ,
-                (SELECT sum(jumlah_detail_penerimaan) FROM ibaraki_db.detail_penerimaan_barang join penerimaan_barang on penerimaan_barang.id_penerimaan_barang = detail_penerimaan_barang.id_penerimaan_barang
+                (SELECT sum(jumlah_detail_penerimaan) FROM detail_penerimaan_barang join penerimaan_barang on penerimaan_barang.id_penerimaan_barang = detail_penerimaan_barang.id_penerimaan_barang
                 where no_penerimaan=b.no_penerimaan
                 ) jumlah_detail_penerimaan,b.no_pembelian
                 from(
@@ -187,7 +187,7 @@ class GoodsModel extends Model
 
     public function detail($no_penerimaan)
     {
-        return DB::select("SELECT * FROM ibaraki_db.penerimaan_barang 
+        return DB::select("SELECT * FROM penerimaan_barang 
                             join detail_penerimaan_barang on penerimaan_barang.id_penerimaan_barang=detail_penerimaan_barang.id_penerimaan_barang
                             join pembelian on pembelian.id_pembelian=penerimaan_barang.id_pembelian
                             join detail_transaksi_pembelian on detail_transaksi_pembelian.id_pembelian=pembelian.id_pembelian

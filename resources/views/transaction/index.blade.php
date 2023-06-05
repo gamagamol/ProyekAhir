@@ -270,6 +270,9 @@
 
                         })
 
+                        $('#collapse-1').addClass('show')
+                        $('#collapse-1-6').addClass('show')
+
 
                     })
 

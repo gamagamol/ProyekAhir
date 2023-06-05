@@ -192,7 +192,7 @@ class BillPaymentModel extends Model
             end as
             sudah_terkirim,
             jumlah_detail_pengiriman,
-            sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM ibaraki_db.transaksi 
+            sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM transaksi 
             join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
             join penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
             join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
@@ -250,7 +250,7 @@ class BillPaymentModel extends Model
     public function getNoSalesForBill()
     {
         return DB::select("
-        SELECT b.no_penjualan,
+             SELECT b.no_penjualan,
                 (select sum( jumlah_detail_pengiriman) from penerimaan_barang 
                 join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
                 join transaksi on penerimaan_barang.id_transaksi = transaksi.id_transaksi
@@ -266,7 +266,19 @@ class BillPaymentModel extends Model
 				join penerimaan_barang on penerimaan_barang.id_pembelian = pembelian.id_pembelian
                 join detail_penerimaan_barang on penerimaan_barang.id_penerimaan_barang = detail_penerimaan_barang.id_penerimaan_barang
                 where no_penjualan=b.no_penjualan
-                ) jumlah_detail_penerimaan
+                ) jumlah_detail_penerimaan,
+                (
+					SELECT sum(jumlah_detail_pembelian) FROM transaksi 
+					left join penjualan on penjualan.id_transaksi = transaksi.id_transaksi
+					left join pembelian on pembelian.id_transaksi = transaksi.id_transaksi
+					left join detail_transaksi_pembelian on detail_transaksi_pembelian.id_pembelian=pembelian.id_pembelian
+					where transaksi.tidak_terpakai = 0  and no_penjualan=b.no_penjualan
+                ) jumlah_detail_pembelian,
+                (
+                	SELECT sum(jumlah) FROM transaksi 
+					join penjualan on penjualan.id_transaksi = transaksi.id_transaksi
+					where transaksi.tidak_terpakai = 0  and no_penjualan=b.no_penjualan
+                ) total_jumlah 
                 from(
             SELECT distinct transaksi.id_transaksi,nomor_pekerjaan, no_penerimaan,no_pengiriman, 
             pengiriman.id_penerimaan_barang, jumlah_detail_penerimaan,
@@ -284,10 +296,13 @@ class BillPaymentModel extends Model
            where status_transaksi not in ('bill','payment')
             group by no_penjualan
            ) b
-        
-           where jumlah_detail_penerimaan = jumlah_detail_penerimaan
           group by b.no_penjualan
-          having jumlah_detail_penerimaan = jumlah_detail_pengiriman 
+		  having total_jumlah = jumlah_detail_pengiriman
+		
+		 
+         
+       
+        
       
        
       ");

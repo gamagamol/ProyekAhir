@@ -128,7 +128,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
 						 t.id_transaksi,p.tgl_penawaran,p.no_penawaran,
 						tgl_penjualan,pj.id_penjualan,pj.no_penjualan,
 						t.tebal_transaksi,t.panjang_transaksi,lebar_transaksi,t.berat,
-						t.jumlah,t.harga,t.total,t.layanan,pemasok.nama_pemasok FROM ibaraki_db.transaksi t
+						t.jumlah,t.harga,t.total,t.layanan,pemasok.nama_pemasok FROM transaksi t
 						join penawaran p on t.id_transaksi = p.id_transaksi
 						join penjualan pj on p.id_transaksi = pj.id_transaksi
 						left join pembelian pm on pm.id_penjualan = pj.id_penjualan
@@ -165,7 +165,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
             join penjualan on transaksi.id_transaksi=penjualan.id_transaksi
             where transaksi.tidak_terpakai=0 and no_penawaran=b.no_penawaran
             ) as total_penjualan from (
-            SELECT  pg.id_pelanggan,nama_pegawai ,no_penawaran,no_penjualan,pg.nama_pelanggan FROM ibaraki_db.transaksi t
+            SELECT  pg.id_pelanggan,nama_pegawai ,no_penawaran,no_penjualan,pg.nama_pelanggan FROM transaksi t
             left join penawaran p on t.id_transaksi=p.id_transaksi
             left join penjualan pj on t.id_transaksi = pj.id_transaksi
             left join pelanggan pg on pg.id_pelanggan = t.id_pelanggan
@@ -190,7 +190,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
                         t.tebal_transaksi,t.panjang_transaksi,lebar_transaksi,
                         t.berat,t.jumlah,t.harga,t.total,t.layanan,
                         pemasok.nama_pemasok,nama_produk,no_pengiriman,
-                        tgl_pengiriman,nama_pegawai,nama_pelanggan FROM ibaraki_db.transaksi t
+                        tgl_pengiriman,nama_pegawai,nama_pelanggan FROM transaksi t
                         join penawaran p on t.id_transaksi = p.id_transaksi
                         join penjualan pj on p.id_transaksi = pj.id_transaksi
                         left join pembelian pm on pm.id_penjualan = pj.id_penjualan
@@ -225,7 +225,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
 						t.tebal_transaksi,t.panjang_transaksi,lebar_transaksi,t.berat,
 						t.jumlah,t.harga,t.total,t.layanan,pemasok.nama_pemasok,subtotal,ppn,ongkir,
                         t.total as total_transaksi,nama_pelanggan,nama_pegawai
-                        FROM ibaraki_db.transaksi t
+                        FROM transaksi t
 						join penawaran p on t.id_transaksi = p.id_transaksi
 						join penjualan pj on p.id_transaksi = pj.id_transaksi
 						left join pembelian pm on pm.id_penjualan = pj.id_penjualan

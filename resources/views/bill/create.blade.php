@@ -148,7 +148,7 @@
                             html += `</tr>`
                         })
 
-                        console.log(html);
+                  
                         $('#bodyTable').html(html)
 
                     }
