@@ -39,7 +39,8 @@
             <div class="col">
                 <h5>
 
-                    Jl Antilop VI Blok I - 2 No. 7 Jayamukti Cikarang <br>
+                    New Three One Building, Jl. Industri Timur Raya Blok WW5 Jl. Jababeka Raya No.18, Mekarmukti,
+                    Cikarang Utara, Bekasi Regency, West Java 17531 <br>
                     Phone: (021) 8932 6362<br>
                     Email : sales@ibaraki.co.id<br>
                     ahmadsolihin@ibaraki.co.id<br>
@@ -74,8 +75,8 @@
 
         <div class="row">
             <div class="col">
-                <table class="table table-bordered  boder-5 border-dark text-center fw-bold" id="dataTable" width="100%"
-                    cellspacing="0">
+                <table class="table table-bordered  boder-5 border-dark text-center fw-bold" id="dataTable"
+                    width="100%" cellspacing="0">
                     <tr>
                         <td colspan="9">INQUIRY</td>
                         <td colspan="8">SALES</td>
@@ -108,7 +109,7 @@
                             </td>
 
                             <td>
-                                {{ $p['nama_produk' ]}}
+                                {{ $p['nama_produk'] }}
                             </td>
                             <td>
                                 {{ $p['tebal_produk'] }}
@@ -137,7 +138,7 @@
                                 {{ $p['lebar_produk'] }}
                             </td>
                             <td>
-                                {{ $p['panjang_produk' ]}}
+                                {{ $p['panjang_produk'] }}
                             </td>
                             <td>
                                 {{ $p['jumlah_penawaran'] }}
@@ -190,7 +191,7 @@
         <br>
         <div class="row">
             <div class="col">
-                <a href="{{'delivery'}}" class="btn btn-primary">Next</a>
+                <a href="{{ 'delivery' }}" class="btn btn-primary">Next</a>
 
             </div>
         </div>

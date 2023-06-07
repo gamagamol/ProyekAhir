@@ -108,7 +108,7 @@ $notif = $notif->notif();
                         <a class="collapse-item" href="{{ url('supplier') }}"
                             @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>Supplier</a>
                         <a class="collapse-item" href="{{ url('pegawai') }}"
-                            @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>Pegawai</a>
+                            @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>Employee</a>
                     </div>
                 </div>
             </li>

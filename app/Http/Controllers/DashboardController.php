@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 class DashboardController extends Controller
 {
     public $model;
+    public $DM;
+    public $RDSM;
     public function __construct()
     {
         $this->model = new GeneralLadgerModel();
@@ -22,7 +24,6 @@ class DashboardController extends Controller
         // persiapan data 
         $data = $this->model->index();
         $saldo_awal = $this->model->saldo_awal();
-        // dd($saldo_awal);
         $revenue = [];
         $piutang = [];
         for ($i = 0; $i < count($data); $i++) {

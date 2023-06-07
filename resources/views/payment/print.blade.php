@@ -38,7 +38,8 @@
             <div class="col">
                 <h5>
 
-                    Jl Antilop VI Blok I - 2 No. 7 Jayamukti Cikarang <br>
+                    New Three One Building, Jl. Industri Timur Raya Blok WW5 Jl. Jababeka Raya No.18, Mekarmukti,
+                    Cikarang Utara, Bekasi Regency, West Java 17531 <br>
                     Phone: (021) 8932 6362<br>
                     Email : sales@ibaraki.co.id<br>
                     ahmadsolihin@ibaraki.co.id<br>
@@ -59,7 +60,7 @@
         <div class="row mb-4">
             <div class="col">
                 <h4>
-                   Payment Order From :
+                    Payment Order From :
                 </h4>
                 <h5>
                     {{ $data[0]->perwakilan }} <br>
@@ -73,8 +74,8 @@
 
         <div class="row">
             <div class="col">
-                <table class="table table-bordered  boder-5 border-dark text-center fw-bold" id="dataTable" width="100%"
-                    cellspacing="0">
+                <table class="table table-bordered  boder-5 border-dark text-center fw-bold" id="dataTable"
+                    width="100%" cellspacing="0">
                     <tr>
                         <td colspan="8">INQUIRY</td>
                         <td colspan="8">Sales</td>
@@ -96,19 +97,19 @@
 
 
                     </tr>
-                    <?php 
-                    $subtotal=0;
-                    $ppn=0;
-                    $ongkir=0;
-                    $total=0;
+                    <?php
+                    $subtotal = 0;
+                    $ppn = 0;
+                    $ongkir = 0;
+                    $total = 0;
                     ?>
                     @foreach ($data as $p)
-                    <?php 
-                    $subtotal+=$p->subtotal;
-                    $ppn+=$p->ppn;
-                    $ongkir+=$p->ongkir;
-                    $total+=$p->total;
-                    ?>
+                        <?php
+                        $subtotal += $p->subtotal;
+                        $ppn += $p->ppn;
+                        $ongkir += $p->ongkir;
+                        $total += $p->total;
+                        ?>
 
                         <tr>
                             <td>{{ $loop->iteration }}</td>
@@ -165,12 +166,12 @@
                     @endforeach
                 </table>
 
-               
+
                 <h5 class="text-end mb-5">
                     {{ 'Amount  : Rp' . number_format($subtotal) }} <br>
                     {{ ' Vat    : Rp' . number_format($ppn) }} <br>
                     {{ ' Shippment    : Rp' . number_format($data[0]->ongkir) }} <br>
-                    {{ ' Total  : Rp' . number_format($total+$data[0]->ongkir) }}</h5>
+                    {{ ' Total  : Rp' . number_format($total + $data[0]->ongkir) }}</h5>
 
                 <h5 class="text-decoration-underline "> Terbilang:</h5>
                 <h6> {{ $total_penyebut }} </h6>

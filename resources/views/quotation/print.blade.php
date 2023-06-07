@@ -39,7 +39,8 @@
             <div class="col">
                 <h5>
 
-                    Jl Antilop VI Blok I - 2 No. 7 Jayamukti Cikarang <br>
+                    New Three One Building, Jl. Industri Timur Raya Blok WW5 Jl. Jababeka Raya No.18, Mekarmukti,
+                    Cikarang Utara, Bekasi Regency, West Java 17531 <br>
                     Phone: (021) 8932 6362<br>
                     Email : sales@ibaraki.co.id<br>
                     ahmadsolihin@ibaraki.co.id<br>
@@ -88,8 +89,8 @@
 
         <div class="row">
             <div class="col">
-                <table class="table table-bordered  boder-5 border-dark text-center fw-bold" id="dataTable" width="100%"
-                    cellspacing="0">
+                <table class="table table-bordered  boder-5 border-dark text-center fw-bold" id="dataTable"
+                    width="100%" cellspacing="0">
 
                     <tr>
                         <td colspan="9">INQUIRY</td>
@@ -113,10 +114,10 @@
 
 
                     </tr>
-                    <?php 
-                    $subtotal=0;
-                    $total=0;
-                    $ongkir=0;
+                    <?php
+                    $subtotal = 0;
+                    $total = 0;
+                    $ongkir = 0;
                     ?>
                     @foreach ($data as $p)
                         <tr>
@@ -175,10 +176,10 @@
                             </td>
                         </tr>
 
-                        <?php 
-                        $subtotal+=$p->subtotal;
-                        $ongkir+=$p->ongkir;
-                        $total+=$p->total;
+                        <?php
+                        $subtotal += $p->subtotal;
+                        $ongkir += $p->ongkir;
+                        $total += $p->total;
                         
                         ?>
                     @endforeach
@@ -187,9 +188,9 @@
 
                 <h5 class="text-end mb-5">
                     {{ 'Amount          : Rp' . number_format($subtotal) }} <br>
-                    {{ ' Vat            : Rp' . number_format($subtotal*0.11) }} <br>
+                    {{ ' Vat            : Rp' . number_format($subtotal * 0.11) }} <br>
                     {{ ' Shippment      : Rp' . number_format($data[0]->ongkir) }} <br>
-                    {{ ' Total          : Rp' . number_format($total+$data[0]->ongkir) }}
+                    {{ ' Total          : Rp' . number_format($total + $data[0]->ongkir) }}
                 </h5>
 
 

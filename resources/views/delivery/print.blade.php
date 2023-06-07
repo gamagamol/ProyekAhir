@@ -39,7 +39,8 @@
             <div class="col">
                 <h5>
 
-                    Jl Antilop VI Blok I - 2 No. 7 Jayamukti Cikarang <br>
+                    New Three One Building, Jl. Industri Timur Raya Blok WW5 Jl. Jababeka Raya No.18, Mekarmukti,
+                    Cikarang Utara, Bekasi Regency, West Java 17531 <br>
                     Phone: (021) 8932 6362<br>
                     Email : sales@ibaraki.co.id<br>
                     ahmadsolihin@ibaraki.co.id<br>
@@ -74,8 +75,8 @@
 
         <div class="row">
             <div class="col">
-                <table class="table table-bordered  boder-5 border-dark text-center fw-bold" id="dataTable" width="100%"
-                    cellspacing="0">
+                <table class="table table-bordered  boder-5 border-dark text-center fw-bold" id="dataTable"
+                    width="100%" cellspacing="0">
                     <tr>
                         <td colspan="8">INQUIRY</td>
                         <td colspan="8">SALES</td>

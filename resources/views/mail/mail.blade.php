@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 
 <body>
@@ -16,11 +17,13 @@
         <br>
         Perusahaan Bapak. <br> <br><br>
 
-        Bersama ini kami informasikan outstanding payment invoice sebesar <i> {{ "Rp".number_format( $total) }} </i> . <br> <br><br>
+        Bersama ini kami informasikan outstanding payment invoice sebesar <i> {{ 'Rp' . number_format($total) }} </i> .
+        <br> <br><br>
 
         Email ini merupakan pemberitahuan kepada Bapak. Mohon abaikan pemberitahuan ini apabila Bapak sudah melakukan
         <br>
-        pembayaran. Jika bapak belum melakukan pembayaran harap melakukan pembayaran sebelum tanggal {{$due_date}}<br> <br><br>
+        pembayaran. Jika bapak belum melakukan pembayaran harap melakukan pembayaran sebelum tanggal
+        {{ $due_date }}<br> <br><br>
 
         Untuk pertanyaan atau saran, Bapak dapat menghubungi kami dan kami segera menindaklanjuti pertanyaan atau saran
         <br>
@@ -33,7 +36,8 @@
         Finance & Accounting <br> <br><br>
 
         PT IBARAKI KOGYO HANAN INDONESIA <br>
-        Add: Jl Antilop VI Blok I - 2 No. 7 Jayamukti Cikarang Pusat, Kabupaten Bekasi 17350 <br>
+        Add: New Three One Building, Jl. Industri Timur Raya Blok WW5 Jl. Jababeka Raya No.18, Mekarmukti, Cikarang
+        Utara, Bekasi Regency, West Java 17531 Pusat, Kabupaten Bekasi 17350 <br>
         Tel: (021) 8932 6362 <br>
         Mobile / What's app: 0821-2308-0975 / 0813-8057-8075 / 0813-1423-2905 <br>
         Email : accounting@ibaraki.co.id; sales@ibaraki.co.id; ahmadsolihin@ibaraki.co.id

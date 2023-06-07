@@ -38,17 +38,33 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col">
+                        <div class="col-md-10">
                             <div class="form-group mt-2 rounded">
                                 <label for="example1" class="mt-2">Jabatan Pegawai</label>
-                                <input type="TEXT" class="form-control @error('jabatan_pegawai') is-invalid @enderror "
-                                    name="jabatan_pegawai" value="{{ old('jabatan_pegawai') }}"
-                                    style="text-transform:uppercase">
-                                @error('jabatan_pegawai')
+
+                                <input type="TEXT"
+                                    class="form-control @error('jabatan_pegawai_input') is-invalid @enderror "
+                                    name="jabatan_pegawai_input" value="{{ old('jabatan_pegawai_input') }}"
+                                    style="text-transform:uppercase" id="jabatan_pegawai_input" hidden>
+
+                                <select name="jabatan_pegawai"
+                                    class="form-control @error('jabatan_pegawai_input') is-invalid @enderror " id="position">
+                                    @foreach ($position as $p)
+                                        <option value="{{ $p->jabatan_pegawai }}"> {{ strtolower($p->jabatan_pegawai) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('jabatan_pegawai_input')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
                                 @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-2 d-flex justify-content-center align-items-center">
+                            <div class="form-check mt-4">
+                                <input class="form-check-input" type="checkbox" id="other" name="other"value="other">
+                                <label class="form-check-label">New Position</label>
                             </div>
                         </div>
                     </div>
@@ -62,4 +78,19 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#other').change(function() {
+                if ($('#other').is(':checked')) {
+                    $('#jabatan_pegawai_input').removeAttr('hidden')
+                    $('#position').attr('hidden', true)
+                } else {
+                    $('#jabatan_pegawai_input').val('')
+                    $('#jabatan_pegawai_input').attr('hidden', true)
+                    $('#position').removeAttr('hidden')
+                }
+            })
+        })
+    </script>
 @endsection

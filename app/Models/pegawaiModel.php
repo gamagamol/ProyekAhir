@@ -61,4 +61,13 @@ class pegawaiModel extends Model
             ->whereNull('deleted_at')
             ->get();
     }
+
+    public function getListPosition($position = null)
+    {
+        if ($position) {
+
+            return DB::table('pegawai')->select('jabatan_pegawai')->where('jabatan_pegawai', $position)->first();
+        }
+        return DB::table('pegawai')->select('jabatan_pegawai')->distinct()->get();
+    }
 }

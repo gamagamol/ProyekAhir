@@ -34,10 +34,10 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <tr>
                             <td>No</td>
-                            <td>Kode Pegawai</td>
-                            <td>Nama Pegawai</td>
-                            <td>Jabatan Pegawai</td>
-                            <td>Aksi</td>
+                            <td>Employee Code</td>
+                            <td>Employee Name</td>
+                            <td>Employee Position</td>
+                            <td>Action</td>
                         </tr>
                         @foreach ($data as $d)
                             <tr>

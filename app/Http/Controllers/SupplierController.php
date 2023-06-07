@@ -28,7 +28,7 @@ class SupplierController extends Controller
             'tittle' => "Data Supplier",
             'data' => $data
         ];
-        return view('Supplier.index', $data);
+        return view('supplier.index', $data);
     }
 
     /**
@@ -42,7 +42,7 @@ class SupplierController extends Controller
         $data = [
             'tittle' => 'Add data Supplier',
         ];
-        return view("Supplier.insert", $data);
+        return view("supplier.insert", $data);
     }
 
     public function store(Request $request)
@@ -83,7 +83,7 @@ class SupplierController extends Controller
             'tittle' => 'Change Supplier Data',
             'data' => $this->Supplier_model->show($id)
         ];
-        return view('Supplier.update', $data);
+        return view('supplier.update', $data);
     }
     public function update(Request $request)
     {

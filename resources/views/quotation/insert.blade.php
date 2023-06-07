@@ -55,7 +55,7 @@
                                     <input type="text"
                                         class="form-control @error('nomor_pekerjaan') is-invalid @enderror"
                                         name="nomor_pekerjaan" id="nomor_pekerjaan" value={{ old('nomor_pekerjaan') }}
-                                        @if (count($pembantu) > 0) {{ $pembantu[0]->nomor_pekerjaan }} readonly @endif>
+                                      >
 
                                     @error('nomor_pekerjaan')
                                         <div class="invalid-feedback">
