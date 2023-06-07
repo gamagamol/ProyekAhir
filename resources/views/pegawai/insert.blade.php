@@ -50,7 +50,7 @@
                                 <select name="jabatan_pegawai"
                                     class="form-control @error('jabatan_pegawai_input') is-invalid @enderror " id="position">
                                     @foreach ($position as $p)
-                                        <option value="{{ $p->jabatan_pegawai }}"> {{ strtolower($p->jabatan_pegawai) }}
+                                        <option value="{{ $p->jabatan_pegawai }}"  > {{ strtolower($p->jabatan_pegawai) }}
                                         </option>
                                     @endforeach
                                 </select>

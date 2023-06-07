@@ -88,7 +88,9 @@ class pegawaiController extends Controller
     {
         $data = [
             'data' => $this->pegawai->getEmployeeById($id),
-            'tittle' => 'Master Data Pegawai'
+            'tittle' => 'Master Data Pegawai',
+            'position' => $this->pegawai->getListPosition()
+
         ];
         // dd($data);
         return view('pegawai.update', $data);

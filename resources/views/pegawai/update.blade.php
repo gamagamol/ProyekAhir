@@ -43,9 +43,15 @@
                         <div class="col">
                             <div class="form-group mt-2 rounded">
                                 <label for="example1" class="mt-2">Jabatan Pegawai</label>
-                                <input type="TEXT" class="form-control @error('jabatan_pegawai') is-invalid @enderror "
-                                    name="jabatan_pegawai" value="{{ $data->nama_pegawai  }}"
-                                    style="text-transform:uppercase">
+                                 <select name="jabatan_pegawai"
+                                    class="form-control @error('jabatan_pegawai_input') is-invalid @enderror " id="position">
+                                    @foreach ($position as $p)
+                                        <option value="{{ $p->jabatan_pegawai }}" @if ($p->jabatan_pegawai== $data->jabatan_pegawai)
+                                        selected
+                                        @endif> {{ strtolower($p->jabatan_pegawai) }}
+                                        </option>
+                                    @endforeach
+                                </select>
                                 @error('jabatan_pegawai')
                                     <div class="invalid-feedback">
                                         {{ $message }}
