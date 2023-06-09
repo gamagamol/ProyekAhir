@@ -340,7 +340,7 @@ class QuotationModel extends Model
             $query = "AND MONTH(p.tgl_penawaran)=$month and DAY(p.tgl_penawaran)=$date";
         }
 
-       
+
 
         return DB::select("select b.*,(select sum(total) from transaksi 
                             join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
@@ -366,4 +366,7 @@ class QuotationModel extends Model
 						group by p.no_penawaran
 						) b ");
     }
+
+
+   
 }

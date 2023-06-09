@@ -175,7 +175,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        Barryvdh\DomPDF\ServiceProvider::class
+        Barryvdh\DomPDF\ServiceProvider::class,
 
 
 
@@ -234,8 +234,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Terbilang' => Riskihajar\Terbilang\Facades\Terbilang::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-        'PDF' => Barryvdh\DomPDF\Pdf::class,
-     
+        'PDF' => Barryvdh\DomPDF\Facade::class,
+
     ],
 
 ];

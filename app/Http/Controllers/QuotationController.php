@@ -7,10 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\QuotationModel;
 use Illuminate\Support\Facades\DB;
-use Mpdf\Mpdf;
-use Mpdf\Output\Destination;
 use App\Exports\QuotationExport;
 use Maatwebsite\Excel\Facades\Excel;
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class QuotationController extends Controller
 {
@@ -327,17 +328,122 @@ class QuotationController extends Controller
         return redirect("quotation/create");
     }
 
+
+
+
     public function print($no_transaksi)
     {
+        $data = $this->QuotationModel->show($no_transaksi);
 
-        $data = [
-            'tittle' => 'print Quotation',
-            'data' => $this->QuotationModel->show($no_transaksi),
+
+
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/qtn_template.xlsx');
+
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $worksheet->getCell('O4')->setValue($data[0]->tgl_penawaran);
+        $worksheet->getCell('O5')->setValue($data[0]->no_penawaran);
+        $worksheet->getCell('P6')->setValue($data[0]->nama_pelanggan);
+        $worksheet->getCell('Q11')->setValue(date('Y-m-d', strtotime($data[0]->tgl_penawaran . ' + 3 days')));
+        $worksheet->getCell('Q12')->setValue($data[0]->nama_pengguna);
+        $worksheet->getCell('E16')->setValue($data[0]->layanan);
+
+        // alamat
+        $worksheet->getCell('A12')->setValue($data[0]->perwakilan);
+        $worksheet->getCell('A13')->setValue($data[0]->nama_pelanggan);
+        $worksheet->getCell('A14')->setValue($data[0]->alamat_pelanggan);
+
+        // border style
+        $border = [
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
+                    'color' => ['argb' => 'FFFF0000'],
+                ],
+            ],
         ];
 
 
-        return view('quotation.print', $data);
+
+        $baris_awal = 19;
+        $subtotal = 0;
+        $total = 0;
+        $ongkir = 0;
+        $worksheet->insertNewRowBefore(20, count($data));
+        for ($i = 0; $i < count($data); $i++) {
+
+            
+            $tambahan_baris = $baris_awal+1 ;
+            
+            $worksheet->setCellValue("A$tambahan_baris", ($i + 1));
+            $worksheet->setCellValue("B$tambahan_baris", $data[$i]->nomor_pekerjaan);
+            $worksheet->MergeCells("B$tambahan_baris:C$tambahan_baris");
+
+            $worksheet->setCellValue("D$tambahan_baris", $data[$i]->nama_produk);
+            $worksheet->setCellValue("E$tambahan_baris", $data[$i]->tebal_transaksi);
+            $worksheet->setCellValue("F$tambahan_baris", $data[$i]->lebar_transaksi);
+            $worksheet->setCellValue("G$tambahan_baris", $data[$i]->panjang_transaksi);
+            $worksheet->setCellValue("H$tambahan_baris", $data[$i]->jumlah);
+            $worksheet->setCellValue("I$tambahan_baris", $data[$i]->nama_produk);
+            $worksheet->setCellValue("J$tambahan_baris", $data[$i]->tebal_penawaran);
+            $worksheet->setCellValue("K$tambahan_baris", $data[$i]->lebar_penawaran);
+            $worksheet->setCellValue("L$tambahan_baris", $data[$i]->panjang_penawaran);
+            $worksheet->setCellValue("M$tambahan_baris", $data[$i]->jumlah);
+            $worksheet->setCellValue("N$tambahan_baris", $data[$i]->berat);
+            $worksheet->setCellValue("O$tambahan_baris", number_format($data[$i]->harga));
+            $worksheet->setCellValue("P$tambahan_baris", number_format($data[$i]->subtotal));
+            $worksheet->MergeCells("P$tambahan_baris:Q$tambahan_baris");
+
+
+            $subtotal += $data[$i]->subtotal;
+            $ongkir += $data[$i]->ongkir;
+            $total += $data[$i]->total;
+            $baris_awal=$tambahan_baris;
+        }
+        $baris_setelah = $baris_awal+2;
+        $worksheet->setCellValue("P$baris_setelah", $subtotal);
+        $worksheet->MergeCells("P$baris_setelah:Q$baris_setelah");
+
+        $baris_setelah+=1;
+        $worksheet->setCellValue("P$baris_setelah", $subtotal*0.11);
+        $worksheet->MergeCells("P$baris_setelah:Q$baris_setelah");
+
+        $baris_setelah+=1;
+        $worksheet->setCellValue("P$baris_setelah", $total);
+        $worksheet->MergeCells("P$baris_setelah:Q$baris_setelah");
+        
+        $baris_setelah+=12;
+        $worksheet->setCellValue("P$baris_setelah", $data[0]->nama_pegawai);
+        $worksheet->setCellValue("E$baris_setelah", $data[0]->perwakilan);
+
+
+
+
+
+
+
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="Quotation Report.xlsx"'); // Set nama file excel nya
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        // $writer->save('report/quotation.xls');
+
+
     }
+    // public function print($no_transaksi)
+    // {
+
+
+    //     $data = [
+    //         'tittle' => 'print Quotation',
+    //         'data' => $this->QuotationModel->show($no_transaksi),
+    //     ];
+
+    //     return view('quotation.print', $data);
+    // }
 
 
 
@@ -574,10 +680,10 @@ class QuotationController extends Controller
     public function quotationReport()
     {
 
-        $data=[
-            'tittle'=>"Quotation Vs PO Report"
+        $data = [
+            'tittle' => "Quotation Vs PO Report"
         ];
-        return view('quotation.quotation_report',$data);
+        return view('quotation.quotation_report', $data);
     }
     public function quotationReportAjax()
     {

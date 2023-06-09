@@ -11,6 +11,14 @@
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <title>{{ $tittle }}</title>
+    <style>
+        .rincian-table {
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-collapse: separate;
+            border-spacing: 0 15px;
+        }
+    </style>
 </head>
 
 <body>
@@ -63,9 +71,8 @@
                     Purchase order for :
                 </h4>
                 <h5>
-                    {{ $data[0]->nama_pemasok }} <br>
-                    {{ $data[0]->perwakilan_pemasok }} <br>
-                    {{ $data[0]->alamat_pemasok }} <br>
+                    {{ $data[0]->perwakilan }} <br>
+                    {{ $data[0]->alamat_pelanggan }} <br>
 
                 </h5>
             </div>
@@ -154,10 +161,24 @@
                         </tr>
                     @endforeach
                 </table>
-                <h5 class="text-end mb-5">
-                    {{ 'Amount  : Rp' . number_format($subtotal) }} <br>
-                    {{ ' Vat    : Rp' . number_format($ppn) }} <br>
-                    {{ ' Total  : Rp' . number_format($total + $data[0]->ongkir) }}</h5>
+
+                <table class="rincian-table d-flex justify-content-end" cellpadding='10'>
+                    <tr>
+                        <td>Total Amount</td>
+                        <td>:</td>
+                        <td>Rp.{{ number_format($subtotal) }}</td>
+                    </tr>
+                    <tr>
+                        <td>VAT</td>
+                        <td>:</td>
+                        <td>Rp.{{ number_format($subtotal * 0.11) }}</td>
+                    </tr>
+                    <tr>
+                        <td>Total Amount</td>
+                        <td>:</td>
+                        <td>Rp.{{ number_format($total) }}</td>
+                    </tr>
+                </table>
 
                 <h5 class="text-decoration-underline "> Terbilang:</h5>
                 <h6> {{ $penyebut }} </h6>
@@ -165,24 +186,52 @@
             </div>
         </div>
 
-
-
-        <div class="row align-items-center mt-4 text-end ">
-            <div class="row">
-                <div class="col text-end">
-                    <div class="col  ">
-                        <h5 class="text ">
-                            PT IBARAKI KOGYO HANAN INDONESIA
-                        </h5>
-                        <br><br><br><br>
-                        <h5 class="text-decoration-underline " style="margin-right: 120px"> Intan</h5>
-                        <h5 style="margin-right: 80px">Sales Admin</h5>
+        {{-- <div class="row">
+                    <div class="row mt-5 ms-5">
+                        <div class="col">
+                            <h5 class="text-center">
+                                PT KOGYO HANAN INDONESIA
+                            </h5>
+                        </div>
                     </div>
-                </div>
+                    <div class="row ">
+                        <div class="col">
+                            <h6 class="text-decoration-underline" style="margin-top: 120px">
+                                Sales Admin
+                            </h6>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col ">
+                            <h6 class="text-decoration-underline">
+                                {{ $data[0]->nama_pegawai }}
+                            </h6>
+                        </div>
+                    </div>
+                </div> --}}
+
+
+
+
+        <div class="row justify-content-md-end">
+            <div class="col-md-6">
+                    <h5 class="text-end"> PT KOGYO HANAN INDONESIA </h6>
             </div>
-
-
         </div>
+        <div class="row justify-content-md-end">
+            <div class="col-md-3">
+                    <h6 class="text-decoration-underline text-center" style="margin-top: 120px;"> Sales Admin </h6>
+            </div>
+        </div>
+        <div class="row justify-content-md-end">
+            <div class="col-md-3">
+                    <h6 class="text-center" >  {{ $data[0]->nama_pegawai }} </h6>
+            </div>
+        </div>
+
+    </div>
+
+    </div>
 
 
     </div>

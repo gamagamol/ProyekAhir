@@ -28,17 +28,6 @@
                             <input type="date" required name="tgl_pembayaran" class="form-control">
                         </div>
                     </div>
-                    <div class="row">
-                        {{-- <div class="col-md-3 mt-2">
-                            <select name="no_pembelian" id="no_pembelian" class="form-control" required>
-                                <option value=""> Select Purchase Number</option>
-                                @foreach ($no_pembelian as $np)
-                                    <option value="{{ str_replace('/', '-', $np->no_pembelian) }}">{{ $np->no_pembelian }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div> --}}
-                    </div>
                 </div>
                 <div class="card-body">
 

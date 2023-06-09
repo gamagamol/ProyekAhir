@@ -11,6 +11,9 @@ use Carbon\Carbon;
 use NumberFormatter;
 use Symfony\Component\Console\Helper\FormatterHelper;
 use Terbilang;
+use App\Models\pegawaiModel;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 
 use function app\helper\penyebut;
 
@@ -18,10 +21,12 @@ class BillPaymentController extends Controller
 {
     protected $model;
     protected $pembelianModel;
+    protected $pegawaiModel;
     public function __construct()
     {
         $this->model = new BillPaymentModel();
         $this->pembelianModel = new PurchaseModel();
+        $this->pegawaiModel = new pegawaiModel();
     }
     public function index()
     {
@@ -145,27 +150,131 @@ class BillPaymentController extends Controller
         return view('bill.detail', $data);
     }
 
-    public function print($no_tagihan)
+    public function print($no_transaksi)
     {
-        $no_tagihan = str_replace('-', '/', $no_tagihan);
-        // dd($no_tagihan);
-        $total = $this->model->detail($no_tagihan);
-        $ttl = 0;
-        foreach ($total as $t) {
-            $ttl += $t->total;
+        $data = $this->model->detail(str_replace("-", "/", $no_transaksi));
+        $dueDate = $this->model->index(str_replace("-", "/", $no_transaksi));
+
+        // dd($data);
+
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/bill_template.xlsx');
+
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $worksheet->getCell('J4')->setValue($data[0]->tgl_tagihan);
+        $worksheet->getCell('J5')->setValue($dueDate[0]->DUE_DATE);
+        $worksheet->mergeCells("J5:K5");
+        $worksheet->getCell('J6')->setValue($data[0]->no_tagihan);
+        $worksheet->mergeCells("J6:K6");
+        $worksheet->getCell('J7')->setValue($data[0]->no_penjualan);
+        $worksheet->mergeCells("J7:K7");
+        $worksheet->getCell('A12')->setValue($data[0]->perwakilan);
+        $worksheet->getCell('A13')->setValue($data[0]->nama_pelanggan);
+        $worksheet->getCell('A14')->setValue($data[0]->alamat_pelanggan);
+
+
+
+
+        $baris_awal = 19;
+        $subtotal = 0;
+        $total = 0;
+        $ongkir = 0;
+        $worksheet->insertNewRowBefore(20, count($data));
+        for ($i = 0; $i < count($data); $i++) {
+
+
+            $tambahan_baris = $baris_awal + 1;
+
+            $worksheet->setCellValue("A$tambahan_baris", ($i + 1));
+            $worksheet->setCellValue("B$tambahan_baris", $data[$i]->nomor_pekerjaan);
+            $worksheet->MergeCells("B$tambahan_baris:C$tambahan_baris");
+
+            $worksheet->setCellValue("D$tambahan_baris", $data[$i]->nama_produk);
+            $tebal =  $data[$i]->tebal_transaksi;
+            $lebar =  $data[$i]->lebar_transaksi;
+            $panjang =  $data[$i]->panjang_transaksi;
+
+            $worksheet->setCellValue("E$tambahan_baris", $tebal);
+            $worksheet->setCellValue("F$tambahan_baris", $lebar);
+            $worksheet->setCellValue("G$tambahan_baris", $panjang);
+            $worksheet->setCellValue("H$tambahan_baris", $data[$i]->jumlah);
+            $worksheet->setCellValue("I$tambahan_baris", $data[$i]->berat);
+            $worksheet->setCellValue("J$tambahan_baris", $data[$i]->harga);
+            $worksheet->setCellValue("K$tambahan_baris", $data[$i]->subtotal);
+            $worksheet->mergeCells("K$tambahan_baris:L$tambahan_baris");
+
+
+
+            $subtotal += $data[$i]->subtotal;
+            $ongkir += $data[$i]->ongkir;
+            $total += $data[$i]->total;
+            $baris_awal = $tambahan_baris;
         }
-        $dueDate = $this->model->index($no_tagihan);
+        $baris_setelah = $baris_awal + 2;
+        $worksheet->setCellValue("K$baris_setelah", $subtotal);
+        $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
+
+        $baris_setelah += 1;
+        $worksheet->setCellValue("K$baris_setelah", $subtotal * 0.11);
+        $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
+
+        $baris_setelah += 1;
+        $worksheet->setCellValue("K$baris_setelah", $total);
+        $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
+
+        $baris_setelah += 2;
+        $worksheet->setCellValue("A$baris_setelah", penyebut($total));
+        $worksheet->MergeCells("A$baris_setelah:H$baris_setelah");
+
+        $baris_setelah += 2;
+        $worksheet->setCellValue("J$baris_setelah", "Bekasi," .' '. $data[0]->tgl_tagihan);
+        $worksheet->MergeCells("J$baris_setelah:L$baris_setelah");
 
 
-        $data = [
-            'tittle' => "Print INVOICE",
-            'data' => $this->model->detail($no_tagihan),
-            'total_penyebut' => $total = penyebut($ttl),
-            'due_date' => $dueDate[0]->DUE_DATE
 
-        ];
-        return view('bill.print', $data);
+
+
+
+
+
+
+
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="Bill Report.xlsx"'); // Set nama file excel nya
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        // $writer->save('report/quotation.xls');
+
+
     }
+
+    // public function print($no_tagihan)
+    // {
+    //     $no_tagihan = str_replace('-', '/', $no_tagihan);
+    //     // dd($no_tagihan);
+    //     $total = $this->model->detail($no_tagihan);
+    //     $ttl = 0;
+    //     foreach ($total as $t) {
+    //         $ttl += $t->total;
+    //     }
+    //     $dueDate = $this->model->index($no_tagihan);
+
+
+    //     $data = [
+    //         'tittle' => "Print INVOICE",
+    //         'data' => $this->model->detail($no_tagihan),
+    //         'total_penyebut' => $total = penyebut($ttl),
+    //         'due_date' => $dueDate[0]->DUE_DATE,
+    //         'pegawai'=>$this->pegawaiModel->getEmployee('FINANCE')
+
+    //     ];
+
+    //     // dd($data);
+    //     return view('bill.print', $data);
+    // }
 
     protected function getSalesDetail($no_penjualan)
     {

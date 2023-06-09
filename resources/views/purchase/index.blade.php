@@ -69,7 +69,7 @@
 
                                 </td>
                                 <td>
-                                  <a href="{{ url('purchase/print', str_replace('/','-',$d->no_pembelian)) }}" class="btn btn-primary mt-1">
+                                  <a href="{{ url('purchase/print', str_replace('/','-',$d->no_pembelian)) }}" class="btn btn-primary mt-1" >
                                         Print </a>
                                 </td>
                             </tr>

@@ -51,8 +51,8 @@
             <div class="col-md-4">
                 <h5 class=" ml-5">
                     Date : {{ $tgl_pengiriman }} <br><br>
-                    NO DO : {{ $data[0]->no_pengiriman }} <br><br>
-                    NO SO : {{ $data[0]->no_penjualan }} <br>
+                    {{-- NO DO : {{ $data[0]->no_pengiriman }} <br><br>
+                    NO SO : {{ $data[0]->no_penjualan }} <br> --}}
 
                 </h5>
             </div>
@@ -64,9 +64,9 @@
                     Delivery order for :
                 </h4>
                 <h5>
-                    {{ $data[0]->perwakilan }} <br>
-                    {{ $data[0]->nama_pelanggan }} <br>
-                    {{ $data[0]->alamat_pelanggan }} <br>
+                    {{-- {{ $data[0]->perwakilan }} <br> --}}
+                    {{-- {{ $data[0]->nama_pelanggan }} <br>
+                    {{ $data[0]->alamat_pelanggan }} <br> --}}
 
                 </h5>
             </div>

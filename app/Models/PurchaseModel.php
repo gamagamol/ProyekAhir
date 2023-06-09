@@ -258,6 +258,7 @@ class PurchaseModel extends Model
         join pelanggan on pelanggan.id_pelanggan = transaksi.id_pelanggan
         join pemasok on pemasok.id_pemasok = pembelian.id_pemasok
         join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
+        join pegawai on pegawai.id_pegawai = transaksi.id_pegawai
         where no_pembelian='$no_pembelian' 
         ");
     }

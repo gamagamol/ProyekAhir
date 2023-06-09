@@ -81,13 +81,13 @@
 
                                 <td>
                                     <a href="{{ url('bill/print', str_replace('/', '-', $d->no_tagihan)) }}"
-                                        class="btn btn-info mt-2 w-75" target="_blank"><i class="fa fa-print"
+                                        class="btn btn-info mt-2 w-75" ><i class="fa fa-print"
                                             aria-hidden="true"></i></a>
-                                    <a href="{{ url('email', str_replace('/', '-', $d->no_tagihan)) }}"
+                                    {{-- <a href="{{ url('email', str_replace('/', '-', $d->no_tagihan)) }}"
                                         class="btn btn-secondary mt-2 w-75"
                                         @if ($d->status_transaksi == 'payment') {{ 'hidden' }} @endif> <i
                                             class="fa fa-envelope" aria-hidden="true"></i>
-                                    </a>
+                                    </a> --}}
                                 </td>
                             </tr>
                         @endforeach

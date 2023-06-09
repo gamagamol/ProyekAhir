@@ -59,7 +59,7 @@
                                 <td>
                                     <a href="{{ url('payment/detail', str_replace('/','-',$d->no_pembayaran)) }}" class="btn btn-info mt-1">
                                         Detail </a>
-                                    <a href="{{ url('payment/print', str_replace('/','-',$d->no_pembayaran)) }}" class="btn btn-primary mt-1" target="_blank">
+                                    <a href="{{ url('payment/print', str_replace('/','-',$d->no_pembayaran)) }}" class="btn btn-primary mt-1" >
                                         print </a>
                                 </td>
                             </tr>

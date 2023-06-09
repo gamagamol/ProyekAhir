@@ -65,6 +65,9 @@
                                     <a href="{{ url('sales/detail', str_replace('/', '-', $d->no_penjualan)) }}"
                                         class="btn btn-info mt-1">
                                         Detail </a>
+                                    <a href="{{ url('sales/print', str_replace('/', '-', $d->no_penjualan)) }}"
+                                        class="btn btn-primary mt-1">
+                                        Print </a>
 
                                 </td>
                             </tr>

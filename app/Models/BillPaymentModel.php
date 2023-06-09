@@ -204,7 +204,8 @@ class BillPaymentModel extends Model
             join produk on detail_penerimaan_barang.id_produk=produk.id_produk
             join tagihan on tagihan.id_transaksi=transaksi.id_transaksi
             join pembelian on pembelian.id_transaksi=transaksi.id_transaksi
-			where no_tagihan='$no_tagihan' 
+            join pegawai on pegawai.id_pegawai = transaksi.id_pegawai
+			where no_tagihan='$no_tagihan' and transaksi.tidak_terpakai=0 
             group by transaksi.id_transaksi"
         );
     }

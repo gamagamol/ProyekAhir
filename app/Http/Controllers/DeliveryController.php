@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\GoodsController;
 use App\Models\SalesModel;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 
 class DeliveryController extends Controller
 {
@@ -430,24 +432,114 @@ class DeliveryController extends Controller
             'tittle' => "Detail Delivery Order",
             'data' => $data
         ];
+        // dd($data);
         return view('delivery.detail', $data);
     }
 
 
+    // public function print($no_transaksi)
+    // {
+    //     $no_transaksi = str_replace('-', '/', $no_transaksi);
+    //     $tgl_pengiriman = $this->model->detail($no_transaksi);
+
+    //     $tgl_pengiriman = end($tgl_pengiriman);
+    //     $tgl_pengiriman = $tgl_pengiriman->tgl_pengiriman;
+    //     $data = $this->model->print($no_transaksi);
+    //     $data = [
+    //         'tittle' => "Print Delivery Document",
+    //         'data' => $data,
+    //         'tgl_pengiriman' => $tgl_pengiriman
+    //     ];
+    //     // dd($data);
+    //     return view('delivery.print', $data);
+    // }
+
     public function print($no_transaksi)
     {
-        $no_transaksi = str_replace('-', '/', $no_transaksi);
-        $tgl_pengiriman = $this->model->detail($no_transaksi);
+        $data = $this->model->detail(str_replace('-', '/', $no_transaksi));
 
-        $tgl_pengiriman = end($tgl_pengiriman);
-        $tgl_pengiriman = $tgl_pengiriman->tgl_pengiriman;
-        $data = $this->model->print($no_transaksi);
-        $data = [
-            'tittle' => "Print Delivery Document",
-            'data' => $data,
-            'tgl_pengiriman' => $tgl_pengiriman
-        ];
 
-        return view('delivery.print', $data);
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/delivery_template.xlsx');
+
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $worksheet->getCell('J4')->setValue($data[0]->tgl_pengiriman);
+        $worksheet->getCell('J5')->setValue($data[0]->no_pengiriman);
+        $worksheet->mergeCells("J5:K5");
+        $worksheet->getCell('J6')->setValue($data[0]->no_penjualan);
+        $worksheet->getCell('A12')->setValue($data[0]->perwakilan);
+        $worksheet->getCell('A13')->setValue($data[0]->nama_pelanggan);
+        $worksheet->getCell('A14')->setValue($data[0]->alamat_pelanggan);
+        // $worksheet->getCell('D17')->setValue($data[0]->layanan);
+
+
+        $baris_awal = 18;
+        $total_berat = 0;
+        $total_jumlah = 0;
+
+        $worksheet->insertNewRowBefore(20, count($data));
+        for ($i = 0; $i < count($data); $i++) {
+
+
+            $tambahan_baris = $baris_awal + 1;
+
+            $worksheet->setCellValue("C$tambahan_baris", ($i + 1));
+            $worksheet->setCellValue("D$tambahan_baris", $data[$i]->nomor_pekerjaan);
+            $worksheet->MergeCells("D$tambahan_baris:E$tambahan_baris");
+
+            $worksheet->setCellValue("F$tambahan_baris", $data[$i]->nama_produk);
+            $tebal = $data[$i]->tebal_transaksi;
+            $lebar = $data[$i]->lebar_transaksi;
+            $panjang =  $data[$i]->panjang_transaksi;
+
+            $worksheet->setCellValue("G$tambahan_baris", $tebal);
+            $worksheet->setCellValue("H$tambahan_baris", $lebar);
+            $worksheet->setCellValue("I$tambahan_baris", $panjang);
+            $worksheet->setCellValue("J$tambahan_baris", $data[$i]->jumlah_detail_pengiriman);
+            $worksheet->setCellValue("K$tambahan_baris", $data[$i]->berat_detail_pengiriman);
+            $worksheet->MergeCells("K$tambahan_baris:L$tambahan_baris");
+
+            $total_berat += $data[$i]->berat_detail_pengiriman;
+            $total_jumlah += $data[$i]->jumlah_detail_pengiriman;
+
+
+            $baris_awal = $tambahan_baris;
+        }
+        // dd($baris_awal);
+        $baris_setelah = $baris_awal + 1;
+
+        
+        $worksheet->setCellValue("C$baris_setelah", "TOTAL");
+        $worksheet->MergeCells("C$baris_setelah:I$baris_setelah");
+        $worksheet->setCellValue("J$baris_setelah", $total_jumlah);
+        $worksheet->setCellValue("K$baris_setelah", $total_berat);
+        $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
+        
+        $baris_setelah+=3;
+        $worksheet->setCellValue("G$baris_setelah", $data[0]->layanan);
+        $worksheet->MergeCells("G$baris_setelah:H$baris_setelah");
+        
+        $baris_setelah+=7;
+        $worksheet->setCellValue("E$baris_setelah", "/".date('m-Y'));
+        $worksheet->setCellValue("I$baris_setelah", "/".date('m-Y'));
+        $worksheet->setCellValue("M$baris_setelah", "/".date('m-Y'));
+
+
+
+
+
+
+
+
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="Delivery Report.xlsx"'); // Set nama file excel nya
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        // $writer->save('report/quotation.xls');
+
+
     }
 }

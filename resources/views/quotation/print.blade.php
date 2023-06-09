@@ -12,6 +12,18 @@
 
     <title>{{ $tittle }}</title>
 
+  <style>
+        .rincian {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .rincian-table {
+            border-collapse: separate;
+            border-spacing: 0 15px;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -39,8 +51,9 @@
             <div class="col">
                 <h5>
 
-                    New Three One Building, Jl. Industri Timur Raya Blok WW5 Jl. Jababeka Raya No.18, Mekarmukti,
-                    Cikarang Utara, Bekasi Regency, West Java 17531 <br>
+                    New Three One Building,<br>
+                    Jl. Industri Timur Raya Blok WW5 Jl. Jababeka Raya No.18,
+                    <br> Mekarmukti,Cikarang Utara, Bekasi Regency, West Java 17531 <br>
                     Phone: (021) 8932 6362<br>
                     Email : sales@ibaraki.co.id<br>
                     ahmadsolihin@ibaraki.co.id<br>
@@ -186,12 +199,26 @@
                 </table>
 
 
-                <h5 class="text-end mb-5">
-                    {{ 'Amount          : Rp' . number_format($subtotal) }} <br>
-                    {{ ' Vat            : Rp' . number_format($subtotal * 0.11) }} <br>
-                    {{ ' Shippment      : Rp' . number_format($data[0]->ongkir) }} <br>
-                    {{ ' Total          : Rp' . number_format($total + $data[0]->ongkir) }}
-                </h5>
+                <div class="d-flex justify-content-end mb-5 rincian">
+                  
+                    <table class="rincian-table" cellpadding='10'>
+                        <tr>
+                            <td>Total Amount</td>
+                            <td>:</td>
+                            <td>Rp.{{ number_format($subtotal) }}</td>
+                        </tr>
+                        <tr>
+                            <td>VAT</td>
+                            <td>:</td>
+                            <td>Rp.{{ number_format($subtotal * 0.11) }}</td>
+                        </tr>
+                        <tr>
+                            <td>Total Amount</td>
+                            <td>:</td>
+                            <td>Rp.{{ number_format($total) }}</td>
+                        </tr>
+                    </table>
+                </div>
 
 
             </div>
@@ -231,39 +258,8 @@
         </div>
 
         <div class="row mt-5 ms-5">
-            <div class="col text-strat">
 
-                <h5 class="text-center">
-                    PT KOGYO HANAN INDONESIA
-                </h5>
-                <div class="row">
-                    <div class="col">
-                        <h6 class="text-decoration-underline" style="margin-top: 120px">
-                            Senior Sales Engineer
-
-
-
-                        </h6>
-                        <h6>
-                            Muhammad Mulyadi Rizali
-                        </h6>
-                    </div>
-                    <div class="col">
-                        <h6 class="text-decoration-underline" style="margin-top: 120px">
-                            Senior Sales Engineer
-
-
-
-                        </h6>
-                        <h6>
-                            Muhammad Mulyadi Rizali
-                        </h6>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="col text-center">
+            <div class="col text-start ">
 
                 <h5>
                     {{ $data[0]->nama_pelanggan }}
@@ -278,38 +274,25 @@
                     {{ $data[0]->perwakilan }}
                 </h6>
             </div>
-
-
-
-        </div>
-
-        {{-- <div class="row mt-4 ">
-           
-
-                <div class="col  mt-5 " style="margin-top:300px; ">
-                    <h6 class="text-decoration-underline" style="margin-top:100px; ">
-                        Senior Sales Engineer
-                       
-                    </h6>
-                    <h6>
-                         Muhammad Mulyadi Rizali
-                    </h6>
-                </div>
-
-                <div class="col mt-5 " style="margin-top:300px; ">
-                    <h6 class="text-decoration-underline" style="margin-top:100px; ">
-                        Senior Sales Engineer
-                       
-                    </h6>
-                    <h6>
-                         Muhammad Mulyadi Rizali
-                    </h6>
+            <div class="col">
+                <h5 class="text-center">
+                    PT KOGYO HANAN INDONESIA
+                </h5>
+                <div class="row">
+                    <div class="col text-center">
+                        <h6 class="text-decoration-underline" style="margin-top: 120px">
+                            Sales Admin
+                        </h6>
+                        <h6>
+                            {{ $data[0]->nama_pegawai }}
+                        </h6>
+                    </div>
                 </div>
             </div>
 
 
+        </div>
 
-        </div> --}}
 
 
     </div>

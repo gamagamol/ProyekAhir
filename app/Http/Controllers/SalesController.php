@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\Models\SalesModel;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 
 class SalesController extends Controller
 {
@@ -143,5 +145,96 @@ class SalesController extends Controller
             'data' => $data
         ];
         return view('sales.detail', $data);
+    }
+
+    public function print($no_transaksi)
+    {
+        $data = $this->SalesModel->detail(str_replace("-", "/", $no_transaksi));
+
+
+        // dd($data);
+
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/sales_template.xlsx');
+
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $worksheet->getCell('J4')->setValue($data[0]->tgl_penjualan);
+        $worksheet->getCell('J5')->setValue($data[0]->no_penjualan);
+        $worksheet->mergeCells("J5:K5");
+        $worksheet->getCell('J6')->setValue($data[0]->no_penawaran);
+        $worksheet->getCell('A12')->setValue($data[0]->perwakilan);
+        $worksheet->getCell('A13')->setValue($data[0]->nama_pelanggan);
+        $worksheet->getCell('A14')->setValue($data[0]->alamat_pelanggan);
+        $worksheet->getCell('D17')->setValue($data[0]->layanan);
+
+
+
+
+        $baris_awal = 19;
+        $subtotal = 0;
+        $total = 0;
+        $ongkir = 0;
+        $worksheet->insertNewRowBefore(20, count($data));
+        for ($i = 0; $i < count($data); $i++) {
+
+
+            $tambahan_baris = $baris_awal + 1;
+
+            $worksheet->setCellValue("A$tambahan_baris", ($i + 1));
+            $worksheet->setCellValue("B$tambahan_baris", $data[$i]->nomor_pekerjaan);
+            $worksheet->MergeCells("B$tambahan_baris:C$tambahan_baris");
+
+            $worksheet->setCellValue("D$tambahan_baris", $data[$i]->nama_produk);
+            $tebal =  $data[$i]->tebal_transaksi;
+            $lebar =  $data[$i]->lebar_transaksi;
+            $panjang =  $data[$i]->panjang_transaksi;
+
+            $worksheet->setCellValue("E$tambahan_baris", $tebal);
+            $worksheet->setCellValue("F$tambahan_baris", $lebar);
+            $worksheet->setCellValue("G$tambahan_baris", $panjang);
+            $worksheet->setCellValue("H$tambahan_baris", $data[$i]->jumlah);
+            $worksheet->setCellValue("I$tambahan_baris", $data[$i]->berat);
+            $worksheet->setCellValue("J$tambahan_baris", $data[$i]->harga);
+            $worksheet->setCellValue("K$tambahan_baris", $data[$i]->subtotal);
+            $worksheet->mergeCells("K$tambahan_baris:L$tambahan_baris");
+
+
+
+            $subtotal += $data[$i]->subtotal;
+            $ongkir += $data[$i]->ongkir;
+            $total += $data[$i]->total;
+            $baris_awal = $tambahan_baris;
+        }
+        $baris_setelah = $baris_awal + 2;
+        $worksheet->setCellValue("K$baris_setelah", $subtotal);
+        $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
+
+        $baris_setelah += 1;
+        $worksheet->setCellValue("K$baris_setelah", $subtotal * 0.11);
+        $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
+
+        $baris_setelah += 1;
+        $worksheet->setCellValue("K$baris_setelah", $total);
+        $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
+
+        $baris_setelah += 9;
+        $worksheet->setCellValue("H$baris_setelah", $data[0]->nama_pegawai);
+
+
+
+
+
+
+
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="Sales Report.xlsx"'); // Set nama file excel nya
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        // $writer->save('report/quotation.xls');
+
+
     }
 }
