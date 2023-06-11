@@ -1,6 +1,6 @@
 ---
 deployment:
 tasks:
-    - export DEPLOYPATH=/home/ibat8129/public_html/ibaraki
+    - export DEPLOYPATH=/home/ibat8129/public_html
     - /bin/cp -r * $DEPLOYPATH
     
