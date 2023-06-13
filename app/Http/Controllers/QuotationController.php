@@ -114,6 +114,7 @@ class QuotationController extends Controller
 
         ];
         // print_r($data);
+        // dd($data);
         return view('quotation.insert', $data);
     }
 

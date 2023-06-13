@@ -418,8 +418,8 @@ class DeliveryController extends Controller
             'data' => $data,
         ];
         // dd($data);
-        return view('delivery.print_item', $data);
-        // return redirect('delivery')->with('success', "Data entered successfully,Please Click Detail For more Information");
+        // return view('delivery.print_item', $data);
+        return redirect('delivery')->with('success', "Data entered successfully,Please Click Detail For more Information");
     }
 
 

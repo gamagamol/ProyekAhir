@@ -43,7 +43,7 @@ class pegawaiController extends Controller
      */
     public function create()
     {
-        
+
         return view('pegawai.insert', [
             'tittle' => 'Tambah Pegawai',
             'position' => $this->pegawai->getListPosition()
@@ -63,16 +63,15 @@ class pegawaiController extends Controller
             'kode_pegawai' => 'required|unique:pegawai,kode_pegawai',
             'nama_pegawai' => 'required',
             'jabatan_pegawai' => 'required',
-            'jabatan_pegawai_input'=> 'unique:pegawai,jabatan_pegawai'
+            'jabatan_pegawai_input' => 'unique:pegawai,jabatan_pegawai'
         ]);
 
-
-        
+    
 
         $this->pegawai->insert([
             'kode_pegawai' => strtoupper($request->input('kode_pegawai')),
             'nama_pegawai' => strtoupper($request->input('nama_pegawai')),
-            'jabatan_pegawai' => ($request->input('jabatan_pegawai_input')) ? strtoupper($request->input('jabatan_pegawai_input')):strtoupper($request->input('jabatan_pegawai_input')),
+            'jabatan_pegawai' => ($request->input('jabatan_pegawai_input')!=null) ? strtoupper($request->input('jabatan_pegawai_input')) : strtoupper($request->input('jabatan_pegawai')),
         ]);
 
         return redirect('pegawai')->with('success', 'Success to insert employee data');
