@@ -5,6 +5,10 @@
         <div class="alert alert-success" role="alert">
             {{ session('success') }}
         </div>
+    @else
+        <div class="alert alert-failed" role="alert">
+            {{ session('failed') }}
+        </div>
     @endif
     <div class="container  ">
         <div class="card shadow mb-4 ml-4 mr-4">
@@ -14,16 +18,8 @@
 
             <div class="container mt-2">
                 <div id="table_atas">
-
-
-
-
-
                     <div class="table-responsive text-center mt-2">
-
-
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-
                             <tr>
                                 <td>Date</td>
                                 <td>No Transaction</td>

@@ -129,9 +129,9 @@ class QuotationController extends Controller
             'id_pelanggan' => "required",
             'id_produk' => "required",
             'id_pelanggan' => "required",
-            'tebal_transaksi' => "required|integer",
-            'lebar_transaksi' => "required",
-            'panjang_transaksi' => "required",
+            'tebal_transaksi' => "required|regex:/^\d*(\.\d{2})?$/",
+            'lebar_transaksi' => "required|regex:/^\d*(\.\d{2})?$/",
+            'panjang_transaksi' => "required|regex:/^\d*(\.\d{2})?$/",
             'jumlah' => "required",
             'harga' => "required",
             'ongkir' => "required",
@@ -245,9 +245,9 @@ class QuotationController extends Controller
                     'id' => ${"array$i"}[21],
                     'kode_transaksi' => ${"array$i"}[0],
                     'layanan' => ${"array$i"}[19],
-                    'panjang_transaksi' => (int)${"array$i"}[6],
-                    'lebar_transaksi' => (int)${"array$i"}[5],
-                    'tebal_transaksi' => (int)${"array$i"}[4],
+                    'panjang_transaksi' => (float)${"array$i"}[6],
+                    'lebar_transaksi' => (float)${"array$i"}[5],
+                    'tebal_transaksi' => (float)${"array$i"}[4],
                     'berat' => (float) ${"array$i"}[13],
                     'harga' => (float) ${"array$i"}[14],
                     'jumlah' => (int) ${"array$i"}[7],
@@ -268,9 +268,9 @@ class QuotationController extends Controller
                     "id_transaksi" => 0,
                     "no_penawaran" => 0,
                     "tgl_penawaran" => ${"array$i"}[1],
-                    "tebal_penawaran" => (int)${"array$i"}[9],
-                    "lebar_penawaran" => (int)${"array$i"}[10],
-                    "panjang_penawaran" => (int) ${"array$i"}[11],
+                    "tebal_penawaran" => (float)${"array$i"}[9],
+                    "lebar_penawaran" => (float)${"array$i"}[10],
+                    "panjang_penawaran" => (float) ${"array$i"}[11],
 
                 ];
                 $data_penawaran[] = ${"elemen_penawaran$i"};
@@ -293,7 +293,7 @@ class QuotationController extends Controller
             // dd($data_transaksi);
             $no_quotation = $this->QuotationModel->insert($data_transaksi, $data_penawaran, $data_detail_penawaran, $tgl_penawaran);
 
-            return redirect("show_data")->with("success", "Data Entered Successfully, You Quotation number $no_quotation");
+            return redirect("quotation")->with("success", "Data Entered Successfully, You Quotation number $no_quotation");
         }
     }
 
@@ -373,9 +373,9 @@ class QuotationController extends Controller
         $worksheet->insertNewRowBefore(20, count($data));
         for ($i = 0; $i < count($data); $i++) {
 
-            
-            $tambahan_baris = $baris_awal+1 ;
-            
+
+            $tambahan_baris = $baris_awal + 1;
+
             $worksheet->setCellValue("A$tambahan_baris", ($i + 1));
             $worksheet->setCellValue("B$tambahan_baris", $data[$i]->nomor_pekerjaan);
             $worksheet->MergeCells("B$tambahan_baris:C$tambahan_baris");
@@ -399,21 +399,21 @@ class QuotationController extends Controller
             $subtotal += $data[$i]->subtotal;
             $ongkir += $data[$i]->ongkir;
             $total += $data[$i]->total;
-            $baris_awal=$tambahan_baris;
+            $baris_awal = $tambahan_baris;
         }
-        $baris_setelah = $baris_awal+2;
+        $baris_setelah = $baris_awal + 2;
         $worksheet->setCellValue("P$baris_setelah", $subtotal);
         $worksheet->MergeCells("P$baris_setelah:Q$baris_setelah");
 
-        $baris_setelah+=1;
-        $worksheet->setCellValue("P$baris_setelah", $subtotal*0.11);
+        $baris_setelah += 1;
+        $worksheet->setCellValue("P$baris_setelah", $subtotal * 0.11);
         $worksheet->MergeCells("P$baris_setelah:Q$baris_setelah");
 
-        $baris_setelah+=1;
+        $baris_setelah += 1;
         $worksheet->setCellValue("P$baris_setelah", $total);
         $worksheet->MergeCells("P$baris_setelah:Q$baris_setelah");
-        
-        $baris_setelah+=12;
+
+        $baris_setelah += 12;
         $worksheet->setCellValue("P$baris_setelah", $data[0]->nama_pegawai);
         $worksheet->setCellValue("E$baris_setelah", $data[0]->perwakilan);
 
@@ -434,17 +434,7 @@ class QuotationController extends Controller
 
 
     }
-    // public function print($no_transaksi)
-    // {
 
-
-    //     $data = [
-    //         'tittle' => 'print Quotation',
-    //         'data' => $this->QuotationModel->show($no_transaksi),
-    //     ];
-
-    //     return view('quotation.print', $data);
-    // }
 
 
 
@@ -466,7 +456,7 @@ class QuotationController extends Controller
                     //    membuat ukuran dan berat pxl 0,0000625
                     $tebal_penawaran = $tebal_transaksi;
                     $lebar_penawaran = $lebar_transaksi;
-                    $panjang_penawaran = $panjang_transaksi;
+                    $panjang_penawaran =  $panjang_transaksi;
 
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
                     return  $berat = number_format($berat, 2, '.', '');
@@ -475,8 +465,8 @@ class QuotationController extends Controller
                 if ($layanan == "MILLING") {
                     //    membuat ukuran dan berat pxl 0,00008
                     $tebal_penawaran = $tebal_transaksi + 5;
-                    $lebar_penawaran = $lebar_transaksi + 5;
-                    $panjang_penawaran = $panjang_transaksi + 5;
+                    $lebar_penawaran =  $lebar_transaksi + 5;
+                    $panjang_penawaran =  $panjang_transaksi + 5;
 
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.000008;
                     return  $berat = number_format($berat, 2, '.', '');
@@ -487,7 +477,7 @@ class QuotationController extends Controller
                     //    membuat ukuran dan berat pxl 0,0000625
                     $tebal_penawaran = $tebal_transaksi;
                     $lebar_penawaran = 0;
-                    $panjang_penawaran = $panjang_transaksi;
+                    $panjang_penawaran =  $panjang_transaksi;
 
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
                     return  $berat = number_format($berat, 2, '.', '');
@@ -505,7 +495,7 @@ class QuotationController extends Controller
                     //    membuat ukuran dan berat pxl 0,00008
                     $tebal_penawaran = $tebal_transaksi + 5;
                     $lebar_penawaran = 0;
-                    $panjang_penawaran = $panjang_transaksi + 5;
+                    $panjang_penawaran =  $panjang_transaksi + 5;
 
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.000008;
                     return  $berat = number_format($berat, 2, '.', '');

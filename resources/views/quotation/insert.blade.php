@@ -149,7 +149,7 @@
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2" id="tebal_label">Inquiry
                                         thick (mm)</label>
-                                    <input type="number"
+                                    <input type="text"  
                                         class="form-control @error('tebal_transaksi') is-invalid @enderror"
                                         name="tebal_transaksi" id="tebal_transaksi" value="{{ old('tebal_transaksi') }}"
                                         min="0">
@@ -163,7 +163,7 @@
                             <div class="col-md-3 ">
                                 <div class="form-group mt-2 rounded" id="lebar">
                                     <label for="example1" class="mt-2">Inquiry Widht (mm)</label>
-                                    <input type="number"
+                                    <input type="text" 
                                         class="form-control @error('lebar_transaksi') is-invalid @enderror"
                                         name="lebar_transaksi" id="lebar_transaksi" value="{{ old('lebar_transaksi') }}"
                                         min="0">
@@ -177,7 +177,7 @@
                             <div class="col-md-3">
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2"> Inquiry Length (mm)</label>
-                                    <input type="number"
+                                    <input type="text" 
                                         class="form-control @error('panjang_transaksi') is-invalid @enderror"
                                         name="panjang_transaksi" id="panjang_transaksi"
                                         value="{{ old('panjang_transaksi') }}" min="0">
@@ -558,10 +558,11 @@
             let lebar = document.getElementById('lebar_transaksi');
             if (bentuk_produk == "CYLINDER") {
 
-                lebar.setAttribute('value', 0);
-                lebar.setAttribute('readonly', true);
+               $('#lebar_transaksi').val(0)
+                lebar.tex
+               $('#lebar_transaksi').attr('readonly', true);
             } else {
-                lebar.removeAttribute('readonly');
+                lebar.removeAttribute('readonly')
             }
 
 

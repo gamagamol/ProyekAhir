@@ -76,17 +76,7 @@
 
                             @foreach ($data as $p)
                                 <?php
-                                // jangan hapus dulu buat codingan penerimaan bertahap
-                                // if ($p->jumlah_detail_penerimaan > 0 ) {
-                                //     $jumlah = $p->jumlah_detail_pembelian - $p->jumlah_detail_penerimaan;
-                                
-                                // } else {
-                                //     $jumlah = $p->jumlah_detail_pembelian;
-                                //     $berat = $p->berat;
-                                //     $subtotal=$p->subtotal;
-                                //     $ppn=$p->ppn;
-                                //     $total=$p->total;
-                                // }
+                               
                                 $jumlah = $p->jumlah_detail_pembelian;
                                 $berat = $p->berat;
                                 $subtotal = $p->subtotal;
@@ -127,13 +117,13 @@
                                         {{ $p->nama_produk }}
                                     </td>
                                     <td>
-                                        {{ $p->tebal_penawaran }}
+                                     <?= ($p->tebal_detail_pembelian)? $p->tebal_detail_pembelian :  $p->tebal_penawaran ?>
                                     </td>
                                     <td>
-                                        {{ $p->lebar_penawaran }}
+                                        {{ ($p->lebar_detail_pembelian)? $p->lebar_detail_pembelian :  $p->lebar_penawaran }}
                                     </td>
                                     <td>
-                                        {{ $p->panjang_penawaran }}
+                                        {{ ($p->lebar_detail_pembelian)? $p->lebar_detail_pembelian :  $p->lebar_penawaran}}
                                     </td>
                                     <td>
                                         {{ $jumlah }}
@@ -164,12 +154,7 @@
                                     <td>
                                         {{ $p->nama_pemasok }}
                                     </td>
-                                    {{-- jangan di hapus untuk pnerimaan barang beberapakali --}}
-                                    {{-- <td >
-                                        <i class="fa fa-plus-circle" aria-hidden="true"
-                                            onclick="CreateSupplier('{{ $p->id_produk }}','{{ $p->nama_produk }}','{{ $p->no_pembelian }}','{{ $p->id_transaksi }}','{{ $p->tebal_transaksi }}','{{ $p->lebar_transaksi }}','{{ $p->panjang_transaksi }}','{{ $p->bentuk_produk }}','{{ $p->layanan }}')"></i>
-
-                                    </td> --}}
+                                  
 
 
 

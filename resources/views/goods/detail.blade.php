@@ -50,6 +50,7 @@
                             $subtotal = 0;
                             $ppn = 0;
                             $total = 0;
+                            $ongkir = $data[0]->ongkir ? $data[0]->ongkir : 0;
                             ?>
                             @foreach ($data as $p)
                                 <tr>
@@ -84,13 +85,13 @@
                                         {{ $p->nama_produk }}
                                     </td>
                                     <td>
-                                        {{ $p->tebal_penawaran }}
+                                        <?= ($p->tebal_detail_pembelian )? $p->tebal_detail_pembelian : $p->tebal_penawaran ?>
                                     </td>
                                     <td>
-                                        {{ $p->lebar_penawaran }}
+                                        {{($p->lebar_detail_pembelian )?$p->lebar_detail_pembelian : $p->lebar_penawaran }}
                                     </td>
                                     <td>
-                                        {{ $p->panjang_penawaran }}
+                                        {{ ($p->panjang_detail_pembelian )?$p->panjang_detail_pembelian :$p->panjang_penawaran }}
                                     </td>
                                     <td>
                                         {{ $p->jumlah_detail_penerimaan }}
@@ -139,7 +140,7 @@
                                 <td colspan='16'>TOTAL</td>
                                 <td>{{ 'Rp.' . number_format($subtotal) }}</td>
                                 <td>{{ 'Rp.' . number_format($ppn) }}</td>
-                                <td>{{ 'Rp.' . number_format($total+$data[0]->ongkir) }}</td>
+                                <td>{{ 'Rp.' . number_format($total + $ongkir) }}</td>
                             </tr>
 
                         </table>

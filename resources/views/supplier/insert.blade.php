@@ -6,7 +6,7 @@
                 <h6 class="m-0 font-weight-bold text-primary">Data Supplier</h6>
             </div>
             <div class="container mt-2">
-                <form action="{{ url('supplier') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ url('supplier') }}" method="POST" >
                     @csrf
                  
                     <div class="row">

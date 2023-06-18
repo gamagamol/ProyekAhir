@@ -17,7 +17,7 @@ class GoodsModel extends Model
             $query = "";
         }
 
-     
+
 
         return DB::select(
             "SELECT b.tgl_penerimaan,b.no_penerimaan,b.no_pengiriman,b.nomor_pekerjaan,b.nama_pelanggan,b.nama_pengguna,
@@ -56,20 +56,7 @@ class GoodsModel extends Model
     }
     public function show($no_pembelian)
     {
-        // return DB::table('transaksi')
 
-        //     ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
-        //     ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', '=', 'penawaran.id_penawaran')
-        //     ->join('penjualan', 'penjualan.id_transaksi', '=', 'transaksi.id_transaksi')
-        //     ->join('detail_transaksi_penjualan', 'detail_transaksi_penjualan.id_penjualan', '=', 'penjualan.id_penjualan')
-        //     ->join('pembelian', 'pembelian.id_transaksi', '=', 'transaksi.id_transaksi')
-        //     ->join('detail_transaksi_pembelian', 'detail_transaksi_pembelian.id_pembelian', '=', 'pembelian.id_pembelian')
-        //     ->join("produk", 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')
-        //     ->join("pelanggan", 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
-        //     ->join("pemasok", 'transaksi.id_pemasok', '=', 'pemasok.id_pemasok')
-        //     ->join("pengguna", 'transaksi.id', '=', 'pengguna.id')
-        //     ->where('pembelian.no_pembelian', '=', $no_pembelian)
-        //     ->get();
 
         return    DB::select("SELECT * FROM pembelian join detail_transaksi_pembelian 
             on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
@@ -185,19 +172,19 @@ class GoodsModel extends Model
 
 
 
-    public function detail($no_penerimaan)
+    public function detail($no_pembelian, $no_penerimaan)
     {
-        return DB::select("SELECT * FROM penerimaan_barang 
-                            join detail_penerimaan_barang on penerimaan_barang.id_penerimaan_barang=detail_penerimaan_barang.id_penerimaan_barang
-                            join pembelian on pembelian.id_pembelian=penerimaan_barang.id_pembelian
-                            join detail_transaksi_pembelian on detail_transaksi_pembelian.id_pembelian=pembelian.id_pembelian
-                            join transaksi on transaksi.id_transaksi=pembelian.id_transaksi
-                            join penjualan on pembelian.id_penjualan = penjualan.id_penjualan
-                            join pemasok on transaksi.id_pemasok = pemasok.id_pemasok
-                            join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
-                            join produk on detail_penerimaan_barang.id_produk=produk.id_produk
-                            join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
-                            join detail_transaksi_penawaran on penawaran.id_penawaran=detail_transaksi_penawaran.id_penawaran
-                            where no_penerimaan='$no_penerimaan'");
+        return DB::select("SELECT * FROM pembelian join detail_transaksi_pembelian 
+            on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
+            join transaksi on transaksi.id_transaksi=pembelian.id_transaksi
+            join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
+			join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
+            join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
+            join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+            join pengguna on pengguna.id=transaksi.id
+            join pemasok on pembelian.id_pemasok =  pemasok.id_pemasok
+            join penerimaan_barang on penerimaan_barang.id_transaksi=pembelian.id_transaksi
+            join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
+            where no_pembelian='$no_pembelian' and no_penerimaan='$no_penerimaan'");
     }
 }

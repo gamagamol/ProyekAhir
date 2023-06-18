@@ -64,7 +64,7 @@
 
                                         Delivery
                                     </a>
-                                    <a href="{{ url('goods/detail', str_replace('/', '-', $d->no_penerimaan)) }}"
+                                    <a href="{{ url('goods/detail', [str_replace('/', '-', $d->no_pembelian),str_replace('/', '-', $d->no_penerimaan)]) }}"
                                         class="btn btn-info mt-1">
                                         Detail </a>
 

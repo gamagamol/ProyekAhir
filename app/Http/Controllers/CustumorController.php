@@ -21,18 +21,17 @@ class CustumorController extends Controller
         $serch = request('cari');
         if ($serch) {
             $data = $this->custumor_model->index($serch);
-            $type='false';
+            $type = 'false';
         } else {
             $data = $this->custumor_model->index();
             $type = 'true';
-
         }
-       
+
 
         $data = [
             'tittle' => "Data Custumor",
             'data' => $data,
-            'type'=>$type,
+            'type' => $type,
         ];
         return view('Custumor.index', $data);
     }
@@ -45,13 +44,13 @@ class CustumorController extends Controller
     public function create()
     {
         $id_pelanggan = DB::table('pelanggan')
-            ->selectRaw('concat("P00",max(substring(id_pelanggan,4,3))+2) as id_pelanggan')
+            ->selectRaw('concat("P",max(CAST(TRIM("P" FROM id_pelanggan) AS INT))+1)   as id_pelanggan')
             ->first();
         $data = [
             'tittle' => 'Add data Custumor',
             'id_pelanggan' =>  $id_pelanggan->id_pelanggan
         ];
-        
+
         return view("Custumor.addCustumor", $data);
     }
 
@@ -63,7 +62,7 @@ class CustumorController extends Controller
             'nama_pelanggan' => 'required|string',
             'alamat_pelanggan' => 'required',
             'perwakilan' => 'required|string',
-            'email'=> 'required|email:rfc,dns'
+            'email' => 'required|email:rfc,dns'
         ];
         $message = [
             'id_pelanggan.required' => "The CODE COMPANY'S field is required",
@@ -76,6 +75,7 @@ class CustumorController extends Controller
 
         ];
         $validated = Validator::make($request->all(), $rules, $message);
+        // dd($validated->fails());
 
         if ($validated->fails()) {
             return redirect('custumor/create')->withErrors($validated)->withInput();

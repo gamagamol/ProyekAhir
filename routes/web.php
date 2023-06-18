@@ -41,6 +41,7 @@ Route::resource('product', ProductController::class)->middleware(['auth', 'reval
 Route::resource('custumor', CustumorController::class)->middleware(['auth', 'revalidate']);
 
 Route::resource('supplier', SupplierController::class)->middleware(['auth', 'revalidate']);
+
 Route::resource('services', ServicesController::class)->middleware(['auth', 'revalidate']);
 
 Route::resource('pegawai', pegawaiController::class)->middleware(['auth', 'revalidate']);
@@ -87,7 +88,7 @@ Route::get('purchase/print/{no_tagihan}', [PurchaseController::class, "print"]);
 
 Route::resource('goods', GoodsController::class)->middleware(['auth', 'revalidate']);
 Route::post('goods_insert', [GoodsController::class, "insert"]);
-Route::get('goods/detail/{no_tagihan}', [GoodsController::class, "detail"]);
+Route::get('goods/detail/{no_pembelian}/{no_penerimaan}', [GoodsController::class, "detail"]);
 
 
 Route::resource('delivery', DeliveryController::class)->middleware(['auth', 'revalidate']);
@@ -140,5 +141,3 @@ Route::get('status_transaksi', [ReportDetailSales::class, 'status_transaki']);
 
 Route::get('transaction_number_tracking', [TransaksiController::class, 'transactionNumberTracking']);
 Route::get('getTransactionNumberByDate/{date}', [TransaksiController::class, 'getTransactionNumberByDate']);
-
-

@@ -86,6 +86,29 @@ class PurchaseController extends Controller
         $produk = [];
         $arr_produk = [];
 
+        // echo    $this->containsOnlyNull($request->input('tebal_transaksi_asli'));
+        // die;
+
+        // if (
+        //     $tebal_transaksi_asli != null ||  $tebal_transaksi_asli != '' ||
+        //     $lebar_transaksi_asli != null ||  $lebar_transaksi_asli != '' ||
+        //     $panjang_transaksi_asli != null ||  $panjang_transaksi_asli != ''
+        // ) {
+        //     echo "masuk sini";
+        //     dd($tebal_transaksi_asli);
+
+        //     $validator = Validator::make($request->all(), [
+
+        //         "tebal_transaksi_asli.*"  => "regex:/^\d*(\.\d{2})?$/",
+        //         "lebar_transaksi_asli.*"  => "regex:/^\d*(\.\d{2})?$/",
+        //         "panjang_transaksi_asli.*"  => "regex:/^\d*(\.\d{2})?$/",
+        //     ]);
+
+        //     if ($validator->fails()) {
+        //         return redirect()->back()->with("failed", "if your transaction has a comma please use it '.'");
+        //     }
+        // }
+
 
         //    check array apa bukan
         if (is_array($unit)) {
@@ -98,7 +121,7 @@ class PurchaseController extends Controller
                     return redirect()->back()->with("failed", "Choose Your Supplier ");
                 }
             }
-            // dd($id_pemasok);
+
 
             foreach ($harga as $h) {
                 if ($h == null) {
@@ -116,7 +139,40 @@ class PurchaseController extends Controller
                 }
             }
 
-            // dd($unit);
+            foreach ($tebal_transaksi_asli as $tbl) {
+
+                if ($tbl != null) {
+
+                    
+                    if (preg_match("/^\d*(\.\d{2})?$/", $tbl) == 0) {
+                        return redirect()->back()->with("failed", "if your transaction has a comma please use it '.'");
+                    }
+                }
+            }
+
+            foreach ($lebar_transaksi_asli as $lbr) {
+
+                if ($lbr != null) {
+
+                    if (preg_match("/^\d*(\.\d{2})?$/", $lbr) == 0) {
+                        return redirect()->back()->with("failed", "if your transaction has a comma please use it '.'");
+                    }
+                }
+            }
+            foreach ($panjang_transaksi_asli as $pjg) {
+
+                if ($pjg != null) {
+
+                    if (preg_match("/^\d*(\.\d{2})?$/", $pjg) == 0) {
+                        return redirect()->back()->with("failed", "if your transaction has a comma please use it '.'");
+                    }
+                }
+            }
+
+
+
+
+
 
 
             // mengisi var produk
@@ -165,8 +221,7 @@ class PurchaseController extends Controller
                     }
                 }
             }
-            // dd($produk);
-            // mengisi arr produk
+
             $ipdk = 0;
             foreach ($quotation as $quo) {
                 $total_unit_produk = 0;
@@ -198,9 +253,7 @@ class PurchaseController extends Controller
                     }
                 }
             }
-            // chek iteem array produk
-            // dump($produk);
-            // dd($arr_produk);
+
 
             foreach ($arr_produk as $apdk) {
                 foreach ($produk as $aprdk) {
@@ -528,34 +581,10 @@ class PurchaseController extends Controller
 
     }
 
-    // public function print($no_transaksi)
-    // {
-    //     $data = $this->PurchaseModel->detail(str_replace("-", "/", $no_transaksi));
-
-    //     $subtotal = 0;
-    //     $ppn = 0;
-    //     $total = 0;
-    //     foreach ($data as $t) {
-
-    //         $total += $t->total_detail_pembelian;
-    //         $subtotal += $t->subtotal_detail_pembelian;
-    //         $ppn += $t->ppn_detail_pembelian;
-    //     }
-    //     $penyebut = penyebut($total);
-
-
-    //     $data = [
-    //         'tittle' => "Print purchase Order",
-    //         'data' => $this->PurchaseModel->detail(str_replace("-", "/", $no_transaksi)),
-    //         'total' => $total,
-    //         'subtotal' => $subtotal,
-    //         'ppn' => $ppn,
-    //         'penyebut' => $penyebut
-    //     ];
-
-    //     // dd($data);
-
-    //     // dd($data);
-    //     return view('purchase.print', $data);
-    // }
+    function containsOnlyNull($input)
+    {
+        return empty(array_filter($input, function ($a) {
+            return $a !== null;
+        }));
+    }
 }

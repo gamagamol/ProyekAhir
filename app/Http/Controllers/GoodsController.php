@@ -43,7 +43,7 @@ class GoodsController extends Controller
             'tittle' => "Create Goods Receipt",
             "data" => $this->goods->show($no_pembelian),
         ];
-        
+
         return view('goods.create', $data);
     }
 
@@ -55,31 +55,29 @@ class GoodsController extends Controller
         $unit = $request->input('unit');
         $id_produk = $request->input('id_produk');
         $no_pembelian = $request->input('no_pembelian');
-        
+
         // persiapan array
         $produk = [];
         $arr_produk = [];
-        
+
         if ($unit) {
-            
+
             $purchase = $this->goods->edit($no_pembelian);
             $id_transaksi = $request->input('id_transaksi');
-
-        }else{
-            $id_transaksi=[];
-            $purchase = $this->goods->edit($no_pembelian,$kode_transaksi);
-            foreach($purchase as $pcssi){
-                array_push($id_transaksi,$pcssi->id_transaksi);
+        } else {
+            $id_transaksi = [];
+            $purchase = $this->goods->edit($no_pembelian, $kode_transaksi);
+            foreach ($purchase as $pcssi) {
+                array_push($id_transaksi, $pcssi->id_transaksi);
             }
-
         }
-        
 
 
 
 
 
-        
+
+
         if ($unit) {
 
             // mengisi variable produk
@@ -182,21 +180,19 @@ class GoodsController extends Controller
                         'no_penerimaan' => $anps,
                         'tgl_penerimaan' => $tgl_penerimaan
                     ];
-    
-    
-                    $data_detail_penerimaan[$i]=[
-                        'id_penerimaan_barang'=>0,
-                        'id_produk'=>$id_produk[$i],
-                        'jumlah_detail_penerimaan'=>$unit[$i]
+
+
+                    $data_detail_penerimaan[$i] = [
+                        'id_penerimaan_barang' => 0,
+                        'id_produk' => $id_produk[$i],
+                        'jumlah_detail_penerimaan' => $unit[$i]
                     ];
                 }
                 $i++;
             }
-        }
-
-        else{
-            $i=0;
-            foreach($purchase as $pcss){
+        } else {
+            $i = 0;
+            foreach ($purchase as $pcss) {
 
                 $data_penerimaan[$i] = [
                     'id_pembelian' => $pcss->id_pembelian,
@@ -219,17 +215,17 @@ class GoodsController extends Controller
         // dump($purchase);
         // dump($data_penerimaan);
         // dd($data_detail_penerimaan);
-       
-       
-     $this->goods->insert_penerimaan($id_transaksi,$data_penerimaan,$data_detail_penerimaan,$unit);
+
+
+        $this->goods->insert_penerimaan($id_transaksi, $data_penerimaan, $data_detail_penerimaan, $unit);
 
         return redirect('goods')->with('success', "Data entered successfully Please Chek Your Detail Transaction for more information");
-
     }
-    public function detail($no_penerimaan)
+    public function detail($no_pembelian, $no_penerimaan)
     {
 
-        $data = $this->goods->detail(str_replace("-", "/", $no_penerimaan));
+        $data = $this->goods->detail(str_replace("-", "/", $no_pembelian), str_replace("-", "/", $no_penerimaan));
+        // dd($data);
         $data = [
             'tittle' => "Detail Goods Receipt",
             'data' => $data

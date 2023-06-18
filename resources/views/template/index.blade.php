@@ -98,8 +98,8 @@ $notif = $notif->notif();
                         <h6 class="collapse-header">Mater Data:</h6>
                         <a class="collapse-item" href="{{ url('product') }}"
                             @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>Product</a>
-                        <a class="collapse-item" href="{{ url('services') }}"
-                            @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>Services</a>
+                        {{-- <a class="collapse-item" href="{{ url('services') }}"
+                            @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>Services</a> --}}
 
                         <a class="collapse-item" href="{{ url('custumor') }}"
                             @if (Auth::user()->status_pengguna != 'SALES_ADMIN' && Auth::user()->status_pengguna != 'SUPER_ADMIN') hidden @endif>Customer</a>
