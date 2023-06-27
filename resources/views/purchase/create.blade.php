@@ -80,6 +80,10 @@
                     <div class="table-responsive text-center">
                         <table class="table table-bordered" id="dataTable" cellspacing="0">
                             <tr>
+                                <td colspan="8">Quotation</td>
+                                <td colspan="13">Purchase</td>
+                            </tr>
+                            <tr>
                                 <td>No</td>
                                 <td>Date</td>
                                 <td>No Sales</td>
@@ -115,9 +119,9 @@
                                     <td style="min-width:120px">{{ $d->tgl_penjualan }}</td>
                                     <td>{{ $d->no_penjualan }}</td>
                                     <td>{{ $d->nama_produk }}</td>
-                                    <td>{{ $d->tebal_transaksi }}</td>
-                                    <td>{{ $d->lebar_transaksi }}</td>
-                                    <td>{{ $d->panjang_transaksi }}</td>
+                                    <td>{{ $d->tebal_penawaran }}</td>
+                                    <td>{{ $d->lebar_penawaran }}</td>
+                                    <td>{{ $d->panjang_penawaran }}</td>
                                     <td>{{ $d->berat }}</td>
                                     {{-- sales --}}
                                     <td>{{ $d->jumlah_detail_penjualan }}</td>

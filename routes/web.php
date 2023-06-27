@@ -52,6 +52,8 @@ Route::get('pegawai/delete/{id}', [pegawaiController::class, "delete"])->middlew
 Route::resource('quotation', QuotationController::class)->middleware(['auth', 'revalidate']);
 Route::post('quotation_insert', [QuotationController::class, "insert"]);
 Route::get('quotationReportDetail', [QuotationController::class, 'quotationReportDetail']);
+Route::post('quotation/editPembantuPenawaran', [QuotationController::class, 'editPembantuPenawaran']);
+
 // report quotation Detail
 Route::get('quotationReportDetailAjax/{date?}', [QuotationController::class, 'quotationReportDetailAjax']);
 Route::get('getDateQuotationAjax', [QuotationController::class, 'getDateQuotationAjax']);

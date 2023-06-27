@@ -64,14 +64,14 @@
                                         {{ $p->nama_produk }}
                                     </td>
                                     <td>
-                                        {{ $p->tebal_transaksi }}
+                                        {{ $p->tebal_penawaran }}
                                     </td>
                                     <td>
-                                        {{ $p->lebar_transaksi }}
+                                        {{ $p->lebar_penawaran }}
                                     </td>
 
                                     <td>
-                                        {{ $p->panjang_transaksi }}
+                                        {{ $p->panjang_penawaran }}
                                     </td>
                                     <td>
                                         {{ $p->jumlah_detail_pengiriman }}

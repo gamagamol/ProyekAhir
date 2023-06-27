@@ -51,7 +51,10 @@
 
                     <div class="table-responsive text-center">
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-
+                            <tr>
+                                <td colspan="8">Quotation</td>
+                                <td colspan="13">Purchase</td>
+                            </tr>
                             <tr>
                                 <td>Date</td>
                                 <td>No Transaction</td>
@@ -76,7 +79,7 @@
 
                             @foreach ($data as $p)
                                 <?php
-                               
+                                
                                 $jumlah = $p->jumlah_detail_pembelian;
                                 $berat = $p->berat;
                                 $subtotal = $p->subtotal;
@@ -100,14 +103,14 @@
                                         {{ $p->nama_produk }}
                                     </td>
                                     <td>
-                                        {{ $p->tebal_transaksi }}
+                                        {{ $p->tebal_penawaran }}
                                     </td>
                                     <td>
-                                        {{ $p->lebar_transaksi }}
+                                        {{ $p->lebar_penawaran }}
                                     </td>
 
                                     <td>
-                                        {{ $p->panjang_transaksi }}
+                                        {{ $p->panjang_penawaran }}
                                     </td>
                                     <td>
                                         {{ $jumlah }}
@@ -117,13 +120,13 @@
                                         {{ $p->nama_produk }}
                                     </td>
                                     <td>
-                                     <?= ($p->tebal_detail_pembelian)? $p->tebal_detail_pembelian :  $p->tebal_penawaran ?>
+                                        <?= $p->tebal_detail_pembelian ? $p->tebal_detail_pembelian : $p->tebal_penawaran ?>
                                     </td>
                                     <td>
-                                        {{ ($p->lebar_detail_pembelian)? $p->lebar_detail_pembelian :  $p->lebar_penawaran }}
+                                        {{ $p->lebar_detail_pembelian ? $p->lebar_detail_pembelian : $p->lebar_penawaran }}
                                     </td>
                                     <td>
-                                        {{ ($p->lebar_detail_pembelian)? $p->lebar_detail_pembelian :  $p->lebar_penawaran}}
+                                        {{ $p->lebar_detail_pembelian ? $p->lebar_detail_pembelian : $p->lebar_penawaran }}
                                     </td>
                                     <td>
                                         {{ $jumlah }}
@@ -154,7 +157,7 @@
                                     <td>
                                         {{ $p->nama_pemasok }}
                                     </td>
-                                  
+
 
 
 

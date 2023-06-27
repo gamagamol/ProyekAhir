@@ -34,6 +34,8 @@
                     <div class="table-responsive text-center">
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
+                                <td colspan="8">Quotation</td>
+                                <td colspan="15">Delivery</td>
                                 <tr>
                                     <td>No</td>
                                     <td>Date Delivery</td>
@@ -108,9 +110,9 @@
                             html += `<td>${ d.no_pengiriman }</td>`
                             html += `<td>${ d.nomor_pekerjaan }</td>`
                             html += `<td>${ d.nama_produk }</td>`
-                            html += `<td>${ d.tebal_transaksi }</td>`
-                            html += `<td>${ d.lebar_transaksi }</td>`
-                            html += `<td>${ d.panjang_transaksi }</td>`
+                            html += `<td>${ d.tebal_penawaran }</td>`
+                            html += `<td>${ d.lebar_penawaran }</td>`
+                            html += `<td>${ d.panjang_penawaran }</td>`
                             html += `<td>${ d.jumlah }</td>`
                             html += `<td>${ d.nama_produk }</td>`
                             html += `<td>${ d.tebal_penawaran }</td>`

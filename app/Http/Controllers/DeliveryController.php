@@ -437,22 +437,7 @@ class DeliveryController extends Controller
     }
 
 
-    // public function print($no_transaksi)
-    // {
-    //     $no_transaksi = str_replace('-', '/', $no_transaksi);
-    //     $tgl_pengiriman = $this->model->detail($no_transaksi);
-
-    //     $tgl_pengiriman = end($tgl_pengiriman);
-    //     $tgl_pengiriman = $tgl_pengiriman->tgl_pengiriman;
-    //     $data = $this->model->print($no_transaksi);
-    //     $data = [
-    //         'tittle' => "Print Delivery Document",
-    //         'data' => $data,
-    //         'tgl_pengiriman' => $tgl_pengiriman
-    //     ];
-    //     // dd($data);
-    //     return view('delivery.print', $data);
-    // }
+   
 
     public function print($no_transaksi)
     {
@@ -488,9 +473,9 @@ class DeliveryController extends Controller
             $worksheet->MergeCells("D$tambahan_baris:E$tambahan_baris");
 
             $worksheet->setCellValue("F$tambahan_baris", $data[$i]->nama_produk);
-            $tebal = $data[$i]->tebal_transaksi;
-            $lebar = $data[$i]->lebar_transaksi;
-            $panjang =  $data[$i]->panjang_transaksi;
+            $tebal = $data[$i]->tebal_penawaran;
+            $lebar = $data[$i]->lebar_penawaran;
+            $panjang =  $data[$i]->panjang_penawaran;
 
             $worksheet->setCellValue("G$tambahan_baris", $tebal);
             $worksheet->setCellValue("H$tambahan_baris", $lebar);

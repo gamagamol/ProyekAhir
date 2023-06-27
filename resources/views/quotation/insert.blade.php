@@ -4,8 +4,11 @@
         <div class="alert alert-danger" role="alert">
             {{ session('failed') }}
         </div>
+    @elseif(session()->has('success'))
+        <div class="alert alert-success" role="alert">
+            {{ session('success') }}
+        </div>
     @endif
-    {{-- @dd($pembantu) --}}
     <div class="container  ">
         <div class="card shadow mb-4 ml-4 mr-4">
             <div class="card-header py-3 mb-2 ">
@@ -54,8 +57,7 @@
                                     <label for="example1" class="mt-2">Job number</label>
                                     <input type="text"
                                         class="form-control @error('nomor_pekerjaan') is-invalid @enderror"
-                                        name="nomor_pekerjaan" id="nomor_pekerjaan" value={{ old('nomor_pekerjaan') }}
-                                      >
+                                        name="nomor_pekerjaan" id="nomor_pekerjaan" value={{ old('nomor_pekerjaan') }}>
 
                                     @error('nomor_pekerjaan')
                                         <div class="invalid-feedback">
@@ -149,7 +151,7 @@
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2" id="tebal_label">Inquiry
                                         thick (mm)</label>
-                                    <input type="text"  
+                                    <input type="text"
                                         class="form-control @error('tebal_transaksi') is-invalid @enderror"
                                         name="tebal_transaksi" id="tebal_transaksi" value="{{ old('tebal_transaksi') }}"
                                         min="0">
@@ -163,7 +165,7 @@
                             <div class="col-md-3 ">
                                 <div class="form-group mt-2 rounded" id="lebar">
                                     <label for="example1" class="mt-2">Inquiry Widht (mm)</label>
-                                    <input type="text" 
+                                    <input type="text"
                                         class="form-control @error('lebar_transaksi') is-invalid @enderror"
                                         name="lebar_transaksi" id="lebar_transaksi" value="{{ old('lebar_transaksi') }}"
                                         min="0">
@@ -177,7 +179,7 @@
                             <div class="col-md-3">
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2"> Inquiry Length (mm)</label>
-                                    <input type="text" 
+                                    <input type="text"
                                         class="form-control @error('panjang_transaksi') is-invalid @enderror"
                                         name="panjang_transaksi" id="panjang_transaksi"
                                         value="{{ old('panjang_transaksi') }}" min="0">
@@ -256,10 +258,6 @@
                                     @enderror
                                 </div>
                             </div>
-
-
-
-
                         </div>
                         <div class="row">
                             <input type="text" name="id" id="id" value="{{ Auth::user()->id }}" hidden>
@@ -277,12 +275,6 @@
                                                 onclick="selesai()">finished</a>
                                         </div>
                                     </div>
-
-
-
-
-
-
                     </form>
                 </div>
             </div>
@@ -294,12 +286,15 @@
 
     <h4 class="text-start mt-2 mb-2">Data Inputan</h4>
 
-    <div class="table-responsive text-center mt-2">
-        <form action={{ url('quotation_insert') }} method="POST">
+    <form action={{ url('quotation_insert') }} method="POST">
+        <div class="table-responsive text-center mt-2">
             @csrf
 
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-
+                <tr>
+                    <td colspan="7">Inquiry</td>
+                    <td colspan="15">Inquiry</td>
+                </tr>
                 <tr>
                     <td>No</td>
                     <td>Date</td>
@@ -325,6 +320,7 @@
                     <?php $i = 1;
                     $total = 0; ?>
                     @foreach ($pembantu as $p)
+                        {{-- @dd($p) --}}
                         <tr>
 
                             <input type="text"
@@ -399,6 +395,9 @@
                             </td>
 
                             <td>
+                                <button type="button" id="btn_edit_penawaran" class="btn btn-warning"
+                                    onclick="editPenawaran(<?= $p->id_pembantu ?>,<?= $p->tebal_pembantu ?>,<?= $p->lebar_pembantu ?>,<?= $p->panjang_pembantu ?>,'<?= $p->bentuk_pembantu ?>','<?= $p->layanan_pembantu ?>',<?= $p->jumlah_pembantu ?>)">
+                                    Edit</button>
                                 <a href={{ url('deleteq', $p->id_pembantu) }} class="btn btn-danger">Delete</a>
                             </td>
 
@@ -419,118 +418,76 @@
                 @endif
 
             </table>
-    </div>
-    <button class="btn btn-primary text-start mt-2" name="submit" id="submit" hidden data-toggle="modal"
-        data-target="#sales">submit</button>
-
+        </div>
+        <a href="{{ url('quotation') }}" class="btn btn-primary  mb-4 ml-3" style="margin-top: 30px">Back</a>
+        <button class="btn btn-primary text-start mt-2" name="submit" id="submit" hidden data-toggle="modal"
+            data-target="#sales">submit</button>
     </form>
-    <a href="{{ url('quotation') }}" class="btn btn-primary  mb-4 ml-3" style="margin-top: 30px">Back</a>
 
-
-
-
-
-{{-- 
-    <h4 class="text-start mt-3">History Customer</h4>
-    <div class="container mt-2">
-        <div>
-            <form action="" method="get">
-                @csrf
-
-                <div class="row">
-                    <div class="col-md-3 mt-3">
-                        <div class="form-group">
-                            <select class="form-control @error('id_pelanggan') is-invalid @enderror" id="id_pelanggan"
-                                name="id_pelanggan" value="{{ old('id_pelanggan') }}">
-                                @foreach ($pelanggan as $p)
-                                    <option value="{{ $p->id_pelanggan }}">{{ $p->nama_pelanggan }}
-                                    </option>
-                                @endforeach
-                            </select>
-
-                            @error('id_pelanggan')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-                    </div>
-
-
-                    <div class="col-md-3 mt-3">
-                        <button type=submit name=submit class="btn btn-primary">submit</button>
-                    </div>
-
-
-
-
-
+    {{-- modal --}}
+    <div class="modal" tabindex="-1" role="dialog" id="modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Size Material</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
+                <div class="modal-body">
+                    <form action="{{ url('quotation/editPembantuPenawaran') }}" method="POST">
+                        @csrf
+                        <div class="row">
+                            <input type="hidden" id="id_edit_penawaran" name="id_edit_penawaran">
+                            <input type="hidden" id="bentuk_edit_penawaran" name="bentuk_edit_penawaran">
+                            <input type="hidden" id="layanan_edit_penawaran" name="layanan_edit_penawaran">
+                            <input type="hidden" id="jumlah_edit_penawaran" name="jumlah_edit_penawaran">
+                            <div class="col-md-10">
+                                <div class="form-group mt-2 rounded">
+                                    <label for="example1" class="mt-2" id="tebal_label">Quotation
+                                        thick (mm)</label>
+                                    <input type="text" class="form-control" name="tebal_edit_penawaran"
+                                        id="tebal_edit_penawaran" required min="0">
+
+                                </div>
+                            </div>
 
 
 
-            </form>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-10 ">
+                                <div class="form-group mt-2 rounded" id="lebar">
+                                    <label for="example1" class="mt-2">Quotation Widht (mm)</label>
+                                    <input type="text" class="form-control " name="lebar_edit_penawaran"
+                                        id="lebar_edit_penawaran" required min="0">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-md-10">
+                                <div class="form-group mt-2 rounded">
+                                    <label for="example1" class="mt-2"> Quotation Length (mm)</label>
+                                    <input type="text" class="form-control" name="panjang_edit_penawaran"
+                                        id="panjang_edit_penawaran" required min="0">
+
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+                </form>
+
+            </div>
         </div>
     </div>
-    <div class="table-responsive text-center mb-3">
-        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-
-            <tr>
-                <td>No</td>
-                <td>Date</td>
-                <td>No Quotation</td>
-                <td>Job number</td>
-                <td>Grade</td>
-                <td colspan="3">Material Size</td>
-                <td>QTY</td>
-                <td>Grade</td>
-                <td colspan="3">Material Size</td>
-                <td>QTY</td>
-                <td>Weight(Kg)</td>
-                <td>Unit Price</td>
-                <td>Shipment</td>
-                <td>Amount</td>
-                <td>VAT 10%</td>
-                <td>Total Amount</td>
-                <td>Processing</td>
-
-                @if (is_countable($history) > 0)
-                    @foreach ($history as $h)
-            <tr>
-                <td> {{ $loop->iteration }}</td>
-                <td style="min-width:120px">{{ $h->tgl_penawaran }}</td>
-                <td>{{ $h->no_penawaran }}</td>
-                <td>{{ $h->nomor_pekerjaan }}</td>
-                <td>{{ $h->nama_produk }}</td>
-                <td>{{ $h->tebal_transaksi }}</td>
-                <td>{{ $h->lebar_transaksi }}</td>
-                <td>{{ $h->panjang_transaksi }}</td>
-                <td>{{ $h->jumlah }}</td>
-                <td>{{ $h->nama_produk }}</td>
-                <td>{{ $h->tebal_penawaran }}</td>
-                <td>{{ $h->lebar_penawaran }}</td>
-                <td>{{ $h->panjang_penawaran }}</td>
-                <td>{{ $h->jumlah }}</td>
-                <td>{{ $h->berat }}</td>
-                <td>{{ 'Rp.' . number_format($h->harga) }}</td>
-                <td>{{ 'Rp.' . number_format($h->ongkir) }}</td>
-                <td>{{ 'Rp.' . number_format($h->subtotal) }}</td>
-                <td>{{ 'Rp.' . number_format($h->ppn) }}</td>
-                <td>{{ 'Rp.' . number_format($h->total) }}</td>
-                <td>{{ $h->layanan }}</td>
-
-            </tr>
-            @endforeach
-            @endif
 
 
-        </table>
-
-    </div> --}}
-    </form>
-    </div>
-    </div>
-    </div>
 
     <script>
         $('#harga').mask('000.000.000.000.000', {
@@ -539,6 +496,8 @@
         $('#ongkir').mask('000.000.000.000.000', {
             reverse: true
         });
+
+        let baseUrl = '<?= url('/') ?>'
 
 
         function selesai() {
@@ -552,20 +511,32 @@
         function drop() {
             // bikin form nya
             let id_produk = document.getElementById('id_produk').value.split('|');
-
             let bentuk_produk = id_produk[1];
-
             let lebar = document.getElementById('lebar_transaksi');
             if (bentuk_produk == "CYLINDER") {
-
-               $('#lebar_transaksi').val(0)
-                lebar.tex
-               $('#lebar_transaksi').attr('readonly', true);
+                $('#lebar_transaksi').val(0)
+                $('#lebar_transaksi').attr('readonly', true);
             } else {
                 lebar.removeAttribute('readonly')
             }
 
 
+
+        }
+
+        function editPenawaran(id_pembantu, tebal_penawaran, lebar_penawaran, panjang_penawaran, bentuk, layanan, jumlah) {
+
+            $('#id_edit_penawaran').val(id_pembantu)
+
+
+            $('#tebal_edit_penawaran').val(tebal_penawaran)
+            $('#lebar_edit_penawaran').val(lebar_penawaran)
+            $('#panjang_edit_penawaran').val(panjang_penawaran)
+
+            $('#bentuk_edit_penawaran').val(bentuk)
+            $('#layanan_edit_penawaran').val(layanan)
+            $('#jumlah_edit_penawaran').val(jumlah)
+            $('#modal').modal('show')
 
         }
     </script>

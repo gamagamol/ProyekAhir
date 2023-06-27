@@ -22,7 +22,10 @@
 
 
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-
+                            <tr>
+                                <td colspan="8">Quotation</td>
+                                <td colspan="13">Goods Receipt</td>
+                            </tr>
                             <tr>
                                 <td>Date</td>
                                 <td>No Transaction</td>
@@ -68,14 +71,14 @@
                                         {{ $p->nama_produk }}
                                     </td>
                                     <td>
-                                        {{ $p->tebal_transaksi }}
+                                        {{ $p->tebal_penawaran }}
                                     </td>
                                     <td>
-                                        {{ $p->lebar_transaksi }}
+                                        {{ $p->lebar_penawaran }}
                                     </td>
 
                                     <td>
-                                        {{ $p->panjang_transaksi }}
+                                        {{ $p->panjang_penawaran }}
                                     </td>
                                     <td>
                                         {{ $p->jumlah_detail_penerimaan }}
@@ -85,13 +88,13 @@
                                         {{ $p->nama_produk }}
                                     </td>
                                     <td>
-                                        <?= ($p->tebal_detail_pembelian )? $p->tebal_detail_pembelian : $p->tebal_penawaran ?>
+                                        <?= $p->tebal_detail_pembelian ? $p->tebal_detail_pembelian : $p->tebal_penawaran ?>
                                     </td>
                                     <td>
-                                        {{($p->lebar_detail_pembelian )?$p->lebar_detail_pembelian : $p->lebar_penawaran }}
+                                        {{ $p->lebar_detail_pembelian ? $p->lebar_detail_pembelian : $p->lebar_penawaran }}
                                     </td>
                                     <td>
-                                        {{ ($p->panjang_detail_pembelian )?$p->panjang_detail_pembelian :$p->panjang_penawaran }}
+                                        {{ $p->panjang_detail_pembelian ? $p->panjang_detail_pembelian : $p->panjang_penawaran }}
                                     </td>
                                     <td>
                                         {{ $p->jumlah_detail_penerimaan }}

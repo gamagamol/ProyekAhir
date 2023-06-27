@@ -190,9 +190,9 @@ class BillPaymentController extends Controller
             $worksheet->MergeCells("B$tambahan_baris:C$tambahan_baris");
 
             $worksheet->setCellValue("D$tambahan_baris", $data[$i]->nama_produk);
-            $tebal =  $data[$i]->tebal_transaksi;
-            $lebar =  $data[$i]->lebar_transaksi;
-            $panjang =  $data[$i]->panjang_transaksi;
+            $tebal =  $data[$i]->tebal_penawaran;
+            $lebar =  $data[$i]->lebar_penawaran;
+            $panjang =  $data[$i]->panjang_penawaran;
 
             $worksheet->setCellValue("E$tambahan_baris", $tebal);
             $worksheet->setCellValue("F$tambahan_baris", $lebar);

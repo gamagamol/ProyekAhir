@@ -22,7 +22,10 @@
 
 
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-
+                            <tr>
+                                <td colspan="8">Quotation</td>
+                                <td colspan="13">Sales</td>
+                            </tr>
                             <tr>
                                 <td>Date</td>
                                 <td>No Transaction</td>
@@ -124,7 +127,7 @@
 
 
                                 </tr>
-                             <?php
+                                <?php
                                 $subtotal += $p->subtotal;
                                 $ppn += $p->ppn;
                                 $total += $p->total;
@@ -134,9 +137,9 @@
 
                             <tr>
                                 <td colspan='16'>TOTAL</td>
-                                <td>{{'Rp.'.number_format($subtotal)}}</td>
-                                <td>{{'Rp.'.number_format($ppn)}}</td>
-                                <td>{{'Rp.'.number_format($total+$data[0]->ongkir)}}</td>
+                                <td>{{ 'Rp.' . number_format($subtotal) }}</td>
+                                <td>{{ 'Rp.' . number_format($ppn) }}</td>
+                                <td>{{ 'Rp.' . number_format($total + $data[0]->ongkir) }}</td>
                             </tr>
 
                         </table>

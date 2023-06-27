@@ -91,14 +91,21 @@
                                     <td>{{ $d->no_penerimaan }}</td>
                                     <td>{{ $d->nomor_pekerjaan }}</td>
                                     <td>{{ $d->nama_produk }}</td>
-                                    <td>{{ $d->tebal_transaksi }}</td>
-                                    <td>{{ $d->lebar_transaksi }}</td>
-                                    <td>{{ $d->panjang_transaksi }}</td>
+                                    <td>
+                                        <?=  $d->tebal_penawaran ?>
+                                    </td>
+                                    <td>
+                                        {{$d->lebar_penawaran }}
+                                    </td>
+                                    <td>
+                                        {{$d->lebar_penawaran }}
+                                    </td>
                                     <td>{{ $d->jumlah_detail_penerimaan }}</td>
                                     <td>{{ $d->jumlah_detail_pengiriman }}</td>
                                     <td>{{ $d->nama_pelanggan }}</td>
                                     <td id={{ "ClickCreateSupplier$i" }}>
-                                        <i class="fa fa-plus-circle" aria-hidden="true" onclick="CreateSupplier('{{ $d->id_produk }}',
+                                        <i class="fa fa-plus-circle" aria-hidden="true"
+                                            onclick="CreateSupplier('{{ $d->id_produk }}',
                                                     '{{ $d->nama_produk }}',
                                                     '{{ $d->no_penerimaan }}',
                                                     '{{ $d->id_transaksi }}',
@@ -114,7 +121,8 @@
 
                                                   
                                                     
-                                                    )" id={{ "IconClickCreateSupplier$i" }}></i>
+                                                    )"
+                                            id={{ "IconClickCreateSupplier$i" }}></i>
 
                                     </td>
 

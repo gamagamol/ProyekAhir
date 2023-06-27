@@ -61,6 +61,7 @@ class QuotationController extends Controller
 
 
         $pembantu = DB::table('pembantu_penawaran')->get();
+        // dd($pembantu);
         // nama pelanggan
         if (count($pembantu)) {
             $id_pelanggan = $pembantu[0]->id_pelanggan;
@@ -120,6 +121,7 @@ class QuotationController extends Controller
 
     public function store(Request $request)
     {
+
 
 
 
@@ -204,10 +206,11 @@ class QuotationController extends Controller
                 'harga_pembantu' => str_replace('.', "", $request->input('harga')),
                 'ongkir_pembantu' => str_replace('.', "", $request->input('ongkir')),
                 'id_user' => $request->input("id"),
-                'tebal_penawaran' => $tebal_transaksi,
-                'lebar_penawaran' => $lebar_transaksi,
-                'panjang_penawaran' => $panjang_transaksi,
+                'tebal_penawaran' => ($layanan == 'MILLING') ? $tebal_transaksi + 5 : $tebal_transaksi,
+                'lebar_penawaran' => ($layanan == 'MILLING') ? $lebar_transaksi + 5 : $lebar_transaksi,
+                'panjang_penawaran' => ($layanan == 'MILLING') ? $panjang_transaksi + 5 : $panjang_transaksi,
                 'berat_pembantu' => $berat,
+                'bentuk_pembantu' => $bentuk_produk,
                 'subtotal' => $subtotal,
                 'ppn' => $ppn,
                 'total' => $total,
@@ -337,6 +340,7 @@ class QuotationController extends Controller
         $data = $this->QuotationModel->show($no_transaksi);
 
 
+      
 
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/qtn_template.xlsx');
 
@@ -346,7 +350,7 @@ class QuotationController extends Controller
         $worksheet->getCell('O5')->setValue($data[0]->no_penawaran);
         $worksheet->getCell('P6')->setValue($data[0]->nama_pelanggan);
         $worksheet->getCell('Q11')->setValue(date('Y-m-d', strtotime($data[0]->tgl_penawaran . ' + 3 days')));
-        $worksheet->getCell('Q12')->setValue($data[0]->nama_pengguna);
+        $worksheet->getCell('Q12')->setValue($data[0]->nama_pegawai);
         $worksheet->getCell('E16')->setValue($data[0]->layanan);
 
         // alamat
@@ -413,8 +417,13 @@ class QuotationController extends Controller
         $worksheet->setCellValue("P$baris_setelah", $total);
         $worksheet->MergeCells("P$baris_setelah:Q$baris_setelah");
 
+        $baris_setelah += 6;
+        $worksheet->setCellValue("E$baris_setelah", $data[0]->nama_pelanggan);
+        $worksheet->MergeCells("E$baris_setelah:I$baris_setelah");
+
+
         $baris_setelah += 12;
-        $worksheet->setCellValue("P$baris_setelah", $data[0]->nama_pegawai);
+        $worksheet->setCellValue("P$baris_setelah", $data[0]->nama_pengguna);
         $worksheet->setCellValue("E$baris_setelah", $data[0]->perwakilan);
 
 
@@ -448,7 +457,8 @@ class QuotationController extends Controller
                     $lebar_penawaran = $lebar_transaksi;
                     $panjang_penawaran = $panjang_transaksi;
 
-                    $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
+                    // $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
+                    $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.000008;
                     return  $berat = number_format($berat, 2, '.', '');
                 }
 
@@ -497,7 +507,7 @@ class QuotationController extends Controller
                     $lebar_penawaran = 0;
                     $panjang_penawaran =  $panjang_transaksi + 5;
 
-                    $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.000008;
+                    $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
                     return  $berat = number_format($berat, 2, '.', '');
                 }
                 break;
@@ -710,5 +720,28 @@ class QuotationController extends Controller
     public function quotationReportExport($month = null, $date = null)
     {
         return Excel::download(new QuotationExport($month, $date, 'quotation'), 'Quotation VS PO Report.xlsx');
+    }
+
+
+
+
+    public function editPembantuPenawaran(Request $request)
+    {
+        $berat = $this->CalculateWeight(
+            $request->bentuk_edit_penawaran,
+            $request->layanan_edit_penawaran,
+            $request->tebal_edit_penawaran,
+            $request->lebar_edit_penawaran,
+            $request->panjang_edit_penawaran,
+            $request->jumlah_edit_penawaran,
+        );
+        DB::table('pembantu_penawaran')->where('id_pembantu', $request->id_edit_penawaran)->update([
+            'tebal_penawaran' => $request->tebal_edit_penawaran,
+            'lebar_penawaran' => $request->lebar_edit_penawaran,
+            'panjang_penawaran' => $request->panjang_edit_penawaran,
+            'berat_pembantu' => $berat,
+        ]);
+
+        return back()->with("success", "Data Quotation Has been successfully Updated ");
     }
 }

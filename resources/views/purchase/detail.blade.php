@@ -21,6 +21,10 @@
                     <div class="table-responsive text-center mt-2">
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <tr>
+                                <td colspan="8">Quotation</td>
+                                <td colspan="13">Purchase</td>
+                            </tr>
+                            <tr>
                                 <td>Date</td>
                                 <td>No Transaction</td>
                                 <td>Job number</td>
@@ -63,23 +67,6 @@
                                         {{ $p->nama_produk }}
                                     </td>
                                     <td>
-                                        {{ $p->tebal_detail_pembelian > 0 ? $p->tebal_detail_pembelian : $p->tebal_transaksi }}
-                                    </td>
-                                    <td>
-                                        {{ $p->lebar_transaksi > 0 ? $p->lebar_detail_pembelian : $p->lebar_transaksi }}
-                                    </td>
-
-                                    <td>
-                                        {{ $p->panjang_detail_pembelian > 0 ? $p->panjang_detail_pembelian : $p->panjang_transaksi }}
-                                    </td>
-                                    <td>
-                                        {{ $p->jumlah_detail_pembelian }}
-                                    </td>
-
-                                    <td>
-                                        {{ $p->nama_produk }}
-                                    </td>
-                                    <td>
                                         {{ $p->tebal_penawaran }}
                                     </td>
                                     <td>
@@ -87,6 +74,25 @@
                                     </td>
                                     <td>
                                         {{ $p->panjang_penawaran }}
+                                    </td>
+                                    <td>
+                                        {{ $p->jumlah }}
+                                    </td>
+
+                                    <td>
+                                        {{ $p->nama_produk }}
+                                    </td>
+
+
+                                    <td>
+                                        {{ $p->tebal_detail_pembelian > 0 ? $p->tebal_detail_pembelian : $p->tebal_penawaran }}
+                                    </td>
+                                    <td>
+                                        {{ $p->lebar_detail_pembelian > 0 ? $p->lebar_detail_pembelian : $p->lebar_penawaran }}
+                                    </td>
+
+                                    <td>
+                                        {{ $p->panjang_detail_pembelian > 0 ? $p->panjang_detail_pembelian : $p->panjang_penawaran }}
                                     </td>
                                     <td>
                                         {{ $p->jumlah_detail_pembelian }}

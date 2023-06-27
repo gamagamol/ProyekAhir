@@ -63,9 +63,9 @@
                                     <td>{{ $d->no_tagihan }}</td>
                                     <td>{{ $d->nomor_pekerjaan }}</td>
                                     <td>{{ $d->nama_produk }}</td>
-                                    <td>{{ $d->tebal_transaksi }}</td>
-                                    <td>{{ $d->lebar_transaksi }}</td>
-                                    <td>{{ $d->panjang_transaksi }}</td>
+                                    <td>{{ $d->tebal_penawaran }}</td>
+                                    <td>{{ $d->lebar_penawaran }}</td>
+                                    <td>{{ $d->panjang_penawaran }}</td>
                                     <td>{{ $d->jumlah }}</td>
                                     <td>{{ $d->berat }}</td>
                                     <td>{{ 'Rp.' . number_format($d->harga) }}</td>
