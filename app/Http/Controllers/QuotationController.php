@@ -207,7 +207,7 @@ class QuotationController extends Controller
                 'ongkir_pembantu' => str_replace('.', "", $request->input('ongkir')),
                 'id_user' => $request->input("id"),
                 'tebal_penawaran' => ($layanan == 'MILLING') ? $tebal_transaksi + 5 : $tebal_transaksi,
-                'lebar_penawaran' => ($layanan == 'MILLING') ? $lebar_transaksi + 5 : $lebar_transaksi,
+                'lebar_penawaran' => ($layanan == 'MILLING' && $bentuk_produk=='FLAT') ? $lebar_transaksi + 5 : $lebar_transaksi,
                 'panjang_penawaran' => ($layanan == 'MILLING') ? $panjang_transaksi + 5 : $panjang_transaksi,
                 'berat_pembantu' => $berat,
                 'bentuk_pembantu' => $bentuk_produk,
