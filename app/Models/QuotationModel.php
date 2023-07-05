@@ -69,12 +69,19 @@ class QuotationModel extends Model
             ->where("kode_transaksi", "=", $data_transaksi[0]["kode_transaksi"])->get();
 
         //  menentukan no penawaran
+        // $date=   strtotime($tgl_penawaran);
+        // $month = date("f", $date);
+
+
+        $bulan_tgl = explode("-", $tgl_penawaran)[1];
+        // dd($bulan_tgl);
         $no_penawaran =
             DB::table('penawaran')
             ->selectRaw("DISTINCT ifnull(max(substring(no_penawaran,5,1)),0)+1  as no_penawaran")
-            ->where("tgl_penawaran", "=", $tgl_penawaran)
+            ->whereMonth("tgl_penawaran", "=", $bulan_tgl)
             ->first();
         $no_penawaran = (int)$no_penawaran->no_penawaran;
+        // dd($no_penawaran);
 
 
 
@@ -82,9 +89,9 @@ class QuotationModel extends Model
         $tahun = $tgl_penawaran[0];
         $bulan = $tgl_penawaran[1];
         $hari = $tgl_penawaran[2];
-        $no_penawaran = "QTH/$no_penawaran/$tahun/$bulan/$hari";
+        $no_penawaran = "QTN/$no_penawaran/$tahun/$bulan/$hari";
 
-        // nyiapin data penawarang 
+        // nyiapin data penawaran 
         for ($i = 0; $i <= count($id_transaksi) - 1; $i++) {
             foreach ($id_transaksi[$i] as $it) {
                 $data_penawaran[$i]["id_transaksi"] = $it;
@@ -366,7 +373,4 @@ class QuotationModel extends Model
 						group by p.no_penawaran
 						) b ");
     }
-
-
-   
 }

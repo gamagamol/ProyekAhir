@@ -84,10 +84,11 @@ class SalesModel extends Model
 
      public function no_penjualan($tgl_penjualan)
      {
+          $bulan_tgl = explode("-", $tgl_penjualan)[1];
           $no_penjualan =
                DB::table('penjualan')
                ->selectRaw("DISTINCT ifnull(max(substring(no_penjualan,4,1)),0)+1 as no_penjualan")
-               ->where("tgl_penjualan", "=", $tgl_penjualan)
+               ->whereMonth("tgl_penjualan", "=", $bulan_tgl)
                ->first();
           $no_penjualan = (int)$no_penjualan->no_penjualan;
 
@@ -133,7 +134,7 @@ class SalesModel extends Model
      public function detail($no_penjualan)
      {
 
-        
+
 
 
           return DB::table('transaksi')
@@ -144,7 +145,7 @@ class SalesModel extends Model
                ->join("pelanggan", 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
                ->join("pengguna", 'transaksi.id', '=', 'pengguna.id')
                ->join('penjualan', "penjualan.id_transaksi", "transaksi.id_transaksi")
-               ->join('pegawai','pegawai.id_pegawai','=','transaksi.id_pegawai')
+               ->join('pegawai', 'pegawai.id_pegawai', '=', 'transaksi.id_pegawai')
                ->where('no_penjualan', "=", $no_penjualan)
                // ->where('transaksi.tidak_terpakai', '=', 0)
                ->get();

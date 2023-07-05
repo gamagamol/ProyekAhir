@@ -96,13 +96,14 @@ class PurchaseModel extends Model
     public function no_pembelian($tgl_pembelian, $id_pemasok)
     {
 
+        $bulan_tgl = explode("-", $tgl_pembelian)[1];
 
         if (gettype($id_pemasok) != 'string') {
             $arr_pembelian = [];
             for ($i = 0; $i < count($id_pemasok); $i++) {
                 $no_pembelian = DB::select("SELECT ifnull(max(substring(no_pembelian,4,1)),0)+1 as no_pembelian from transaksi 
                  join pembelian on transaksi.id_transaksi = pembelian.id_transaksi
-                where tgl_pembelian = '$tgl_pembelian' ");
+                where month(tgl_pembelian) = '$bulan_tgl' ");
 
                 $no_pembelian = $no_pembelian[0]->no_pembelian;
                 array_push($arr_pembelian, (int)$no_pembelian);
@@ -259,6 +260,7 @@ class PurchaseModel extends Model
         join pemasok on pemasok.id_pemasok = pembelian.id_pemasok
         join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
         join pegawai on pegawai.id_pegawai = transaksi.id_pegawai
+        join pengguna on pengguna.id = transaksi.id
         where no_pembelian='$no_pembelian' 
         ");
     }

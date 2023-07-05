@@ -188,16 +188,16 @@ class DeliveryController extends Controller
         if ($id_transaksi == null) {
             return back()->with("failed", "Please select the item you want to send first!");
         }
-        $rules = [
-            'tgl_pengiriman' => " after_or_equal:$tgl_penerimaan",
-        ];
-        $message = [
-            "tgl_pengiriman.after_or_equal" => "Choose a date after the goods receipt date or equal"
-        ];
-        $validated = Validator::make($request->all(), $rules, $message);
-        if ($validated->fails()) {
-            return redirect()->back()->with("failed", "Choose a date after the goods receipt date or equal");
-        }
+        // $rules = [
+        //     'tgl_pengiriman' => " after_or_equal:$tgl_penerimaan",
+        // ];
+        // $message = [
+        //     "tgl_pengiriman.after_or_equal" => "Choose a date after the goods receipt date or equal"
+        // ];
+        // $validated = Validator::make($request->all(), $rules, $message);
+        // if ($validated->fails()) {
+        //     return redirect()->back()->with("failed", "Choose a date after the goods receipt date or equal");
+        // }
 
         //    kumpulan array data penjualan
         $data_pengiriman = [];
@@ -437,7 +437,7 @@ class DeliveryController extends Controller
     }
 
 
-   
+
 
     public function print($no_transaksi)
     {
@@ -493,21 +493,21 @@ class DeliveryController extends Controller
         // dd($baris_awal);
         $baris_setelah = $baris_awal + 1;
 
-        
+
         $worksheet->setCellValue("C$baris_setelah", "TOTAL");
         $worksheet->MergeCells("C$baris_setelah:I$baris_setelah");
         $worksheet->setCellValue("J$baris_setelah", $total_jumlah);
         $worksheet->setCellValue("K$baris_setelah", $total_berat);
         $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
-        
-        $baris_setelah+=3;
+
+        $baris_setelah += 3;
         $worksheet->setCellValue("G$baris_setelah", $data[0]->layanan);
         $worksheet->MergeCells("G$baris_setelah:H$baris_setelah");
-        
-        $baris_setelah+=7;
-        $worksheet->setCellValue("E$baris_setelah", "/".date('m-Y'));
-        $worksheet->setCellValue("I$baris_setelah", "/".date('m-Y'));
-        $worksheet->setCellValue("M$baris_setelah", "/".date('m-Y'));
+
+        $baris_setelah += 7;
+        $worksheet->setCellValue("E$baris_setelah", "/" . date('m-Y'));
+        $worksheet->setCellValue("I$baris_setelah", "/" . date('m-Y'));
+        $worksheet->setCellValue("M$baris_setelah", "/" . date('m-Y'));
 
 
 
@@ -515,10 +515,12 @@ class DeliveryController extends Controller
 
 
 
+
+        $namaFile = $data[0]->no_pengiriman;
 
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="Delivery Report.xlsx"'); // Set nama file excel nya
+        header("Content-Disposition: attachment; filename='$namaFile.xlsx'"); // Set nama file excel nya
         header('Cache-Control: max-age=0');
 
         $writer = new Xlsx($spreadsheet);

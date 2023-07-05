@@ -95,10 +95,12 @@ class BillPaymentModel extends Model
     }
     public function no_tagihan($tgl_tagihan)
     {
+        $bulan_tgl = explode("-", $tgl_tagihan)[1];
+
         $no_tagihan =
             DB::table('tagihan')
             ->selectRaw("DISTINCT ifnull(max(substring(no_tagihan,5,1)),0)+1 as no_tagihan")
-            ->where("tgl_tagihan", "=", $tgl_tagihan)
+            ->whereMonth("tgl_tagihan", "=", $bulan_tgl)
             ->first();
         $no_tagihan = (int)$no_tagihan->no_tagihan;
 

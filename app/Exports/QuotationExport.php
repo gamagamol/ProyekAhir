@@ -45,7 +45,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
         }
 
 
-
+        // dd($this->data($this->month, $this->date));
 
         return view('quotation.' . $view, [
             'data' => $this->data($this->month, $this->date),
@@ -66,7 +66,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
             $panjang_kolom = 'F';
         } else if ($this->type == 'out_standing') {
 
-            $panjang_kolom = 'N';
+            $panjang_kolom = 'O';
         } else if ($this->type == 'quotation') {
             $panjang_kolom = 'K';
         }
@@ -190,7 +190,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
                         t.tebal_transaksi,t.panjang_transaksi,lebar_transaksi,
                         t.berat,t.jumlah,t.harga,t.total,t.layanan,
                         pemasok.nama_pemasok,nama_produk,no_pengiriman,
-                        tgl_pengiriman,nama_pegawai,nama_pelanggan FROM transaksi t
+                        tgl_pengiriman,nama_pegawai,nama_pelanggan,no_penawaran,tgl_penawaran FROM transaksi t
                         join penawaran p on t.id_transaksi = p.id_transaksi
                         join penjualan pj on p.id_transaksi = pj.id_transaksi
                         left join pembelian pm on pm.id_penjualan = pj.id_penjualan

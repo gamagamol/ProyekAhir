@@ -207,7 +207,7 @@ class QuotationController extends Controller
                 'ongkir_pembantu' => str_replace('.', "", $request->input('ongkir')),
                 'id_user' => $request->input("id"),
                 'tebal_penawaran' => ($layanan == 'MILLING') ? $tebal_transaksi + 5 : $tebal_transaksi,
-                'lebar_penawaran' => ($layanan == 'MILLING' && $bentuk_produk=='FLAT') ? $lebar_transaksi + 5 : $lebar_transaksi,
+                'lebar_penawaran' => ($layanan == 'MILLING' && $bentuk_produk == 'FLAT') ? $lebar_transaksi + 5 : $lebar_transaksi,
                 'panjang_penawaran' => ($layanan == 'MILLING') ? $panjang_transaksi + 5 : $panjang_transaksi,
                 'berat_pembantu' => $berat,
                 'bentuk_pembantu' => $bentuk_produk,
@@ -217,6 +217,8 @@ class QuotationController extends Controller
 
 
             ];
+
+            // dd($data);
 
 
             $this->QuotationModel->insert_pembantu($data);
@@ -340,7 +342,7 @@ class QuotationController extends Controller
         $data = $this->QuotationModel->show($no_transaksi);
 
 
-      
+
 
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/qtn_template.xlsx');
 
@@ -430,11 +432,11 @@ class QuotationController extends Controller
 
 
 
-
+        $namaFile = $data[0]->no_penawaran;
 
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="Quotation Report.xlsx"'); // Set nama file excel nya
+        header("Content-Disposition: attachment; filename='$namaFile.xlsx'"); // Set nama file excel nya
         header('Cache-Control: max-age=0');
 
         $writer = new Xlsx($spreadsheet);
@@ -452,24 +454,23 @@ class QuotationController extends Controller
         switch ($bentuk_produk) {
             case "FLAT":
                 if ($layanan == "CUTTING") {
-                    //    membuat ukuran dan berat pxl 0,0000625
                     $tebal_penawaran = $tebal_transaksi;
                     $lebar_penawaran = $lebar_transaksi;
                     $panjang_penawaran = $panjang_transaksi;
 
-                    // $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.000008;
-                    return  $berat = number_format($berat, 2, '.', '');
+                    $berat = number_format($berat, 2, '.', '');
+                    return ($berat > 0) ? round($berat) : $berat;
                 }
 
                 if ($layanan == "NF") {
-                    //    membuat ukuran dan berat pxl 0,0000625
                     $tebal_penawaran = $tebal_transaksi;
                     $lebar_penawaran = $lebar_transaksi;
                     $panjang_penawaran =  $panjang_transaksi;
 
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
-                    return  $berat = number_format($berat, 2, '.', '');
+                    $berat = number_format($berat, 2, '.', '');
+                    return ($berat > 0) ? round($berat) : $berat;
                 }
 
                 if ($layanan == "MILLING") {
@@ -479,8 +480,24 @@ class QuotationController extends Controller
                     $panjang_penawaran =  $panjang_transaksi + 5;
 
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.000008;
-                    return  $berat = number_format($berat, 2, '.', '');
+                    $berat = number_format($berat, 2, '.', '');
+                    return ($berat > 0) ? round($berat) : $berat;
                 }
+
+                if ($layanan == "NF MILLING") {
+                    //    membuat ukuran dan berat pxl 0,00008
+                    $tebal_penawaran = $tebal_transaksi + 5;
+                    $lebar_penawaran =  $lebar_transaksi + 5;
+                    $panjang_penawaran =  $panjang_transaksi + 5;
+
+                    $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
+                    $berat = number_format($berat, 2, '.', '');
+                    return ($berat > 0) ? round($berat) : $berat;
+                }
+
+
+
+
                 break;
             case 'CYLINDER':
                 if ($layanan == "CUTTING") {
@@ -490,16 +507,17 @@ class QuotationController extends Controller
                     $panjang_penawaran =  $panjang_transaksi;
 
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
-                    return  $berat = number_format($berat, 2, '.', '');
+                    $berat = number_format($berat, 2, '.', '');
+                    return ($berat > 0) ? round($berat) : $berat;
                 }
                 if ($layanan == "NF") {
-                    //    membuat ukuran dan berat pxl 0,0000625
                     $tebal_penawaran = $tebal_transaksi;
                     $lebar_penawaran = 0;
                     $panjang_penawaran = $panjang_transaksi;
 
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
-                    return  $berat = number_format($berat, 2, '.', '');
+                    $berat = number_format($berat, 2, '.', '');
+                    return ($berat > 0) ? round($berat) : $berat;
                 }
                 if ($layanan == "MILLING") {
                     //    membuat ukuran dan berat pxl 0,00008
@@ -508,7 +526,18 @@ class QuotationController extends Controller
                     $panjang_penawaran =  $panjang_transaksi + 5;
 
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
-                    return  $berat = number_format($berat, 2, '.', '');
+                    $berat = number_format($berat, 2, '.', '');
+                    return ($berat > 0) ? round($berat) : $berat;
+                }
+                if ($layanan == "NF MILLING") {
+                    //    membuat ukuran dan berat pxl 0,00008
+                    $tebal_penawaran = $tebal_transaksi + 5;
+                    $lebar_penawaran = 0;
+                    $panjang_penawaran =  $panjang_transaksi + 5;
+
+                    $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
+                    $berat = number_format($berat, 2, '.', '');
+                    return ($berat > 0) ? round($berat) : $berat;
                 }
                 break;
         }

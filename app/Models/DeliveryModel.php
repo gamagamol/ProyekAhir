@@ -94,6 +94,8 @@ class DeliveryModel extends Model
     public function no_delivery($tgl_pengiriman, $unit)
     {
         //  menentukan no delivery
+        $bulan_tgl = explode("-", $tgl_pengiriman)[1];
+
         if ($unit) {
             $arr_no_pengiriman = [];
             for ($i = 0; $i < count($unit); $i++) {
@@ -101,7 +103,7 @@ class DeliveryModel extends Model
                 $no_pengiriman =
                     DB::table('pengiriman')
                     ->selectRaw("DISTINCT ifnull(max(substring(no_pengiriman,4,1)),0) +1 as no_pengiriman")
-                    ->where("tgl_pengiriman", "=", $tgl_pengiriman)
+                    ->whereMonth("tgl_pengiriman", "=", $bulan_tgl)
                     ->first();
                 $no_pengiriman = (int)$no_pengiriman->no_pengiriman;
                 $no_pengiriman += $i;

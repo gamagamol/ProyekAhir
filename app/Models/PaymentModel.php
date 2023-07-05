@@ -220,10 +220,12 @@ class PaymentModel extends Model
 
     public function no_pembayaran($tgl_pembayaran)
     {
+        $bulan_tgl = explode("-", $tgl_pembayaran)[1];
+
         $no_pembayaran =
             DB::table('pembayaran')
             ->selectRaw("DISTINCT ifnull(max(substring(no_pembayaran,5,1)),0)+1 as no_pembayaran")
-            ->where("tgl_pembayaran", "=", $tgl_pembayaran)
+            ->whereMonth("tgl_pembayaran", "=", $bulan_tgl)
             ->first();
         $no_pembayaran = (int)$no_pembayaran->no_pembayaran;
 

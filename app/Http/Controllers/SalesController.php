@@ -55,22 +55,22 @@ class SalesController extends Controller
         // check data
         $quotation = $this->SalesModel->edit($kode_transaksi);
         $tgl_quotation = $quotation[0]->tgl_penawaran;
-        $rules = [
-            'tgl_penjualan' => " after_or_equal:$tgl_quotation",
-            // 'id_transaksi[]'=>'required'
-        ];
-        $message = [
-            "tgl_penjualan.after_or_equal" => "Choose a date after the quotation date or equal",
-            // "id_transaksi[].required" => "Pelase choose your item please"
-        ];
-        $validated = Validator::make($request->all(), $rules, $message);
-        if ($validated->fails()) {
-            return redirect()->back()->with("failed", "Choose a date after the quotation date or equal");
-        }
+
+        // $rules = [
+        //     'tgl_penjualan' => " after_or_equal:$tgl_quotation",
+        //     // 'id_transaksi[]'=>'required'
+        // ];
+        // $message = [
+        //     "tgl_penjualan.after_or_equal" => "Choose a date after the quotation date or equal",
+        //     // "id_transaksi[].required" => "Pelase choose your item please"
+        // ];
+        // $validated = Validator::make($request->all(), $rules, $message);
+        // if ($validated->fails()) {
+        //     return redirect()->back()->with("failed", "Choose a date after the quotation date or equal");
+        // }
 
         if (!isset($request->id_transaksi)) {
             return redirect()->back()->with("failed", "Choose Item First !");
-
         }
 
         if (count($quotation) != count($request->id_transaksi)) {
@@ -224,11 +224,11 @@ class SalesController extends Controller
 
 
 
-
+        $namaFile = $data[0]->no_penjualan;
 
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="Sales Report.xlsx"'); // Set nama file excel nya
+        header("Content-Disposition: attachment; filename='$namaFile.xlsx'"); // Set nama file excel nya
         header('Cache-Control: max-age=0');
 
         $writer = new Xlsx($spreadsheet);

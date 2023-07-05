@@ -83,16 +83,17 @@ class BillPaymentController extends Controller
 
 
         $tgl_pengiriman = $tgl_pengiriman->tgl_pengiriman;
-        $rules = [
-            'tgl_pembayaran' => " after_or_equal:$tgl_pengiriman",
-        ];
-        $message = [
-            "tgl_pembayaran.after_or_equal" => "Choose a date after the delivery date or equal"
-        ];
-        $validated = Validator::make($request->all(), $rules, $message);
-        if ($validated->fails()) {
-            return redirect()->back()->with("failed", "Choose a date after the delivery date or equal");
-        }
+
+        // $rules = [
+        //     'tgl_pembayaran' => " after_or_equal:$tgl_pengiriman",
+        // ];
+        // $message = [
+        //     "tgl_pembayaran.after_or_equal" => "Choose a date after the delivery date or equal"
+        // ];
+        // $validated = Validator::make($request->all(), $rules, $message);
+        // if ($validated->fails()) {
+        //     return redirect()->back()->with("failed", "Choose a date after the delivery date or equal");
+        // }
 
 
 
@@ -227,7 +228,7 @@ class BillPaymentController extends Controller
         $worksheet->MergeCells("A$baris_setelah:H$baris_setelah");
 
         $baris_setelah += 2;
-        $worksheet->setCellValue("J$baris_setelah", "Bekasi," .' '. $data[0]->tgl_tagihan);
+        $worksheet->setCellValue("J$baris_setelah", "Bekasi," . ' ' . $data[0]->tgl_tagihan);
         $worksheet->MergeCells("J$baris_setelah:L$baris_setelah");
 
 
@@ -239,9 +240,11 @@ class BillPaymentController extends Controller
 
 
 
+        $namaFile = $data[0]->no_tagihan;
+
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="Bill Report.xlsx"'); // Set nama file excel nya
+        header("Content-Disposition: attachment; filename='$namaFile.xlsx'"); // Set nama file excel nya
         header('Cache-Control: max-age=0');
 
         $writer = new Xlsx($spreadsheet);

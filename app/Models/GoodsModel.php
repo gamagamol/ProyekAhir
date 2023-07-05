@@ -103,13 +103,15 @@ class GoodsModel extends Model
 
     public function no_penerimaan($tgl_penerimaan, $unit)
     {
+        $bulan_tgl = explode("-", $tgl_penerimaan)[1];
+
         if ($unit) {
             $arr_nopenerimaan = [];
             for ($i = 0; $i < count($unit); $i++) {
                 $no_penerimaan =
                     DB::table('penerimaan_barang')
                     ->selectRaw("DISTINCT ifnull(max(substring(no_penerimaan,4,1)),0)+1 as no_penerimaan")
-                    ->where("tgl_penerimaan", "=", $tgl_penerimaan)
+                    ->whereMonth("tgl_penerimaan", "=", $bulan_tgl)
                     ->first();
                 $no_penerimaan = (int)$no_penerimaan->no_penerimaan;
                 $no_penerimaan += $i;
@@ -120,7 +122,7 @@ class GoodsModel extends Model
             $no_penerimaan =
                 DB::table('penerimaan_barang')
                 ->selectRaw("DISTINCT ifnull(max(substring(no_penerimaan,4,1)),0)+1 as no_penerimaan")
-                ->where("tgl_penerimaan", "=", $tgl_penerimaan)
+                ->whereMonth("tgl_penerimaan", "=", $bulan_tgl)
                 ->first();
             $no_penerimaan = (int)$no_penerimaan->no_penerimaan;
 

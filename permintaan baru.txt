@@ -1,0 +1,21 @@
+-no po customer dari sales dipake sampai end (250rb)(tambahan)
+
+-debt payment nyalain (150k)
+-SERACHING SEMUA TRANSAKSI (250rb)(tambahan)
+
+
+
+
+Selesai:
+
+-print po (ganti sama yang loggin) (free) (done)
+-round (calculate weight) (free) (done)
+-Nf milling (free) (DONE)
+-perubahan nama file no-transaksi(free)(done)
+-formart no ganti dari perhari ke perbulan(free)(done)
+-semua tgl bebas (free)(done)
+-kolom out standing (free)(done)
+
+-DO MIRIP QUOTATION KIRI KANAN(free)
+-BILLING MIRIP QUOTATION KIRI KANAN (free)
+

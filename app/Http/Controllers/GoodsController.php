@@ -135,16 +135,16 @@ class GoodsController extends Controller
 
         $tgl_purchase = $purchase[0]->tgl_pembelian;
 
-        $rules = [
-            'tgl_penerimaan' => " after_or_equal:$tgl_purchase",
-        ];
-        $message = [
-            "tgl_penerimaan.after_or_equal" => "Choose a date after the purchase date or equal"
-        ];
-        $validated = Validator::make($request->all(), $rules, $message);
-        if ($validated->fails()) {
-            return redirect()->back()->with("failed", "Choose a date after the purchase date or equal");
-        }
+        // $rules = [
+        //     'tgl_penerimaan' => " after_or_equal:$tgl_purchase",
+        // ];
+        // $message = [
+        //     "tgl_penerimaan.after_or_equal" => "Choose a date after the purchase date or equal"
+        // ];
+        // $validated = Validator::make($request->all(), $rules, $message);
+        // if ($validated->fails()) {
+        //     return redirect()->back()->with("failed", "Choose a date after the purchase date or equal");
+        // }
 
 
         //    kumpulan array data penjualan

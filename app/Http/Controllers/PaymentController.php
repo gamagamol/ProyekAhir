@@ -76,16 +76,16 @@ class PaymentController extends Controller
 
         $tgl_tagihan = $tgl_tagihan->tgl_tagihan;
 
-        $rules = [
-            'tgl_pembayaran' => " after_or_equal:$tgl_tagihan",
-        ];
-        $message = [
-            "tgl_pembayaran.after_or_equal" => "Choose a date after the bill payment date or equal"
-        ];
-        $validated = Validator::make($request->all(), $rules, $message);
-        if ($validated->fails()) {
-            return redirect()->back()->with("failed", "Choose a date after the delivery date or equal");
-        }
+        // $rules = [
+        //     'tgl_pembayaran' => " after_or_equal:$tgl_tagihan",
+        // ];
+        // $message = [
+        //     "tgl_pembayaran.after_or_equal" => "Choose a date after the bill payment date or equal"
+        // ];
+        // $validated = Validator::make($request->all(), $rules, $message);
+        // if ($validated->fails()) {
+        //     return redirect()->back()->with("failed", "Choose a date after the delivery date or equal");
+        // }
 
 
         // persiapan no pembyaran
@@ -238,9 +238,11 @@ class PaymentController extends Controller
 
 
 
+        $namaFile = $data[0]->no_tagihan;
+
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="Payment Report.xlsx"'); // Set nama file excel nya
+        header("Content-Disposition: attachment; filename='$namaFile.xlsx'"); // Set nama file excel nya
         header('Cache-Control: max-age=0');
 
         $writer = new Xlsx($spreadsheet);

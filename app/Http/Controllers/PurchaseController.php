@@ -293,19 +293,19 @@ class PurchaseController extends Controller
 
 
 
-        $rules = [
-            'tgl_pembelian' => " after_or_equal:$tgl_penjualan",
+        // $rules = [
+        //     'tgl_pembelian' => " after_or_equal:$tgl_penjualan",
 
 
-        ];
-        $message = [
-            "tgl_pembelian.after_or_equal" => "Choose a date after the quotation date or equal",
+        // ];
+        // $message = [
+        //     "tgl_pembelian.after_or_equal" => "Choose a date after the quotation date or equal",
 
-        ];
-        $validated = Validator::make($request->all(), $rules, $message);
-        if ($validated->fails()) {
-            return redirect()->back()->with("failed", "Choose a date after the sales date or equal");
-        }
+        // ];
+        // $validated = Validator::make($request->all(), $rules, $message);
+        // if ($validated->fails()) {
+        //     return redirect()->back()->with("failed", "Choose a date after the sales date or equal");
+        // }
 
         //    kumpulan array data penjualan
         $data_pembelian = [];
@@ -561,17 +561,19 @@ class PurchaseController extends Controller
         $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
 
         $baris_setelah += 9;
-        $worksheet->setCellValue("H$baris_setelah", $data[0]->nama_pegawai);
+        $worksheet->setCellValue("H$baris_setelah", $data[0]->nama_pengguna);
 
 
 
 
 
 
+
+        $namaFile = $data[0]->no_pembelian;
 
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="Purchase Report.xlsx"'); // Set nama file excel nya
+        header("Content-Disposition: attachment; filename='$namaFile.xlsx'"); // Set nama file excel nya
         header('Cache-Control: max-age=0');
 
         $writer = new Xlsx($spreadsheet);
