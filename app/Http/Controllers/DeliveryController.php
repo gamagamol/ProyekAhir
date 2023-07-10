@@ -443,6 +443,7 @@ class DeliveryController extends Controller
     {
         $data = $this->model->detail(str_replace('-', '/', $no_transaksi));
 
+        // dd($data);
 
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/delivery_template.xlsx');
 
@@ -471,18 +472,26 @@ class DeliveryController extends Controller
             $worksheet->setCellValue("C$tambahan_baris", ($i + 1));
             $worksheet->setCellValue("D$tambahan_baris", $data[$i]->nomor_pekerjaan);
             $worksheet->MergeCells("D$tambahan_baris:E$tambahan_baris");
-
+            // data penawaran awal
             $worksheet->setCellValue("F$tambahan_baris", $data[$i]->nama_produk);
+            $worksheet->setCellValue("G$tambahan_baris", $data[$i]->tebal_transaksi);
+            $worksheet->setCellValue("H$tambahan_baris", $data[$i]->lebar_transaksi);
+            $worksheet->setCellValue("I$tambahan_baris", $data[$i]->panjang_transaksi);
+
+            // data pengiriman
+            $worksheet->setCellValue("J$tambahan_baris", $data[$i]->nama_produk);
+
+
             $tebal = $data[$i]->tebal_penawaran;
             $lebar = $data[$i]->lebar_penawaran;
             $panjang =  $data[$i]->panjang_penawaran;
 
-            $worksheet->setCellValue("G$tambahan_baris", $tebal);
-            $worksheet->setCellValue("H$tambahan_baris", $lebar);
-            $worksheet->setCellValue("I$tambahan_baris", $panjang);
-            $worksheet->setCellValue("J$tambahan_baris", $data[$i]->jumlah_detail_pengiriman);
-            $worksheet->setCellValue("K$tambahan_baris", $data[$i]->berat_detail_pengiriman);
-            $worksheet->MergeCells("K$tambahan_baris:L$tambahan_baris");
+            $worksheet->setCellValue("K$tambahan_baris", $tebal);
+            $worksheet->setCellValue("L$tambahan_baris", $lebar);
+            $worksheet->setCellValue("M$tambahan_baris", $panjang);
+            $worksheet->setCellValue("N$tambahan_baris", $data[$i]->jumlah_detail_pengiriman);
+            $worksheet->setCellValue("O$tambahan_baris", $data[$i]->berat_detail_pengiriman);
+            // $worksheet->MergeCells("K$tambahan_baris:L$tambahan_baris");
 
             $total_berat += $data[$i]->berat_detail_pengiriman;
             $total_jumlah += $data[$i]->jumlah_detail_pengiriman;
@@ -495,9 +504,9 @@ class DeliveryController extends Controller
 
 
         $worksheet->setCellValue("C$baris_setelah", "TOTAL");
-        $worksheet->MergeCells("C$baris_setelah:I$baris_setelah");
-        $worksheet->setCellValue("J$baris_setelah", $total_jumlah);
-        $worksheet->setCellValue("K$baris_setelah", $total_berat);
+        $worksheet->MergeCells("C$baris_setelah:M$baris_setelah");
+        $worksheet->setCellValue("N$baris_setelah", $total_jumlah);
+        $worksheet->setCellValue("O$baris_setelah", $total_berat);
         $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
 
         $baris_setelah += 3;
@@ -520,7 +529,7 @@ class DeliveryController extends Controller
 
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header("Content-Disposition: attachment; filename='$namaFile.xlsx'"); // Set nama file excel nya
+        header("Content-Disposition: attachment; filename=$namaFile.xlsx"); // Set nama file excel nya
         header('Cache-Control: max-age=0');
 
         $writer = new Xlsx($spreadsheet);

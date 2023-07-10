@@ -168,13 +168,12 @@ $notif = $notif->notif();
                             Report</a>
                         <a class="collapse-item" href="{{ url('customerOmzetReport') }}">Customer Omzet Report</a>
                         <a class="collapse-item" href="{{ url('outStandingReport') }}">Out Standing Report</a>
-                        <a class="collapse-item" href="{{ url('SDR') }}">Sales Detail Report</a>
-                        <a class="collapse-item" href="{{ url('PCR') }}">Purchase Detail Report</a>
-                        <a class="collapse-item" href="{{ url('paymentvendor/report/report') }}">Payment To Vendor
-                            Report</a>
+                        {{-- <a class="collapse-item" href="{{ url('SDR') }}">Sales Detail Report</a> --}}
+                        {{-- <a class="collapse-item" href="{{ url('PCR') }}">Purchase Detail Report</a> --}}
+                        {{-- <a class="collapse-item" href="{{ url('paymentvendor/report/report') }}">Payment To Vendor --}}
+                            {{-- Report</a> --}}
                         <a class="collapse-item" href="{{ url('status_transaksi') }}">Transaction Status </a>
                         <a class="collapse-item" href="{{ url('transaction_number_tracking') }}">Transaction Tracking </a>
-
 
 
                     </div>

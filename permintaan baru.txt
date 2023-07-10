@@ -1,21 +1,38 @@
--no po customer dari sales dipake sampai end (250rb)(tambahan)
-
--debt payment nyalain (150k)
+-no po customer dari sales dipake sampai end (250rb)(tambahan) + create
 -SERACHING SEMUA TRANSAKSI (250rb)(tambahan)
-
-
+-rubah alur billpayment(150k)(tambahan)
+-debt payment nyalain (350k)(tambahan)
+-rubah no semua format transaksi (250k)(tambahan)
 
 
 Selesai:
 
 -print po (ganti sama yang loggin) (free) (done)
--round (calculate weight) (free) (done)
+-round (calculate weight) (free) (done) (gk jadi) angka rill aja
 -Nf milling (free) (DONE)
 -perubahan nama file no-transaksi(free)(done)
 -formart no ganti dari perhari ke perbulan(free)(done)
 -semua tgl bebas (free)(done)
 -kolom out standing (free)(done)
+-ganti foto semua laporan (free)(done)
 
--DO MIRIP QUOTATION KIRI KANAN(free)
--BILLING MIRIP QUOTATION KIRI KANAN (free)
+-hidden laporan yang gk di perlukan(DONE)
+-DO MIRIP QUOTATION KIRI KANAN(free)(DONE)
+-BILLING MIRIP QUOTATION KIRI KANAN (free)(done)
+
+
+
+hasil meeting:
+1.perubahan outsanding data nya hilang saat sudah jadi invoice
+2.quotaion report detail berubah saat sudah SO
+3.quotation vs po report tambahin no PO
+4.nama kolom quotataion vs report total nya ke balik
+5.report omzet customer nama file di ganti jadi per tanggal di export
+6.pemecahan dahsboard
+7.delivery nmuber malah di isi delivery date di out standing report 
+
+
+
+
+
 

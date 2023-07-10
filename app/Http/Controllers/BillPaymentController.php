@@ -189,20 +189,26 @@ class BillPaymentController extends Controller
             $worksheet->setCellValue("A$tambahan_baris", ($i + 1));
             $worksheet->setCellValue("B$tambahan_baris", $data[$i]->nomor_pekerjaan);
             $worksheet->MergeCells("B$tambahan_baris:C$tambahan_baris");
+            // penawaran
 
             $worksheet->setCellValue("D$tambahan_baris", $data[$i]->nama_produk);
+            $worksheet->setCellValue("E$tambahan_baris", $data[$i]->tebal_transaksi);
+            $worksheet->setCellValue("F$tambahan_baris", $data[$i]->lebar_transaksi);
+            $worksheet->setCellValue("G$tambahan_baris", $data[$i]->panjang_transaksi);
+            // bill
+            $worksheet->setCellValue("H$tambahan_baris", $data[$i]->nama_produk);
             $tebal =  $data[$i]->tebal_penawaran;
             $lebar =  $data[$i]->lebar_penawaran;
             $panjang =  $data[$i]->panjang_penawaran;
 
-            $worksheet->setCellValue("E$tambahan_baris", $tebal);
-            $worksheet->setCellValue("F$tambahan_baris", $lebar);
-            $worksheet->setCellValue("G$tambahan_baris", $panjang);
-            $worksheet->setCellValue("H$tambahan_baris", $data[$i]->jumlah);
-            $worksheet->setCellValue("I$tambahan_baris", $data[$i]->berat);
-            $worksheet->setCellValue("J$tambahan_baris", $data[$i]->harga);
-            $worksheet->setCellValue("K$tambahan_baris", $data[$i]->subtotal);
-            $worksheet->mergeCells("K$tambahan_baris:L$tambahan_baris");
+            $worksheet->setCellValue("I$tambahan_baris", $tebal);
+            $worksheet->setCellValue("J$tambahan_baris", $lebar);
+            $worksheet->setCellValue("K$tambahan_baris", $panjang);
+            $worksheet->setCellValue("L$tambahan_baris", $data[$i]->jumlah);
+            $worksheet->setCellValue("M$tambahan_baris", $data[$i]->berat);
+            $worksheet->setCellValue("N$tambahan_baris", "Rp" . number_format($data[$i]->harga, '2', ',', '.'));
+            $worksheet->setCellValue("O$tambahan_baris", $data[$i]->subtotal);
+            $worksheet->mergeCells("O$tambahan_baris:P$tambahan_baris");
 
 
 
@@ -212,16 +218,16 @@ class BillPaymentController extends Controller
             $baris_awal = $tambahan_baris;
         }
         $baris_setelah = $baris_awal + 2;
-        $worksheet->setCellValue("K$baris_setelah", $subtotal);
-        $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
+        $worksheet->setCellValue("O$baris_setelah", "Rp" . number_format($subtotal, '2', ',', '.'));
+        $worksheet->MergeCells("O$baris_setelah:P$baris_setelah");
 
         $baris_setelah += 1;
-        $worksheet->setCellValue("K$baris_setelah", $subtotal * 0.11);
-        $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
+        $worksheet->setCellValue("O$baris_setelah", "Rp" . number_format($subtotal * 0.11, '2', ',', '.'));
+        $worksheet->MergeCells("O$baris_setelah:P$baris_setelah");
 
         $baris_setelah += 1;
-        $worksheet->setCellValue("K$baris_setelah", $total);
-        $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
+        $worksheet->setCellValue("O$baris_setelah", "Rp" . number_format($total, '2', ',', '.'));
+        $worksheet->MergeCells("O$baris_setelah:P$baris_setelah");
 
         $baris_setelah += 2;
         $worksheet->setCellValue("A$baris_setelah", penyebut($total));
@@ -244,7 +250,7 @@ class BillPaymentController extends Controller
 
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header("Content-Disposition: attachment; filename='$namaFile.xlsx'"); // Set nama file excel nya
+        header("Content-Disposition: attachment; filename=$namaFile.xlsx"); // Set nama file excel nya
         header('Cache-Control: max-age=0');
 
         $writer = new Xlsx($spreadsheet);

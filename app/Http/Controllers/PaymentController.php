@@ -242,7 +242,7 @@ class PaymentController extends Controller
 
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header("Content-Disposition: attachment; filename='$namaFile.xlsx'"); // Set nama file excel nya
+        header("Content-Disposition: attachment; filename=$namaFile.xlsx"); // Set nama file excel nya
         header('Cache-Control: max-age=0');
 
         $writer = new Xlsx($spreadsheet);
