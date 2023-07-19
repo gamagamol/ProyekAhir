@@ -169,6 +169,10 @@ class BillPaymentController extends Controller
         $worksheet->mergeCells("J6:K6");
         $worksheet->getCell('J7')->setValue($data[0]->no_penjualan);
         $worksheet->mergeCells("J7:K7");
+        $no_ref_qtn = ($data[0]->no_po_customer == '' || $data[0]->no_po_customer == '-') ? $data[0]->no_penawaran : $data[0]->no_po_customer;
+
+        $worksheet->getCell('J8')->setValue($no_ref_qtn);
+
         $worksheet->getCell('A12')->setValue($data[0]->perwakilan);
         $worksheet->getCell('A13')->setValue($data[0]->nama_pelanggan);
         $worksheet->getCell('A14')->setValue($data[0]->alamat_pelanggan);

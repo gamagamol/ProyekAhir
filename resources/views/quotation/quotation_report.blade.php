@@ -67,6 +67,8 @@
                                 <th>Total</th>
                                 <th>Date Sales</th>
                                 <th>No Sales</th>
+                                <th>Date Purchase</th>
+                                <th>No Purchase</th>
                                 <th>Total Sales</th>
 
                             </tr>
@@ -113,6 +115,8 @@
                         html += `<td>Rp.${ Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(d.total_transaksi )}</td>`
                         html += `<td>${ d.tgl_penjualan }</td>`
                         html += `<td>${ d.no_penjualan }</td>`
+                        html += `<td>${ (d.tgl_pembelian)?d.tgl_pembelian :'-' }</td>`
+                        html += `<td>${( d.no_pembelian)? d.no_pembelian :'-' }</td>`
                         html +=`<td>Rp.${Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format( d.total_penjualan) }</td>`
                       
                         html += `</tr>`

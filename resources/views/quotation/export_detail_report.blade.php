@@ -34,10 +34,12 @@
                      <td>{{ $d->total }}</td>
                      <td>{{ $d->layanan }}</td>
                      <td>{{ $d->nama_pemasok }}</td>
-                     @if ($d->jumlah_penjualan != $d->jumlah_detail_pengiriman)
-                         <td> OPEN</td>
-                     @else
+                     {{-- html += `<td>${ (d.no_penjualan) ? 'CLOSE' :'OPEN'  }</td>` --}}
+
+                     @if ($d->no_penjualan)
                          <td>CLOSE</td>
+                     @else
+                         <td> OPEN</td>
                      @endif
 
                  </tr>

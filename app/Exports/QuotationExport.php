@@ -68,7 +68,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
 
             $panjang_kolom = 'O';
         } else if ($this->type == 'quotation') {
-            $panjang_kolom = 'K';
+            $panjang_kolom = 'M';
         }
 
         $sheet->getStyle("A1:$panjang_kolom$jumlah_baris")->applyFromArray([
@@ -130,7 +130,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
 						t.tebal_transaksi,t.panjang_transaksi,lebar_transaksi,t.berat,
 						t.jumlah,t.harga,t.total,t.layanan,pemasok.nama_pemasok FROM transaksi t
 						join penawaran p on t.id_transaksi = p.id_transaksi
-						join penjualan pj on p.id_transaksi = pj.id_transaksi
+						left join penjualan pj on p.id_transaksi = pj.id_transaksi
 						left join pembelian pm on pm.id_penjualan = pj.id_penjualan
 						left join penerimaan_barang pb on pb.id_pembelian=pm.id_pembelian
 						left join pengiriman pg on pg.id_penerimaan_barang = pb.id_penerimaan_barang
@@ -201,7 +201,9 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
                         left join produk on produk.id_produk = detail_transaksi_penjualan.id_produk
                         left join pegawai on pegawai.id_pegawai = t.id_pegawai
                         left join pelanggan on pelanggan.id_pelanggan = t.id_pelanggan
-                        where t.tidak_terpakai=0 and jabatan_pegawai='SALES' $where";
+                        left join tagihan on tagihan.id_pengiriman=pg.id_pengiriman
+                        where t.tidak_terpakai=0 and jabatan_pegawai='SALES'and no_tagihan is null
+                         $where";
         } else if ($this->type == 'quotation') {
 
             if ($month != '0' && $date == null) {
@@ -224,7 +226,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
 						tgl_penjualan,pj.id_penjualan,pj.no_penjualan,
 						t.tebal_transaksi,t.panjang_transaksi,lebar_transaksi,t.berat,
 						t.jumlah,t.harga,t.total,t.layanan,pemasok.nama_pemasok,subtotal,ppn,ongkir,
-                        t.total as total_transaksi,nama_pelanggan,nama_pegawai
+                        t.total as total_transaksi,nama_pelanggan,nama_pegawai,tgl_pembelian,no_pembelian
                         FROM transaksi t
 						join penawaran p on t.id_transaksi = p.id_transaksi
 						join penjualan pj on p.id_transaksi = pj.id_transaksi

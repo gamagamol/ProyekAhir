@@ -1,35 +1,35 @@
--no po customer dari sales dipake sampai end (250rb)(tambahan) + create
--SERACHING SEMUA TRANSAKSI (250rb)(tambahan)
--rubah alur billpayment(150k)(tambahan)
--debt payment nyalain (350k)(tambahan)
--rubah no semua format transaksi (250k)(tambahan)
+tambahan:
 
+1.print po (ganti sama yang loggin)  (done)
+2.round (calculate weight)  (done) (gk jadi) angka rill aja
+3.Nf milling  (DONE)
+4.perubahan nama file no-transaksi(done)
+5.formart no ganti dari perhari ke perbulan(done)
+6.semua tgl bebas (done)
+7.kolom out standing (done)
+8.ganti foto semua laporan (done)
 
-Selesai:
-
--print po (ganti sama yang loggin) (free) (done)
--round (calculate weight) (free) (done) (gk jadi) angka rill aja
--Nf milling (free) (DONE)
--perubahan nama file no-transaksi(free)(done)
--formart no ganti dari perhari ke perbulan(free)(done)
--semua tgl bebas (free)(done)
--kolom out standing (free)(done)
--ganti foto semua laporan (free)(done)
-
--hidden laporan yang gk di perlukan(DONE)
--DO MIRIP QUOTATION KIRI KANAN(free)(DONE)
--BILLING MIRIP QUOTATION KIRI KANAN (free)(done)
+9.hidden laporan yang gk di perlukan(DONE)
+10.DO MIRIP QUOTATION KIRI KANAN(DONE)
+11.BILLING MIRIP QUOTATION KIRI KANAN (done)
 
 
 
-hasil meeting:
-1.perubahan outsanding data nya hilang saat sudah jadi invoice
-2.quotaion report detail berubah saat sudah SO
-3.quotation vs po report tambahin no PO
-4.nama kolom quotataion vs report total nya ke balik
-5.report omzet customer nama file di ganti jadi per tanggal di export
-6.pemecahan dahsboard
-7.delivery nmuber malah di isi delivery date di out standing report 
+ meeting tambahan:
+1.perubahan outsanding data nya hilang saat sudah jadi invoice(done)
+2.quotaion report detail berubah saat sudah SO(done)
+3.quotation vs po report tambahin no PO (done)
+4.nama kolom quotataion vs report total nya ke balik(done)
+5.report omzet customer nama file di ganti jadi per tanggal di export(done)
+6.pemecahan dahsboard(7)
+7.delivery nmuber malah di isi delivery date di out standing report (done)
+
+
+8.no po customer dari sales dipake sampai bill payment  + create (done)
+9.rubah alur billpayment(tambahan)(9)
+10.debt payment nyalain(tambahan) (10)
+11.SERACHING SEMUA TRANSAKSI (tambahan)(11)
+12.membuat mekanisme dengan nama barang yang sama tapi beda bentuk(done)
 
 
 

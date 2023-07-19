@@ -50,12 +50,14 @@ class SalesController extends Controller
 
     public function store(Request $request)
     {
+        // echo 'test';die;
         $kode_transaksi = $request->input('kode_transaksi');
         $tgl_penjualan = $request->input('tgl_penjualan');
         // check data
         $quotation = $this->SalesModel->edit($kode_transaksi);
-        $tgl_quotation = $quotation[0]->tgl_penawaran;
 
+        $no_po_customer = $request->input('no_po_customer');
+        // $tgl_quotation = $quotation[0]->tgl_penawaran;
         // $rules = [
         //     'tgl_penjualan' => " after_or_equal:$tgl_quotation",
         //     // 'id_transaksi[]'=>'required'
@@ -111,7 +113,8 @@ class SalesController extends Controller
             $data_penjualan[] = [
                 'id_transaksi' => $quotation[$i]->id_transaksi,
                 'no_penjualan' => $no_penjualan,
-                'tgl_penjualan' => $tgl_penjualan
+                'tgl_penjualan' => $tgl_penjualan,
+                'no_po_customer' => $no_po_customer
             ];
 
 
@@ -123,12 +126,6 @@ class SalesController extends Controller
             ];
         }
 
-        // update data quotation
-
-
-        // dump($data_penjualan);
-        // dump($data_detail_penjualan);
-        // die;
 
 
         $no_penjualan = $this->SalesModel->insert_penjualan($id_transaksi, $data_penjualan, $data_detail_penjualan, $kode_transaksi);
@@ -161,7 +158,8 @@ class SalesController extends Controller
         $worksheet->getCell('J4')->setValue($data[0]->tgl_penjualan);
         $worksheet->getCell('J5')->setValue($data[0]->no_penjualan);
         $worksheet->mergeCells("J5:K5");
-        $worksheet->getCell('J6')->setValue($data[0]->no_penawaran);
+        $no_ref_qtn = ($data[0]->no_po_customer == '' || $data[0]->no_po_customer == '-') ? $data[0]->no_penawaran: $data[0]->no_po_customer;
+        $worksheet->getCell('J6')->setValue($no_ref_qtn);
         $worksheet->getCell('A12')->setValue($data[0]->perwakilan);
         $worksheet->getCell('A13')->setValue($data[0]->nama_pelanggan);
         $worksheet->getCell('A14')->setValue($data[0]->alamat_pelanggan);
@@ -220,21 +218,14 @@ class SalesController extends Controller
         $baris_setelah += 9;
         $worksheet->setCellValue("H$baris_setelah", $data[0]->nama_pegawai);
 
-
-
-
-
         $namaFile = $data[0]->no_penjualan;
 
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header("Content-Disposition: attachment; filename=$namaFile.xlsx"); // Set nama file excel nya
+        header("Content-Disposition: attachment; filename=$namaFile.xlsx");
         header('Cache-Control: max-age=0');
 
         $writer = new Xlsx($spreadsheet);
         $writer->save('php://output');
-        // $writer->save('report/quotation.xls');
-
-
     }
 }

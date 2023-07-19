@@ -51,18 +51,18 @@ class PaymentVendorController extends Controller
        
         $purchase = $this->model->edit($kode_transaksi);
 
-        $tgl_pembelian = $purchase[0]->tgl_pembelian;
-        $rules = [
-            'tgl_pembelian' => " after_or_equal:$tgl_pembelian",
-            'installment' => "integer"
-        ];
-        $message = [
-            "tgl_pembelian.after_or_equal" => "Choose a date after the purchase date or equal",
-        ];
-        $validated = Validator::make($request->all(), $rules, $message);
-        if ($validated->fails()) {
-            return redirect()->back()->with("failed", "Choose a date after the purchase date or equal");
-        }
+        // $tgl_pembelian = $purchase[0]->tgl_pembelian;
+        // $rules = [
+        //     'tgl_pembelian' => " after_or_equal:$tgl_pembelian",
+        //     'installment' => "integer"
+        // ];
+        // $message = [
+        //     "tgl_pembelian.after_or_equal" => "Choose a date after the purchase date or equal",
+        // ];
+        // $validated = Validator::make($request->all(), $rules, $message);
+        // if ($validated->fails()) {
+        //     return redirect()->back()->with("failed", "Choose a date after the purchase date or equal");
+        // }
 
         //    kumpulan array data pembayaran vendor
         $data_pembelian = [];

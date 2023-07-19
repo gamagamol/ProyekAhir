@@ -136,7 +136,7 @@
 
                                         <option value={{ null }}>Select Your product</option>
                                         @foreach ($produk as $p)
-                                            <option value='{{ "$p->nama_produk|$p->bentuk_produk" }}'>
+                                            <option value='{{ "$p->id_produk|$p->bentuk_produk" }}'>
                                                 {{ $p->nama_produk }}</option>
                                         @endforeach
                                     </select>

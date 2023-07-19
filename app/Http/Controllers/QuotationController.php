@@ -168,7 +168,7 @@ class QuotationController extends Controller
             $produk = explode("|", $request->input('id_produk'));
             $nama_produk = $produk[0];
 
-            $p = DB::table('produk')->where("nama_produk", "=", $nama_produk)->first();
+            $p = DB::table('produk')->where("id_produk", "=", $nama_produk)->first();
             $bentuk_produk = $p->bentuk_produk;
             $tebal_transaksi = $request->input("tebal_transaksi");
             $lebar_transaksi = $request->input("lebar_transaksi");
@@ -197,7 +197,7 @@ class QuotationController extends Controller
                 'nomor_pekerjaan' => $request->input("nomor_pekerjaan"),
                 'id_pelanggan' => $request->input("id_pelanggan"),
                 'id_pegawai' => $request->input("id_pegawai"),
-                'nama_produk' => $nama_produk,
+                'nama_produk' => $p->nama_produk,
                 'tebal_pembantu' => $request->input("tebal_transaksi"),
                 'lebar_pembantu' => $request->input("lebar_transaksi"),
                 'panjang_pembantu' => $request->input("panjang_transaksi"),
@@ -460,7 +460,8 @@ class QuotationController extends Controller
 
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.000008;
                     $berat = number_format($berat, 2, '.', '');
-                    return ($berat > 0) ? round($berat) : $berat;
+                    // return ($berat > 0) ? round($berat) : $berat;
+                    return $berat;
                 }
 
                 if ($layanan == "NF") {
@@ -470,7 +471,8 @@ class QuotationController extends Controller
 
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
                     $berat = number_format($berat, 2, '.', '');
-                    return ($berat > 0) ? round($berat) : $berat;
+                    // return ($berat > 0) ? round($berat) : $berat;
+                    return $berat;
                 }
 
                 if ($layanan == "MILLING") {
@@ -481,7 +483,8 @@ class QuotationController extends Controller
 
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.000008;
                     $berat = number_format($berat, 2, '.', '');
-                    return ($berat > 0) ? round($berat) : $berat;
+                    // return ($berat > 0) ? round($berat) : $berat;
+                    return $berat;
                 }
 
                 if ($layanan == "NF MILLING") {
@@ -492,7 +495,8 @@ class QuotationController extends Controller
 
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
                     $berat = number_format($berat, 2, '.', '');
-                    return ($berat > 0) ? round($berat) : $berat;
+                    // return ($berat > 0) ? round($berat) : $berat;
+                    return $berat;
                 }
 
 
@@ -508,7 +512,8 @@ class QuotationController extends Controller
 
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
                     $berat = number_format($berat, 2, '.', '');
-                    return ($berat > 0) ? round($berat) : $berat;
+                    // return ($berat > 0) ? round($berat) : $berat;
+                    return $berat;
                 }
                 if ($layanan == "NF") {
                     $tebal_penawaran = $tebal_transaksi;
@@ -517,7 +522,8 @@ class QuotationController extends Controller
 
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
                     $berat = number_format($berat, 2, '.', '');
-                    return ($berat > 0) ? round($berat) : $berat;
+                    // return ($berat > 0) ? round($berat) : $berat;
+                    return $berat;
                 }
                 if ($layanan == "MILLING") {
                     //    membuat ukuran dan berat pxl 0,00008
@@ -527,7 +533,8 @@ class QuotationController extends Controller
 
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
                     $berat = number_format($berat, 2, '.', '');
-                    return ($berat > 0) ? round($berat) : $berat;
+                    // return ($berat > 0) ? round($berat) : $berat;
+                    return $berat;
                 }
                 if ($layanan == "NF MILLING") {
                     //    membuat ukuran dan berat pxl 0,00008
@@ -537,7 +544,8 @@ class QuotationController extends Controller
 
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
                     $berat = number_format($berat, 2, '.', '');
-                    return ($berat > 0) ? round($berat) : $berat;
+                    // return ($berat > 0) ? round($berat) : $berat;
+                    return $berat;
                 }
                 break;
         }
@@ -656,7 +664,8 @@ class QuotationController extends Controller
 
     public function customerOmzetReportExport($month = null, $date = null)
     {
-        return Excel::download(new QuotationExport($month, $date, 'customer_omzet'), 'Customer Omzet Report .xlsx');
+        $tgl_generate = date('Y-m-d');
+        return Excel::download(new QuotationExport($month, $date, 'customer_omzet'), "Customer Omzet Report_{$tgl_generate} .xlsx");
     }
 
     public function outStandingReport()

@@ -19,7 +19,7 @@
                  <th>Processing</th>
                  <th>Customer</th>
                  <th>Supplier</th>
-                 {{-- <th>Status</th> --}}
+             
              </tr>
          </thead>
          <tbody id="Tbody">
@@ -28,7 +28,7 @@
                      <td>{{ $d->tgl_penjualan }}</td>
                      <td>{{ $d->tgl_pengiriman }}</td>
                      <td>{{ $d->no_penjualan }}</td>
-                     <td>{{ $d->tgl_pengiriman }}</td>
+                     <td>{{ $d->no_pengiriman }}</td>
                      <td>{{ $d->nama_produk }}</td>
                      <td>{{ $d->tebal_transaksi }}</td>
                      <td>{{ $d->lebar_transaksi }}</td>

@@ -12,6 +12,8 @@
                                 <th>Total</th>
                                 <th>Date Sales</th>
                                 <th>No Sales</th>
+                                <th>Date Purchase</th>
+                                <th>No Purchase</th>
                                 <th>Total Sales</th>
 
                             </tr>
@@ -29,6 +31,8 @@
                      <td>{{ number_format($d->total_transaksi) }}</td>
                      <td>{{ $d->tgl_penjualan }}</td>
                      <td>{{ $d->no_penjualan }}</td>
+                     <td>{{ $d->tgl_pembelian }}</td>
+                     <td>{{ $d->no_pembelian }}</td>
                      <td>{{ number_format($d->total_penjualan) }}</td>
 
                  </tr>

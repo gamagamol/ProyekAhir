@@ -15,20 +15,28 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-3 mt-2">
+                            <label for="">Sales Date</label>
                             <input type="date" name="tgl_penjualan" class="form-control"
                                 value={{ $data[0]->tgl_penawaran }}>
                             <input type="text" value="{{ $data[0]->kode_transaksi }}" name="kode_transaksi" hidden>
 
                         </div>
-                        <div class="col-md-3 mt-3">
-                            Check All
-                            <input type="checkbox" id="check_all" class="mx-2">
 
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 mt-3">
+                            <label for="">No Po Customer</label>
+                            <input type="text" class="form-control" name="no_po_customer" required>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
+                    <div class="d-flex justify-content-end ">
+                        Check All
+                        <input type="checkbox" id="check_all" class="mx-2">
 
+                    </div>
                     <div class="table-responsive text-center">
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 

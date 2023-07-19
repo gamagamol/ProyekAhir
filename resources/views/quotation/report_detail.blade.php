@@ -129,8 +129,8 @@
                         html += `<tr>`
                         html += `<td>${ d.tgl_penawaran }</td>`
                         html += `<td>${ d.no_penawaran }</td>`
-                        html += `<td>${ d.tgl_penjualan }</td>`
-                        html += `<td>${ d.no_penjualan }</td>`
+                        html += `<td>${ (d.tgl_penjualan)?d.tgl_penjualan:'-' }</td>`
+                        html += `<td>${ (d.no_penjualan )?d.no_penjualan :'-'}</td>`
                         html += `<td>${ d.tebal_transaksi }</td>`
                         html += `<td>${ d.panjang_transaksi }</td>`
                         html += `<td>${ d.lebar_transaksi }</td>`
@@ -138,11 +138,12 @@
                         html += `<td>${ d.jumlah }</td>`
                         html +=
                             `<td>Rp.${Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format( d.harga) }</td>`
-                        html += `<td>Rp.${Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format( d.total) }</td>`
-                        html += `<td>${ d.layanan }</td>`
-                        html += `<td>${ d.nama_pemasok }</td>`
                         html +=
-                            `<td>${ (d.jumlah_penjualan != d.jumlah_detail_pengiriman) ? 'OPEN' :'CLOSE'  }</td>`
+                            `<td>Rp.${Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format( d.total) }</td>`
+                        html += `<td>${ d.layanan }</td>`
+                        html += `<td>${ (d.nama_pemasok)?d.nama_pemasok:'-' }</td>`
+                        // html +=`<td>${ (d.jumlah_penjualan != d.jumlah_detail_pengiriman) ? 'OPEN' :'CLOSE'  }</td>`
+                        html += `<td>${ (d.no_penjualan) ? 'CLOSE' :'OPEN'  }</td>`
                         html += `</tr>`
                     })
 

@@ -452,7 +452,9 @@ class DeliveryController extends Controller
         $worksheet->getCell('J4')->setValue($data[0]->tgl_pengiriman);
         $worksheet->getCell('J5')->setValue($data[0]->no_pengiriman);
         $worksheet->mergeCells("J5:K5");
-        $worksheet->getCell('J6')->setValue($data[0]->no_penjualan);
+        $no_ref_qtn = ($data[0]->no_po_customer == '' || $data[0]->no_po_customer == '-') ? $data[0]->no_penjualan : $data[0]->no_po_customer;
+        $worksheet->getCell('J6')->setValue($no_ref_qtn);
+        // $worksheet->getCell('J6')->setValue($data[0]->no_penjualan);
         $worksheet->getCell('A12')->setValue($data[0]->perwakilan);
         $worksheet->getCell('A13')->setValue($data[0]->nama_pelanggan);
         $worksheet->getCell('A14')->setValue($data[0]->alamat_pelanggan);
