@@ -20,8 +20,9 @@ class DeliveryModel extends Model
             $query = "";
         }
         return DB::select("
-        select pi.tgl_pengiriman,pi.no_pengiriman,t.nomor_pekerjaan,nama_pelanggan,nama_pengguna,t.status_transaksi from pengiriman pi
+        select pi.tgl_pengiriman,pi.no_pengiriman,t.nomor_pekerjaan,nama_pelanggan,nama_pengguna,t.status_transaksi,no_penjualan from pengiriman pi
         join transaksi t on t.id_transaksi = pi.id_transaksi
+        left join penjualan pj on t.id_transaksi=pj.id_transaksi
         join penerimaan_barang pb on pb.id_penerimaan_barang = pi.id_penerimaan_barang
         join pelanggan pl on pl.id_pelanggan = t.id_pelanggan
         join pengguna pg on pg.id = t.id

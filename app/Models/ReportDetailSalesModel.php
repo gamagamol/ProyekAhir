@@ -56,7 +56,7 @@ class ReportDetailSalesModel extends Model
                 ->leftJoin('pengguna', 'pengguna.id', '=', 'transaksi.id')
                 ->groupBy('kode_transaksi')
                 ->having('no_penjualan', '=', $no_penjualan)
-                ->paginate(5);
+                ->get();
         } else {
 
             return   DB::table('transaksi')
@@ -71,7 +71,7 @@ class ReportDetailSalesModel extends Model
                 ->leftJoin('pelanggan', 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
                 ->leftJoin('pengguna', 'pengguna.id', '=', 'transaksi.id')
                 ->groupBy('kode_transaksi')
-                ->paginate(5);
+                ->get();
         }
     }
 }

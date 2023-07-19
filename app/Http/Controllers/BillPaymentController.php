@@ -53,15 +53,17 @@ class BillPaymentController extends Controller
 
 
 
-    public function show()
+    public function show($no_penjualan)
     {
+
 
         $data = [
             "tittle" => "Bill payment",
-            'no_penjualan' => $this->model->getNoSalesForBill()
+            // 'no_penjualan' => $this->model->getNoSalesForBill()
+            'no_penjualan' => $no_penjualan
         ];
 
-        // dd($data);
+
 
         return view('bill.create', $data);
     }
@@ -264,30 +266,7 @@ class BillPaymentController extends Controller
 
     }
 
-    // public function print($no_tagihan)
-    // {
-    //     $no_tagihan = str_replace('-', '/', $no_tagihan);
-    //     // dd($no_tagihan);
-    //     $total = $this->model->detail($no_tagihan);
-    //     $ttl = 0;
-    //     foreach ($total as $t) {
-    //         $ttl += $t->total;
-    //     }
-    //     $dueDate = $this->model->index($no_tagihan);
 
-
-    //     $data = [
-    //         'tittle' => "Print INVOICE",
-    //         'data' => $this->model->detail($no_tagihan),
-    //         'total_penyebut' => $total = penyebut($ttl),
-    //         'due_date' => $dueDate[0]->DUE_DATE,
-    //         'pegawai'=>$this->pegawaiModel->getEmployee('FINANCE')
-
-    //     ];
-
-    //     // dd($data);
-    //     return view('bill.print', $data);
-    // }
 
     protected function getSalesDetail($no_penjualan)
     {

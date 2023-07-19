@@ -11,7 +11,7 @@
                 <h6 class="m-0 font-weight-bold text-primary">Delivery Order</h6>
             </div>
 
-            <div class="container">
+            {{-- <div class="container">
                 <div class="row">
                     <div class="col-md-4 mt-3">
                         <form action={{ url('delivery') }} method="GET" id="serch-form">
@@ -26,48 +26,61 @@
                         </form>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="card-body">
 
                 <div class="table-responsive text-center">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
 
-                        <tr>
-                            <td>No</td>
-                            <td>Date</td>
-                            <td>No Delivery</td>
-                            <td>Job number</td>
-                            <td>Customer</td>
-                            <td>Prepared</td>
-                            <td>Action</td>
-                            <td>Document</td>
-
-
-
-                        </tr>
-                        <?php $i = 1; ?>
-                        @foreach ($data as $d)
                             <tr>
-                                <td> {{ $loop->iteration }}</td>
-                                <td style="min-width:120px">{{ $d->tgl_pengiriman }}</td>
-                                <td>{{ $d->nomor_pekerjaan }}</td>
-                                <td>{{ $d->no_pengiriman }}</td>
-                                <td>{{ $d->nama_pelanggan }}</td>
-                                <td>{{ $d->nama_pengguna }}</td>
-                                <td>
-                                    <a href="{{ url('delivery/detail', str_replace('/', '-', $d->no_pengiriman)) }}"
-                                        class="btn btn-info mt-1">
-                                        Detail </a>
-                                </td>
-                                <td>
-                                    <a href={{ url('delivery/print', str_replace('/', '-', $d->no_pengiriman)) }}
-                                        class="btn btn-primary" >Print </a>
-                                </td>
+                                <td>No</td>
+                                <td>Delivery Date</td>
+                                <td>No Sales </td>
+                                <td>No Delivery </td>
+                                <td>Job number</td>
+                                <td>Customer</td>
+                                <td>Prepared</td>
+                                <td>Action</td>
+                                <td>Document</td>
+
+
+
                             </tr>
-                        @endforeach
+                        </thead>
+                        <tbody>
+
+                            <?php $i = 1; ?>
+                            @foreach ($data as $d)
+                                <tr>
+                                    <td> {{ $loop->iteration }}</td>
+                                    <td style="min-width:120px">{{ $d->tgl_pengiriman }}</td>
+                                    <td>{{ $d->no_penjualan }}</td>
+                                    <td>{{ $d->no_pengiriman }}</td>
+                                    <td>{{ $d->nomor_pekerjaan }}</td>
+                                    <td>{{ $d->nama_pelanggan }}</td>
+                                    <td>{{ $d->nama_pengguna }}</td>
+                                    <td>
+                                        <a href="{{ url('delivery/detail', str_replace('/', '-', $d->no_pengiriman)) }}"
+                                            class="btn btn-info mt-1">
+                                            Detail </a>
+                                    </td>
+                                    <td>
+                                        <a href={{ url('delivery/print', str_replace('/', '-', $d->no_pengiriman)) }}
+                                            class="btn btn-primary">Print </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+
                     </table>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            let table = new DataTable('#dataTable');
+        })
+    </script>
 @endsection()

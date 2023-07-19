@@ -100,7 +100,9 @@ Route::get('delivery/print/{no_delivery}', [DeliveryController::class, 'print'])
 Route::resource('bill', BillPaymentController::class)->middleware(['auth', 'revalidate']);
 
 // Route::get('show/{kode}/{id}', [BillPaymentController::class, "show"]);
-Route::get('show', [BillPaymentController::class, "show"]);
+// Route::get('show', [BillPaymentController::class, "show"]); jangan di hapus
+Route::get('bill/show/{no_penjualan}', [BillPaymentController::class, "show"]);
+
 Route::get('bill/getSalesDetail/{no_pembelian}', [BillPaymentController::class, 'getSalesDetail']);
 
 Route::get('bill/detail/{no_tagihan}', [BillPaymentController::class, "detail"]);

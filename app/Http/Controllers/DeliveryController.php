@@ -53,6 +53,7 @@ class DeliveryController extends Controller
             'tittle' => "Delivery Order",
             "data" => $penerimaan
         ];
+        // dd($data);
         return view("delivery.create", $data);
     }
 
@@ -452,7 +453,8 @@ class DeliveryController extends Controller
         $worksheet->getCell('J4')->setValue($data[0]->tgl_pengiriman);
         $worksheet->getCell('J5')->setValue($data[0]->no_pengiriman);
         $worksheet->mergeCells("J5:K5");
-        $no_ref_qtn = ($data[0]->no_po_customer == '' || $data[0]->no_po_customer == '-') ? $data[0]->no_penjualan : $data[0]->no_po_customer;
+        $no_ref_qtn = ($data[0]->no_po_customer == '' || $data[0]->no_po_customer == '-') ? $data[0]->no_penjualan
+         : $data[0]->no_po_customer;
         $worksheet->getCell('J6')->setValue($no_ref_qtn);
         // $worksheet->getCell('J6')->setValue($data[0]->no_penjualan);
         $worksheet->getCell('A12')->setValue($data[0]->perwakilan);

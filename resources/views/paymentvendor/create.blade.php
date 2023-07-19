@@ -44,9 +44,6 @@
                                     <td>Weight(Kg)</td>
                                     <td>Unit Price</td>
                                     <td>Total Amount</td>
-                                 
-
-
 
                                 </tr>
                                 @csrf
@@ -65,22 +62,26 @@
                                         <td>{{ $d->no_pembelian }}</td>
                                         <td>{{ $d->nomor_pekerjaan }}</td>
                                         <td>{{ $d->nama_produk }}</td>
-                                        <td>{{ $d->tebal_transaksi }}</td>
-                                        <td>{{ $d->lebar_transaksi }}</td>
-                                        <td>{{ $d->panjang_transaksi }}</td>
-                                        <td>{{ $d->jumlah }}</td>
-                                        <td>{{ $d->berat }}</td>
-                                        <td>{{ 'Rp.' . number_format($d->harga) }}</td>
-                                        <td>{{ 'Rp.' . number_format($d->subtotal_detail_pembelian) }}</td>
+                                        <td>{{ ($d->tebal_detail_pembelian)?$d->tebal_detail_pembelian : $d->tebal_transaksi }}</td>
+                                        <td>{{ ($d->lebar_detail_pembelian)?$d->lebar_detail_pembelian : $d->lebar_transaksi }}</td>
+                                        <td>{{ ($d->panjang_detail_pembelian)?$d->panjang_detail_pembelian : $d->panjang_transaksi }}</td>
+                                        <td>{{ ($d->jumlah_detail_pembelian)?$d->jumlah_detail_pembelian : $d->jumlah }}</td>
+                                        <td>{{ ($d->berat_detail_pembelian)?$d->berat_detail_pembelian : $d->berat }}</td>
+                                        @php
+                                            $harga=($d->harga_detail_pembelian)?$d->harga_detail_pembelian:$d->harga;
+                                            $subtotal=($d->subtotal_detail_pembelian)?$d->subtotal_detail_pembelian:$d->subtotal;
+                                        @endphp
+                                        <td>{{ 'Rp.' . number_format($harga) }}</td>
+                                        <td>{{ 'Rp.' . number_format($subtotal) }}</td>
                                        
                                        
-                                        <?php $total += $d->subtotal_detail_pembelian; ?>
+                                        <?php $total += $d->total_detail_pembelian; ?>
                                        
 
 
                                     </tr>
                                 @endforeach
-                                <?php $total = $total - $total_ongkir - $total_ppn; ?>
+                                {{-- <?php $total = $total - $total_ongkir - $total_ppn; ?> --}}
                                 <tr>
                                     <td colspan="11">TOTAL</td>
                                     <td>{{ 'Rp.' . number_format($total) }}</td>

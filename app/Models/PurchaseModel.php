@@ -37,12 +37,13 @@ class PurchaseModel extends Model
         //  "
         // );
         return DB::select(
-            "SELECT p.*,t.nomor_pekerjaan,pe.nama_pelanggan,pm.nama_pemasok,pg.nama_pengguna,dtp.jumlah_detail_penerimaan from pembelian p
+            "SELECT p.*,t.nomor_pekerjaan,pe.nama_pelanggan,pm.nama_pemasok,pg.nama_pengguna,dtp.jumlah_detail_penerimaan,no_penjualan from pembelian p
             join transaksi t on p.id_transaksi = t.id_transaksi
             join pelanggan pe on pe.id_pelanggan=t.id_pelanggan
             join pemasok pm on pm.id_pemasok = p.id_pemasok
             join pengguna pg on pg.id=t.id
-             left join penerimaan_barang pmb on pmb.id_pembelian = p.id_pembelian
+            left join penjualan pj on pj.id_transaksi=t.id_transaksi
+            left join penerimaan_barang pmb on pmb.id_pembelian = p.id_pembelian
             left join detail_penerimaan_barang dtp on dtp.id_penerimaan_barang=pmb.id_penerimaan_barang
             $query
             group by no_pembelian

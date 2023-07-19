@@ -26,9 +26,9 @@ tambahan:
 
 
 8.no po customer dari sales dipake sampai bill payment  + create (done)
-9.rubah alur billpayment(tambahan)(9)
-10.debt payment nyalain(tambahan) (10)
-11.SERACHING SEMUA TRANSAKSI (tambahan)(11)
+9.rubah alur billpayment(tambahan)(9)(done)
+10.debt payment nyalain(tambahan) (10)(done)
+11.SERACHING SEMUA TRANSAKSI (tambahan)(11)(done)
 12.membuat mekanisme dengan nama barang yang sama tapi beda bentuk(done)
 
 

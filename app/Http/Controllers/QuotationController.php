@@ -459,7 +459,7 @@ class QuotationController extends Controller
                     $panjang_penawaran = $panjang_transaksi;
 
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.000008;
-                    $berat = number_format($berat, 2, '.', '');
+                    // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     return $berat;
                 }
@@ -470,7 +470,7 @@ class QuotationController extends Controller
                     $panjang_penawaran =  $panjang_transaksi;
 
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
-                    $berat = number_format($berat, 2, '.', '');
+                    // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     return $berat;
                 }
@@ -482,7 +482,7 @@ class QuotationController extends Controller
                     $panjang_penawaran =  $panjang_transaksi + 5;
 
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.000008;
-                    $berat = number_format($berat, 2, '.', '');
+                    // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     return $berat;
                 }
@@ -494,7 +494,7 @@ class QuotationController extends Controller
                     $panjang_penawaran =  $panjang_transaksi + 5;
 
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
-                    $berat = number_format($berat, 2, '.', '');
+                    // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     return $berat;
                 }
@@ -511,7 +511,7 @@ class QuotationController extends Controller
                     $panjang_penawaran =  $panjang_transaksi;
 
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
-                    $berat = number_format($berat, 2, '.', '');
+                    // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     return $berat;
                 }
@@ -521,7 +521,7 @@ class QuotationController extends Controller
                     $panjang_penawaran = $panjang_transaksi;
 
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
-                    $berat = number_format($berat, 2, '.', '');
+                    // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     return $berat;
                 }
@@ -532,7 +532,7 @@ class QuotationController extends Controller
                     $panjang_penawaran =  $panjang_transaksi + 5;
 
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
-                    $berat = number_format($berat, 2, '.', '');
+                    // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     return $berat;
                 }
@@ -543,7 +543,7 @@ class QuotationController extends Controller
                     $panjang_penawaran =  $panjang_transaksi + 5;
 
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
-                    $berat = number_format($berat, 2, '.', '');
+                    // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     return $berat;
                 }

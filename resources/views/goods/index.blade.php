@@ -11,71 +11,66 @@
                 <h6 class="m-0 font-weight-bold text-primary">Goods Recipt</h6>
             </div>
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4 mt-3">
-                        <form action={{ url('goods') }} method="GET" id="serch-form">
-                            <select class="form-control form-select" aria-label="Default select example" name='serch'
-                                id="serch">
-                                <option value=""><a href="{{ url('goods') }}">All</a></option>
-                                @foreach ($deta as $d)
-                                    <option value={{ $d->no_penerimaan }}>{{ $d->no_penerimaan }}</option>
-                                @endforeach
-                            </select>
-                            <button type=submit name=submit class="btn btn-primary mt-3" id="serch-button">submit</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+           
             <div class="card-body">
 
                 <div class="table-responsive text-center">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
 
-                        <tr>
-                            <td>No</td>
-                            <td>Date</td>
-                            <td>No Purchase</td>
-                            <td>No Goods Recipt </td>
-                            <td>Job number</td>
-                            <td>customer</td>
-                            <td>Prepared</td>
-                            <td>Action</td>
-
-
-
-                        </tr>
-                        <?php $i = 1; ?>
-                        @foreach ($data as $d)
                             <tr>
-                                <td> {{ $loop->iteration }}</td>
-                                <td style="min-width:120px">{{ $d->tgl_penerimaan }}</td>
-                                <td>{{ $d->no_pembelian }}</td>
-                                <td>{{ $d->no_penerimaan }}</td>
-                                <td>{{ $d->nomor_pekerjaan }}</td>
-                                <td>{{ $d->nama_pelanggan }}</td>
-                                <td>{{ $d->nama_pengguna }}</td>
-                                <td>
+                                <td>No</td>
+                                <td>Goods Date</td>
+                                <td>No Purchase</td>
+                                <td>No Goods Recipt </td>
+                                <td>Job number</td>
+                                <td>customer</td>
+                                <td>Prepared</td>
+                                <td>Action</td>
 
 
-                                    <a class="btn btn-primary"
-                                        href="{{ url('delivery', str_replace('/', '-', $d->no_penerimaan)) }}"
-                                        @if ($d->jumlah_detail_pengiriman == $d->jumlah_detail_penerimaan) {{ 'hidden' }} @endif>
 
-                                        Delivery
-                                    </a>
-                                    <a href="{{ url('goods/detail', [str_replace('/', '-', $d->no_pembelian),str_replace('/', '-', $d->no_penerimaan)]) }}"
-                                        class="btn btn-info mt-1">
-                                        Detail </a>
-
-                                </td>
                             </tr>
-                        @endforeach
+                        </thead>
+                        <tbody>
+
+                            <?php $i = 1; ?>
+                            @foreach ($data as $d)
+                                <tr>
+                                    <td> {{ $loop->iteration }}</td>
+                                    <td style="min-width:120px">{{ $d->tgl_penerimaan }}</td>
+                                    <td>{{ $d->no_pembelian }}</td>
+                                    <td>{{ $d->no_penerimaan }}</td>
+                                    <td>{{ $d->nomor_pekerjaan }}</td>
+                                    <td>{{ $d->nama_pelanggan }}</td>
+                                    <td>{{ $d->nama_pengguna }}</td>
+                                    <td>
+
+
+                                        <a class="btn btn-primary"
+                                            href="{{ url('delivery', str_replace('/', '-', $d->no_penerimaan)) }}"
+                                            @if ($d->jumlah_detail_pengiriman == $d->jumlah_detail_penerimaan) {{ 'hidden' }} @endif>
+
+                                            Delivery
+                                        </a>
+                                        <a href="{{ url('goods/detail', [str_replace('/', '-', $d->no_pembelian), str_replace('/', '-', $d->no_penerimaan)]) }}"
+                                            class="btn btn-info mt-1">
+                                            Detail </a>
+
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+
                     </table>
-                    {{-- {{ $data->links() }} --}}
 
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            let table = new DataTable('#dataTable');
+        })
+    </script>
 @endsection()

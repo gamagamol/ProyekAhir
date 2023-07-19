@@ -27,7 +27,7 @@ class QuotationModel extends Model
                 ->groupBy("kode_transaksi")
                 ->where('no_penawaran', '=', $id)
                 ->orderBy("tgl_penawaran", "asc")
-                ->paginate(5);
+                ->get(5);
         }
         return DB::table('penawaran')
 
@@ -39,7 +39,7 @@ class QuotationModel extends Model
             ->groupBy("kode_transaksi")
             // ->where('status_transaksi', '=', 'quotation')
             ->orderByRaw("tgl_penawaran desc,no_penawaran desc")
-            ->paginate(5);
+            ->get();
     }
     public function id()
     {

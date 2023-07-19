@@ -40,6 +40,7 @@ class PaymentController extends Controller
             'deta' => $this->model->index()
 
         ];
+        // dd($data);
         return view('payment.index', $data);
     }
 

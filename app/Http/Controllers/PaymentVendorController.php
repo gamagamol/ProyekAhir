@@ -30,6 +30,7 @@ class PaymentVendorController extends Controller
 
 
         ];
+        // dd($data);
         return view('paymentvendor.index', $data);
     }
 
@@ -37,18 +38,19 @@ class PaymentVendorController extends Controller
     {
         $no_pembelian = str_replace('-', '/', $no_pembelian);
 
-        // dd($this->model->show($no_pembelian));
+        // dd($no_pembelian);
         $data = [
             'tittle' => "Create Paymnet To Vendor",
             'data' => $this->model->show($no_pembelian),
         ];
+        // dd($data);
         return view('paymentvendor.create', $data);
     }
     public function store(Request $request)
     {
         $kode_transaksi = $request->input('kode_transaksi');
         $tgl_pembelian = $request->input('tgl_pembelian');
-       
+
         $purchase = $this->model->edit($kode_transaksi);
 
         // $tgl_pembelian = $purchase[0]->tgl_pembelian;

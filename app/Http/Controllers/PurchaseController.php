@@ -38,6 +38,7 @@ class PurchaseController extends Controller
 
 
         ];
+        // dd($data);
         return view('purchase.index', $data);
     }
 
@@ -143,7 +144,7 @@ class PurchaseController extends Controller
 
                 if ($tbl != null) {
 
-                    
+
                     if (preg_match("/^\d*(\.\d{2})?$/", $tbl) == 0) {
                         return redirect()->back()->with("failed", "if your transaction has a comma please use it '.'");
                     }
@@ -504,7 +505,7 @@ class PurchaseController extends Controller
         $worksheet->getCell('J4')->setValue($data[0]->tgl_pembelian);
         $worksheet->getCell('J5')->setValue($data[0]->no_pembelian);
         $worksheet->mergeCells("J5:K5");
-        $no_ref_qtn = ($data[0]->no_po_customer == '' || $data[0]->no_po_customer == '-') ? $data[0]->no_penawaran: $data[0]->no_po_customer;
+        $no_ref_qtn = ($data[0]->no_po_customer == '' || $data[0]->no_po_customer == '-') ? $data[0]->no_penawaran : $data[0]->no_po_customer;
         $worksheet->getCell('J6')->setValue($no_ref_qtn);
         $worksheet->getCell('A12')->setValue($data[0]->perwakilan_pemasok);
         $worksheet->getCell('A13')->setValue($data[0]->nama_pemasok);

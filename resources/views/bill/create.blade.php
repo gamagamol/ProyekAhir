@@ -15,7 +15,7 @@
 
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-3 mt-2">
+                        {{-- <div class="col-md-3 mt-2">
                             <select name="no_penjualan" id="no_penjualan" class="form-control" required>
                                 <option value=""> Select Sales Number</option>
                                 @foreach ($no_penjualan as $np)
@@ -23,12 +23,12 @@
                                     </option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> jangan di hapus--}}
                         <div class="col-md-3 mt-2 d-flex justify-content-end">
-                            <input type="date" required name="tgl_pembayaran" class="form-control">
+                            <input type="date" required name="tgl_pembayaran" class="form-control" value='<?=date('Y-m-d')?>'>
                         </div>
                     </div>
-                </div>
+                </div>  
                 <div class="card-body">
 
                     <div class="table-responsive text-center">
@@ -85,10 +85,70 @@
     </div>
 
     <script>
+        let no_penjualan='<?=$no_penjualan?>'
+        // console.log(no_penjualan);
         $(document).ready(function() {
-            $('#no_penjualan').change(function() {
-                $.ajax({
-                    url: `{{ url('bill/getSalesDetail') }}/${$('#no_penjualan').val()}`,
+            // $('#no_penjualan').change(function() {
+            //     $.ajax({
+            //         url: `{{ url('bill/getSalesDetail') }}/${$('#no_penjualan').val()}`,
+            //         type: 'GET',
+            //         dataType: 'json',
+            //         success: function(data) {
+            //             html = ''
+            //             console.log(data);
+            //             data.map((d, i) => {
+            //                 html += `<tr>`
+            //                 html += `<td>${i+1}</td>`
+            //                 html +=
+            //                     `<td hidden> <input type="text" value=${ d.id_transaksi } name="id_transaksi[]"></td>`
+            //                 html +=
+            //                     `<td hidden> <input type="text" value=${ d.id_produk } name="id_produk[]"></td>`
+            //                 html +=
+            //                     `<td hidden> <input type="text" value=${ d.id_pengiriman } name="id_pengiriman[]">`
+            //                 html +=
+            //                     `<td hidden> <input type="text" value=${ d.no_pengiriman } name="no_pengiriman[]"></td>`
+            //                 html +=
+            //                     `<td style="min-width:120px">${ d.tgl_pengiriman }</td>`
+            //                 html += `<td>${ d.no_pengiriman }</td>`
+            //                 html += `<td>${ d.nomor_pekerjaan }</td>`
+            //                 html += `<td>${ d.nama_produk }</td>`
+            //                 html += `<td>${ d.tebal_penawaran }</td>`
+            //                 html += `<td>${ d.lebar_penawaran }</td>`
+            //                 html += `<td>${ d.panjang_penawaran }</td>`
+            //                 html += `<td>${ d.jumlah }</td>`
+            //                 html += `<td>${ d.nama_produk }</td>`
+            //                 html += `<td>${ d.tebal_penawaran }</td>`
+            //                 html += `<td>${ d.lebar_penawaran }</td>`
+            //                 html += `<td>${ d.panjang_penawaran }</td>`
+            //                 html += `<td>${ d.jumlah }</td>`
+            //                 html += `<td>${ d.berat }</td>`
+            //                 html +=
+            //                     `<td>${ 'Rp.' + new Intl.NumberFormat('en-DE').format( d.harga )}</td>`
+            //                 html +=
+            //                     `<td>${ 'Rp.' + new Intl.NumberFormat('en-DE').format(d.ongkir )}</td>`
+            //                 html +=
+            //                     `<td>${ 'Rp.' + new Intl.NumberFormat('en-DE').format(d.subtotal )}</td>`
+            //                 html +=
+            //                     `<td>${ 'Rp.' + new Intl.NumberFormat('en-DE').format(d.ppn )}</td>`
+            //                 html +=
+            //                     `<td>${ 'Rp.' + new Intl.NumberFormat('en-DE').format(d.total )}</td>`
+            //                 html += `<td>${ d.layanan }</td>`
+            //                 html += `<td>${ d.nama_pelanggan }</td>`
+            //                 html += `<td>${ d.nama_pengguna }</td>`
+
+
+
+            //                 html += `</tr>`
+            //             })
+
+                  
+            //             $('#bodyTable').html(html)
+
+            //         }
+            //     })
+            // })
+             $.ajax({
+                    url: `{{ url('bill/getSalesDetail') }}/${no_penjualan}`,
                     type: 'GET',
                     dataType: 'json',
                     success: function(data) {
@@ -144,7 +204,6 @@
 
                     }
                 })
-            })
         })
     </script>
 @endsection()

@@ -47,7 +47,9 @@ $notif = $notif->notif();
     <link href="{{ asset('assets/') }}/css/sb-admin-2.min.css" rel="stylesheet">
 
     {{-- data table  --}}
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css" />
+
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
 
 
 
@@ -170,10 +172,11 @@ $notif = $notif->notif();
                         <a class="collapse-item" href="{{ url('outStandingReport') }}">Out Standing Report</a>
                         {{-- <a class="collapse-item" href="{{ url('SDR') }}">Sales Detail Report</a> --}}
                         {{-- <a class="collapse-item" href="{{ url('PCR') }}">Purchase Detail Report</a> --}}
-                        {{-- <a class="collapse-item" href="{{ url('paymentvendor/report/report') }}">Payment To Vendor --}}
-                            {{-- Report</a> --}}
+                        <a class="collapse-item" href="{{ url('paymentvendor/report/report') }}">Payment To Vendor
+                        Report</a>
                         <a class="collapse-item" href="{{ url('status_transaksi') }}">Transaction Status </a>
-                        <a class="collapse-item" href="{{ url('transaction_number_tracking') }}">Transaction Tracking </a>
+                        <a class="collapse-item" href="{{ url('transaction_number_tracking') }}">Transaction Tracking
+                        </a>
 
 
                     </div>
@@ -215,13 +218,13 @@ $notif = $notif->notif();
 
                         {{-- strat notif --}}
                         <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                            {{-- <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-bell fa-fw"></i>
                                 <!-- Counter - Alerts -->
                                 <span class="badge badge-danger badge-counter">{{ $notif['length'] }}</span>
 
-                            </a>
+                            </a> --}}
                             <!-- Dropdown - Alerts -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="alertsDropdown">

@@ -23,7 +23,7 @@
 
                         </div>
                         {{-- jangan hapus dulu penting --}}
-                        <div class="col-md-3 mt-2" id="select-pemasok">
+                        {{-- <div class="col-md-3 mt-2" id="select-pemasok">
                             <select class="form-control @error('id_pemasok') is-invalid @enderror" id="id_pemasok"
                                 name="id_pemasok" onchange="drop()" value="{{ old('id_pemasok') }}">
 
@@ -40,7 +40,7 @@
                                 </div>
                             @enderror
 
-                        </div>
+                        </div> --}}
                         {{-- <div class="col-md-3 mt-3" id="MultiSupplier">
                             <i class="fa fa-plus-circle" aria-hidden="true" onclick="MultiSupplier()"></i>
                         </div> --}}
@@ -115,13 +115,19 @@
                                 ?>
                                 <tr>
 
+                                    @php
+                                        $tebal=($d->tebal_penawaran) ? $d->tebal_penawaran : $d->tebal_transaksi;
+                                        $lebar=($d->lebar_penawaran) ? $d->lebar_penawaran : $d->lebar_transaksi;
+                                        $panjang=($d->panjang_penawaran) ? $d->panjang_penawaran : $d->panjang_transaksi;
+                                    @endphp
+
                                     <td>{{ $loop->iteration }}</td>
                                     <td style="min-width:120px">{{ $d->tgl_penjualan }}</td>
                                     <td>{{ $d->no_penjualan }}</td>
                                     <td>{{ $d->nama_produk }}</td>
-                                    <td>{{ $d->tebal_penawaran }}</td>
-                                    <td>{{ $d->lebar_penawaran }}</td>
-                                    <td>{{ $d->panjang_penawaran }}</td>
+                                    <td>{{ $tebal }}</td>
+                                    <td>{{ $lebar }}</td>
+                                    <td>{{ $panjang }}</td>
                                     <td>{{ $d->berat }}</td>
                                     {{-- sales --}}
                                     <td>{{ $d->jumlah_detail_penjualan }}</td>
@@ -133,7 +139,7 @@
                                     <td>{{ $d->nama_pelanggan }}</td>
                                     <td id="CTS">
                                         <i class="fa fa-plus-circle" aria-hidden="true"
-                                            onclick="CreateSupplier('{{ $d->id_produk }}','{{ $d->nama_produk }}','{{ $d->no_penjualan }}','{{ $d->id_transaksi }}','{{ $d->tebal_transaksi }}','{{ $d->lebar_transaksi }}','{{ $d->panjang_transaksi }}','{{ $d->bentuk_produk }}','{{ $d->layanan }}','{{ $jumlah }}','{{ $d->id_penawaran }}','{{ $d->berat }}')"></i>
+                                            onclick="CreateSupplier('{{ $d->id_produk }}','{{ $d->nama_produk }}','{{ $d->no_penjualan }}','{{ $d->id_transaksi }}','{{ $tebal }}','{{ $lebar }}','{{ $panjang }}','{{ $d->bentuk_produk }}','{{ $d->layanan }}','{{ $jumlah }}','{{ $d->id_penawaran }}','{{ $d->berat }}')"></i>
 
                                     </td>
 

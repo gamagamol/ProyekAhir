@@ -126,7 +126,7 @@
                                         {{ $p->lebar_detail_pembelian ? $p->lebar_detail_pembelian : $p->lebar_penawaran }}
                                     </td>
                                     <td>
-                                        {{ $p->lebar_detail_pembelian ? $p->lebar_detail_pembelian : $p->lebar_penawaran }}
+                                        {{ $p->panjang_detail_pembelian ? $p->panjang_detail_pembelian : $p->panjang_penawaran }}
                                     </td>
                                     <td>
                                         {{ $jumlah }}

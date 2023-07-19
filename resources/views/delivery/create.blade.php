@@ -81,6 +81,11 @@
                             <input type="text" name="select_all" id="fill_sa" hidden>
 
                             @foreach ($data as $d)
+                                @php
+                                    $tebal = $d->tebal_penawaran ? $d->tebal_penawaran : $d->tebal_transaksi;
+                                    $lebar = $d->lebar_penawaran ? $d->lebar_penawaran : $d->lebar_transaksi;
+                                    $panjang = $d->panjang_penawaran ? $d->panjang_penawaran : $d->panjang_transaksi;
+                                @endphp
                                 <tr>
 
                                     <td>
@@ -92,13 +97,13 @@
                                     <td>{{ $d->nomor_pekerjaan }}</td>
                                     <td>{{ $d->nama_produk }}</td>
                                     <td>
-                                        <?=  $d->tebal_penawaran ?>
+                                        <?= $d->tebal_penawaran ?>
                                     </td>
                                     <td>
-                                        {{$d->lebar_penawaran }}
+                                        {{ $d->lebar_penawaran }}
                                     </td>
                                     <td>
-                                        {{$d->lebar_penawaran }}
+                                        {{ $d->panjang_penawaran }}
                                     </td>
                                     <td>{{ $d->jumlah_detail_penerimaan }}</td>
                                     <td>{{ $d->jumlah_detail_pengiriman }}</td>
@@ -119,7 +124,6 @@
                                                     '{{ $d->jumlah_detail_penerimaan }}',
                                                     '{{ $d->harga }}',
 
-                                                  
                                                     
                                                     )"
                                             id={{ "IconClickCreateSupplier$i" }}></i>
