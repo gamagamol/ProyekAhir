@@ -64,7 +64,7 @@
                                 <th>Subtotal</th>
                                 <th>VAT 11%</th>
                                 <th>Shipment</th>
-                                <th>Total</th>
+                                <th>Total Quotation</th>
                                 <th>Date Sales</th>
                                 <th>No Sales</th>
                                 <th>Date Purchase</th>
@@ -109,16 +109,30 @@
                         html += `<td>${ d.no_penawaran }</td>`
                         html += `<td>${ d.nama_pelanggan }</td>`
                         html += `<td>${ d.nama_pegawai }</td>`
-                        html += `<td>Rp.${ Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(d.subtotal) }</td>`
-                        html += `<td>Rp.${ Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(d.ppn) }</td>`
-                        html += `<td>Rp.${ Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(d.ongkir )}</td>`
-                        html += `<td>Rp.${ Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(d.total_transaksi )}</td>`
-                        html += `<td>${ d.tgl_penjualan }</td>`
-                        html += `<td>${ d.no_penjualan }</td>`
-                        html += `<td>${ (d.tgl_pembelian)?d.tgl_pembelian :'-' }</td>`
-                        html += `<td>${( d.no_pembelian)? d.no_pembelian :'-' }</td>`
-                        html +=`<td>Rp.${Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format( d.total_penjualan) }</td>`
-                      
+                        html +=
+                            `<td>Rp.${ Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(d.subtotal) }</td>`
+                        html +=
+                            `<td>Rp.${ Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(d.ppn) }</td>`
+                        html +=
+                            `<td>Rp.${ Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(d.ongkir )}</td>`
+                        html +=
+                            `<td>Rp.${ Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(d.total_quotation )}</td>`
+                        html += `<td>${ (d.tgl_penjualan) ? d.tgl_penjualan :'-' }</td>`
+                        html += `<td>${ (d.no_penjualan) ? d.no_penjualan :'-' }</td>`
+                        html += `<td>${ '-' }</td>`
+                        // html += `<td>${ (d.tgl_pembelian)?d.tgl_pembelian :'-' }</td>`
+
+                        let no_so = ''
+                        if (d.no_po_customer == null || d.no_po_customer == '-') {
+                            no_so = d.no_penjualan
+                        } else {
+                            no_so = d.no_po_customer
+                        }
+
+                        html += `<td>${(d.tgl_penjualan)?no_so:'-' }</td>`
+                        html +=
+                            `<td>Rp.${Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format( d.total_penjualan) }</td>`
+
                         html += `</tr>`
                     })
 

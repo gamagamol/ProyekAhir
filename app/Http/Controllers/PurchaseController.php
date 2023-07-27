@@ -505,8 +505,8 @@ class PurchaseController extends Controller
         $worksheet->getCell('J4')->setValue($data[0]->tgl_pembelian);
         $worksheet->getCell('J5')->setValue($data[0]->no_pembelian);
         $worksheet->mergeCells("J5:K5");
-        $no_ref_qtn = ($data[0]->no_po_customer == '' || $data[0]->no_po_customer == '-') ? $data[0]->no_penawaran : $data[0]->no_po_customer;
-        $worksheet->getCell('J6')->setValue($no_ref_qtn);
+        // $no_ref_qtn = ($data[0]->no_po_customer == '' || $data[0]->no_po_customer == '-') ? $data[0]->no_penawaran : $data[0]->no_po_customer;
+        $worksheet->getCell('J6')->setValue($data[0]->no_penawaran);
         $worksheet->getCell('A12')->setValue($data[0]->perwakilan_pemasok);
         $worksheet->getCell('A13')->setValue($data[0]->nama_pemasok);
         $worksheet->getCell('A14')->setValue($data[0]->alamat_pemasok);

@@ -46,6 +46,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
 
 
         // dd($this->data($this->month, $this->date));
+        // dd($this->data($this->month, $this->date));
 
         return view('quotation.' . $view, [
             'data' => $this->data($this->month, $this->date),
@@ -60,7 +61,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
 
         $panjang_kolom = '';
         if ($this->type == 'detail') {
-            $panjang_kolom = 'N';
+            $panjang_kolom = 'V';
         } else if ($this->type == 'customer_omzet') {
 
             $panjang_kolom = 'F';
@@ -88,13 +89,15 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
 
         if ($this->type == 'detail') {
             if ($month != '0' && $date == null) {
-                $where = "WHERE MONTH(p.tgl_penawaran)=$month";
+                $month = explode('-', $month);
+               
+                $where = "WHERE MONTH(p.tgl_penawaran)=$month[1] AND YEAR(p.tgl_penawaran)=$month[0]";
             } elseif ($date && $month == '0') {
 
-                $where = "WHERE DAY(p.tgl_penawaran)=$date";
+                $where = "WHERE p.tgl_penawaran='$date'";
             } elseif ($month != null && $date != null) {
 
-                $where = "WHERE MONTH(p.tgl_penawaran)=$month and DAY(p.tgl_penawaran)=$date";
+                $where = "WHERE p.tgl_penawaran='$date'";
             }
 
             $query = "select b.*, (select sum(jumlah) from transaksi 
@@ -128,16 +131,20 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
 						 t.id_transaksi,p.tgl_penawaran,p.no_penawaran,
 						tgl_penjualan,pj.id_penjualan,pj.no_penjualan,
 						t.tebal_transaksi,t.panjang_transaksi,lebar_transaksi,t.berat,
-						t.jumlah,t.harga,t.total,t.layanan,pemasok.nama_pemasok FROM transaksi t
+						t.jumlah,t.harga,t.total,t.layanan,pemasok.nama_pemasok ,tebal_penawaran,
+                        lebar_penawaran,
+                        panjang_penawaran,nama_pelanggan,nomor_pekerjaan,nama_produk
+                         FROM transaksi t
 						join penawaran p on t.id_transaksi = p.id_transaksi
 						left join penjualan pj on p.id_transaksi = pj.id_transaksi
 						left join pembelian pm on pm.id_penjualan = pj.id_penjualan
 						left join penerimaan_barang pb on pb.id_pembelian=pm.id_pembelian
 						left join pengiriman pg on pg.id_penerimaan_barang = pb.id_penerimaan_barang
                         left join pemasok on pemasok.id_pemasok=pm.id_pemasok
+                        left join detail_transaksi_penawaran dtp on dtp.id_penawaran=p.id_penawaran
+                        left join produk pd on pd.id_produk=dtp.id_produk
+						join pelanggan on pelanggan.id_pelanggan=t.id_pelanggan
                         $where
-						group by p.no_penawaran
-                        
 						) b";
         } else if ($this->type == 'customer_omzet') {
 
@@ -190,7 +197,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
                         t.tebal_transaksi,t.panjang_transaksi,lebar_transaksi,
                         t.berat,t.jumlah,t.harga,t.total,t.layanan,
                         pemasok.nama_pemasok,nama_produk,no_pengiriman,
-                        tgl_pengiriman,nama_pegawai,nama_pelanggan,no_penawaran,tgl_penawaran FROM transaksi t
+                        tgl_pengiriman,nama_pegawai,nama_pelanggan,no_penawaran,tgl_penawaran,no_pembelian FROM transaksi t
                         join penawaran p on t.id_transaksi = p.id_transaksi
                         join penjualan pj on p.id_transaksi = pj.id_transaksi
                         left join pembelian pm on pm.id_penjualan = pj.id_penjualan
@@ -207,38 +214,33 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
         } else if ($this->type == 'quotation') {
 
             if ($month != '0' && $date == null) {
-                $where = "and MONTH(p.tgl_penawaran)=$month";
+                $where = "and MONTH(pn.tgl_penawaran)=$month";
             } elseif ($date && $month == '0') {
 
-                $where = "and DAY(p.tgl_penawaran)=$date";
+                $where = "and DAY(pn.tgl_penawaran)=$date";
             } elseif ($month != null && $date != null) {
 
-                $where = "and MONTH(p.tgl_penawaran)=$month and DAY(p.tgl_penawaran)=$date";
+                $where = "and MONTH(pn.tgl_penawaran)=$month and DAY(pn.tgl_penawaran)=$date";
             }
 
-            $query = "select b.*,(select sum(total) from transaksi 
-                            join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
-                            where transaksi.tidak_terpakai=0 and no_penawaran=b.no_penawaran
-                            ) as total_penjualan
-                from (
-						SELECT 
-						 t.id_transaksi,p.tgl_penawaran,p.no_penawaran,
-						tgl_penjualan,pj.id_penjualan,pj.no_penjualan,
-						t.tebal_transaksi,t.panjang_transaksi,lebar_transaksi,t.berat,
-						t.jumlah,t.harga,t.total,t.layanan,pemasok.nama_pemasok,subtotal,ppn,ongkir,
-                        t.total as total_transaksi,nama_pelanggan,nama_pegawai,tgl_pembelian,no_pembelian
-                        FROM transaksi t
-						join penawaran p on t.id_transaksi = p.id_transaksi
-						join penjualan pj on p.id_transaksi = pj.id_transaksi
-						left join pembelian pm on pm.id_penjualan = pj.id_penjualan
-						left join penerimaan_barang pb on pb.id_pembelian=pm.id_pembelian
-						left join pengiriman pg on pg.id_penerimaan_barang = pb.id_penerimaan_barang
-                        left join pemasok on pemasok.id_pemasok=pm.id_pemasok
-                        left join pelanggan on pelanggan.id_pelanggan = t.id_pelanggan
-                        left join pegawai on pegawai.id_pegawai=t.id_pegawai
-                        where jabatan_pegawai='SALES'$where
-						group by p.no_penawaran
-						) b";
+            $query = "select b.*,sum(b.total) as total_quotation ,(
+                        select sum(total) from transaksi 
+                        left join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
+                        join penjualan on penawaran.id_transaksi=penjualan.id_transaksi
+                        where no_penawaran=b.no_penawaran
+                                                    ) as total_penjualan from(
+                        select  t.id_transaksi,pn.tgl_penawaran,pn.no_penawaran,
+                                                tgl_penjualan,pj.id_penjualan,pj.no_penjualan,
+                                                t.jumlah,t.harga,t.total,t.layanan,subtotal,ppn,ongkir,
+                                                t.total as total_transaksi,nama_pelanggan,tgl_pembelian,no_pembelian,nama_pegawai,no_po_customer from transaksi t 
+                        left join penawaran pn on t.id_transaksi=pn.id_transaksi
+                        left join penjualan pj on t.id_transaksi=pj.id_transaksi
+                        left join pembelian pm on pm.id_penjualan=pj.id_penjualan
+                        join pelanggan pg on pg.id_pelanggan=t.id_pelanggan
+                        join pegawai on pegawai.id_pegawai=t.id_pegawai
+                        where jabatan_pegawai='SALES' $where
+                        )b
+                        group by b.no_penawaran";
         }
 
 

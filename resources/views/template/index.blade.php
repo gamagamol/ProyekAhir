@@ -16,6 +16,9 @@ $notif = $notif->notif();
     <meta name="author" content="">
 
     <title>{{ $tittle }}</title>
+
+    <!-- Custom styles for this template-->
+    <link href="{{ asset('assets/') }}/css/sb-admin-2.min.css" rel="stylesheet">
     {{-- jQuery --}}
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
@@ -43,16 +46,17 @@ $notif = $notif->notif();
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
 
-    <!-- Custom styles for this template-->
-    <link href="{{ asset('assets/') }}/css/sb-admin-2.min.css" rel="stylesheet">
+
 
     {{-- data table  --}}
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css" />
 
     <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
 
+    {{-- select2 --}}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 </head>
 
@@ -173,7 +177,7 @@ $notif = $notif->notif();
                         {{-- <a class="collapse-item" href="{{ url('SDR') }}">Sales Detail Report</a> --}}
                         {{-- <a class="collapse-item" href="{{ url('PCR') }}">Purchase Detail Report</a> --}}
                         <a class="collapse-item" href="{{ url('paymentvendor/report/report') }}">Payment To Vendor
-                        Report</a>
+                            Report</a>
                         <a class="collapse-item" href="{{ url('status_transaksi') }}">Transaction Status </a>
                         <a class="collapse-item" href="{{ url('transaction_number_tracking') }}">Transaction Tracking
                         </a>

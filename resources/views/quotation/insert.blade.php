@@ -1,5 +1,10 @@
 @extends('template.index')
 @section('content')
+
+    <link rel="stylesheet" href="{{ asset('css/CustomStyleselect2.css') }}">
+
+
+
     @if (session()->has('failed'))
         <div class="alert alert-danger" role="alert">
             {{ session('failed') }}
@@ -70,8 +75,8 @@
                             <div class="col-md-3 mt-3">
                                 <div class="form-group">
                                     <label for="id_pegawai">Employee</label>
-                                    <select class="form-control @error('id_pegawai') is-invalid @enderror" id="id_pegawai"
-                                        name="id_pegawai" value="{{ old('id_pegawai') }}"
+                                    <select class="form-control select2 @error('id_pegawai') is-invalid @enderror"
+                                        id="id_pegawai" name="id_pegawai" value="{{ old('id_pegawai') }}"
                                         @if (count($pembantu) > 0) readonly @endif>
                                         @if (count($pembantu) > 0)
                                             <option value={{ $pembantu[0]->id_pegawai }}>{{ $nama_pegawai }}
@@ -97,7 +102,7 @@
                             <div class="col-md-3 mt-3">
                                 <div class="form-group">
                                     <label for="id_pelanggan">Customer</label>
-                                    <select class="form-control @error('id_pelanggan') is-invalid @enderror"
+                                    <select class="form-control select2 @error('id_pelanggan') is-invalid @enderror"
                                         id="id_pelanggan" name="id_pelanggan" value="{{ old('id_pelanggan') }}"
                                         @if (count($pembantu) > 0) readonly @endif>
                                         @if (count($pembantu) > 0)
@@ -130,8 +135,8 @@
                             <div class="col-md-3 mt-3">
                                 <div class="form-group">
                                     <label for="id_produk">Product</label>
-                                    <select class="form-control @error('id_produk') is-invalid @enderror" id="id_produk"
-                                        name="id_produk" onchange="drop()" value="{{ old('id_produk') }}">
+                                    <select class="form-control select2 @error('id_produk') is-invalid @enderror"
+                                        id="id_produk" name="id_produk" onchange="drop()" value="{{ old('id_produk') }}">
 
 
                                         <option value={{ null }}>Select Your product</option>
@@ -496,6 +501,8 @@
         $('#ongkir').mask('000.000.000.000.000', {
             reverse: true
         });
+
+        $('.select2').select2();
 
         let baseUrl = '<?= url('/') ?>'
 

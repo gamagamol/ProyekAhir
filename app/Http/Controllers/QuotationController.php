@@ -185,9 +185,9 @@ class QuotationController extends Controller
 
             $berat = $this->CalculateWeight($bentuk_produk, $layanan, $tebal_transaksi, $lebar_transaksi, $panjang_transaksi, $jumlah);
 
+            // dd($berat);
+            $subtotal = (float) $berat * (int) str_replace('.', "", $request->input('harga'));
 
-
-            $subtotal = $berat * str_replace('.', "", $request->input('harga'));
 
             $ppn = $subtotal * 0.11;
             $total = $subtotal + $ppn;
@@ -209,7 +209,7 @@ class QuotationController extends Controller
                 'tebal_penawaran' => ($layanan == 'MILLING') ? $tebal_transaksi + 5 : $tebal_transaksi,
                 'lebar_penawaran' => ($layanan == 'MILLING' && $bentuk_produk == 'FLAT') ? $lebar_transaksi + 5 : $lebar_transaksi,
                 'panjang_penawaran' => ($layanan == 'MILLING') ? $panjang_transaksi + 5 : $panjang_transaksi,
-                'berat_pembantu' => $berat,
+                'berat_pembantu' => (float)$berat,
                 'bentuk_pembantu' => $bentuk_produk,
                 'subtotal' => $subtotal,
                 'ppn' => $ppn,
@@ -461,7 +461,7 @@ class QuotationController extends Controller
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.000008;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
-                    return $berat;
+                    return (float)number_format((float)$berat, 1, '.', '');
                 }
 
                 if ($layanan == "NF") {
@@ -472,7 +472,7 @@ class QuotationController extends Controller
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
-                    return $berat;
+                    return (float)number_format((float)$berat, 1, '.', '');
                 }
 
                 if ($layanan == "MILLING") {
@@ -484,7 +484,7 @@ class QuotationController extends Controller
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.000008;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
-                    return $berat;
+                    return (float)number_format((float)$berat, 1, '.', '');
                 }
 
                 if ($layanan == "NF MILLING") {
@@ -496,7 +496,7 @@ class QuotationController extends Controller
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
-                    return $berat;
+                    return (float)number_format((float)$berat, 1, '.', '');
                 }
 
 
@@ -513,7 +513,7 @@ class QuotationController extends Controller
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
-                    return $berat;
+                    return (float)number_format((float)$berat, 1, '.', '');
                 }
                 if ($layanan == "NF") {
                     $tebal_penawaran = $tebal_transaksi;
@@ -523,7 +523,7 @@ class QuotationController extends Controller
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
-                    return $berat;
+                    return (float)number_format((float)$berat, 1, '.', '');
                 }
                 if ($layanan == "MILLING") {
                     //    membuat ukuran dan berat pxl 0,00008
@@ -534,7 +534,7 @@ class QuotationController extends Controller
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
-                    return $berat;
+                    return (float)number_format((float)$berat, 1, '.', '');
                 }
                 if ($layanan == "NF MILLING") {
                     //    membuat ukuran dan berat pxl 0,00008
@@ -545,7 +545,7 @@ class QuotationController extends Controller
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
-                    return $berat;
+                    return (float)number_format((float)$berat, 1, '.', '');
                 }
                 break;
         }
@@ -589,22 +589,23 @@ class QuotationController extends Controller
         $data = '';
 
         if (request()->input('month') && !request()->input('date')) {
-            $month = explode('-', request()->input('month'))[1];
+            // $month = explode('-', request()->input('month'))[1];
 
-            $data = $this->QuotationModel->quotationDetailReport($month);
+            $data = $this->QuotationModel->quotationDetailReport(request()->input('month'));
         } elseif (request()->input('date') && !request()->input('month')) {
-            $date = explode('-', request()->input('date'))[2];
+            // $date = explode('-', request()->input('date'))[2];
 
-            $data = $this->QuotationModel->quotationDetailReport(null, $date);
+            $data = $this->QuotationModel->quotationDetailReport(null, request()->input('date'));
         } elseif (request()->input('date') && request()->input('month')) {
-            $month = explode('-', request()->input('month'))[1];
-            $date = explode('-', request()->input('date'))[2];
+            $month = request()->input('month');
+            $date = request()->input('date');
 
-            $data = $this->QuotationModel->quotationDetailReport($month, $date);
+            $data = $this->QuotationModel->quotationDetailReport($month,$date);
         } else {
             $data = $this->QuotationModel->quotationDetailReport();
         }
 
+        // print_r($data);die;
 
         return response()->json($data);
     }
@@ -616,10 +617,14 @@ class QuotationController extends Controller
 
     public function exportDetailReport($month = null, $date = null)
     {
+        $tgl = date('Y-m-d');
+        if ($date) {
+            $tgl = $date;
+        } else {
+            $tgl = $month;
+        }
 
-
-
-        return Excel::download(new QuotationExport($month, $date, 'detail'), 'Quotation Detail Report.xlsx');
+        return Excel::download(new QuotationExport($month, $date, 'detail'), "Quotation Detail Report_$tgl.xlsx");
     }
 
     public function customerOmzetReport()
@@ -746,6 +751,7 @@ class QuotationController extends Controller
             $data = $this->QuotationModel->quotationReport();
         }
 
+        // dd($data);
 
 
         return response()->json([

@@ -59,44 +59,30 @@
                             <tr>
                                 <th>Date Quotation</th>
                                 <th>No Quotation</th>
+                                <th>Customer</th>
+                                <th>Job Number</th>
+                                <th>Grade</th>
+                                <th>Thikness</th>
+                                <th>Width</th>
+                                <th>Length</th>
+                                <th>QTY</th>
+                                <th>Grade</th>
+                                <th>Thikness</th>
+                                <th>Width</th>
+                                <th>Length</th>
+                                <th>QTY</th>
+                                <th>Weight</th>
+                                <th>Unit Price</th>
+                                <th>Total</th>
+                                <th>Process</th>
                                 <th>Date Sales</th>
                                 <th>No Sales</th>
-                                <th>Thickness</th>
-                                <th>Length</th>
-                                <th>Width</th>
-                                <th>Weight</th>
-                                <th>Qty</th>
-                                <th>Price</th>
-                                <th>Total</th>
-                                <th>Processing</th>
                                 <th>Supplier</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody id="Tbody">
-                            {{-- @foreach ($data as $d)
-                                <tr>
-                                    <td>{{ $d->tgl_penawaran }}</td>
-                                    <td>{{ $d->no_penawaran }}</td>
-                                    <td>{{ $d->tgl_penjualan }}</td>
-                                    <td>{{ $d->no_penjualan }}</td>
-                                    <td>{{ $d->tebal_transaksi }}</td>
-                                    <td>{{ $d->panjang_transaksi }}</td>
-                                    <td>{{ $d->lebar_transaksi }}</td>
-                                    <td>{{ $d->berat }}</td>
-                                    <td>{{ $d->jumlah }}</td>
-                                    <td>{{ $d->harga }}</td>
-                                    <td>{{ $d->total }}</td>
-                                    <td>{{ $d->layanan }}</td>
-                                    <td>{{ $d->nama_pemasok }}</td>
-                                    @if ($d->jumlah_penjualan != $d->jumlah_detail_pengiriman)
-                                        <td> OPEN</td>
-                                    @else
-                                        <td>CLOSE</td>
-                                    @endif
 
-                                </tr>
-                            @endforeach --}}
                         </tbody>
 
 
@@ -114,6 +100,8 @@
 <script>
     let baseUrl = `{{ url('/') }}`
 
+
+
     const report = {
 
         callBackend: function(data = null) {
@@ -127,22 +115,30 @@
                     html = ''
                     data.map((d) => {
                         html += `<tr>`
+
                         html += `<td>${ d.tgl_penawaran }</td>`
                         html += `<td>${ d.no_penawaran }</td>`
-                        html += `<td>${ (d.tgl_penjualan)?d.tgl_penjualan:'-' }</td>`
-                        html += `<td>${ (d.no_penjualan )?d.no_penjualan :'-'}</td>`
+                        html += `<td>${ d.nama_pelanggan }</td>`
+                        html += `<td>${ d.nomor_pekerjaan }</td>`
+                        html += `<td>${ d.nama_produk }</td>`
                         html += `<td>${ d.tebal_transaksi }</td>`
-                        html += `<td>${ d.panjang_transaksi }</td>`
                         html += `<td>${ d.lebar_transaksi }</td>`
-                        html += `<td>${ d.berat }</td>`
+                        html += `<td>${ d.panjang_transaksi }</td>`
                         html += `<td>${ d.jumlah }</td>`
+                        html += `<td>${ d.nama_produk }</td>`
+                        html += `<td>${ d.tebal_penawaran }</td>`
+                        html += `<td>${ d.lebar_penawaran }</td>`
+                        html += `<td>${ d.panjang_penawaran }</td>`
+                        html += `<td>${ d.jumlah }</td>`
+                        html += `<td>${ d.berat }</td>`
                         html +=
                             `<td>Rp.${Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format( d.harga) }</td>`
                         html +=
                             `<td>Rp.${Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format( d.total) }</td>`
                         html += `<td>${ d.layanan }</td>`
+                        html += `<td>${ (d.tgl_penjualan)?d.tgl_penjualan:'-' }</td>`
+                        html += `<td>${ (d.no_penjualan)?d.no_penjualan:'-' }</td>`
                         html += `<td>${ (d.nama_pemasok)?d.nama_pemasok:'-' }</td>`
-                        // html +=`<td>${ (d.jumlah_penjualan != d.jumlah_detail_pengiriman) ? 'OPEN' :'CLOSE'  }</td>`
                         html += `<td>${ (d.no_penjualan) ? 'CLOSE' :'OPEN'  }</td>`
                         html += `</tr>`
                     })
@@ -157,7 +153,7 @@
                 month: $('#month').val(),
                 date: $('#date').val()
             }
-            console.log(data);
+
 
             this.callBackend(data)
         }
@@ -166,29 +162,25 @@
     $(document).ready(function() {
 
         report.callBackend()
-
         $('#search').click(() => {
             report.search()
         })
-
 
         $('#clear').click(function() {
             $('#month').val('')
             $('#date').val('')
         })
         $('#btn-export').click(function() {
-            let month = $('#month').val().split('-')
-            let date = $('#date').val().split('-')
+            let month = $('#month').val()
+            let date = $('#date').val()
 
-            if (month.length > 1) {
-                month = month[1]
-            }
+            // if (month.length > 1) {
+            //     month = month[1]
+            // }
 
-            if (date.length > 1) {
-                date = date[2]
-            }
-
-
+            // if (date.length > 1) {
+            //     date = date[2]
+            // }
 
             let url = `${baseUrl}/exportDetailReport`
 

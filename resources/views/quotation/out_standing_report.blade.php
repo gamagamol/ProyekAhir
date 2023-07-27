@@ -64,21 +64,23 @@
             <div class="card-body">
 
                 <div class="table-responsive text-center">
-                    <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0" style="width: 1200px">
+                    <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0"
+                        style="width: 1200px">
                         <thead>
                             <tr>
                                 <th style="width:500px">Sales Date</th>
-                                <th >Develivery Date</th>
-                                <th >Sales Number</th>
-                                <th >Develivery Number</th>
-                                <th >Sales</th>
-                                <th >Grade</th>
-                                <th  colspan="3">Matrial Size</th>
-                                <th >Weight</th>
-                                <th >Qty</th>
-                                <th >Process</th>
-                                <th >Customer</th>
-                                <th >Supplier</th>
+                                <th>Develivery Date</th>
+                                <th>Sales Number</th>
+                                <th>Purchase Number</th>
+                                <th>Develivery Number</th>
+                                <th>Sales</th>
+                                <th>Grade</th>
+                                <th colspan="3">Matrial Size</th>
+                                <th>Weight</th>
+                                <th>Qty</th>
+                                <th>Process</th>
+                                <th>Customer</th>
+                                <th>Supplier</th>
                             </tr>
                         </thead>
                         <tbody id="Tbody">
@@ -111,12 +113,13 @@
                 dataType: 'json',
                 success: function(data) {
                     html = ''
-                    
+
                     data.data.map((d) => {
                         html += `<tr class='text-center'>`
                         html += `<td>${ d.tgl_penjualan }</td>`
                         html += `<td>${ (d.tgl_pengiriman) ? d.tgl_pengiriman : '-' }</td>`
                         html += `<td>${ d.no_penjualan }</td>`
+                        html += `<td>${ (d.no_pembelian) ? d.no_pembelian :'-' }</td>`
                         html += `<td>${ (d.no_pengiriman) ? d.no_pengiriman :'-' }</td>`
                         html += `<td>${ d.nama_pegawai }</td>`
                         html += `<td>${ d.nama_produk }</td>`
@@ -128,11 +131,11 @@
                         html += `<td>${ d.layanan }</td>`
                         html += `<td>${ d.nama_pelanggan }</td>`
                         html += `<td>${ (d.nama_pemasok) ? d.nama_pemasok :'-' }</td>`
-                            
+
 
                     })
 
-                   
+
 
 
 

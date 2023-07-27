@@ -60,7 +60,7 @@ class ReportDetailSalesModel extends Model
         } else {
 
             return   DB::table('transaksi')
-                ->selectRaw('kode_transaksi,no_penawaran,no_penjualan,no_pembelian,no_penerimaan,no_pengiriman,no_tagihan,no_pembayaran,nama_pelanggan,nama_pengguna ,tgl_penjualan ')
+                ->selectRaw('kode_transaksi,no_penawaran,no_penjualan,no_pembelian,no_penerimaan,no_pengiriman,no_tagihan,no_pembayaran,nama_pelanggan,nama_pengguna ,tgl_penawaran ')
                 ->leftJoin('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
                 ->leftJoin('penjualan', 'penjualan.id_transaksi', '=', 'transaksi.id_transaksi')
                 ->leftJoin('pembelian', 'pembelian.id_transaksi', '=', 'transaksi.id_transaksi')

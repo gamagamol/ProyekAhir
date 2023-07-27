@@ -19,7 +19,7 @@ class ReportDetailSales extends Controller
     {   
         $serch= request()->get('search');
         if ($serch) {
-            // dd($serch);
+        
             if(request()->get('search')=='All'){
                $data= $this->model->index();
             }else{
@@ -29,6 +29,8 @@ class ReportDetailSales extends Controller
             $data =  $this->model->index();
 
         }
+
+        
 
         $data = [
             'tittle' => " Report Detail Sales",

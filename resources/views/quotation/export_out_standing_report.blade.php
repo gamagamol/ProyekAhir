@@ -7,6 +7,7 @@
                  <th>Sales Date</th>
                  <th>Delivery Date</th>
                  <th>Sales Number</th>
+                 <th>Purchase Number</th>
                  <th>Delivery Number</th>
                  <th>Grade</th>
                  <th>Thickness</th>
@@ -14,8 +15,6 @@
                  <th>Length</th>
                  <th>Weight</th>
                  <th>Qty</th>
-                 <th>Price</th>
-                 <th>subtotal</th>
                  <th>Processing</th>
                  <th>Customer</th>
                  <th>Supplier</th>
@@ -28,14 +27,13 @@
                      <td>{{ $d->tgl_penjualan }}</td>
                      <td>{{ $d->tgl_pengiriman }}</td>
                      <td>{{ $d->no_penjualan }}</td>
+                     <td>{{ $d->no_pembelian }}</td>
                      <td>{{ $d->no_pengiriman }}</td>
                      <td>{{ $d->nama_produk }}</td>
                      <td>{{ $d->tebal_transaksi }}</td>
                      <td>{{ $d->lebar_transaksi }}</td>
                      <td>{{ $d->panjang_transaksi }}</td>
                      <td>{{ $d->berat }}</td>
-                     <td>{{ $d->jumlah }}</td>
-                     <td>{{ $d->harga }}</td>
                      <td>{{ $d->berat * $d->harga }}</td>
                      <td>{{ $d->layanan }}</td>
                      <td>{{ $d->nama_pelanggan }}</td>
