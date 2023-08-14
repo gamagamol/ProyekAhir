@@ -1,5 +1,6 @@
 @extends('template.index')
 @section('content')
+{{-- @dd('masuk sini') --}}
     <div class="container">
         @if (session()->has('failed'))
             <div class="alert alert-danger" role="alert">
@@ -80,7 +81,7 @@
                             @foreach ($data as $p)
                                 <?php
                                 
-                                $jumlah = $p->jumlah_detail_pembelian;
+                                $jumlah_detail_pembelian = $p->jumlah_detail_pembelian;
                                 $berat = $p->berat;
                                 $subtotal = $p->subtotal;
                                 $ppn = $p->ppn;
@@ -113,7 +114,7 @@
                                         {{ $p->panjang_penawaran }}
                                     </td>
                                     <td>
-                                        {{ $jumlah }}
+                                        {{ $p->jumlah }}
                                     </td>
 
                                     <td>
@@ -129,7 +130,7 @@
                                         {{ $p->panjang_detail_pembelian ? $p->panjang_detail_pembelian : $p->panjang_penawaran }}
                                     </td>
                                     <td>
-                                        {{ $jumlah }}
+                                        {{ $jumlah_detail_pembelian }}
                                     </td>
                                     <td>
                                         {{ $p->berat_detail_pembelian }}

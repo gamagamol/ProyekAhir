@@ -158,9 +158,9 @@ class PurchaseModel extends Model
 
         $arr_pembelian = [];
 
-        if (count(array_flip($id_pemasok)) == 2) {
+        if (count(array_flip($id_pemasok)) > 1) {
             // vendor nya bisa jadi ada yang beda
-
+            // dd('masuk sini');
             foreach ($id_pemasok as $i => $ip) {
                 if ($i == 0) {
                     $no_pembelian =
@@ -176,7 +176,16 @@ class PurchaseModel extends Model
                     }
                     array_push($arr_pembelian, (int)$no_pembelian);
                 } else {
-                    array_push($arr_pembelian, $arr_pembelian[$i - 1] + 1);
+
+                    // check kesamaan vendor
+
+                    if ($id_pemasok[$i - 1] == $ip) {
+
+                        array_push($arr_pembelian, $arr_pembelian[$i - 1]);
+                    } else {
+
+                        array_push($arr_pembelian, $arr_pembelian[$i - 1] + 1);
+                    }
                 }
             }
 

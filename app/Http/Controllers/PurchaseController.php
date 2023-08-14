@@ -350,7 +350,7 @@ class PurchaseController extends Controller
         $no_pembelian = $this->PurchaseModel->no_pembelian($tgl_pembelian, $id_pemasok);
         $tgl_exploade = explode('-', $tgl_pembelian);
 
-        if ( count(array_flip($id_pemasok)) == 2) {
+        if (count(array_flip($id_pemasok)) > 1) {
 
 
             $i = 0;
@@ -359,7 +359,7 @@ class PurchaseController extends Controller
                 array_push($array_no_pembelian, $no_purchase);
                 $i++;
             }
-        } elseif ( count(array_flip($id_pemasok)) == 1) {
+        } elseif (count(array_flip($id_pemasok)) == 1) {
             // dd($no_pembelian);
             $no_purchase = "PO/$no_pembelian[0]/$tgl_exploade[0]/$tgl_exploade[1]/$tgl_exploade[2]";
             array_push($array_no_pembelian, $no_purchase);
@@ -368,7 +368,7 @@ class PurchaseController extends Controller
 
 
 
-        // dd('test');
+        // dd($array_no_pembelian);
 
         //    Mengisi array data pembelian dan detail pembelian
         // Kemungkinan yang bisa terjadi dalam pemebelian:
@@ -622,6 +622,4 @@ class PurchaseController extends Controller
             return $a !== null;
         }));
     }
-
-   
 }
