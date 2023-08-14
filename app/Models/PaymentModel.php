@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use function app\helper\no_transaksi;
+
 
 class PaymentModel extends Model
 {
@@ -23,7 +25,7 @@ class PaymentModel extends Model
                 ->join("produk", "detail_transaksi_pengiriman.id_produk", "=", "produk.id_produk")
                 ->join('pembayaran', "pembayaran.id_transaksi", "=", "transaksi.id_transaksi")
                 ->join('penerimaan_barang', 'pengiriman.id_penerimaan_barang', '=', 'penerimaan_barang.id_penerimaan_barang')
-                ->where('no_pembayaran',"$id")
+                ->where('no_pembayaran', "$id")
                 ->groupBy("no_pembayaran", "tgl_pembayaran")
                 ->orderBy("tgl_pembayaran", "asc")
                 ->get();
@@ -33,13 +35,14 @@ class PaymentModel extends Model
                 ->join("pelanggan", "transaksi.id_pelanggan", "=", "pelanggan.id_pelanggan")
                 ->join("pengguna", "transaksi.id", "=", "pengguna.id")
                 ->join('penawaran', "penawaran.id_transaksi", "=", "transaksi.id_transaksi")
-                ->join('pembelian','pembelian.id_transaksi','=','transaksi.id_transaksi')
+                ->join('penjualan', "penjualan.id_transaksi", '=', 'transaksi.id_transaksi')
+                ->join('pembelian', 'pembelian.id_transaksi', '=', 'transaksi.id_transaksi')
                 ->join('pengiriman', "pengiriman.id_transaksi", "=", "transaksi.id_transaksi")
                 ->join('detail_transaksi_pengiriman', "detail_transaksi_pengiriman.id_pengiriman", "=", "pengiriman.id_pengiriman")
                 ->join('detail_transaksi_penawaran', "detail_transaksi_penawaran.id_penawaran", "=", "penawaran.id_penawaran")
                 ->join("produk", "detail_transaksi_pengiriman.id_produk", "=", "produk.id_produk")
                 ->join('pembayaran', "pembayaran.id_transaksi", "=", "transaksi.id_transaksi")
-                ->join('penerimaan_barang', 'pengiriman.id_penerimaan_barang','=','penerimaan_barang.id_penerimaan_barang')
+                ->join('penerimaan_barang', 'pengiriman.id_penerimaan_barang', '=', 'penerimaan_barang.id_penerimaan_barang')
                 ->groupBy("no_pembayaran", "tgl_pembayaran")
                 ->orderBy("tgl_pembayaran", "asc")
                 ->get();
@@ -88,7 +91,7 @@ class PaymentModel extends Model
             ->get();
     }
 
-    public function insert($id_transaksi, $data_pembayaran, $data_detail_pembayaran,$no_tagihan)
+    public function insert($id_transaksi, $data_pembayaran, $data_detail_pembayaran, $no_tagihan)
     {
         // mengubah data transaksi
 
@@ -186,9 +189,6 @@ class PaymentModel extends Model
         ];
         // dd($jurnal);
         DB::table('jurnal')->insert($jurnal);
-
-
-      
     }
 
     public function show($no_penerimaan)
@@ -223,12 +223,22 @@ class PaymentModel extends Model
     {
         $bulan_tgl = explode("-", $tgl_pembayaran)[1];
 
-        $no_pembayaran =
-            DB::table('pembayaran')
-            ->selectRaw("DISTINCT ifnull(max(substring(no_pembayaran,5,1)),0)+1 as no_pembayaran")
-            ->whereMonth("tgl_pembayaran", "=", $bulan_tgl)
-            ->first();
-        $no_pembayaran = (int)$no_pembayaran->no_pembayaran;
+        // $no_pembayaran =
+        //     DB::table('pembayaran')
+        //     ->selectRaw("ifnull(max(CONVERT(substring(no_pembayaran,5,2),SIGNED))+1,1) as no_pembayaran")
+        //     ->whereMonth("tgl_pembayaran", "=", $bulan_tgl)
+        //     ->first();
+        // $no_pembayaran = (int)$no_pembayaran->no_pembayaran;
+        $no_pembayaran = DB::select("
+           select * from pembayaran where id_pembayaran =(select max(id_pembayaran) from pembayaran 
+           where month(tgl_pembayaran)='$bulan_tgl')");
+
+        if ($no_pembayaran != null) {
+
+            $no_pembayaran = no_transaksi($no_pembayaran[0]->no_pembayaran);
+        } else {
+            $no_pembayaran = 1;
+        }
 
 
         return $no_pembayaran;

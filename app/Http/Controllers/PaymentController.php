@@ -34,6 +34,8 @@ class PaymentController extends Controller
         }
 
 
+        // dd($data);
+
         $data = [
             'tittle' => 'Payment',
             'data' => $data,

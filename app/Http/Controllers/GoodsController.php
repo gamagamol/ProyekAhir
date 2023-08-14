@@ -43,6 +43,7 @@ class GoodsController extends Controller
             'tittle' => "Create Goods Receipt",
             "data" => $this->goods->show($no_pembelian),
         ];
+        // dd($data);
 
         return view('goods.create', $data);
     }

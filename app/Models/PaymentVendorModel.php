@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use function app\helper\no_transaksi;
+
 
 class PaymentVendorModel extends Model
 {
@@ -43,6 +45,7 @@ class PaymentVendorModel extends Model
                     ->from('pembayaranvendor');
             })
             ->groupBy('no_pembelian')
+            ->orderByDesc('tgl_pembelian')
             // ->toSql();
             ->get();
     }
@@ -52,13 +55,13 @@ class PaymentVendorModel extends Model
         return DB::table('transaksi')
 
             ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
-            ->join('detail_transaksi_penawaran','detail_transaksi_penawaran.id_penawaran','penawaran.id_penawaran')
+            ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', 'penawaran.id_penawaran')
             ->join("pelanggan", 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
             ->join("pengguna", 'transaksi.id', '=', 'pengguna.id')
             ->join('penjualan', "penjualan.id_transaksi", "transaksi.id_transaksi")
             ->join('pembelian', "pembelian.id_transaksi", "transaksi.id_transaksi")
             ->join("pemasok", 'pembelian.id_pemasok', '=', 'pemasok.id_pemasok')
-            ->join('detail_transaksi_pembelian','detail_transaksi_pembelian.id_pembelian','pembelian.id_pembelian')
+            ->join('detail_transaksi_pembelian', 'detail_transaksi_pembelian.id_pembelian', 'pembelian.id_pembelian')
             ->join("produk", 'detail_transaksi_pembelian.id_produk', '=', 'produk.id_produk')
             ->where('no_pembelian', "=", $no_pembelian)
             ->get();
@@ -76,15 +79,29 @@ class PaymentVendorModel extends Model
 
     public function no_penjualan($tgl_penjualan)
     {
-        $no_penjualan =
-            DB::table('pembayaranvendor')
-            ->selectRaw("DISTINCT ifnull(max(substring(no_penjualan,4,1)),0)+1 as no_penjualan")
-            ->where("tgl_penjualan", "=", $tgl_penjualan)
-            ->first();
-        $no_penjualan = (int)$no_penjualan->no_penjualan;
+        // $no_penjualan =
+        //     DB::table('pembayaranvendor')
+        //     ->selectRaw("DISTINCT ifnull(max(substring(no_penjualan,4,1)),0)+1 as no_penjualan")
+        //     ->where("tgl_penjualan", "=", $tgl_penjualan)
+        //     ->first();
+        // $no_penjualan = (int)$no_penjualan->no_penjualan;
+        // $no_pembayaran_vendor =
+        //     DB::table('max(no_pembayaran_vendor) as no_pembayaran_vendor')
+        //     ->selectRaw("no_pembayaran_vendor")
+        //     ->where("tgl_penjualan", "=", $tgl_penjualan)
+        //     ->first();
+        $no_pembayaran_vendor = DB::select("
+           select * from pembayaranvendor where idpembayaranvendor =(select max(idpembayaranvendor) from pembayaranvendor 
+           where month(tgl_pembayaran_vendor)='$tgl_penjualan')");
+        // $no_pembayaran_vendor = (int)$no_pembayaran_vendor->no_pembayaran_vendor;
+        if ($no_pembayaran_vendor != null) {
 
+            $no_pembayaran_vendor = no_transaksi($no_pembayaran_vendor[0]->no_pembayaran_vendor);
+        } else {
+            $no_pembayaran_vendor = 1;
+        }
 
-        return $no_penjualan;
+        return $no_pembayaran_vendor;
     }
 
 
@@ -93,16 +110,16 @@ class PaymentVendorModel extends Model
     {
         DB::table('pembayaranvendor')->insert($data_pembayaran_vendor);
 
-        
+
 
         $total = DB::table('pembelian')
             ->selectRaw('sum(subtotal_detail_pembelian) as total')
-            ->join('transaksi','transaksi.id_transaksi','pembelian.id_transaksi')
-            ->join('detail_transaksi_pembelian','pembelian.id_pembelian','detail_transaksi_pembelian.id_pembelian')
+            ->join('transaksi', 'transaksi.id_transaksi', 'pembelian.id_transaksi')
+            ->join('detail_transaksi_pembelian', 'pembelian.id_pembelian', 'detail_transaksi_pembelian.id_pembelian')
             ->where('no_pembelian', '=', $data_pembayaran_vendor[0]['no_pembayaran_vendor'])
             ->first();
 
-            // dd($total);
+        // dd($total);
 
 
 
@@ -141,7 +158,7 @@ class PaymentVendorModel extends Model
             ->join('penjualan', "penjualan.id_transaksi", "transaksi.id_transaksi")
             ->join('pembelian', "pembelian.id_transaksi", "transaksi.id_transaksi")
             ->join("pemasok", 'pembelian.id_pemasok', '=', 'pemasok.id_pemasok')
-            ->join('detail_transaksi_pembelian','pembelian.id_pembelian','detail_transaksi_pembelian.id_pembelian')
+            ->join('detail_transaksi_pembelian', 'pembelian.id_pembelian', 'detail_transaksi_pembelian.id_pembelian')
             ->where('no_pembelian', "=", $no_pembelian)
             ->get();
     }
@@ -162,11 +179,11 @@ class PaymentVendorModel extends Model
         } else {
             return DB::table('transaksi')
                 ->selectRaw('nama_pemasok,no_pembelian,tgl_pembelian,no_pembayaran_vendor,tgl_pembayaran_vendor,sum(subtotal_detail_pembelian) as subtotal_detail_pembelian')
-                ->join('penjualan','penjualan.id_transaksi','transaksi.id_transaksi')
-                ->join('pembelian','pembelian.id_penjualan','penjualan.id_penjualan')
-                ->join('pemasok','pemasok.id_pemasok','pembelian.id_pemasok')
-                ->join('pembayaranvendor','pembelian.id_pembelian','pembayaranvendor.id_pembelian')
-                ->join('detail_transaksi_pembelian','pembelian.id_pembelian','detail_transaksi_pembelian.id_pembelian')
+                ->join('penjualan', 'penjualan.id_transaksi', 'transaksi.id_transaksi')
+                ->join('pembelian', 'pembelian.id_penjualan', 'penjualan.id_penjualan')
+                ->join('pemasok', 'pemasok.id_pemasok', 'pembelian.id_pemasok')
+                ->join('pembayaranvendor', 'pembelian.id_pembelian', 'pembayaranvendor.id_pembelian')
+                ->join('detail_transaksi_pembelian', 'pembelian.id_pembelian', 'detail_transaksi_pembelian.id_pembelian')
                 ->groupBy('pembelian.no_pembelian')
                 ->get();
         }

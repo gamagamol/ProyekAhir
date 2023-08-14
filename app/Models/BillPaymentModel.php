@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use function app\helper\no_transaksi;
+
 
 class BillPaymentModel extends Model
 {
@@ -93,7 +95,9 @@ class BillPaymentModel extends Model
            group by no_penjualan
            ) b
           group by b.no_penjualan
-		  having total_jumlah = jumlah_detail_pengiriman");
+		  having total_jumlah = jumlah_detail_pengiriman
+           ORDER BY CASE WHEN b.tgl_tagihan IS NULL THEN 0 ELSE 1 END, b.tgl_tagihan DESC, b.no_penjualan DESC
+          ");
         }
     }
     public function create($id_transaksi, $tgl_pegiriman)
@@ -134,8 +138,11 @@ class BillPaymentModel extends Model
                 ->where('transaksi.id_transaksi', '=', $id_transaksi[$i]->id_transaksi)
                 ->get();
 
-            $data[] = $dataa[0];
+            // $data[] = $dataa[0];
+            // dd($daa)
+            // array_push($data,$dataa[0]);
         }
+        print_r($data);
         $array = [
             'data' => $data,
             'id_transaksi' => $id_transaksi1
@@ -146,12 +153,22 @@ class BillPaymentModel extends Model
     {
         $bulan_tgl = explode("-", $tgl_tagihan)[1];
 
-        $no_tagihan =
-            DB::table('tagihan')
-            ->selectRaw("DISTINCT ifnull(max(substring(no_tagihan,5,1)),0)+1 as no_tagihan")
-            ->whereMonth("tgl_tagihan", "=", $bulan_tgl)
-            ->first();
-        $no_tagihan = (int)$no_tagihan->no_tagihan;
+        // $no_tagihan =
+        //     DB::table('tagihan')
+        //     ->selectRaw("ifnull(max(CONVERT(substring(no_tagihan,5,2),SIGNED))+1,1) as no_tagihan")
+        //     ->whereMonth("tgl_tagihan", "=", $bulan_tgl)
+        //     ->first();
+        // $no_tagihan = (int)$no_tagihan->no_tagihan;
+        $no_tagihan = DB::select("
+           select * from tagihan where id_tagihan =(select max(id_tagihan) from tagihan 
+           where month(tgl_tagihan)='$bulan_tgl')");
+
+        if ($no_tagihan != null) {
+
+            $no_tagihan = no_transaksi($no_tagihan[0]->no_tagihan);
+        } else {
+            $no_tagihan = 1;
+        }
 
 
         return $no_tagihan;
@@ -356,62 +373,62 @@ class BillPaymentModel extends Model
          
        
       ");
-    //     return DB::select("
-    //          SELECT b.no_penjualan,
-    //             (select sum( jumlah_detail_pengiriman) from penerimaan_barang 
-    //             join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
-    //             join transaksi on penerimaan_barang.id_transaksi = transaksi.id_transaksi
-    //             left join pengiriman on pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
-    //             left join detail_transaksi_pengiriman on pengiriman.id_pengiriman = detail_transaksi_pengiriman.id_pengiriman
-    //             join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
-    //               where no_penjualan=b.no_penjualan
+        //     return DB::select("
+        //          SELECT b.no_penjualan,
+        //             (select sum( jumlah_detail_pengiriman) from penerimaan_barang 
+        //             join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+        //             join transaksi on penerimaan_barang.id_transaksi = transaksi.id_transaksi
+        //             left join pengiriman on pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+        //             left join detail_transaksi_pengiriman on pengiriman.id_pengiriman = detail_transaksi_pengiriman.id_pengiriman
+        //             join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
+        //               where no_penjualan=b.no_penjualan
 
-    //             )jumlah_detail_pengiriman ,
-    //             (SELECT sum(jumlah_detail_penerimaan) FROM transaksi 
-    //              join penjualan on penjualan.id_transaksi = transaksi.id_transaksi
-    //              join pembelian on pembelian.id_penjualan = penjualan.id_penjualan
-	// 			join penerimaan_barang on penerimaan_barang.id_pembelian = pembelian.id_pembelian
-    //             join detail_penerimaan_barang on penerimaan_barang.id_penerimaan_barang = detail_penerimaan_barang.id_penerimaan_barang
-    //             where no_penjualan=b.no_penjualan
-    //             ) jumlah_detail_penerimaan,
-    //             (
-	// 				SELECT sum(jumlah_detail_pembelian) FROM transaksi 
-	// 				left join penjualan on penjualan.id_transaksi = transaksi.id_transaksi
-	// 				left join pembelian on pembelian.id_transaksi = transaksi.id_transaksi
-	// 				left join detail_transaksi_pembelian on detail_transaksi_pembelian.id_pembelian=pembelian.id_pembelian
-	// 				where transaksi.tidak_terpakai = 0  and no_penjualan=b.no_penjualan
-    //             ) jumlah_detail_pembelian,
-    //             (
-    //             	SELECT sum(jumlah) FROM transaksi 
-	// 				join penjualan on penjualan.id_transaksi = transaksi.id_transaksi
-	// 				where transaksi.tidak_terpakai = 0  and no_penjualan=b.no_penjualan
-    //             ) total_jumlah 
-    //             from(
-    //         SELECT distinct transaksi.id_transaksi,nomor_pekerjaan, no_penerimaan,no_pengiriman, 
-    //         pengiriman.id_penerimaan_barang, jumlah_detail_penerimaan,
-    //         sum(jumlah_detail_pengiriman) as jumlah_detail_pengiriman,sisa_detail_pengiriman,
-    //         nama_pelanggan,nama_pengguna,tgl_penerimaan,no_pembelian,no_penjualan FROM transaksi
-    //         join penerimaan_barang on penerimaan_barang.id_transaksi = transaksi.id_transaksi
-    //         join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
-    //         left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
-    //         left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
-    //          join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
-    //         join pengguna on pengguna.id=transaksi.id
-    //         join pembelian on pembelian.id_transaksi = transaksi.id_transaksi
-    //         join pemasok on pembelian.id_pemasok =  pemasok.id_pemasok
-    //         join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
-    //        where status_transaksi not in ('bill','payment')
-    //         group by no_penjualan
-    //        ) b
-    //       group by b.no_penjualan
-	// 	  having total_jumlah = jumlah_detail_pengiriman
-		
-		 
-         
-       
-        
-      
-       
-    //   ");
+        //             )jumlah_detail_pengiriman ,
+        //             (SELECT sum(jumlah_detail_penerimaan) FROM transaksi 
+        //              join penjualan on penjualan.id_transaksi = transaksi.id_transaksi
+        //              join pembelian on pembelian.id_penjualan = penjualan.id_penjualan
+        // 			join penerimaan_barang on penerimaan_barang.id_pembelian = pembelian.id_pembelian
+        //             join detail_penerimaan_barang on penerimaan_barang.id_penerimaan_barang = detail_penerimaan_barang.id_penerimaan_barang
+        //             where no_penjualan=b.no_penjualan
+        //             ) jumlah_detail_penerimaan,
+        //             (
+        // 				SELECT sum(jumlah_detail_pembelian) FROM transaksi 
+        // 				left join penjualan on penjualan.id_transaksi = transaksi.id_transaksi
+        // 				left join pembelian on pembelian.id_transaksi = transaksi.id_transaksi
+        // 				left join detail_transaksi_pembelian on detail_transaksi_pembelian.id_pembelian=pembelian.id_pembelian
+        // 				where transaksi.tidak_terpakai = 0  and no_penjualan=b.no_penjualan
+        //             ) jumlah_detail_pembelian,
+        //             (
+        //             	SELECT sum(jumlah) FROM transaksi 
+        // 				join penjualan on penjualan.id_transaksi = transaksi.id_transaksi
+        // 				where transaksi.tidak_terpakai = 0  and no_penjualan=b.no_penjualan
+        //             ) total_jumlah 
+        //             from(
+        //         SELECT distinct transaksi.id_transaksi,nomor_pekerjaan, no_penerimaan,no_pengiriman, 
+        //         pengiriman.id_penerimaan_barang, jumlah_detail_penerimaan,
+        //         sum(jumlah_detail_pengiriman) as jumlah_detail_pengiriman,sisa_detail_pengiriman,
+        //         nama_pelanggan,nama_pengguna,tgl_penerimaan,no_pembelian,no_penjualan FROM transaksi
+        //         join penerimaan_barang on penerimaan_barang.id_transaksi = transaksi.id_transaksi
+        //         join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
+        //         left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
+        //         left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
+        //          join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+        //         join pengguna on pengguna.id=transaksi.id
+        //         join pembelian on pembelian.id_transaksi = transaksi.id_transaksi
+        //         join pemasok on pembelian.id_pemasok =  pemasok.id_pemasok
+        //         join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
+        //        where status_transaksi not in ('bill','payment')
+        //         group by no_penjualan
+        //        ) b
+        //       group by b.no_penjualan
+        // 	  having total_jumlah = jumlah_detail_pengiriman
+
+
+
+
+
+
+
+        //   ");
     }
 }

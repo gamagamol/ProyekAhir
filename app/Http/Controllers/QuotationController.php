@@ -556,28 +556,28 @@ class QuotationController extends Controller
     public function quotationReportDetail()
     {
 
-        $data = '';
+        // $data = '';
 
-        if (request()->input('month')) {
-            $month = explode('-', request()->input('month'))[1];
+        // if (request()->input('month')) {
+        //     $month = explode('-', request()->input('month'))[1];
 
-            $data = $this->QuotationModel->quotationDetailReport($month);
-        } elseif (request()->input('date')) {
-            $date = explode('-', request()->input('date'))[2];
+        //     $data = $this->QuotationModel->quotationDetailReport($month);
+        // } elseif (request()->input('date')) {
+        //     $date = explode('-', request()->input('date'))[2];
 
-            $data = $this->QuotationModel->quotationDetailReport(null, $date);
-        } elseif (request()->input('date') && request()->input('month')) {
-            $month = explode('-', request()->input('month'))[1];
-            $date = explode('-', request()->input('date'))[2];
+        //     $data = $this->QuotationModel->quotationDetailReport(null, $date);
+        // } elseif (request()->input('date') && request()->input('month')) {
+        //     $month = explode('-', request()->input('month'))[1];
+        //     $date = explode('-', request()->input('date'))[2];
 
-            $data = $this->QuotationModel->quotationDetailReport($month, $date);
-        } else {
-            $data = $this->QuotationModel->quotationDetailReport();
-        }
+        //     $data = $this->QuotationModel->quotationDetailReport($month, $date);
+        // } else {
+        //     $data = $this->QuotationModel->quotationDetailReport();
+        // }
 
         $data = [
             'tittle' => 'Quotation Report Detail',
-            'data' => $data
+            // 'data' => $data
 
         ];
 
@@ -586,26 +586,7 @@ class QuotationController extends Controller
 
     public function quotationReportDetailAjax()
     {
-        $data = '';
-
-        if (request()->input('month') && !request()->input('date')) {
-            // $month = explode('-', request()->input('month'))[1];
-
-            $data = $this->QuotationModel->quotationDetailReport(request()->input('month'));
-        } elseif (request()->input('date') && !request()->input('month')) {
-            // $date = explode('-', request()->input('date'))[2];
-
-            $data = $this->QuotationModel->quotationDetailReport(null, request()->input('date'));
-        } elseif (request()->input('date') && request()->input('month')) {
-            $month = request()->input('month');
-            $date = request()->input('date');
-
-            $data = $this->QuotationModel->quotationDetailReport($month,$date);
-        } else {
-            $data = $this->QuotationModel->quotationDetailReport();
-        }
-
-        // print_r($data);die;
+        $data = $this->QuotationModel->quotationDetailReport(request()->input('month'), request()->input('date'), request()->input('date_to'));
 
         return response()->json($data);
     }
@@ -615,16 +596,24 @@ class QuotationController extends Controller
         return response()->json($this->QuotationModel->getDateQuotation());
     }
 
-    public function exportDetailReport($month = null, $date = null)
+    public function exportDetailReport($year_month = null, $date = null, $date_to = null)
     {
-        $tgl = date('Y-m-d');
-        if ($date) {
+
+        $tgl = '';
+
+        if ($year_month != 0) {
+            $tgl = explode('-', $year_month)[1];
+        } else if ($date != 0) {
             $tgl = $date;
         } else {
-            $tgl = $month;
+
+            $tgl = date('Y-m-d');
         }
 
-        return Excel::download(new QuotationExport($month, $date, 'detail'), "Quotation Detail Report_$tgl.xlsx");
+
+
+        return Excel::download(new QuotationExport($year_month, $date, 'detail', $date_to), "Quotation Detail Report_$tgl.xlsx");
+   
     }
 
     public function customerOmzetReport()
@@ -637,40 +626,41 @@ class QuotationController extends Controller
     }
 
 
-    public function customerOmzetReportAjax($month = null, $day = null)
+    public function customerOmzetReportAjax()
     {
-        $data = '';
+        // $data = '';
 
-        if (request()->input('month') && !request()->input('date')) {
-            $month = explode('-', request()->input('month'))[1];
+        // if (request()->input('month') && !request()->input('date')) {
+        //     $month = explode('-', request()->input('month'))[1];
 
-            $data = $this->QuotationModel->customerOmzetReport($month);
-        } elseif (request()->input('date') && !request()->input('month')) {
-            $date = explode('-', request()->input('date'))[2];
+        //     $data = $this->QuotationModel->customerOmzetReport($month);
+        // } elseif (request()->input('date') && !request()->input('month')) {
+        //     $date = explode('-', request()->input('date'))[2];
 
-            $data = $this->QuotationModel->customerOmzetReport(null, $date);
-        } elseif (request()->input('date') && request()->input('month')) {
-            $month = explode('-', request()->input('month'))[1];
-            $date = explode('-', request()->input('date'))[2];
+        //     $data = $this->QuotationModel->customerOmzetReport(null, $date);
+        // } elseif (request()->input('date') && request()->input('month')) {
+        //     $month = explode('-', request()->input('month'))[1];
+        //     $date = explode('-', request()->input('date'))[2];
 
-            $data = $this->QuotationModel->customerOmzetReport($month, $date);
-        } else {
-            $data = $this->QuotationModel->customerOmzetReport();
-        }
-
+        //     $data = $this->QuotationModel->customerOmzetReport($month, $date);
+        // } else {
+        //     $data = $this->QuotationModel->customerOmzetReport();
+        // }
+        // echo $year_month;die;
 
 
         return response()->json([
             'message' => 'success',
-            'data' => $data
+            'data' => $this->QuotationModel->customerOmzetReport(request()->input('month'), request()->input('date'), request()->input('date_to'))
 
         ]);
     }
 
-    public function customerOmzetReportExport($month = null, $date = null)
+    public function customerOmzetReportExport($year_month = null, $date = null, $date_to = null)
     {
         $tgl_generate = date('Y-m-d');
-        return Excel::download(new QuotationExport($month, $date, 'customer_omzet'), "Customer Omzet Report_{$tgl_generate} .xlsx");
+
+        return Excel::download(new QuotationExport($year_month, $date, 'customer_omzet', $date_to), "Customer Omzet Report_{$tgl_generate} .xlsx");
     }
 
     public function outStandingReport()
@@ -686,38 +676,40 @@ class QuotationController extends Controller
     {
 
 
-        $data = '';
+        // $data = '';
 
-        if (request()->input('month') && !request()->input('date')) {
-            $month = explode('-', request()->input('month'))[1];
+        // if (request()->input('month') && !request()->input('date')) {
+        //     $month = explode('-', request()->input('month'))[1];
 
-            $data = $this->QuotationModel->outStandingReport($month);
-        } elseif (request()->input('date') && !request()->input('month')) {
-            $date = explode('-', request()->input('date'))[2];
+        //     $data = $this->QuotationModel->outStandingReport($month);
+        // } elseif (request()->input('date') && !request()->input('month')) {
+        //     $date = explode('-', request()->input('date'))[2];
 
-            $data = $this->QuotationModel->outStandingReport(null, $date);
-        } elseif (request()->input('date') && request()->input('month')) {
-            $month = explode('-', request()->input('month'))[1];
-            $date = explode('-', request()->input('date'))[2];
+        //     $data = $this->QuotationModel->outStandingReport(null, $date);
+        // } elseif (request()->input('date') && request()->input('month')) {
+        //     $month = explode('-', request()->input('month'))[1];
+        //     $date = explode('-', request()->input('date'))[2];
 
-            $data = $this->QuotationModel->outStandingReport($month, $date);
-        } else {
-            $data = $this->QuotationModel->outStandingReport();
-        }
+        //     $data = $this->QuotationModel->outStandingReport($month, $date);
+        // } else {
+        //     $data = $this->QuotationModel->outStandingReport();
+        // }
 
 
 
         return response()->json([
             'message' => 'success',
-            'data' => $data
+            'data' => $this->QuotationModel->outStandingReport(request()->input('month'), request()->input('date'), request()->input('date_to'))
 
         ]);
     }
 
 
-    public function outStandingReportExport($month = null, $date = null)
+    public function outStandingReportExport($year_month = null, $date = null, $date_to = null)
     {
-        return Excel::download(new QuotationExport($month, $date, 'out_standing'), 'Out standing Report .xlsx');
+        $tgl = date('Y-m-d');
+
+        return Excel::download(new QuotationExport($year_month, $date, 'out_standing', $date_to), "Out standing Report_$tgl .xlsx");
     }
 
 
@@ -732,38 +724,60 @@ class QuotationController extends Controller
     public function quotationReportAjax()
     {
 
-        $data = '';
+        // $data = '';
 
-        if (request()->input('month') && !request()->input('date')) {
-            $month = explode('-', request()->input('month'))[1];
 
-            $data = $this->QuotationModel->quotationReport($month);
-        } elseif (request()->input('date') && !request()->input('month')) {
-            $date = explode('-', request()->input('date'))[2];
 
-            $data = $this->QuotationModel->quotationReport(null, $date);
-        } elseif (request()->input('date') && request()->input('month')) {
-            $month = explode('-', request()->input('month'))[1];
-            $date = explode('-', request()->input('date'))[2];
 
-            $data = $this->QuotationModel->quotationReport($month, $date);
-        } else {
-            $data = $this->QuotationModel->quotationReport();
-        }
+        // if (request()->input('month') && !request()->input('date')) {
+        //     $month = explode('-', request()->input('month'));
 
-        // dd($data);
+
+        //     $data = $this->QuotationModel->quotationReport($month[0], $month[1]);
+        // } elseif (request()->input('date') && !request()->input('month')) {
+        //     $date = request()->input('date');
+
+        //     $data = $this->QuotationModel->quotationReport(null, null, $date);
+        // } elseif (request()->input('date') && request()->input('month') && !request()->input('date_to')) {
+
+        //     $month = explode('-', request()->input('month'));
+        //     $date = request()->input('date');
+
+
+        //     $data = $this->QuotationModel->quotationReport($month[0], $month[1], $date);
+        // } else {
+        //     $data = $this->QuotationModel->quotationReport();
+        // }
 
 
         return response()->json([
             'message' => 'success',
-            'data' => $data
+            'data' => $this->QuotationModel->quotationReport(request()->input('month'), request()->input('date'), request()->input('date_to'))
 
         ]);
     }
 
-    public function quotationReportExport($month = null, $date = null)
+    public function quotationReportExport($month = null, $date = null, $date_to = null)
     {
-        return Excel::download(new QuotationExport($month, $date, 'quotation'), 'Quotation VS PO Report.xlsx');
+
+        if ($month == '0') {
+            $month = 0;
+        }
+        if ($date == '0') {
+            $date = 0;
+        }
+        if ($date_to == '0') {
+            $date_to = 0;
+        }
+
+
+        // echo gettype($month);
+        // echo "<br>";        
+        // echo gettype($date);        
+        // echo "<br>";        
+        // echo gettype($date_to); 
+        // die;       
+        return Excel::download(new QuotationExport($month, $date, 'quotation', $date_to), 'Quotation VS PO Report.xlsx');
     }
 
 

@@ -29,20 +29,20 @@
                      <td>{{ number_format($d->ppn) }}</td>
                      <td>{{ number_format($d->ongkir) }}</td>
                      <td>{{ number_format($d->total_quotation) }}</td>
-                     <td>{{ $d->tgl_penjualan }}</td>
-                     <td>{{ $d->no_penjualan }}</td>
-                     <td></td>
+                     <td>{{ ($d->tgl_penjualan)?$d->tgl_penjualan:'-' }}</td>
+                     <td>{{ ($d->no_penjualan)?$d->no_penjualan:'-' }}</td>
+                     <td>{{($d->tgl_penjualan)?$d->tgl_penjualan:'-'}}</td>
                      @php
                          $no_so = '';
                         if ($d->no_po_customer == null || $d->no_po_customer == '-') {
-                            $no_so = $d->no_penjualan;
+                            $no_so = ($d->no_penjualan)?$d->no_penjualan:'-';
                         } else {
                             $no_so = $d->no_po_customer;
                         }
 
                      @endphp
                      <td>{{ ($d->tgl_penjualan)?$no_so:'-' }}</td>
-                     <td>{{ ($d->total_penjualan)?number_format($d->total_penjualan):'' }}</td>
+                     <td>{{ ($d->total_penjualan)?number_format($d->total_penjualan):'-' }}</td>
 
                  </tr>
              @endforeach

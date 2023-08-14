@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use function app\helper\no_transaksi;
+use Exception;
 
 class PurchaseModel extends Model
 {
@@ -94,34 +96,108 @@ class PurchaseModel extends Model
         ");
     }
 
+    // public function no_pembelian($tgl_pembelian, $id_pemasok, $sameVendor)
+    // {
+
+
+    //     $bulan_tgl = explode("-", $tgl_pembelian)[1];
+
+    //     if (!$sameVendor) {
+
+    //         $arr_pembelian = [];
+    //         for ($i = 0; $i < count($id_pemasok); $i++) {
+
+    //             if ($i == 0) {
+
+    //                 $no_pembelian =
+    //                     DB::table('pembelian')
+    //                     ->selectRaw("max(no_pembelian) as no_pembelian")
+    //                     ->whereMonth("tgl_pembelian", "=", $bulan_tgl)
+    //                     ->first();
+
+
+    //                 if ($no_pembelian != null) {
+
+    //                     $no_pembelian = no_transaksi($no_pembelian->no_pembelian);
+    //                 } else {
+    //                     $no_pembelian = 1;
+    //                 }
+    //                 $no_pembelian += 1;
+    //                 array_push($arr_pembelian, (int)$no_pembelian);
+    //             } else {
+
+
+    //                 $no_pembelian = $arr_pembelian[$i - 1] + 1;
+    //                 array_push($arr_pembelian, (int)$no_pembelian);
+    //             }
+    //         }
+
+    //         return $arr_pembelian;
+    //     } else {
+
+
+    //         $no_pembelian = DB::select("
+    //        select * from pembelian where id_pembelian =(select max(id_pembelian) from pembelian 
+    //        where month(tgl_pembelian)='$bulan_tgl')");
+
+    //         if ($no_pembelian != null) {
+
+    //             $no_pembelian = no_transaksi($no_pembelian[0]->no_pembelian);
+    //         } else {
+    //             $no_pembelian = 1;
+    //         }
+
+    //         return $no_pembelian;
+    //     }
+    // }
     public function no_pembelian($tgl_pembelian, $id_pemasok)
     {
 
+
         $bulan_tgl = explode("-", $tgl_pembelian)[1];
 
-        if (gettype($id_pemasok) != 'string') {
-            $arr_pembelian = [];
-            for ($i = 0; $i < count($id_pemasok); $i++) {
-                $no_pembelian = DB::select("SELECT ifnull(max(substring(no_pembelian,4,1)),0)+1 as no_pembelian from transaksi 
-                 join pembelian on transaksi.id_transaksi = pembelian.id_transaksi
-                where month(tgl_pembelian) = '$bulan_tgl' ");
+        $arr_pembelian = [];
 
-                $no_pembelian = $no_pembelian[0]->no_pembelian;
-                array_push($arr_pembelian, (int)$no_pembelian);
+        if (count(array_flip($id_pemasok)) == 2) {
+            // vendor nya bisa jadi ada yang beda
+
+            foreach ($id_pemasok as $i => $ip) {
+                if ($i == 0) {
+                    $no_pembelian =
+                        DB::table('pembelian')
+                        ->selectRaw("max(no_pembelian) as no_pembelian")
+                        ->whereMonth("tgl_pembelian", "=", $bulan_tgl)
+                        ->first();
+                    if ($no_pembelian != null) {
+
+                        $no_pembelian = no_transaksi($no_pembelian->no_pembelian);
+                    } else {
+                        $no_pembelian = 1;
+                    }
+                    array_push($arr_pembelian, (int)$no_pembelian);
+                } else {
+                    array_push($arr_pembelian, $arr_pembelian[$i - 1] + 1);
+                }
             }
+
 
             return $arr_pembelian;
         } else {
-
-
             $no_pembelian =
                 DB::table('pembelian')
-                ->selectRaw("ifnull(max(substring(no_pembelian,4,1)),0)+1 as no_pembelian")
-                ->where("tgl_pembelian", "=", $tgl_pembelian)
+                ->selectRaw("max(no_pembelian) as no_pembelian")
+                ->whereMonth("tgl_pembelian", "=", $bulan_tgl)
                 ->first();
-            $no_pembelian = (int)$no_pembelian->no_pembelian;
-            return $no_pembelian;
+            if ($no_pembelian != null) {
+
+                $no_pembelian = no_transaksi($no_pembelian->no_pembelian);
+            } else {
+                $no_pembelian = 1;
+            }
+            array_push($arr_pembelian, (int)$no_pembelian);
         }
+
+        return $arr_pembelian;
     }
 
 
@@ -169,46 +245,58 @@ class PurchaseModel extends Model
         }
 
 
-        DB::table('pembelian')->insert($data_pembelian);
-
-
-        if ($kemungkinan == 'A') {
-
-
-            // ambil id pembelian
-            if (count($data_pembelian) > 1) {
-
-
-                for ($i = 0; $i < count($data_pembelian); $i++) {
-                    $id_pembelian = DB::table('pembelian')
-                        ->where('id_penjualan', $data_pembelian[$i]['id_penjualan'])
-                        ->max('id_pembelian');
-
-                    $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
-                }
-            } else {
-
-                $id_pembelian = DB::table('pembelian')->max('id_pembelian');
-                for ($i = 0; $i < count($data_detail_pembelian); $i++) {
-                    $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
-                }
-            }
-        } elseif ($kemungkinan == 'B' || $kemungkinan == 'C') {
 
 
 
-            for ($i = 0; $i < count($data_pembelian); $i++) {
-                $id_pembelian = DB::table('pembelian')
-                    ->where('no_pembelian', $data_pembelian[$i]['no_pembelian'])
-                    ->first();
-                // dd($id_pembelian);
+        // DB::table('pembelian')->insert($data_pembelian);
 
-                $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian->id_pembelian;
-            }
+
+        // if ($kemungkinan == 'A') {
+
+
+        //     // ambil id pembelian
+        //     if (count($data_pembelian) > 1) {
+
+
+        //         for ($i = 0; $i < count($data_pembelian); $i++) {
+        //             $id_pembelian = DB::table('pembelian')
+        //                 ->where('id_penjualan', $data_pembelian[$i]['id_penjualan'])
+        //                 ->max('id_pembelian');
+
+        //             $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
+        //         }
+        //     } else {
+
+        //         $id_pembelian = DB::table('pembelian')->max('id_pembelian');
+        //         for ($i = 0; $i < count($data_detail_pembelian); $i++) {
+        //             $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
+        //         }
+        //     }
+        // } elseif ($kemungkinan == 'B' || $kemungkinan == 'C') {
+
+        //     // dd($data_pembelian);
+
+        //     for ($i = 0; $i < count($data_pembelian); $i++) {
+        //         $id_pembelian = DB::table('')
+        //             ->where('id_penjualan', $data_pembelian[$i]['id_penjualan'])
+        //             ->first();
+
+        //         $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian->id_pembelian;
+        //     }
+        // }
+
+
+
+        // DB::table('detail_transaksi_pembelian')->insert($data_detail_pembelian);
+
+
+        // insert pembelian dan detail pembelian
+
+        for ($i = 0; $i < count($data_pembelian); $i++) {
+            $id_pembelian = DB::table('pembelian')->insertGetId($data_pembelian[$i]);
+            $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
+            DB::table('detail_transaksi_pembelian')->insert($data_detail_pembelian[$i]);
         }
-
-        DB::table('detail_transaksi_pembelian')->insert($data_detail_pembelian);
-
 
 
 
@@ -269,14 +357,14 @@ class PurchaseModel extends Model
     public function getNoPurchase()
     {
         return DB::table('pembelian')
-        ->select('no_pembelian')
-        ->join('transaksi','transaksi.id_transaksi','=','pembelian.id_transaksi')
-        ->join('penjualan','penjualan.id_transaksi','=','transaksi.id_transaksi')
-        ->join('penerimaan_barang','penerimaan_barang.id_pembelian','=','pembelian.id_pembelian')
-        ->join('pengiriman','pengiriman.id_penerimaan_barang','=','penerimaan_barang.id_penerimaan_barang')
-        ->leftJoin('detail_transaksi_pengiriman', 'detail_transaksi_pengiriman.id_pengiriman','=', 'pengiriman.id_pengiriman')
-        ->where('sisa_detail_pengiriman','=','0')
-        ->whereNotIn('status_transaksi',['bill','payment'])
-        ->get();
+            ->select('no_pembelian')
+            ->join('transaksi', 'transaksi.id_transaksi', '=', 'pembelian.id_transaksi')
+            ->join('penjualan', 'penjualan.id_transaksi', '=', 'transaksi.id_transaksi')
+            ->join('penerimaan_barang', 'penerimaan_barang.id_pembelian', '=', 'pembelian.id_pembelian')
+            ->join('pengiriman', 'pengiriman.id_penerimaan_barang', '=', 'penerimaan_barang.id_penerimaan_barang')
+            ->leftJoin('detail_transaksi_pengiriman', 'detail_transaksi_pengiriman.id_pengiriman', '=', 'pengiriman.id_pengiriman')
+            ->where('sisa_detail_pengiriman', '=', '0')
+            ->whereNotIn('status_transaksi', ['bill', 'payment'])
+            ->get();
     }
 }

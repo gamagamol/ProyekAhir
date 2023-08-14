@@ -34,7 +34,7 @@
                      <td>{{ $d->lebar_transaksi }}</td>
                      <td>{{ $d->panjang_transaksi }}</td>
                      <td>{{ $d->berat }}</td>
-                     <td>{{ $d->berat * $d->harga }}</td>
+                     <td>{{ $d->jumlah }}</td>
                      <td>{{ $d->layanan }}</td>
                      <td>{{ $d->nama_pelanggan }}</td>
                      <td>{{ $d->nama_pemasok }}</td>

@@ -24,7 +24,7 @@ use App\Http\Controllers\PaymentVendorController;
 use App\Http\Controllers\pegawaiController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\TransaksiController;
-use Maatwebsite\Excel\Transactions\TransactionHandler;
+use App\Http\Controllers\GeneralReportController;
 
 // Auth
 Route::get('/', [AuthController::class, 'index'])->name('login')->middleware(['guest', 'revalidate']);
@@ -55,24 +55,24 @@ Route::get('quotationReportDetail', [QuotationController::class, 'quotationRepor
 Route::post('quotation/editPembantuPenawaran', [QuotationController::class, 'editPembantuPenawaran']);
 
 // report quotation Detail
-Route::get('quotationReportDetailAjax/{date?}', [QuotationController::class, 'quotationReportDetailAjax']);
+Route::get('quotationReportDetailAjax', [QuotationController::class, 'quotationReportDetailAjax']);
 Route::get('getDateQuotationAjax', [QuotationController::class, 'getDateQuotationAjax']);
-Route::get('exportDetailReport/{month?}/{date?}', [QuotationController::class, 'exportDetailReport']);
+Route::get('exportDetailReport/{year_month?}/{date?}/{date_to}', [QuotationController::class, 'exportDetailReport']);
 
 // report customer omzet
 Route::get('customerOmzetReport', [QuotationController::class, 'customerOmzetReport']);
 Route::get('customerOmzetReportAjax', [QuotationController::class, 'customerOmzetReportAjax']);
-Route::get('customerOmzetReportExport/{month?}/{date?}', [QuotationController::class, 'customerOmzetReportExport']);
+Route::get('customerOmzetReportExport/{year_month?}/{date?}/{date_to?}', [QuotationController::class, 'customerOmzetReportExport']);
 
 // report out standing 
 Route::get('outStandingReport', [QuotationController::class, 'outStandingReport']);
 Route::get('outStandingReportAjax', [QuotationController::class, 'outStandingReportAjax']);
-Route::get('outStandingReportExport/{month?}/{date?}', [QuotationController::class, 'outStandingReportExport']);
+Route::get('outStandingReportExport/{year_month?}/{date?}/{date_to?}', [QuotationController::class, 'outStandingReportExport']);
 
 // report quotation vs po
 Route::get('quotationReport', [QuotationController::class, 'quotationReport']);
 Route::get('quotationReportAjax', [QuotationController::class, 'quotationReportAjax']);
-Route::get('quotationReportExport/{month?}/{date?}', [QuotationController::class, 'quotationReportExport']);
+Route::get('quotationReportExport/{month?}/{date?}/{date_to?}', [QuotationController::class, 'quotationReportExport']);
 
 Route::get('show_data', [QuotationController::class, "show_data"]);
 Route::get('deleteq/{id}', [QuotationController::class, "delete"]);
@@ -118,9 +118,6 @@ Route::get('paymentvendor/show/{kode}/{tgl}', [PaymentVendorController::class, "
 Route::get('paymentvendor/detail/{no_pembayaran}', [PaymentVendorController::class, "detail"]);
 
 Route::get('paymentvendor/report/report', [PaymentVendorController::class, "report"]);
-
-
-
 Route::get('transaksi/getTransaksiAJAX/{id}', [TransaksiController::class, 'getTransaksiAJAX']);
 
 
@@ -145,3 +142,8 @@ Route::get('status_transaksi', [ReportDetailSales::class, 'status_transaki']);
 
 Route::get('transaction_number_tracking', [TransaksiController::class, 'transactionNumberTracking']);
 Route::get('getTransactionNumberByDate/{date}', [TransaksiController::class, 'getTransactionNumberByDate']);
+
+// omzet report
+Route::get('omzetReport', [GeneralReportController::class, 'omzetReport']);
+Route::get('omzetReportAjax', [GeneralReportController::class, 'omzetReportAjax']);
+Route::get('omzetReportExport/{month?}/{date?}/{date_to?}', [GeneralReportController::class, 'omzetReportExport']);

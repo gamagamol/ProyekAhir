@@ -223,15 +223,17 @@ class PurchaseController extends Controller
                 }
             }
 
+            // dump($produk);
+            // dump($quotation);
+
             $ipdk = 0;
             foreach ($quotation as $quo) {
                 $total_unit_produk = 0;
                 $total_harga_produk = 0;
                 foreach ($produk as $prdk) {
-
                     if ($prdk['id_produk'] == $quo->id_produk) {
                         if ($prdk['id_penawaran'] == $quo->id_penawaran) {
-                            $arr_produk[$ipdk] = [
+                            $produk_penawaran = [
                                 'id_penjualan' => $quo->id_penjualan,
                                 'id_transaksi' => $quo->id_transaksi,
                                 'id_produk' => $quo->id_produk,
@@ -249,13 +251,12 @@ class PurchaseController extends Controller
                                 'tebal_detail_pembelian' => $prdk['tebal_detail_pembelian'],
                                 'id_pemasok' => $prdk['id_pemasok'],
                             ];
-                            $ipdk++;
+                            array_push($arr_produk, $produk_penawaran);
+                            // $ipdk++;
                         }
                     }
                 }
             }
-
-
             foreach ($arr_produk as $apdk) {
                 foreach ($produk as $aprdk) {
 
@@ -268,7 +269,7 @@ class PurchaseController extends Controller
 
                                     // validasi jumlah produk
 
-                                    if ($apdk['unit'] > $aprdk['jumlah_unit']) {
+                                    if ($aprdk['unit'] > $aprdk['jumlah_unit']) {
                                         return redirect()->back()->with("failed", "Please Fill Unit Coloumn with Less Value");
                                     }
                                 }
@@ -292,6 +293,7 @@ class PurchaseController extends Controller
         }
 
 
+        // dd('end');
 
 
         // $rules = [
@@ -320,30 +322,53 @@ class PurchaseController extends Controller
 
 
 
-        // check banyaknya id pemasok yang masok
+        // check apakah dari 1 pemasok
+
+        // $sameVendor = $this->areAllValuesSame($id_pemasok);
+        // // dump($sameVendor);
+
+        // $no_pembelian = $this->PurchaseModel->no_pembelian($tgl_pembelian, $id_pemasok, $sameVendor);
+        // $tgl_exploade = explode('-', $tgl_pembelian);
+
+
+
+        // if (!$sameVendor) {
+
+
+        //     foreach ($no_pembelian as $nop) {
+
+        //         $no_purchase = "PO/$nop/$tgl_exploade[0]/$tgl_exploade[1]/$tgl_exploade[2]";
+        //         array_push($array_no_pembelian, $no_purchase);
+        //     }
+        // } else {
+
+        //     $no_purchase = "PO/$no_pembelian/$tgl_exploade[0]/$tgl_exploade[1]/$tgl_exploade[2]";
+        //     // array_push($array_no_pembelian, $no_purchase);
+        //     $array_no_pembelian = $no_purchase;
+        // }
 
         $no_pembelian = $this->PurchaseModel->no_pembelian($tgl_pembelian, $id_pemasok);
-
         $tgl_exploade = explode('-', $tgl_pembelian);
 
-        if (gettype($id_pemasok) != 'string' && count(array_flip($id_pemasok)) == 2) {
+        if ( count(array_flip($id_pemasok)) == 2) {
 
 
             $i = 0;
             foreach ($no_pembelian as $nop) {
-                $nop = $nop + $i;
                 $no_purchase = "PO/$nop/$tgl_exploade[0]/$tgl_exploade[1]/$tgl_exploade[2]";
                 array_push($array_no_pembelian, $no_purchase);
                 $i++;
             }
-        } elseif (gettype($id_pemasok) != 'string' && count(array_flip($id_pemasok)) == 1) {
+        } elseif ( count(array_flip($id_pemasok)) == 1) {
+            // dd($no_pembelian);
             $no_purchase = "PO/$no_pembelian[0]/$tgl_exploade[0]/$tgl_exploade[1]/$tgl_exploade[2]";
             array_push($array_no_pembelian, $no_purchase);
-        } else {
-
-            $no_purchase = "PO/$no_pembelian/$tgl_exploade[0]/$tgl_exploade[1]/$tgl_exploade[2]";
-            array_push($array_no_pembelian, $no_purchase);
         }
+
+
+
+
+        // dd('test');
 
         //    Mengisi array data pembelian dan detail pembelian
         // Kemungkinan yang bisa terjadi dalam pemebelian:
@@ -351,8 +376,11 @@ class PurchaseController extends Controller
         // b. 1 supplier dengan custom data dari table
         // c. N supplier dengan custom data dari table
         if (gettype($id_pemasok) == 'array') {
+
             $array_pemasok = count(array_flip($id_pemasok));
         }
+
+
 
         if (gettype($id_pemasok) == 'string' && $unit == null) {
 
@@ -388,6 +416,7 @@ class PurchaseController extends Controller
             }
             $kemungkinan = 'A';
         } else if ($array_pemasok == 1 && $unit != null) {
+            // dd($array_no_pembelian);
 
             $i = 0;
             foreach ($arr_produk as $ap) {
@@ -422,8 +451,9 @@ class PurchaseController extends Controller
             }
             $id_pemasok = $id_pemasok[0];
             $kemungkinan = 'B';
-        } elseif ($array_pemasok == 2 && $unit != null) {
+        } elseif ($array_pemasok > 1 && $unit != null) {
             // echo 'masuk sini';
+
             $i = 0;
             foreach ($arr_produk as $ap) {
                 // dump($ap);
@@ -462,12 +492,13 @@ class PurchaseController extends Controller
 
 
         // check isi array
+        // dump($kemungkinan);
         // dump($produk);
         // dump($arr_produk);
         // dump($array_no_pembelian);
         // dump($quotation);
-        // dump($kemungkinan);
         // dump($request->input());
+        // dump($id_pemasok);
         // dump($data_pembelian);
         // dd($data_detail_pembelian);
 
@@ -591,4 +622,6 @@ class PurchaseController extends Controller
             return $a !== null;
         }));
     }
+
+   
 }

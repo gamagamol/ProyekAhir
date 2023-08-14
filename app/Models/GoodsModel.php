@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use function app\helper\no_transaksi;
+
 
 class GoodsModel extends Model
 {
@@ -50,7 +52,7 @@ class GoodsModel extends Model
            ) b
            group by b.no_penerimaan
         --    having jumlah_detail_penerimaan != ifnull(jumlah_detail_pengiriman,0)
-        order by b.tgl_penerimaan desc,b.no_penerimaan desc
+            order by b.tgl_penerimaan desc,b.no_penerimaan desc
            "
         );
     }
@@ -108,23 +110,41 @@ class GoodsModel extends Model
         if ($unit) {
             $arr_nopenerimaan = [];
             for ($i = 0; $i < count($unit); $i++) {
-                $no_penerimaan =
-                    DB::table('penerimaan_barang')
-                    ->selectRaw("DISTINCT ifnull(max(substring(no_penerimaan,4,1)),0)+1 as no_penerimaan")
-                    ->whereMonth("tgl_penerimaan", "=", $bulan_tgl)
-                    ->first();
-                $no_penerimaan = (int)$no_penerimaan->no_penerimaan;
+                // $no_penerimaan =
+                //     DB::table('penerimaan_barang')
+                //     ->selectRaw("DISTINCT ifnull(max(substring(no_penerimaan,4,1)),0)+1 as no_penerimaan")
+                //     ->whereMonth("tgl_penerimaan", "=", $bulan_tgl)
+                //     ->first();
+                // $no_penerimaan = (int)$no_penerimaan->no_penerimaan;
+                $no_penerimaan = DB::select("
+                    select * from penerimaan_barang where id_penerimaan_barang =(select max(id_penerimaan_barang) from penerimaan_barang 
+                    where month(tgl_penerimaan)='$bulan_tgl')");
+                if ($no_penerimaan != null) {
+
+                    $no_penerimaan = no_transaksi($no_penerimaan[0]->no_penerimaan);
+                } else {
+                    $no_penerimaan = 1;
+                }
                 $no_penerimaan += $i;
                 array_push($arr_nopenerimaan, $no_penerimaan);
             }
             return $arr_nopenerimaan;
         } else {
-            $no_penerimaan =
-                DB::table('penerimaan_barang')
-                ->selectRaw("DISTINCT ifnull(max(substring(no_penerimaan,4,1)),0)+1 as no_penerimaan")
-                ->whereMonth("tgl_penerimaan", "=", $bulan_tgl)
-                ->first();
-            $no_penerimaan = (int)$no_penerimaan->no_penerimaan;
+            // $no_penerimaan =
+            //     DB::table('penerimaan_barang')
+            //     ->selectRaw("ifnull(max(CONVERT(substring(no_penerimaan,4,2),SIGNED))+1,1) as no_penerimaan")
+            //     ->whereMonth("tgl_penerimaan", "=", $bulan_tgl)
+            //     ->first();
+            // $no_penerimaan = (int)$no_penerimaan->no_penerimaan;
+            $no_penerimaan = DB::select("
+                    select * from penerimaan_barang where id_penerimaan_barang =(select max(id_penerimaan_barang) from penerimaan_barang 
+                    where month(tgl_penerimaan)='$bulan_tgl')");
+            if ($no_penerimaan != null) {
+
+                $no_penerimaan = no_transaksi($no_penerimaan[0]->no_penerimaan);
+            } else {
+                $no_penerimaan = 1;
+            }
 
             return $no_penerimaan;
         }
@@ -176,17 +196,32 @@ class GoodsModel extends Model
 
     public function detail($no_pembelian, $no_penerimaan)
     {
-        return DB::select("SELECT * FROM pembelian join detail_transaksi_pembelian 
-            on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
-            join transaksi on transaksi.id_transaksi=pembelian.id_transaksi
-            join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
-			join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
-            join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
-            join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
-            join pengguna on pengguna.id=transaksi.id
-            join pemasok on pembelian.id_pemasok =  pemasok.id_pemasok
-            join penerimaan_barang on penerimaan_barang.id_transaksi=pembelian.id_transaksi
-            join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
-            where no_pembelian='$no_pembelian' and no_penerimaan='$no_penerimaan'");
+        // return DB::select("SELECT * FROM pembelian join detail_transaksi_pembelian 
+        //     on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
+        //     join transaksi on transaksi.id_transaksi=pembelian.id_transaksi
+        //     join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
+		// 	join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
+        //     join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
+        //     join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+        //     join pengguna on pengguna.id=transaksi.id
+        //     join pemasok on pembelian.id_pemasok =  pemasok.id_pemasok
+        //     join penerimaan_barang on penerimaan_barang.id_transaksi=pembelian.id_transaksi
+        //     join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
+        //     where no_pembelian='$no_pembelian' and no_penerimaan='$no_penerimaan'");
+        return DB::select("SELECT *
+            FROM pembelian
+            JOIN detail_transaksi_pembelian ON pembelian.id_pembelian = detail_transaksi_pembelian.id_pembelian
+            JOIN transaksi ON transaksi.id_transaksi = pembelian.id_transaksi
+            JOIN produk ON detail_transaksi_pembelian.id_produk = produk.id_produk
+            JOIN penawaran ON penawaran.id_transaksi = transaksi.id_transaksi
+            JOIN detail_transaksi_penawaran ON detail_transaksi_penawaran.id_penawaran = penawaran.id_penawaran
+            JOIN pelanggan ON pelanggan.id_pelanggan = transaksi.id_pelanggan
+            JOIN pengguna ON pengguna.id = transaksi.id
+            JOIN pemasok ON pembelian.id_pemasok = pemasok.id_pemasok
+            JOIN penerimaan_barang ON penerimaan_barang.id_transaksi = pembelian.id_transaksi
+            JOIN detail_penerimaan_barang ON detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+            WHERE pembelian.no_pembelian = '$no_pembelian' AND penerimaan_barang.no_penerimaan = '$no_penerimaan'
+            GROUP BY penerimaan_barang.id_penerimaan_barang
+            ");
     }
 }

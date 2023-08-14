@@ -1,5 +1,7 @@
 @extends('template.index')
 @section('content')
+    <link rel="stylesheet" href="{{ asset('css/CustomStyleselect2.css') }}">
+
     <style>
         .mb-0>a {
             display: block;
@@ -30,7 +32,7 @@
                         <input type="month" id="date" class="form-control">
                     </div>
                     <div class="col">
-                        <select name="transactionNumber" id="transactionNumber" class="form-control"></select>
+                        <select name="transactionNumber" id="transactionNumber" class="form-control select2"></select>
                     </div>
                 </div>
                 <div id="accordion">
@@ -160,132 +162,221 @@
             </div>
         </div>
     </div>
-@endsection()
-
-<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
-    crossorigin="anonymous"></script>
-<script>
-    $(document).ready(function() {
-
-        let baseUrl = `{{ url('/') }}`
 
 
-        $('#date').change(() => {
-            let date = $('#date').val()
+    <script>
+        $('.select2').select2();
 
-            $.ajax({
-                url: `${baseUrl}/getTransactionNumberByDate/${date}`,
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    html = `<option value='null' >Please Choose Transaction Number</option>`
+        let result;
 
-                    data.data.map((d) => {
-                        html +=
-                            `<option value='${d.no_penjualan}'>${d.no_penjualan} </option>`
-                    })
-                    $('#transactionNumber').html(html)
+            let baseUrl = `{{ url('/') }}`
+            $('#date').change(() => {
+                let date = $('#date').val()
+                $.ajax({
+                    url: `${baseUrl}/getTransactionNumberByDate/${date}`,
+                    type: 'GET',
+                    dataType: 'json',
+                    async: false,
+                    success: function(data) {
+                        html = `<option value='null' >Please Choose Transaction Number</option>`
 
-
-                    $('#transactionNumber').change(() => {
-                        let transactionData = data.data.filter((sales) => {
-                            if (sales.no_penjualan == $(
-                                    '#transactionNumber').val()) {
-                                return sales
-                            }
+                        data.data.map((d) => {
+                            html +=
+                                `<option value='${d.no_penjualan}'>${d.no_penjualan} </option>`
                         })
+                        result = data
 
-                        transactionData.map((t) => {
-                            $('#salesOrder').html( `<p>${t.tgl_penjualan} -> ${t.no_penjualan} </p>` )
-
-                            // pembelian
-                            html_pem = ''
-
-                            t.pembelian.map((pem, i) => {
-
-                                if (i == 0) {
-                                    html_pem +=
-                                        `<p>${t.tgl_pembelian[i]} -> ${pem} </p>`
-
-                                } else {
-                                    // console.log(t.pembelian[i]);
-                                    if (t.pembelian[i - 1] != pem) {
-                                        html_pem +=
-                                            `<p>${t.tgl_pembelian[i]} -> ${pem} </p>`
-
-                                    }
-                                }
-                            })
-
-                            $('#purchaseOrder').html(html_pem)
-
-                            // penerimaan
-                            html_penerimaan = ''
-
-                            t.penerimaan.map((penerimaan, i) => {
-
-                                if (i == 0) {
-                                    html_penerimaan +=
-                                        `<p>${t.tgl_penerimaan[i]} -> ${penerimaan} </p>`
-
-                                } else {
-                                    if (t.penerimaan[i - 1] !=
-                                        penerimaan) {
-                                        html_penerimaan +=
-                                            `<p>${t.tgl_penerimaan[i]} -> ${penerimaan} </p>`
-
-                                    }
-                                }
-                            })
-
-                            $('#goodReceipt').html(html_penerimaan)
-
-                            // pengiriman
-                            html_pengiriman = ''
-
-                            t.pengiriman.map((pengiriman, i) => {
-
-                                if (i == 0) {
-                                    html_pengiriman +=
-                                        `<p>${t.tgl_pengiriman[i]} -> ${pengiriman} </p>`
-
-                                } else {
-                                    if (t.pengiriman[i - 1] !=
-                                        pengiriman) {
-                                        html_pengiriman +=
-                                            `<p>${t.tgl_pengiriman[i]} -> ${pengiriman} </p>`
-
-                                    }
-                                }
-                            })
-
-                            $('#deliveryOrder').html(html_pengiriman)
-
-
-                            // tagihan
-                            $('#invoiceOrder').html(`<p>${t.tgl_tagihan} -> ${t.tagihan} </p>` )
-                            // tagihan
-                            $('#paymentOrder').html(`<p>${t.tgl_pembayaran} -> ${t.pembayaran} </p>` )
-
-
-                        })
-
-                        $('#collapse-1').addClass('show')
-                        $('#collapse-1-6').addClass('show')
-
-
-                    })
+                        $('#transactionNumber').html(html)
 
 
 
+                        // $('#transactionNumber').on('change',function(){
+                        //     let transactionData = data.data.filter((sales) => {
+                        //         if (sales.no_penjualan == $(
+                        //                 '#transactionNumber').val()) {
+                        //             return sales
+                        //         }
+                        //     })
 
-                }
+                        //     transactionData.map((t) => {
+                        //         $('#salesOrder').html(
+                        //             `<p>${t.tgl_penjualan} -> ${t.no_penjualan} </p>`
+                        //             )
+
+                        //         // pembelian
+                        //         html_pem = ''
+
+                        //         t.pembelian.map((pem, i) => {
+
+                        //             if (i == 0) {
+                        //                 html_pem +=
+                        //                     `<p>${t.tgl_pembelian[i]} -> ${pem} </p>`
+
+                        //             } else {
+                        //                 // console.log(t.pembelian[i]);
+                        //                 if (t.pembelian[i - 1] != pem) {
+                        //                     html_pem +=
+                        //                         `<p>${t.tgl_pembelian[i]} -> ${pem} </p>`
+
+                        //                 }
+                        //             }
+                        //         })
+
+                        //         $('#purchaseOrder').html(html_pem)
+
+                        //         // penerimaan
+                        //         html_penerimaan = ''
+
+                        //         t.penerimaan.map((penerimaan, i) => {
+
+                        //             if (i == 0) {
+                        //                 html_penerimaan +=
+                        //                     `<p>${t.tgl_penerimaan[i]} -> ${penerimaan} </p>`
+
+                        //             } else {
+                        //                 if (t.penerimaan[i - 1] !=
+                        //                     penerimaan) {
+                        //                     html_penerimaan +=
+                        //                         `<p>${t.tgl_penerimaan[i]} -> ${penerimaan} </p>`
+
+                        //                 }
+                        //             }
+                        //         })
+
+                        //         $('#goodReceipt').html(html_penerimaan)
+
+                        //         // pengiriman
+                        //         html_pengiriman = ''
+
+                        //         t.pengiriman.map((pengiriman, i) => {
+
+                        //             if (i == 0) {
+                        //                 html_pengiriman +=
+                        //                     `<p>${t.tgl_pengiriman[i]} -> ${pengiriman} </p>`
+
+                        //             } else {
+                        //                 if (t.pengiriman[i - 1] !=
+                        //                     pengiriman) {
+                        //                     html_pengiriman +=
+                        //                         `<p>${t.tgl_pengiriman[i]} -> ${pengiriman} </p>`
+
+                        //                 }
+                        //             }
+                        //         })
+
+                        //         $('#deliveryOrder').html(html_pengiriman)
+
+                        //         // tagihan
+                        //         $('#invoiceOrder').html(
+                        //             `<p>${t.tgl_tagihan} -> ${t.tagihan} </p>`
+                        //             )
+                        //         // tagihan
+                        //         $('#paymentOrder').html(
+                        //             `<p>${t.tgl_pembayaran} -> ${t.pembayaran} </p>`
+                        //             )
+
+                        //     })
+
+                        //     $('#collapse-1').addClass('show')
+                        //     $('#collapse-1-6').addClass('show')
+
+                        // })
+
+                    }
+                })
+
             })
 
-        })
+
+            $('#transactionNumber').change(function() {
+
+                let transactionData = result.data.filter((sales) => {
+                    if (sales.no_penjualan == $(
+                            '#transactionNumber').val()) {
+                        return sales
+                    }
+                })
+
+                transactionData.map((t) => {
+                    $('#salesOrder').html(
+                        `<p>${t.tgl_penjualan} -> ${t.no_penjualan} </p>`
+                    )
+
+                    // pembelian
+                    html_pem = ''
+
+                    t.pembelian.map((pem, i) => {
+
+                        if (i == 0) {
+                            html_pem +=
+                                `<p>${(t.tgl_pembelian[i])?t.tgl_pembelian[i]:'-'} -> ${(pem)?pem:'-'} </p>`
+
+                        } else {
+                            // console.log(t.pembelian[i]);
+                            if (t.pembelian[i - 1] != pem) {
+                                html_pem +=
+                                    `<p>${(t.tgl_pembelian[i])?t.tgl_pembelian[i]:'-'} -> ${(pem)?pem:'-'} </p>`
+
+                            }
+                        }
+                    })
+
+                    $('#purchaseOrder').html(html_pem)
+
+                    // penerimaan
+                    html_penerimaan = ''
+
+                    t.penerimaan.map((penerimaan, i) => {
+
+                        if (i == 0) {
+                            html_penerimaan +=
+                                `<p>${(t.tgl_penerimaan[i])?t.tgl_penerimaan[i]:'-'} -> ${(penerimaan)?penerimaan:'-'} </p>`
+
+                        } else {
+                            if (t.penerimaan[i - 1] !=
+                                penerimaan) {
+                                html_penerimaan +=
+                                    `<p>${(t.tgl_penerimaan[i])?t.tgl_penerimaan[i]:'-'} -> ${(penerimaan)?penerimaan:'-'} </p>`
+
+                            }
+                        }
+                    })
+
+                    $('#goodReceipt').html(html_penerimaan)
+
+                    // pengiriman
+                    html_pengiriman = ''
+
+                    t.pengiriman.map((pengiriman, i) => {
+
+                        if (i == 0) {
+                            html_pengiriman +=
+                                `<p>${(t.tgl_pengiriman[i])?t.tgl_pengiriman[i]:'-'} -> ${(pengiriman)?pengiriman:'-'} </p>`
+
+                        } else {
+                            if (t.pengiriman[i - 1] !=
+                                pengiriman) {
+                                html_pengiriman +=
+                                    `<p>${(t.tgl_pengiriman[i])?t.tgl_pengiriman[i]:'-'} -> ${(pengiriman)?pengiriman:'-'} </p>`
+
+                            }
+                        }
+                    })
+
+                    $('#deliveryOrder').html(html_pengiriman)
+
+                    // tagihan
+                    $('#invoiceOrder').html(`<p>${(t.tgl_tagihan) ? t.tgl_tagihan:'-'} -> ${(t.tagihan)?t.tagihan:'-'} </p>`)
+                    // tagihan
+                    $('#paymentOrder').html(`<p>${(t.tgl_pembayaran) ? t.tgl_pembayaran:'-'} -> ${(t.pembayaran) ? t.pembayaran:'-;'} </p>` )
+
+                })
+
+                $('#collapse-1').addClass('show')
+                $('#collapse-1-6').addClass('show')
 
 
 
-
-    })
-</script>
+            })
+    </script>
+@endsection()

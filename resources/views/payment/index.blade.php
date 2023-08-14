@@ -11,22 +11,6 @@
                 <h6 class="m-0 font-weight-bold text-primary">Payment</h6>
             </div>
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4 mt-3">
-                        <form action={{ url('payment') }} method="GET" id="serch-form">
-                            <select class="form-control form-select" aria-label="Default select example" name='serch'
-                                id="serch">
-                                <option value="All">All</option>
-                                @foreach ($deta as $d)
-                                    <option value={{ $d->no_pembayaran }}>{{ $d->no_pembayaran }}</option>
-                                @endforeach
-                            </select>
-                            <button type=submit name=submit class="btn btn-primary mt-3" id="serch-button">submit</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
             <div class="card-body">
 
                 <div class="table-responsive text-center">
@@ -35,9 +19,10 @@
 
                             <tr>
                                 <td>No</td>
+                                <td>Date Purchase</td>
                                 <td>No Purchase </td>
                                 <td>Customer</td>
-                                <td>Date Payment</td>
+                                <td>Payment Date</td>
                                 <td>No Payment </td>
                                 <td>Job number</td>
                                 <td>Prepared</td>
@@ -53,9 +38,10 @@
                             @foreach ($data as $d)
                                 <tr>
                                     <td> {{ $loop->iteration }}</td>
-                                    <td>{{ $d->no_pembelian }}</td>
+                                    <td>{{ $d->tgl_penjualan }}</td>
+                                    <td>{{ $d->no_penjualan }}</td>
                                     <td>{{ $d->nama_pelanggan }}</td>
-                                    <td style="min-width:120px">{{ $d->tgl_pembayaran }}</td>
+                                    <td>{{ $d->tgl_pembayaran }}</td>
                                     <td>{{ $d->no_pembayaran }}</td>
                                     <td>{{ $d->nomor_pekerjaan }}</td>
                                     <td>{{ $d->nama_pengguna }}</td>

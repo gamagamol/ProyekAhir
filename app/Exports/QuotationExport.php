@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Exception;
+
+
 
 class QuotationExport implements FromView, ShouldAutoSize, WithStyles
 {
@@ -16,40 +19,47 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
      */
 
 
-    public $month, $date, $type;
+    public $month, $date, $type, $date_to;
 
-    public function __construct($month = null, $date = null, $type = null)
+    public function __construct($month = null, $date = null, $type = null, $date_to = null)
     {
         $this->month = $month;
         $this->date = $date;
         $this->type = $type;
+        $this->date_to = $date_to;
     }
     public function view($month = null, $date = null): View
     {
 
 
         if ($this->type == 'detail') {
-            $view = 'export_detail_report';
+            $view = 'quotation.export_detail_report';
         }
 
         if ($this->type == 'customer_omzet') {
-            $view = 'export_customer_omzet';
+            $view = 'quotation.export_customer_omzet';
         }
 
         if ($this->type == 'out_standing') {
-            $view = 'export_out_standing_report';
+            $view = 'quotation.export_out_standing_report';
         }
 
         if ($this->type == 'quotation') {
-            $view = 'quotation_report_export';
+            $view = 'quotation.quotation_report_export';
+        }
+
+        if ($this->type == 'omzet') {
+            $view = 'GeneralReport.omzet_report_export';
         }
 
 
         // dd($this->data($this->month, $this->date));
         // dd($this->data($this->month, $this->date));
 
-        return view('quotation.' . $view, [
-            'data' => $this->data($this->month, $this->date),
+      
+
+        return view( $view, [
+            'data' => $this->data($this->month, $this->date, $this->date_to),
         ]);
     }
 
@@ -70,6 +80,8 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
             $panjang_kolom = 'O';
         } else if ($this->type == 'quotation') {
             $panjang_kolom = 'M';
+        } elseif ($this->type == 'omzet') {
+            $panjang_kolom = 'X';
         }
 
         $sheet->getStyle("A1:$panjang_kolom$jumlah_baris")->applyFromArray([
@@ -82,23 +94,50 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
         ]);
     }
 
-    public function data($month = null, $date = null)
+    public function data($year_month = null, $date = null, $date_to = null)
     {
 
         $where = '';
 
+        $month = '';
+        $year = '';
+
+
+        if ($year_month != 0) {
+            $year_month = explode('-', $year_month);
+
+            $year = $year_month[0];
+            $month = $year_month[1];
+        }
+
+
+
+
         if ($this->type == 'detail') {
-            if ($month != '0' && $date == null) {
-                $month = explode('-', $month);
-               
-                $where = "WHERE MONTH(p.tgl_penawaran)=$month[1] AND YEAR(p.tgl_penawaran)=$month[0]";
-            } elseif ($date && $month == '0') {
 
-                $where = "WHERE p.tgl_penawaran='$date'";
-            } elseif ($month != null && $date != null) {
 
-                $where = "WHERE p.tgl_penawaran='$date'";
+            if ($year_month != 0 && $date == 0) {
+
+                $where = "AND YEAR(p.tgl_penawaran)='$year'AND MONTH(p.tgl_penawaran)=$month";
+            } elseif ($date != 0 && $year_month == 0 && $date_to == 0) {
+                // echo "masuk sini2";
+                // die;
+
+                $where = "AND p.tgl_penawaran='$date'";
+            } elseif ($year_month != 0 && $date && $date_to == 0) {
+
+
+                $where = "AND YEAR(p.tgl_penawaran)='$year'AND MONTH(p.tgl_penawaran)=$month and p.tgl_penawaran=$date";
+            } else if ($date != 0 && $date_to != 0) {
+
+
+                $where = "AND tgl_penawaran between '$date' and '$date_to'";
+            } else if ($date != 0 && $date_to != 0 && $year_month != 0) {
+
+
+                $where = "AND YEAR(p.tgl_penawaran)='$year'AND MONTH(p.tgl_penawaran)=$month AND p.tgl_penawaran between '$date' and '$date_to'";
             }
+
 
             $query = "select b.*, (select sum(jumlah) from transaksi 
 				join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
@@ -148,29 +187,43 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
 						) b";
         } else if ($this->type == 'customer_omzet') {
 
-            if ($month != '0' && $date == null) {
-                $where = "and MONTH(p.tgl_penawaran)=$month";
-            } elseif ($date && $month == '0') {
 
-                $where = "and DAY(p.tgl_penawaran)=$date";
-            } elseif ($month != null && $date != null) {
 
-                $where = "and MONTH(p.tgl_penawaran)=$month and DAY(p.tgl_penawaran)=$date";
+            if ($year_month != 0 && $date == 0) {
+
+                $where = "AND YEAR(p.tgl_penawaran)='$year'AND MONTH(p.tgl_penawaran)=$month";
+            } elseif ($date != 0 && $year_month == 0 && $date_to == 0) {
+                // echo "masuk sini2";
+                // die;
+
+                $where = "AND p.tgl_penawaran='$date'";
+            } elseif ($year_month != 0 && $date && $date_to == 0) {
+
+
+                $where = "AND YEAR(p.tgl_penawaran)='$year'AND MONTH(p.tgl_penawaran)=$month and p.tgl_penawaran=$date";
+            } else if ($date != 0 && $date_to != 0) {
+
+
+                $where = "AND tgl_penawaran between '$date' and '$date_to'";
+            } else if ($date != 0 && $date_to != 0 && $year_month != 0) {
+
+
+                $where = "AND YEAR(p.tgl_penawaran)='$year'AND MONTH(p.tgl_penawaran)=$month AND p.tgl_penawaran between '$date' and '$date_to'";
             }
 
-            $query = " select b.*,(
+            $query = "  select b.*,(
             select sum(subtotal) from transaksi 
             join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
-            where no_penawaran = b.no_penawaran 
+            where id_pelanggan = b.id_pelanggan 
             ) as total_penawaran, (
             select sum(subtotal) from transaksi 
             join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
-            where no_penawaran = b.no_penawaran and penawaran.tidak_terpakai=1
+            where id_pelanggan = b.id_pelanggan and penawaran.tidak_terpakai=1
             ) as total_penawaran_loss,(
             select sum(subtotal)  from transaksi 
             join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
             join penjualan on transaksi.id_transaksi=penjualan.id_transaksi
-            where transaksi.tidak_terpakai=0 and no_penawaran=b.no_penawaran
+            where transaksi.tidak_terpakai=0 and id_pelanggan = b.id_pelanggan
             ) as total_penjualan from (
             SELECT  pg.id_pelanggan,nama_pegawai ,no_penawaran,no_penjualan,pg.nama_pelanggan FROM transaksi t
             left join penawaran p on t.id_transaksi=p.id_transaksi
@@ -182,14 +235,28 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
             ) b ";
         } else if ($this->type == 'out_standing') {
 
-            if ($month != '0' && $date == null) {
-                $where = "and MONTH(pj.tgl_penjualan)=$month";
-            } elseif ($date && $month == '0') {
 
-                $where = "and DAY(pj.tgl_penjualan)=$date";
-            } elseif ($month != null && $date != null) {
 
-                $where = "and MONTH(pj.tgl_penjualan)=$month and DAY(pj.tgl_penjualan)=$date";
+            if ($year_month != 0 && $date == 0) {
+
+                $where = "AND YEAR(pj.tgl_penjualan)='$year'AND MONTH(pj.tgl_penjualan)=$month";
+            } elseif ($date != 0 && $year_month == 0 && $date_to == 0) {
+                // echo "masuk sini2";
+                // die;
+
+                $where = "AND pj.tgl_penjualan='$date'";
+            } elseif ($year_month != 0 && $date && $date_to == 0) {
+
+
+                $where = "AND YEAR(pj.tgl_penjualan)='$year'AND MONTH(pj.tgl_penjualan)=$month and pj.tgl_penjualan=$date";
+            } else if ($date != 0 && $date_to != 0) {
+
+
+                $where = "AND tgl_penawaran between '$date' and '$date_to'";
+            } else if ($date != 0 && $date_to != 0 && $year_month != 0) {
+
+
+                $where = "AND YEAR(pj.tgl_penjualan)='$year'AND MONTH(pj.tgl_penjualan)=$month AND pj.tgl_penjualan between '$date' and '$date_to'";
             }
 
             $query = " SELECT t.id_transaksi,
@@ -213,15 +280,35 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
                          $where";
         } else if ($this->type == 'quotation') {
 
-            if ($month != '0' && $date == null) {
-                $where = "and MONTH(pn.tgl_penawaran)=$month";
-            } elseif ($date && $month == '0') {
 
-                $where = "and DAY(pn.tgl_penawaran)=$date";
-            } elseif ($month != null && $date != null) {
 
-                $where = "and MONTH(pn.tgl_penawaran)=$month and DAY(pn.tgl_penawaran)=$date";
+
+            if ($year_month != 0 && $date == 0) {
+
+                $where = "AND YEAR(pn.tgl_penawaran)='$year'AND MONTH(pn.tgl_penawaran)=$month";
+            } elseif ($date != 0 && $year_month == 0 && $date_to == 0) {
+                // echo "masuk sini2";
+                // die;
+
+                $where = "AND pn.tgl_penawaran='$date'";
+            } elseif ($year_month != 0 && $date && $date_to == 0) {
+
+
+                $where = "AND YEAR(pn.tgl_penawaran)='$year'AND MONTH(pn.tgl_penawaran)=$month and pn.tgl_penawaran=$date";
+            } else if ($date != 0 && $date_to != 0) {
+
+
+                $where = "AND tgl_penawaran between '$date' and '$date_to'";
+            } else if ($date != 0 && $date_to != 0 && $year_month != 0) {
+
+
+                $where = "AND YEAR(pn.tgl_penawaran)='$year'AND MONTH(pn.tgl_penawaran)=$month AND pn.tgl_penawaran between '$date' and '$date_to'";
             }
+
+
+
+
+
 
             $query = "select b.*,sum(b.total) as total_quotation ,(
                         select sum(total) from transaksi 
@@ -241,12 +328,57 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
                         where jabatan_pegawai='SALES' $where
                         )b
                         group by b.no_penawaran";
+
+
+            // echo $query;
+            // die;
+        } else if ($this->type == 'omzet') {
+
+            if ($year_month != 0 && $date == 0) {
+
+                $where = "AND YEAR(tgl_penawaran)='$year'AND MONTH(tgl_penawaran)=$month";
+            } elseif ($date != 0 && $year_month == 0 && $date_to == 0) {
+                // echo "masuk sini2";
+                // die;
+
+                $where = "AND tgl_penawaran='$date'";
+            } elseif ($year_month != 0 && $date && $date_to == 0) {
+
+
+                $where = "AND YEAR(tgl_penawaran)='$year'AND MONTH(tgl_penawaran)=$month and tgl_penawaran=$date";
+            } else if ($date != 0 && $date_to != 0) {
+
+
+                $where = "AND tgl_penawaran between '$date' and '$date_to'";
+            } else if ($date != 0 && $date_to != 0 && $year_month != 0) {
+
+
+                $where = "AND YEAR(tgl_penawaran)='$year'AND MONTH(tgl_penawaran)=$month AND tgl_penawaran between '$date' and '$date_to'";
+            }
+
+
+            $query = "SELECT transaksi.id_transaksi, no_penawaran,tgl_penawaran,no_penjualan,tgl_penjualan,nama_pelanggan,
+            no_pembelian,tgl_pembelian,nama_pemasok,no_pengiriman,tgl_pengiriman,no_tagihan,tgl_tagihan,
+            no_pembayaran,tgl_pembayaran,transaksi.subtotal ,transaksi.ppn,transaksi.total,subtotal_detail_pembelian,ppn_detail_pembelian,total_detail_pembelian
+            FROM transaksi
+			join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+            join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
+            left join pembelian on pembelian.id_penjualan=penjualan.id_penjualan
+			left join detail_transaksi_pembelian on detail_transaksi_pembelian.id_pembelian=pembelian.id_pembelian
+            left join penerimaan_barang on penerimaan_barang.id_pembelian=pembelian.id_pembelian
+            left join pengiriman on penerimaan_barang.id_penerimaan_barang=pengiriman.id_penerimaan_barang
+			left join tagihan on tagihan.id_pengiriman=pengiriman.id_pengiriman
+            left join pembayaran on pembayaran.id_transaksi=transaksi.id_transaksi
+            join pelanggan on transaksi.id_pelanggan = pelanggan.id_pelanggan
+            join pemasok on pembelian.id_pemasok = pemasok.id_pemasok
+            where penawaran.tidak_terpakai=0 $where
+            order by tgl_penawaran desc";
         }
 
 
 
 
-
+       
 
 
         return DB::select($query);

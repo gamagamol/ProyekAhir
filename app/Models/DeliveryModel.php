@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Js;
+use function app\helper\no_transaksi;
+
 
 class DeliveryModel extends Model
 {
@@ -29,6 +32,7 @@ class DeliveryModel extends Model
         left join detail_penerimaan_barang dtb on dtb.id_penerimaan_barang = pb.id_penerimaan_barang
             $query
             group by no_pengiriman
+            order by tgl_pengiriman desc
             ");
     }
 
@@ -44,36 +48,158 @@ class DeliveryModel extends Model
 
         if ($no_pengiriman[0]->no_pengiriman == null) {
             $query = "and jumlah_detail_penerimaan >ifnull( jumlah_detail_pengiriman,0)  
-             group by transaksi.id_transaksi ";
+              ";
         } else {
             $query = " and  jumlah_detail_penerimaan >ifnull( jumlah_detail_pengiriman,0)
-            group by transaksi.id_transaksi
+            group by pengiriman.id_pengiriman
             having jumlah_detail_penerimaan > ifnull( sudah_terkirim,0)";
         }
 
-        return DB::select(
-            "SELECT   *,penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan ,
-            penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,jumlah_detail_penerimaan,
-            case 
-            when jumlah_detail_pengiriman > 0 then sum(jumlah_detail_pengiriman)
-            end as
-            sudah_terkirim,
-            jumlah_detail_pengiriman,
-            sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM transaksi 
-            join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
-            join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
-            join pembelian on pembelian.id_penjualan=penjualan.id_penjualan
-            join penerimaan_barang on penerimaan_barang.id_pembelian=pembelian.id_pembelian
-            join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
-            left join pengiriman on pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
-            left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
-            join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
-            join pengguna on pengguna.id=transaksi.id
-            join produk on detail_penerimaan_barang.id_produk=produk.id_produk
-			where no_penerimaan='$no_penerimaan'
-            $query
-            "
-        );
+        // echo"SELECT   *,penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan ,
+        //     penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,jumlah_detail_penerimaan,
+        //     case 
+        //     when jumlah_detail_pengiriman > 0 then sum(jumlah_detail_pengiriman)
+        //     end as
+        //     sudah_terkirim,
+        //     jumlah_detail_pengiriman,
+        //     sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM transaksi 
+        //     join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+        //     join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
+        //     join pembelian on pembelian.id_penjualan=penjualan.id_penjualan
+        //     join penerimaan_barang on penerimaan_barang.id_pembelian=pembelian.id_pembelian
+        //     join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+        //     left join pengiriman on pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+        //     left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
+        //     join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+        //     join pengguna on pengguna.id=transaksi.id
+        //     join produk on detail_penerimaan_barang.id_produk=produk.id_produk
+        // 	where no_penerimaan='$no_penerimaan'
+        //     $query";die;
+
+        // return DB::select(
+        //     "SELECT   *,penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan ,
+        //     penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,jumlah_detail_penerimaan,
+        //     case 
+        //     when jumlah_detail_pengiriman > 0 then sum(jumlah_detail_pengiriman)
+        //     end as
+        //     sudah_terkirim,
+        //     jumlah_detail_pengiriman,
+        //     sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM transaksi 
+        //     join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+        //     join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
+        //     join pembelian on pembelian.id_penjualan=penjualan.id_penjualan
+        //     join penerimaan_barang on penerimaan_barang.id_pembelian=pembelian.id_pembelian
+        //     join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+        //     left join pengiriman on pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+        //     left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
+        //     join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+        //     join pengguna on pengguna.id=transaksi.id
+        //     join produk on detail_penerimaan_barang.id_produk=produk.id_produk
+        // 	where no_penerimaan='$no_penerimaan'
+        //     $query
+        //     "
+        // );
+
+        //     echo "SELECT *,
+        //    penerimaan_barang.no_penerimaan,
+        //    no_pengiriman,
+        //    transaksi.id_transaksi,
+        //    penjualan.id_penjualan,
+        //    penerimaan_barang.id_penerimaan_barang,
+        //    penawaran.id_penawaran,
+        //    jumlah_detail_penerimaan,
+        //    CASE WHEN jumlah_detail_pengiriman > 0 THEN jumlah_detail_pengiriman END as sudah_terkirim,
+        //    jumlah_detail_pengiriman,
+        //    sisa_detail_pengiriman,
+        //    detail_penerimaan_barang.id_produk
+        //     FROM transaksi 
+        //     LEFT JOIN penawaran ON penawaran.id_transaksi = transaksi.id_transaksi 
+        //     LEFT JOIN penjualan ON penjualan.id_transaksi = transaksi.id_transaksi 
+        //     LEFT JOIN pembelian ON pembelian.id_penjualan = penjualan.id_penjualan 
+        //     LEFT JOIN penerimaan_barang ON penerimaan_barang.id_pembelian = pembelian.id_pembelian 
+        //     LEFT JOIN detail_penerimaan_barang ON detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+        //     LEFT JOIN pengiriman ON pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang 
+        //     LEFT JOIN detail_transaksi_pengiriman ON detail_transaksi_pengiriman.id_pengiriman = pengiriman.id_pengiriman 
+        //     LEFT JOIN pelanggan ON pelanggan.id_pelanggan = transaksi.id_pelanggan 
+        //     LEFT JOIN pengguna ON pengguna.id = transaksi.id
+        //     LEFT JOIN produk ON detail_penerimaan_barang.id_produk = produk.id_produk 
+        //     WHERE no_penerimaan = '$no_penerimaan'$query";die;
+        // try {
+        //     DB::select("SELECT
+        //         *,no_penerimaan,
+        //         no_pengiriman,
+        //         transaksi.id_transaksi,
+        //         penjualan.id_penjualan,
+        //         penerimaan_barang.id_penerimaan_barang,
+        //         penawaran.id_penawaran,
+        //         jumlah_detail_penerimaan,
+        //         CASE WHEN jumlah_detail_pengiriman > 0 THEN jumlah_detail_pengiriman END as sudah_terkirim,
+        //         jumlah_detail_pengiriman,
+        //         sisa_detail_pengiriman,
+        //         detail_penerimaan_barang.id_produk
+        //     FROM transaksi 
+        //     JOIN penawaran ON penawaran.id_transaksi = transaksi.id_transaksi
+        //     JOIN penjualan ON penjualan.id_transaksi = transaksi.id_transaksi 
+        //     JOIN pembelian ON pembelian.id_penjualan = penjualan.id_penjualan
+        //     JOIN penerimaan_barang ON penerimaan_barang.id_pembelian = pembelian.id_pembelian 
+        //     JOIN detail_penerimaan_barang ON detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang 
+        //     LEFT JOIN pengiriman ON pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang 
+        //     LEFT JOIN detail_transaksi_pengiriman ON detail_transaksi_pengiriman.id_pengiriman = pengiriman.id_pengiriman
+        //     JOIN pelanggan ON pelanggan.id_pelanggan = transaksi.id_pelanggan 
+        //     JOIN pengguna ON pengguna.id = transaksi.id
+        //     JOIN produk ON detail_penerimaan_barang.id_produk = produk.id_produk 
+        //     WHERE no_penerimaan = '$no_penerimaan'
+        //     AND jumlah_detail_penerimaan > IFNULL(jumlah_detail_pengiriman, 0)
+        //     AND (
+        //         jumlah_detail_pengiriman IS NULL
+        //         OR jumlah_detail_penerimaan > IFNULL((
+        //             SELECT SUM(jumlah_detail_pengiriman) 
+        //             FROM pengiriman 
+        //             JOIN detail_transaksi_pengiriman ON detail_transaksi_pengiriman.id_pengiriman = pengiriman.id_pengiriman
+        //             WHERE pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+        //         ), 0)
+        //     )
+        //     GROUP BY pengiriman.id_pengiriman, penerimaan_barang.id_penerimaan_barang");
+
+        // } catch (Exception $e) {
+        //     dd($e);
+        // }
+            // dd('test');
+        return DB::select("SELECT
+                *,no_penerimaan,
+                no_pengiriman,
+                transaksi.id_transaksi,
+                penjualan.id_penjualan,
+                penerimaan_barang.id_penerimaan_barang,
+                penawaran.id_penawaran,
+                jumlah_detail_penerimaan,
+                CASE WHEN jumlah_detail_pengiriman > 0 THEN jumlah_detail_pengiriman END as sudah_terkirim,
+                jumlah_detail_pengiriman,
+                sisa_detail_pengiriman,
+                detail_penerimaan_barang.id_produk
+            FROM transaksi 
+            JOIN penawaran ON penawaran.id_transaksi = transaksi.id_transaksi
+            JOIN penjualan ON penjualan.id_transaksi = transaksi.id_transaksi 
+            JOIN pembelian ON pembelian.id_penjualan = penjualan.id_penjualan
+            JOIN penerimaan_barang ON penerimaan_barang.id_pembelian = pembelian.id_pembelian 
+            JOIN detail_penerimaan_barang ON detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang 
+            LEFT JOIN pengiriman ON pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang 
+            LEFT JOIN detail_transaksi_pengiriman ON detail_transaksi_pengiriman.id_pengiriman = pengiriman.id_pengiriman
+            JOIN pelanggan ON pelanggan.id_pelanggan = transaksi.id_pelanggan 
+            JOIN pengguna ON pengguna.id = transaksi.id
+            JOIN produk ON detail_penerimaan_barang.id_produk = produk.id_produk 
+            WHERE no_penerimaan = '$no_penerimaan'
+            AND jumlah_detail_penerimaan > IFNULL(jumlah_detail_pengiriman, 0)
+            AND (
+                jumlah_detail_pengiriman IS NULL
+                OR jumlah_detail_penerimaan > IFNULL((
+                    SELECT SUM(jumlah_detail_pengiriman) 
+                    FROM pengiriman 
+                    JOIN detail_transaksi_pengiriman ON detail_transaksi_pengiriman.id_pengiriman = pengiriman.id_pengiriman
+                    WHERE pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+                ), 0)
+            )
+            GROUP BY pengiriman.id_pengiriman, penerimaan_barang.id_penerimaan_barang");
     }
     public function data($id_transaksi)
     {
@@ -101,24 +227,44 @@ class DeliveryModel extends Model
             $arr_no_pengiriman = [];
             for ($i = 0; $i < count($unit); $i++) {
 
-                $no_pengiriman =
-                    DB::table('pengiriman')
-                    ->selectRaw("DISTINCT ifnull(max(substring(no_pengiriman,4,1)),0) +1 as no_pengiriman")
-                    ->whereMonth("tgl_pengiriman", "=", $bulan_tgl)
-                    ->first();
-                $no_pengiriman = (int)$no_pengiriman->no_pengiriman;
+                // $no_pengiriman =
+                //     DB::table('pengiriman')
+                //     ->selectRaw("ifnull(max(CONVERT(substring(no_pengiriman,4,2),SIGNED))+1,1) as no_pengiriman")
+                //     ->whereMonth("tgl_pengiriman", "=", $bulan_tgl)
+                //     ->first();
+                // $no_pengiriman = (int)$no_pengiriman->no_pengiriman;
+                $no_pengiriman = DB::select("
+                    select * from pengiriman where id_pengiriman =(select max(id_pengiriman) from pengiriman 
+                    where month(tgl_pengiriman)='$bulan_tgl')");
+
+                if ($no_pengiriman != null) {
+
+                    $no_pengiriman = no_transaksi($no_pengiriman[0]->no_pengiriman);
+                } else {
+                    $no_pengiriman = 1;
+                }
                 $no_pengiriman += $i;
                 array_push($arr_no_pengiriman, $no_pengiriman);
             }
 
             return $arr_no_pengiriman;
         } else {
-            $no_pengiriman =
-                DB::table('pengiriman')
-                ->selectRaw("DISTINCT ifnull(max(substring(no_pengiriman,4,1)),0) +1 as no_pengiriman")
-                ->where("tgl_pengiriman", "=", $tgl_pengiriman)
-                ->first();
-            $no_pengiriman = (int)$no_pengiriman->no_pengiriman;
+            // $no_pengiriman =
+            //     DB::table('pengiriman')
+            //     ->selectRaw("DISTINCT ifnull(max(substring(no_pengiriman,4,1)),0) +1 as no_pengiriman")
+            //     ->where("tgl_pengiriman", "=", $tgl_pengiriman)
+            //     ->first();
+            // $no_pengiriman = (int)$no_pengiriman->no_pengiriman;
+            $no_pengiriman = DB::select("
+                    select * from pengiriman where id_pengiriman =(select max(id_pengiriman) from pengiriman 
+                    where month(tgl_pengiriman)='$bulan_tgl')");
+
+            if ($no_pengiriman != null) {
+
+                $no_pengiriman = no_transaksi($no_pengiriman[0]->no_pengiriman);
+            } else {
+                $no_pengiriman = 1;
+            }
             return $no_pengiriman;
         }
     }
@@ -218,7 +364,7 @@ class DeliveryModel extends Model
                 $query = " and jumlah_detail_penerimaan > ifnull( jumlah_detail_pengiriman,0)";
             }
         }
-      
+
 
         return DB::select(
             "SELECT  *,penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan ,penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran, jumlah_detail_penerimaan,
@@ -259,6 +405,7 @@ class DeliveryModel extends Model
             join pemasok on pembelian.id_pemasok = pemasok.id_pemasok
             where no_pengiriman ='$no_pengiriman' and transaksi.tidak_terpakai=0
             Order BY tgl_pengiriman asc,no_pengiriman asc
-        ");
+        "
+        );
     }
 }

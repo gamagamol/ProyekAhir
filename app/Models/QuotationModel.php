@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use function app\helper\no_transaksi;
 
 class QuotationModel extends Model
 {
@@ -59,29 +60,43 @@ class QuotationModel extends Model
     }
     public function insert($data_transaksi, $data_penawaran, $data_detail_penawaran, $tgl_penawaran)
     {
-        // insert into table transaksi
+        // // insert into table transaksi
 
         DB::table('transaksi')->insert($data_transaksi);
 
-        // menentukan id_transaksi
+        // // menentukan id_transaksi
         $id_transaksi = DB::table('transaksi')
             ->select("id_transaksi")
             ->where("kode_transaksi", "=", $data_transaksi[0]["kode_transaksi"])->get();
 
-        //  menentukan no penawaran
-        // $date=   strtotime($tgl_penawaran);
-        // $month = date("f", $date);
 
 
         $bulan_tgl = explode("-", $tgl_penawaran)[1];
         // dd($bulan_tgl);
-        $no_penawaran =
-            DB::table('penawaran')
-            ->selectRaw("DISTINCT ifnull(max(substring(no_penawaran,5,1)),0)+1  as no_penawaran")
-            ->whereMonth("tgl_penawaran", "=", $bulan_tgl)
-            ->first();
-        $no_penawaran = (int)$no_penawaran->no_penawaran;
-        // dd($no_penawaran);
+        // $no_penawaran =
+        //     DB::table('penawaran')
+        //     ->selectRaw("select * from penawaran where id_penawaran =(select max(id_penawaran) from penawaran where month(tgl_penawaran)='08')")
+        //     ->whereMonth("tgl_penawaran", "=", $bulan_tgl)
+        //     ->first();
+        // $no_penawaran =
+        //     DB::table('penawaran')
+        //     ->selectRaw("ifnull(max(CONVERT(substring(no_penawaran,5,2),SIGNED))+1,1) as no_penawaran")
+        //     ->whereMonth("tgl_penawaran", "=", $bulan_tgl)
+        //     ->first();
+        $no_penawaran=DB::select("select * from penawaran where id_penawaran =(select max(id_penawaran) from penawaran 
+        where month(tgl_penawaran)='$bulan_tgl')");
+
+        if ($no_penawaran != null) {
+
+            $no_penawaran = no_transaksi($no_penawaran[0]->no_penawaran);
+        } else {
+            $no_penawaran = 1;
+        }
+   
+
+
+        $no_penawaran = (int)$no_penawaran;
+     
 
 
 
@@ -181,24 +196,91 @@ class QuotationModel extends Model
         DB::table('penawaran')->whereIn('id_transaksi', $id_transaksi)->update($data);
     }
 
-    public function quotationDetailReport($month = null, $date = null)
+    public function quotationDetailReport($year_month = null, $date = null, $date_to = null)
     {
 
         $query = '';
-        if ($month && $date == null) {
-            $month = explode('-', $month);
-            $query = "WHERE MONTH(p.tgl_penawaran)=$month[1] and YEAR(p.tgl_penawaran)=$month[0] ";
-            
-        } elseif ($date && $month == null) {
-            $query = "WHERE p.tgl_penawaran='$date'";
-            // print_r($query);
-            // die;
-        } elseif ($month && $date) {
-            $query = "WHERE p.tgl_penawaran='$date'";
+       
 
+        $month = '';
+        $year = '';
+
+
+        if ($year_month != 0) {
+            $year_month = explode('-', $year_month);
+
+            $year = $year_month[0];
+            $month = $year_month[1];
         }
 
-      
+
+
+        if ($year_month && $date == null) {
+
+
+            $query = "AND YEAR(p.tgl_penawaran)='$year'AND MONTH(p.tgl_penawaran)=$month";
+        } elseif ($date && $year_month == null && $date_to == null) {
+
+            $query = "AND p.tgl_penawaran='$date'";
+        } elseif ($year_month && $date && $date_to == null) {
+            $query = "AND YEAR(p.tgl_penawaran)='$year'AND MONTH(p.tgl_penawaran)=$month and p.tgl_penawaran=$date";
+        } else if ($date && $date_to) {
+
+
+            $query = "AND tgl_penawaran between '$date' and '$date_to'";
+        } else if ($date && $date_to && $year_month) {
+
+            $query = "AND YEAR(p.tgl_penawaran)='$year'AND MONTH(p.tgl_penawaran)=$month AND tgl_penawaran between '$date' and '$date_to'";
+        }
+
+
+        // echo "select b.*, (select sum(jumlah) from transaksi 
+        // 		join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
+        // 		where no_penawaran=b.no_penawaran and penawaran.tidak_terpakai=0) jumlah_penjualan,
+        // 		(SELECT sum(jumlah_detail_pembelian) FROM transaksi 
+        // 		join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+        //          join penjualan on penjualan.id_transaksi = penawaran.id_transaksi
+        //          join pembelian on pembelian.id_penjualan = penjualan.id_penjualan
+        //          LEFT join detail_transaksi_pembelian on detail_transaksi_pembelian.id_pembelian = pembelian.id_pembelian
+        //         where no_penawaran=b.no_penawaran) jumlah_pembelian,
+        // 		(SELECT sum(jumlah_detail_penerimaan) FROM transaksi 
+        // 		join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+        //          join penjualan on penjualan.id_transaksi = penawaran.id_transaksi
+        //          join pembelian on pembelian.id_penjualan = penjualan.id_penjualan
+        // 		join penerimaan_barang on penerimaan_barang.id_pembelian = pembelian.id_pembelian
+        //         join detail_penerimaan_barang on penerimaan_barang.id_penerimaan_barang = detail_penerimaan_barang.id_penerimaan_barang
+        //         where no_penawaran=b.no_penawaran
+        //         ) jumlah_detail_penerimaan,
+        //         (SELECT sum( jumlah_detail_pengiriman) from penerimaan_barang 
+        //         join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+        //         join transaksi on penerimaan_barang.id_transaksi = transaksi.id_transaksi
+        //         join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
+        //         left join pengiriman on pengiriman.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+        //         left join detail_transaksi_pengiriman on pengiriman.id_pengiriman = detail_transaksi_pengiriman.id_pengiriman
+        //         join penjualan on penjualan.id_transaksi=penawaran.id_transaksi
+        // 		where penawaran.no_penawaran=b.no_penawaran
+        //         )jumlah_detail_pengiriman
+        //         from (
+        // 				SELECT 
+        // 				 t.id_transaksi,p.tgl_penawaran,p.no_penawaran,
+        // 				tgl_penjualan,pj.id_penjualan,pj.no_penjualan,
+        // 				t.tebal_transaksi,t.panjang_transaksi,lebar_transaksi,t.berat,
+        // 				t.jumlah,t.harga,t.total,t.layanan,pemasok.nama_pemasok ,tebal_penawaran,
+        //                 lebar_penawaran,
+        //                 panjang_penawaran,nama_pelanggan,nomor_pekerjaan,nama_produk
+        //                  FROM transaksi t
+        // 				join penawaran p on t.id_transaksi = p.id_transaksi
+        // 				left join penjualan pj on p.id_transaksi = pj.id_transaksi
+        // 				left join pembelian pm on pm.id_penjualan = pj.id_penjualan
+        // 				left join penerimaan_barang pb on pb.id_pembelian=pm.id_pembelian
+        // 				left join pengiriman pg on pg.id_penerimaan_barang = pb.id_penerimaan_barang
+        //                 left join pemasok on pemasok.id_pemasok=pm.id_pemasok
+        //                 left join detail_transaksi_penawaran dtp on dtp.id_penawaran=p.id_penawaran
+        //                 left join produk pd on pd.id_produk=dtp.id_produk
+        // 				join pelanggan on pelanggan.id_pelanggan=t.id_pelanggan
+        //                 $query
+        // 				) b";
+        // die;
 
 
         return DB::select("select b.*, (select sum(jumlah) from transaksi 
@@ -264,20 +346,79 @@ class QuotationModel extends Model
     }
 
 
-    public function customerOmzetReport($month = null, $date = null)
+    public function customerOmzetReport($year_month = null, $date = null, $date_to = null)
     {
 
         $query = '';
-        if ($month && $date == null) {
-            $query = "and MONTH(p.tgl_penawaran)=$month";
-        } elseif ($date && $month == null) {
-            $query = "and DAY(p.tgl_penawaran)=$date";
-        } elseif ($month && $date) {
-            $query = "and MONTH(p.tgl_penawaran)=$month and DAY(p.tgl_penawaran)=$date";
+        // if ($month && $date == null) {
+        //     $query = "and MONTH(p.tgl_penawaran)=$month";
+        // } elseif ($date && $month == null) {
+        //     $query = "and DAY(p.tgl_penawaran)=$date";
+        // } elseif ($month && $date) {
+        //     $query = "and MONTH(p.tgl_penawaran)=$month and DAY(p.tgl_penawaran)=$date";
+        // }
+
+        $month = '';
+        $year = '';
+
+
+        if ($year_month != 0) {
+            $year_month = explode('-', $year_month);
+
+            $year = $year_month[0];
+            $month = $year_month[1];
         }
 
 
 
+        if ($year_month && $date == null) {
+
+            // echo 'masuk sini1';die;
+            $query = "AND YEAR(p.tgl_penawaran)='$year'AND MONTH(p.tgl_penawaran)=$month";
+        } elseif ($date && $year_month == null && $date_to == null) {
+            // echo 'masuk sini2';
+            // die;
+
+            $query = "AND p.tgl_penawaran='$date'";
+        } elseif ($year_month && $date && $date_to == null) {
+            // echo 'masuk sini3';
+            // die;
+
+            $query = "AND YEAR(p.tgl_penawaran)='$year'AND MONTH(p.tgl_penawaran)=$month and p.tgl_penawaran=$date";
+        } else if ($date && $date_to) {
+            // echo 'masuk sini4';
+            // die;
+
+
+            $query = "AND tgl_penawaran between '$date' and '$date_to'";
+        } else if ($date && $date_to && $year_month) {
+
+            $query = "AND YEAR(p.tgl_penawaran)='$year'AND MONTH(p.tgl_penawaran)=$month AND tgl_penawaran between '$date' and '$date_to'";
+        }
+
+        // echo "
+        // select b.*,(
+        //     select sum(subtotal) from transaksi 
+        //     join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
+        //     where id_pelanggan = b.id_pelanggan 
+        //     ) as total_penawaran, (
+        //     select sum(subtotal) from transaksi 
+        //     join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
+        //     where id_pelanggan = b.id_pelanggan and penawaran.tidak_terpakai=1
+        //     ) as total_penawaran_loss,(
+        //     select sum(subtotal)  from transaksi 
+        //     join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
+        //     join penjualan on transaksi.id_transaksi=penjualan.id_transaksi
+        //     where transaksi.tidak_terpakai=0 and id_pelanggan = b.id_pelanggan
+        //     ) as total_penjualan from (
+        //     SELECT  pg.id_pelanggan,nama_pegawai ,no_penawaran,no_penjualan,pg.nama_pelanggan FROM transaksi t
+        //     left join penawaran p on t.id_transaksi=p.id_transaksi
+        //     left join penjualan pj on t.id_transaksi = pj.id_transaksi
+        //     left join pelanggan pg on pg.id_pelanggan = t.id_pelanggan
+        //     left join pegawai pw on pw.id_pegawai = t.id_pegawai
+        //     where pw.jabatan_pegawai='SALES' $query
+        //     group by  pg.id_pelanggan
+        //     ) b ";
 
         return  DB::select("
         select b.*,(
@@ -306,18 +447,55 @@ class QuotationModel extends Model
 
 
 
-    public function outStandingReport($month = null, $date = null)
+    public function outStandingReport($year_month = null, $date = null, $date_to = null)
     {
 
         $query = '';
-        if ($month && $date == null) {
-            $query = "and MONTH(pj.tgl_penjualan)=$month";
-        } elseif ($date && $month == null) {
-            $query = "and DAY(pj.tgl_penjualan)=$date";
-        } elseif ($month && $date) {
-            $query = "and MONTH(pj.tgl_penjualan)=$month and DAY(pj.tgl_penjualan)=$date";
+        // if ($month && $date == null) {
+        //     $query = "and MONTH(pj.tgl_penjualan)=$month";
+        // } elseif ($date && $month == null) {
+        //     $query = "and DAY(pj.tgl_penjualan)=$date";
+        // } elseif ($month && $date) {
+        //     $query = "and MONTH(pj.tgl_penjualan)=$month and DAY(pj.tgl_penjualan)=$date";
+        // }
+
+        $month = '';
+        $year = '';
+
+
+        if ($year_month != 0) {
+            $year_month = explode('-', $year_month);
+
+            $year = $year_month[0];
+            $month = $year_month[1];
         }
 
+
+
+        if ($year_month && $date == null) {
+
+            // echo 'masuk sini1';die;
+            $query = "AND YEAR(p.tgl_penawaran)='$year'AND MONTH(p.tgl_penawaran)=$month";
+        } elseif ($date && $year_month == null && $date_to == null) {
+            // echo 'masuk sini2';
+            // die;
+
+            $query = "AND p.tgl_penawaran='$date'";
+        } elseif ($year_month && $date && $date_to == null) {
+            // echo 'masuk sini3';
+            // die;
+
+            $query = "AND YEAR(p.tgl_penawaran)='$year'AND MONTH(p.tgl_penawaran)=$month and p.tgl_penawaran=$date";
+        } else if ($date && $date_to) {
+            // echo 'masuk sini4';
+            // die;
+
+
+            $query = "AND tgl_penawaran between '$date' and '$date_to'";
+        } else if ($date && $date_to && $year_month) {
+
+            $query = "AND YEAR(p.tgl_penawaran)='$year'AND MONTH(p.tgl_penawaran)=$month AND tgl_penawaran between '$date' and '$date_to'";
+        }
 
         return DB::select("
         SELECT t.id_transaksi,
@@ -342,21 +520,60 @@ class QuotationModel extends Model
     }
 
 
-    public function quotationReport($month = null, $date = null)
+    public function quotationReport($year_month = null, $date = null, $date_to = null)
     {
 
-        // echo $month;
-        // echo $date;die;
+        $month = '';
+        $year = '';
 
-        $query = '';
-        if ($month && $date == null) {
-            $query = "AND MONTH(pn.tgl_penawaran)=$month";
-        } elseif ($date && $month == null) {
-            $query = "AND DAY(pn.tgl_penawaran)=$date";
-        } elseif ($month && $date) {
-            $query = "AND MONTH(pn.tgl_penawaran)=$month and DAY(pn.tgl_penawaran)=$date";
+
+        if ($year_month) {
+            $year_month = explode('-', $year_month);
+
+            $year = $year_month[0];
+            $month = $year_month[1];
         }
 
+
+
+
+        $query = '';
+        if ($year_month && $date == null) {
+
+
+            $query = "AND YEAR(pn.tgl_penawaran)='$year'AND MONTH(pn.tgl_penawaran)=$month";
+        } elseif ($date && $year_month == null && $date_to == null) {
+
+            $query = "AND pn.tgl_penawaran='$date'";
+        } elseif ($year_month && $date && $date_to == null) {
+            $query = "AND YEAR(pn.tgl_penawaran)='$year'AND MONTH(pn.tgl_penawaran)=$month and pn.tgl_penawaran=$date";
+        } else if ($date && $date_to) {
+
+
+            $query = "AND tgl_penawaran between '$date' and '$date_to'";
+        } else if ($date && $date_to && $year_month) {
+
+            $query = "AND YEAR(pn.tgl_penawaran)='$year'AND MONTH(pn.tgl_penawaran)=$month AND tgl_penawaran between '$date' and '$date_to'";
+        }
+
+        // echo "select b.*,sum(b.total) as total_quotation ,(
+        //                 select sum(total) from transaksi 
+        //                 left join penawaran on transaksi.id_transaksi = penawaran.id_transaksi
+        //                 join penjualan on penawaran.id_transaksi=penjualan.id_transaksi
+        //                 where no_penawaran=b.no_penawaran
+        //                                             ) as total_penjualan from(
+        //                 select  t.id_transaksi,pn.tgl_penawaran,pn.no_penawaran,
+        //                                         tgl_penjualan,pj.id_penjualan,pj.no_penjualan,
+        //                                         t.jumlah,t.harga,t.total,t.layanan,subtotal,ppn,ongkir,
+        //                                         t.total as total_transaksi,nama_pelanggan,tgl_pembelian,no_pembelian,nama_pegawai,no_po_customer from transaksi t 
+        //                 left join penawaran pn on t.id_transaksi=pn.id_transaksi
+        //                 left join penjualan pj on t.id_transaksi=pj.id_transaksi
+        //                 left join pembelian pm on pm.id_penjualan=pj.id_penjualan
+        //                 join pelanggan pg on pg.id_pelanggan=t.id_pelanggan
+        //                 join pegawai on pegawai.id_pegawai=t.id_pegawai
+        //                 where jabatan_pegawai='SALES' $query
+        //                 )b
+        //                 group by b.no_penawaran ";
 
 
         return DB::select("select b.*,sum(b.total) as total_quotation ,(

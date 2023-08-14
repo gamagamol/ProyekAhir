@@ -34,8 +34,13 @@
                                         <input type="date" class="form-control" name="date" id="date">
                                     </td>
                                 </tr>
-
-
+                                <tr>
+                                    <td>Quotation Day (To)</td>
+                                    <td>:</td>
+                                    <td>
+                                        <input type="date" class="form-control" name="date_to" id="date_to">
+                                    </td>
+                                </tr>
 
                             </table>
                         </div>
@@ -79,6 +84,7 @@
 
                         </tbody>
 
+                       
 
 
                     </table>
@@ -86,12 +92,11 @@
             </div>
         </div>
     </div>
-@endsection()
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    {{-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
-</script>
-<script>
+</script> --}}
+    {{-- <script>
     let baseUrl = `{{ url('/') }}`
 
     const report = {
@@ -148,9 +153,9 @@
         search: function() {
             data = {
                 month: $('#month').val(),
-                date: $('#date').val()
+                date: $('#date').val(),
+                date_to: $('#date_to').val()
             }
-            console.log(data);
 
             this.callBackend(data)
         }
@@ -171,24 +176,159 @@
 
 
         $('#btn-export').click(function() {
-            let month = $('#month').val().split('-')
-            let date = $('#date').val().split('-')
+            let year_month = $('#month').val()
+            let date = $('#date').val()
+            let date_to = $('#date_to').val()
 
-            if (month.length > 1) {
-                month = month[1]
+            if (year_month == '') {
+                year_month = 0
             }
 
-            if (date.length > 1) {
-                date = date[2]
+            if (date == '') {
+                date = 0
+            }
+
+            if (date_to == '') {
+                date_to = 0
             }
 
 
 
             let url = `${baseUrl}/customerOmzetReportExport`
 
-            $(this).attr('href', `${url}/${(month.length >1) ? month : 0}/${date}`)
+            $(this).attr('href', `${url}/${year_month}/${date}/${date_to}`)
         })
 
 
     })
-</script>
+</script> --}}
+
+    {{-- jquery --}}
+    <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+        crossorigin="anonymous"></script>
+    {{-- data table --}}
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        let baseUrl = `{{ url('/') }}`
+
+        function callBackend(data = null) {
+
+            let result = []
+            $.ajax({
+                url: `${baseUrl}/customerOmzetReportAjax`,
+                type: 'GET',
+                data: data,
+                async: false,
+                dataType: 'json',
+                success: function(data) {
+                    data.data.map((d) => {
+                        result.push(d)
+                    })
+                }
+            })
+
+            return result;
+
+            // dataTable(result)
+        }
+
+
+        let data = callBackend();
+
+        const dataTablee = $('#dataTable').DataTable({
+            pageLength: 5,
+            scrollX: true,
+            autoWidth: true,
+            data: data,
+            columns: [{
+                    mData: null,
+                    mRender: function(d) {
+                        return (d.nama_pelanggan) ? d.nama_pelanggan : '-'
+                    }
+                },
+                {
+                    mData: null,
+                    mRender: function(d) {
+                        return (d.nama_pegawai) ? d.nama_pegawai : '-'
+                    }
+                },
+                {
+                    mData: null,
+                    mRender: function(d) {
+                        return (d.total_penawaran) ? new Intl.NumberFormat('en-IN', {
+                            maximumSignificantDigits: 3
+                        }).format(d.total_penawaran) : 0
+
+                    }
+                },
+                {
+                    mData: null,
+                    mRender: function(d) {
+                        return (d.total_penjualan) ? new Intl.NumberFormat('en-IN', {
+                            maximumSignificantDigits: 3
+                        }).format(d.total_penjualan) : 0
+
+                    }
+                },
+                {
+                    mData: null,
+                    mRender: function(d) {
+                        return (d.total_penawaran_loss) ? new Intl.NumberFormat('en-IN', {
+                            maximumSignificantDigits: 3
+                        }).format(d.total_penawaran_loss) : 0
+
+                    }
+                },
+               
+            ]
+        })
+
+
+
+        $('#search').click(() => {
+            let data = {
+                month: $('#month').val(),
+                date: $('#date').val(),
+                date_to: $('#date_to').val()
+            }
+            let newData = callBackend(data)
+            dataTablee.clear().draw();
+            dataTablee.rows.add(newData).draw();
+
+        })
+
+        $('#clear').click(function() {
+            $('#month').val('')
+            $('#date').val('')
+            dataTablee.clear().draw();
+            dataTablee.rows.add(data).draw();
+
+        })
+
+
+        $('#btn-export').click(function() {
+            let year_month = $('#month').val()
+            let date = $('#date').val()
+            let date_to = $('#date_to').val()
+
+            if (year_month == '') {
+                year_month = 0
+            }
+
+            if (date == '') {
+                date = 0
+            }
+
+            if (date_to == '') {
+                date_to = 0
+            }
+
+
+
+            let url = `${baseUrl}/customerOmzetReportExport`
+
+            $(this).attr('href', `${url}/${year_month}/${date}/${date_to}`)
+        })
+    </script>
+@endsection()

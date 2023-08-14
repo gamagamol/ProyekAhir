@@ -272,7 +272,23 @@ select tgl_penawaran,no_penawaran,
       
 
 
-
+select b.no_penawaran,b.tgl_penawaran,b.no_penjualan,b.tgl_penjualan,b.nama_pelanggan,
+b.no_pembelian,b.tgl_pembelian,b.nama_pemasok,b.no_pengiriman,b.tgl_pengiriman,b.no_tagihan,b.tgl_tagihan,
+b.no_pembayaran,b.tgl_pembayaran,transaksi.total
+from (SELECT no_penawaran,tgl_penawaran,no_penjualan,tgl_penjualan,nama_pelanggan,
+no_pembelian,tgl_pembelian,nama_pemasok,no_pengiriman,tgl_pengiriman,no_tagihan,tgl_tagihan,
+no_pembayaran,tgl_pembayaran,transaksi.total
+ FROM transaksi
+			join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+            join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
+            left join pembelian on pembelian.id_penjualan=penjualan.id_penjualan
+			left join penerimaan_barang on penerimaan_barang.id_pembelian=pembelian.id_pembelian
+            left join pengiriman on penerimaan_barang.id_penerimaan_barang=pengiriman.id_penerimaan_barang
+			left join tagihan on tagihan.id_pengiriman=pengiriman.id_pengiriman
+            left join pembayaran on pembayaran.id_transaksi=transaksi.id_transaksi
+            join pelanggan on transaksi.id_pelanggan = pelanggan.id_pelanggan
+            join pemasok on pembelian.id_pemasok = pemasok.id_pemasok
+            order by tgl_penawaran desc )b
 
 
 

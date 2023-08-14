@@ -176,7 +176,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Barryvdh\DomPDF\ServiceProvider::class,
-
+        Yajra\DataTables\DataTablesServiceProvider::class,
 
 
     ],
@@ -235,7 +235,8 @@ return [
         'Terbilang' => Riskihajar\Terbilang\Facades\Terbilang::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
-
+        'Datatables' => Yajra\Datatables\DatatablesServiceProvider::class
+   
     ],
 
 ];

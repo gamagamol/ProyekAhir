@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\TransaksiModel;
 use Illuminate\Http\Request;
+use App\Exports\QuotationExport;
+
 
 class TransaksiController extends Controller
 {
@@ -111,4 +113,7 @@ class TransaksiController extends Controller
 
         return response()->json(['data' => $this->transaksiModel->transactionNumberTracking($date)]);
     }
+
+
+   
 }
