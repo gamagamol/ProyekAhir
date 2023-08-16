@@ -47,7 +47,6 @@ class PurchaseModel extends Model
             left join penjualan pj on pj.id_transaksi=t.id_transaksi
             left join penerimaan_barang pmb on pmb.id_pembelian = p.id_pembelian
             left join detail_penerimaan_barang dtp on dtp.id_penerimaan_barang=pmb.id_penerimaan_barang
-            $query
             group by no_pembelian
             order by p.id_pembelian desc
          "
@@ -163,14 +162,12 @@ class PurchaseModel extends Model
             // dd('masuk sini');
             foreach ($id_pemasok as $i => $ip) {
                 if ($i == 0) {
-                    $no_pembelian =
-                        DB::table('pembelian')
-                        ->selectRaw("max(no_pembelian) as no_pembelian")
-                        ->whereMonth("tgl_pembelian", "=", $bulan_tgl)
-                        ->first();
+                    $no_pembelian = DB::select("
+                    select * from pembelian_barang where id_pembelian_barang =(select max(id_pembelian_barang) from pembelian_barang 
+                    where month(tgl_pembelian)='$bulan_tgl')");
                     if ($no_pembelian != null) {
 
-                        $no_pembelian = no_transaksi($no_pembelian->no_pembelian);
+                        $no_pembelian = no_transaksi($no_pembelian[0]->no_pembelian);
                     } else {
                         $no_pembelian = 1;
                     }
@@ -192,14 +189,12 @@ class PurchaseModel extends Model
 
             return $arr_pembelian;
         } else {
-            $no_pembelian =
-                DB::table('pembelian')
-                ->selectRaw("max(no_pembelian) as no_pembelian")
-                ->whereMonth("tgl_pembelian", "=", $bulan_tgl)
-                ->first();
+            $no_pembelian = DB::select("
+                    select * from pembelian_barang where id_pembelian_barang =(select max(id_pembelian_barang) from pembelian_barang 
+                    where month(tgl_pembelian)='$bulan_tgl')");
             if ($no_pembelian != null) {
 
-                $no_pembelian = no_transaksi($no_pembelian->no_pembelian);
+                $no_pembelian = no_transaksi($no_pembelian[0]->no_pembelian);
             } else {
                 $no_pembelian = 1;
             }

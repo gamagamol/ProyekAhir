@@ -185,10 +185,10 @@ class QuotationController extends Controller
 
             $berat = $this->CalculateWeight($bentuk_produk, $layanan, $tebal_transaksi, $lebar_transaksi, $panjang_transaksi, $jumlah);
 
-            // dd($berat);
+            // dump($berat);
             $subtotal = (float) $berat * (int) str_replace('.', "", $request->input('harga'));
 
-
+            // dd($subtotal);
             $ppn = $subtotal * 0.11;
             $total = $subtotal + $ppn;
             $data = [
@@ -613,7 +613,6 @@ class QuotationController extends Controller
 
 
         return Excel::download(new QuotationExport($year_month, $date, 'detail', $date_to), "Quotation Detail Report_$tgl.xlsx");
-   
     }
 
     public function customerOmzetReport()
@@ -785,6 +784,8 @@ class QuotationController extends Controller
 
     public function editPembantuPenawaran(Request $request)
     {
+
+        $harga_penawaran = $request->harga_edit_penawaran;
         $berat = $this->CalculateWeight(
             $request->bentuk_edit_penawaran,
             $request->layanan_edit_penawaran,
@@ -793,11 +794,28 @@ class QuotationController extends Controller
             $request->panjang_edit_penawaran,
             $request->jumlah_edit_penawaran,
         );
+
+
+        // dump($berat);
+        $subtotal = (float) $berat * (int) str_replace('.', "", $harga_penawaran);
+
+        // dd($subtotal);
+        $ppn = $subtotal * 0.11;
+        $total = $subtotal + $ppn;
+
+        // dump($subtotal);
+        // dump($be);
+        // dump($ppn);
+        // dd($total);
+
         DB::table('pembantu_penawaran')->where('id_pembantu', $request->id_edit_penawaran)->update([
             'tebal_penawaran' => $request->tebal_edit_penawaran,
             'lebar_penawaran' => $request->lebar_edit_penawaran,
             'panjang_penawaran' => $request->panjang_edit_penawaran,
             'berat_pembantu' => $berat,
+            'subtotal' => $subtotal,
+            'ppn' => $ppn,
+            'total' => $total
         ]);
 
         return back()->with("success", "Data Quotation Has been successfully Updated ");

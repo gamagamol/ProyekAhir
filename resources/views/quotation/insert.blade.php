@@ -401,7 +401,7 @@
 
                             <td>
                                 <button type="button" id="btn_edit_penawaran" class="btn btn-warning"
-                                    onclick="editPenawaran(<?= $p->id_pembantu ?>,<?= $p->tebal_pembantu ?>,<?= $p->lebar_pembantu ?>,<?= $p->panjang_pembantu ?>,'<?= $p->bentuk_pembantu ?>','<?= $p->layanan_pembantu ?>',<?= $p->jumlah_pembantu ?>)">
+                                    onclick="editPenawaran(<?= $p->id_pembantu ?>,<?= $p->tebal_pembantu ?>,<?= $p->lebar_pembantu ?>,<?= $p->panjang_pembantu ?>,'<?= $p->bentuk_pembantu ?>','<?= $p->layanan_pembantu ?>',<?= $p->jumlah_pembantu ?>,<?= $p->harga_pembantu?>)">
                                     Edit</button>
                                 <a href={{ url('deleteq', $p->id_pembantu) }} class="btn btn-danger">Delete</a>
                             </td>
@@ -447,6 +447,7 @@
                             <input type="hidden" id="bentuk_edit_penawaran" name="bentuk_edit_penawaran">
                             <input type="hidden" id="layanan_edit_penawaran" name="layanan_edit_penawaran">
                             <input type="hidden" id="jumlah_edit_penawaran" name="jumlah_edit_penawaran">
+                            <input type="hidden" id="harga_edit_penawaran" name="harga_edit_penawaran">
                             <div class="col-md-10">
                                 <div class="form-group mt-2 rounded">
                                     <label for="example1" class="mt-2" id="tebal_label">Quotation
@@ -531,7 +532,7 @@
 
         }
 
-        function editPenawaran(id_pembantu, tebal_penawaran, lebar_penawaran, panjang_penawaran, bentuk, layanan, jumlah) {
+        function editPenawaran(id_pembantu, tebal_penawaran, lebar_penawaran, panjang_penawaran, bentuk, layanan, jumlah,harga) {
 
             $('#id_edit_penawaran').val(id_pembantu)
 
@@ -543,6 +544,7 @@
             $('#bentuk_edit_penawaran').val(bentuk)
             $('#layanan_edit_penawaran').val(layanan)
             $('#jumlah_edit_penawaran').val(jumlah)
+            $('#harga_edit_penawaran').val(harga)
             $('#modal').modal('show')
 
         }
