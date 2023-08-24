@@ -163,7 +163,7 @@ class PurchaseModel extends Model
             foreach ($id_pemasok as $i => $ip) {
                 if ($i == 0) {
                     $no_pembelian = DB::select("
-                    select * from pembelian_barang where id_pembelian_barang =(select max(id_pembelian_barang) from pembelian_barang 
+                    select * from pembelian where id_pembelian =(select max(id_pembelian) from pembelian 
                     where month(tgl_pembelian)='$bulan_tgl')");
                     if ($no_pembelian != null) {
 
@@ -190,7 +190,7 @@ class PurchaseModel extends Model
             return $arr_pembelian;
         } else {
             $no_pembelian = DB::select("
-                    select * from pembelian_barang where id_pembelian_barang =(select max(id_pembelian_barang) from pembelian_barang 
+                    select * from pembelian where id_pembelian =(select max(id_pembelian) from pembelian 
                     where month(tgl_pembelian)='$bulan_tgl')");
             if ($no_pembelian != null) {
 
