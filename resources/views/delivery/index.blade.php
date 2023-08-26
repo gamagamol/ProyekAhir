@@ -11,22 +11,7 @@
                 <h6 class="m-0 font-weight-bold text-primary">Delivery Order</h6>
             </div>
 
-            {{-- <div class="container">
-                <div class="row">
-                    <div class="col-md-4 mt-3">
-                        <form action={{ url('delivery') }} method="GET" id="serch-form">
-                            <select class="form-control form-select" aria-label="Default select example" name='serch'
-                                id="serch">
-                                <option value=''>All</option>
-                                @foreach ($deta as $d)
-                                    <option value={{ $d->no_pengiriman }}>{{ $d->no_pengiriman }}</option>
-                                @endforeach
-                            </select>
-                            <button type=submit name=submit class="btn btn-primary mt-3" id="serch-button">submit</button>
-                        </form>
-                    </div>
-                </div>
-            </div> --}}
+          
             <div class="card-body">
 
                 <div class="table-responsive text-center">
@@ -68,6 +53,8 @@
                                     <td>
                                         <a href={{ url('delivery/print', str_replace('/', '-', $d->no_pengiriman)) }}
                                             class="btn btn-primary">Print </a>
+                                        <a href={{ url('delivery/print/stiker', str_replace('/', '-', $d->no_pengiriman)) }}
+                                            class="btn btn-primary mt-2"> Stiker</a>
                                     </td>
                                 </tr>
                             @endforeach

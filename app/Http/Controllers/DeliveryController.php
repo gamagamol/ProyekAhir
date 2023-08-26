@@ -4,13 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\DeliveryModel;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\GoodsController;
 use App\Models\SalesModel;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-
+use ZipArchive;
 
 class DeliveryController extends Controller
 {
@@ -454,7 +452,7 @@ class DeliveryController extends Controller
         $worksheet->getCell('J5')->setValue($data[0]->no_pengiriman);
         $worksheet->mergeCells("J5:K5");
         $no_ref_qtn = ($data[0]->no_po_customer == '' || $data[0]->no_po_customer == '-') ? $data[0]->no_penjualan
-         : $data[0]->no_po_customer;
+            : $data[0]->no_po_customer;
         $worksheet->getCell('J6')->setValue($no_ref_qtn);
         // $worksheet->getCell('J6')->setValue($data[0]->no_penjualan);
         $worksheet->getCell('A12')->setValue($data[0]->perwakilan);
@@ -541,5 +539,51 @@ class DeliveryController extends Controller
         // $writer->save('report/quotation.xls');
 
 
+    }
+
+    public function printStiker($no_transaksi)
+    {
+        $data = $this->model->detail(str_replace('-', '/', $no_transaksi));
+        $zip = new ZipArchive();
+        $zipFileName = 'stiker.zip';
+        // print_r($data);die;
+
+        if ($zip->open(public_path("stiker/$zipFileName"), ZipArchive::CREATE) === TRUE) {
+            foreach ($data as $i => $d) {
+
+                $template = new \PhpOffice\PhpWord\TemplateProcessor(public_path('template_report/stiker.docx'));
+                $template->setValue('nama_pelanggan', $d->nama_pelanggan);
+                $template->setValue('no_pengiriman', $d->no_pengiriman);
+                $no_penjualan = ($d->no_po_customer = '-' || $d->no_po_customer = '') ? $d->no_penjualan : $d->no_po_customer;
+                $template->setValue('no_penjualan', $no_penjualan);
+                $template->setValue('nomor_pekerjaan', $d->nomor_pekerjaan);
+                $template->setValue('layanan', $d->layanan);
+                $template->setValue('nama_produk', $d->nama_produk);
+
+                $template->setValue('nama_produk', $d->nama_produk);
+                $material_size = "$d->tebal_transaksi x $d->lebar_transaksi x $d->panjang_transaksi";
+                $template->setValue('material_size', $material_size);
+                $template->setValue('jumlah_pengiriman', $d-> jumlah_detail_pengiriman . ' ' . 'PCS');
+                $template->setValue('berat_pengiriman', $d->berat_detail_pengiriman.' '.'Kg');
+
+                // $newWordFileName = 'stiker item ke-' . $i + 1 . '.docx';
+                // $template->saveAs(public_path('stiker/' . $newWordFileName));
+                // $zip->addFile(public_path('stiker/' . $newWordFileName));
+                // // unlink(public_path('stiker/' . $newWordFileName));
+
+                $newWordFileName = "stiker_item_$d->nama_produk.docx";
+                $template->saveAs(public_path('stiker/' . $newWordFileName));
+                $zip->addFile(public_path('stiker/' . $newWordFileName), $newWordFileName); // Menggunakan $newWordFileName sebagai nama dalam ZIP
+            }
+            $zip->close();
+        }
+        foreach ($data as $i => $d) {
+            $newWordFileName = 'stiker item ke-' . ($i + 1) . '.docx';
+            $newWordFileName = "stiker_item_$d->nama_produk.docx";
+
+            unlink(public_path('stiker/' . $newWordFileName));
+        }
+
+        return response()->download("stiker/$zipFileName")->deleteFileAfterSend();
     }
 }

@@ -20,24 +20,7 @@ class PurchaseModel extends Model
         }
 
 
-        // return DB::select(
-        //     "SELECT * FROM pembelian join detail_transaksi_pembelian 
-        //     on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
-        //     join transaksi on transaksi.id_transaksi=pembelian.id_transaksi
-        //     join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
-        // 	join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
-        //     join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
-        //     join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
-        //     join pengguna on pengguna.id=transaksi.id
-        //     left join penerimaan_barang on penerimaan_barang.id_pembelian=pembelian.id_pembelian
-        //     left join detail_penerimaan_barang on penerimaan_barang.id_penerimaan_barang=detail_penerimaan_barang.id_penerimaan_barang
-        //   left   join pemasok on transaksi.id_pemasok  = pemasok.id_pemasok
-        //    $query
-        //     group by no_pembelian
-        //     -- having jumlah_detail_penerimaan is null
-        //      order by tgl_pembelian desc,no_pembelian desc
-        //  "
-        // );
+
         return DB::select(
             "SELECT p.*,t.nomor_pekerjaan,pe.nama_pelanggan,pm.nama_pemasok,pg.nama_pengguna,dtp.jumlah_detail_penerimaan,no_penjualan from pembelian p
             join transaksi t on p.id_transaksi = t.id_transaksi
@@ -95,76 +78,22 @@ class PurchaseModel extends Model
         ");
     }
 
-    // public function no_pembelian($tgl_pembelian, $id_pemasok, $sameVendor)
-    // {
-
-
-    //     $bulan_tgl = explode("-", $tgl_pembelian)[1];
-
-    //     if (!$sameVendor) {
-
-    //         $arr_pembelian = [];
-    //         for ($i = 0; $i < count($id_pemasok); $i++) {
-
-    //             if ($i == 0) {
-
-    //                 $no_pembelian =
-    //                     DB::table('pembelian')
-    //                     ->selectRaw("max(no_pembelian) as no_pembelian")
-    //                     ->whereMonth("tgl_pembelian", "=", $bulan_tgl)
-    //                     ->first();
-
-
-    //                 if ($no_pembelian != null) {
-
-    //                     $no_pembelian = no_transaksi($no_pembelian->no_pembelian);
-    //                 } else {
-    //                     $no_pembelian = 1;
-    //                 }
-    //                 $no_pembelian += 1;
-    //                 array_push($arr_pembelian, (int)$no_pembelian);
-    //             } else {
-
-
-    //                 $no_pembelian = $arr_pembelian[$i - 1] + 1;
-    //                 array_push($arr_pembelian, (int)$no_pembelian);
-    //             }
-    //         }
-
-    //         return $arr_pembelian;
-    //     } else {
-
-
-    //         $no_pembelian = DB::select("
-    //        select * from pembelian where id_pembelian =(select max(id_pembelian) from pembelian 
-    //        where month(tgl_pembelian)='$bulan_tgl')");
-
-    //         if ($no_pembelian != null) {
-
-    //             $no_pembelian = no_transaksi($no_pembelian[0]->no_pembelian);
-    //         } else {
-    //             $no_pembelian = 1;
-    //         }
-
-    //         return $no_pembelian;
-    //     }
-    // }
+   
     public function no_pembelian($tgl_pembelian, $id_pemasok)
     {
 
 
-        $bulan_tgl = explode("-", $tgl_pembelian)[1];
+        $bulan_tgl = explode("-", $tgl_pembelian);
 
         $arr_pembelian = [];
 
         if (count(array_flip($id_pemasok)) > 1) {
             // vendor nya bisa jadi ada yang beda
-            // dd('masuk sini');
             foreach ($id_pemasok as $i => $ip) {
                 if ($i == 0) {
                     $no_pembelian = DB::select("
                     select * from pembelian where id_pembelian =(select max(id_pembelian) from pembelian 
-                    where month(tgl_pembelian)='$bulan_tgl')");
+                    where month(tgl_pembelian)='$bulan_tgl[1]' and YEAR(tgl_pembelian)='$bulan_tgl[0]')");
                     if ($no_pembelian != null) {
 
                         $no_pembelian = no_transaksi($no_pembelian[0]->no_pembelian);
@@ -191,7 +120,7 @@ class PurchaseModel extends Model
         } else {
             $no_pembelian = DB::select("
                     select * from pembelian where id_pembelian =(select max(id_pembelian) from pembelian 
-                    where month(tgl_pembelian)='$bulan_tgl')");
+                    where month(tgl_pembelian)='$bulan_tgl[1]' and YEAR(tgl_pembelian)='$bulan_tgl[0]')");
             if ($no_pembelian != null) {
 
                 $no_pembelian = no_transaksi($no_pembelian[0]->no_pembelian);

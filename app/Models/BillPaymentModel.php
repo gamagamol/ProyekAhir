@@ -32,22 +32,7 @@ class BillPaymentModel extends Model
                 ->get();
         } else {
 
-            // return DB::table('transaksi')
-            //     ->selectRaw("tgl_tagihan,nama_pelanggan,no_tagihan,berat,total,layanan,nama_pengguna, DATE_ADD(tgl_tagihan, INTERVAL 31 DAY) AS DUE_DATE,no_pengiriman,kode_transaksi,no_penerimaan,status_transaksi,no_penjualan")
-            //     ->join('penjualan', 'transaksi.id_transaksi', '=', 'penjualan.id_transaksi')
-            //     ->join("pelanggan", "transaksi.id_pelanggan", "=", "pelanggan.id_pelanggan")
-            //     ->join("pengguna", "transaksi.id", "=", "pengguna.id")
-            //     ->join('penawaran', "penawaran.id_transaksi", "=", "transaksi.id_transaksi")
-            //     ->join('penerimaan_barang', 'penerimaan_barang.id_transaksi', '=', 'transaksi.id_transaksi')
-            //     ->join('pengiriman', "pengiriman.id_transaksi", "=", "transaksi.id_transaksi")
-            //     ->join('detail_transaksi_pengiriman', "detail_transaksi_pengiriman.id_pengiriman", "=", "pengiriman.id_pengiriman")
-            //     ->join('detail_transaksi_penawaran', "detail_transaksi_penawaran.id_penawaran", "=", "penawaran.id_penawaran")
-            //     ->join("produk", "detail_transaksi_pengiriman.id_produk", "=", "produk.id_produk")
-            //     ->join("tagihan", "tagihan.id_transaksi", "=", "transaksi.id_transaksi")
-            //     // ->where('status_transaksi', "=", "bill")
-            //     ->groupBy('tgl_tagihan', "no_tagihan")
-            //     ->orderByRaw('tgl_tagihan desc,no_tagihan desc')
-            //     ->paginate(5);
+
             return DB::select("SELECT b.no_penjualan,b.no_tagihan,b.nama_pelanggan,b.tgl_tagihan,b.nama_pengguna,DATE_ADD(b.tgl_tagihan, INTERVAL 31 DAY) AS DUE_DATE,b.status_transaksi,
                 (select sum( jumlah_detail_pengiriman) from penerimaan_barang 
                 join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
@@ -151,17 +136,12 @@ class BillPaymentModel extends Model
     }
     public function no_tagihan($tgl_tagihan)
     {
-        $bulan_tgl = explode("-", $tgl_tagihan)[1];
+        $bulan_tgl = explode("-", $tgl_tagihan);
 
-        // $no_tagihan =
-        //     DB::table('tagihan')
-        //     ->selectRaw("ifnull(max(CONVERT(substring(no_tagihan,5,2),SIGNED))+1,1) as no_tagihan")
-        //     ->whereMonth("tgl_tagihan", "=", $bulan_tgl)
-        //     ->first();
-        // $no_tagihan = (int)$no_tagihan->no_tagihan;
+
         $no_tagihan = DB::select("
            select * from tagihan where id_tagihan =(select max(id_tagihan) from tagihan 
-           where month(tgl_tagihan)='$bulan_tgl')");
+           where month(tgl_tagihan)='$bulan_tgl[1]' and YEAR(tgl_tagihan)='$bulan_tgl[0]' )");
 
         if ($no_tagihan != null) {
 

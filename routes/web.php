@@ -96,6 +96,7 @@ Route::get('goods/detail/{no_pembelian}/{no_penerimaan}', [GoodsController::clas
 Route::resource('delivery', DeliveryController::class)->middleware(['auth', 'revalidate']);
 Route::get('delivery/detail/{no_tagihan}', [DeliveryController::class, "detail"]);
 Route::get('delivery/print/{no_delivery}', [DeliveryController::class, 'print']);
+Route::get('delivery/print/stiker/{no_delivery}', [DeliveryController::class, 'printStiker']);
 
 Route::resource('bill', BillPaymentController::class)->middleware(['auth', 'revalidate']);
 

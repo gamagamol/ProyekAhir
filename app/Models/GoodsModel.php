@@ -105,20 +105,15 @@ class GoodsModel extends Model
 
     public function no_penerimaan($tgl_penerimaan, $unit)
     {
-        $bulan_tgl = explode("-", $tgl_penerimaan)[1];
+        $bulan_tgl = explode("-", $tgl_penerimaan);
 
         if ($unit) {
             $arr_nopenerimaan = [];
             for ($i = 0; $i < count($unit); $i++) {
-                // $no_penerimaan =
-                //     DB::table('penerimaan_barang')
-                //     ->selectRaw("DISTINCT ifnull(max(substring(no_penerimaan,4,1)),0)+1 as no_penerimaan")
-                //     ->whereMonth("tgl_penerimaan", "=", $bulan_tgl)
-                //     ->first();
-                // $no_penerimaan = (int)$no_penerimaan->no_penerimaan;
+               
                 $no_penerimaan = DB::select("
                     select * from penerimaan_barang where id_penerimaan_barang =(select max(id_penerimaan_barang) from penerimaan_barang 
-                    where month(tgl_penerimaan)='$bulan_tgl')");
+                    where month(tgl_penerimaan)='$bulan_tgl[1]' and YEAR(tgl_penerimaan)='$bulan_tgl[0]'  )");
                 if ($no_penerimaan != null) {
 
                     $no_penerimaan = no_transaksi($no_penerimaan[0]->no_penerimaan);
@@ -130,15 +125,10 @@ class GoodsModel extends Model
             }
             return $arr_nopenerimaan;
         } else {
-            // $no_penerimaan =
-            //     DB::table('penerimaan_barang')
-            //     ->selectRaw("ifnull(max(CONVERT(substring(no_penerimaan,4,2),SIGNED))+1,1) as no_penerimaan")
-            //     ->whereMonth("tgl_penerimaan", "=", $bulan_tgl)
-            //     ->first();
-            // $no_penerimaan = (int)$no_penerimaan->no_penerimaan;
+
             $no_penerimaan = DB::select("
                     select * from penerimaan_barang where id_penerimaan_barang =(select max(id_penerimaan_barang) from penerimaan_barang 
-                    where month(tgl_penerimaan)='$bulan_tgl')");
+                    where month(tgl_penerimaan)='$bulan_tgl[1]' and YEAR(tgl_penerimaan)='$bulan_tgl[0]')");
             if ($no_penerimaan != null) {
 
                 $no_penerimaan = no_transaksi($no_penerimaan[0]->no_penerimaan);
