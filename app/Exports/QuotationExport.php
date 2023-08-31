@@ -56,9 +56,9 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
         // dd($this->data($this->month, $this->date));
         // dd($this->data($this->month, $this->date));
 
-      
+        //   dd($this->data($this->month, $this->date, $this->date_to));
 
-        return view( $view, [
+        return view($view, [
             'data' => $this->data($this->month, $this->date, $this->date_to),
         ]);
     }
@@ -184,7 +184,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
                         left join produk pd on pd.id_produk=dtp.id_produk
 						join pelanggan on pelanggan.id_pelanggan=t.id_pelanggan
                         $where
-						) b";
+						) b order by b.tgl_penawaran asc";
         } else if ($this->type == 'customer_omzet') {
 
 
@@ -327,7 +327,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
                         join pegawai on pegawai.id_pegawai=t.id_pegawai
                         where jabatan_pegawai='SALES' $where
                         )b
-                        group by b.no_penawaran";
+                        group by b.no_penawaran ORDER by b.tgl_penawaran asc";
 
 
             // echo $query;
@@ -378,7 +378,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
 
 
 
-       
+
 
 
         return DB::select($query);

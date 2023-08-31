@@ -164,6 +164,9 @@ class QuotationController extends Controller
             return redirect('quotation/create')->withErrors($validated)->withInput();
         } else {
 
+
+            // print_r($_POST);
+            // die;
             $produk = $request->input("id_produk");
             $produk = explode("|", $request->input('id_produk'));
             $nama_produk = $produk[0];
@@ -206,9 +209,9 @@ class QuotationController extends Controller
                 'harga_pembantu' => str_replace('.', "", $request->input('harga')),
                 'ongkir_pembantu' => str_replace('.', "", $request->input('ongkir')),
                 'id_user' => $request->input("id"),
-                'tebal_penawaran' => ($layanan == 'MILLING') ? $tebal_transaksi + 5 : $tebal_transaksi,
-                'lebar_penawaran' => ($layanan == 'MILLING' && $bentuk_produk == 'FLAT') ? $lebar_transaksi + 5 : $lebar_transaksi,
-                'panjang_penawaran' => ($layanan == 'MILLING') ? $panjang_transaksi + 5 : $panjang_transaksi,
+                'tebal_penawaran' => ($layanan == 'MILLING'||$layanan=='NF_MILLING') ? $tebal_transaksi + 5 : $tebal_transaksi,
+                'lebar_penawaran' => ($layanan =='MILLING' && $bentuk_produk == 'FLAT'||$layanan=='NF_MILLING' && $bentuk_produk == 'FLAT') ? $lebar_transaksi + 5 : $lebar_transaksi,
+                'panjang_penawaran' => ($layanan == 'MILLING'||$layanan=='NF_MILLING') ? $panjang_transaksi + 5 : $panjang_transaksi,
                 'berat_pembantu' => (float)$berat,
                 'bentuk_pembantu' => $bentuk_produk,
                 'subtotal' => $subtotal,

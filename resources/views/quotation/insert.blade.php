@@ -219,7 +219,7 @@
                                         name="layanan">
 
                                         @foreach ($services as $service)
-                                            <option value={{ strtoupper($service->nama_layanan) }}>
+                                            <option value={{ str_replace(' ','_',$service->nama_layanan) }}>
                                                 {{ $service->nama_layanan }}
                                             </option>
                                         @endforeach

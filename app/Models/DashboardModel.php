@@ -13,13 +13,13 @@ class DashboardModel extends Model
     {
         return DB::table('transaksi')
             ->selectRaw(" 
-                        round (CAST(((SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi WHERE status_transaksi='quotation' and tidak_terpakai=0)/(SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi where tidak_terpakai=0)*100) as float)) as quotation, 
-                        round (CAST(((SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi WHERE status_transaksi='sales' and tidak_terpakai=0)/(SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi where tidak_terpakai=0)*100) as float)) as sales ,
-                        round (CAST(((SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi WHERE status_transaksi='purchase' and tidak_terpakai=0)/(SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi where tidak_terpakai=0)*100) as float)) as purchase ,
-                        round (CAST(((SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi WHERE status_transaksi='goods' and tidak_terpakai=0)/(SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi where tidak_terpakai=0)*100) as float)) as goods ,
-                        round (CAST(((SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi WHERE status_transaksi='delivery' and tidak_terpakai=0)/(SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi where tidak_terpakai=0)*100) as float)) as delivery ,
-                        round (CAST(((SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi WHERE status_transaksi='bill' and tidak_terpakai=0)/(SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi where tidak_terpakai=0)*100) as float)) as bill ,
-                        round (CAST(((SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi WHERE status_transaksi='payment' and tidak_terpakai=0)/(SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi where tidak_terpakai=0)*100) as float)) as payment 
+                        round (CAST(((SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi WHERE status_transaksi='quotation' and tidak_terpakai=0)/(SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi where tidak_terpakai=0)*100) as DECIMAL)) as quotation, 
+                        round (CAST(((SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi WHERE status_transaksi='sales' and tidak_terpakai=0)/(SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi where tidak_terpakai=0)*100) as DECIMAL)) as sales ,
+                        round (CAST(((SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi WHERE status_transaksi='purchase' and tidak_terpakai=0)/(SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi where tidak_terpakai=0)*100) as DECIMAL)) as purchase ,
+                        round (CAST(((SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi WHERE status_transaksi='goods' and tidak_terpakai=0)/(SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi where tidak_terpakai=0)*100) as DECIMAL)) as goods ,
+                        round (CAST(((SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi WHERE status_transaksi='delivery' and tidak_terpakai=0)/(SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi where tidak_terpakai=0)*100) as DECIMAL)) as delivery ,
+                        round (CAST(((SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi WHERE status_transaksi='bill' and tidak_terpakai=0)/(SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi where tidak_terpakai=0)*100) as DECIMAL)) as bill ,
+                        round (CAST(((SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi WHERE status_transaksi='payment' and tidak_terpakai=0)/(SELECT DISTINCT COUNT(kode_transaksi) FROM transaksi where tidak_terpakai=0)*100) as DECIMAL)) as payment 
                         ")
             ->first();
     }
