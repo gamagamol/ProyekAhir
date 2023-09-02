@@ -347,26 +347,29 @@ class PurchaseController extends Controller
         //     $array_no_pembelian = $no_purchase;
         // }
 
+            // dd($id_pemasok);
+
         $no_pembelian = $this->PurchaseModel->no_pembelian($tgl_pembelian, $id_pemasok);
         $tgl_exploade = explode('-', $tgl_pembelian);
 
-        if (count(array_flip($id_pemasok)) > 1) {
+
+        if (count(array_unique($id_pemasok)) > 1) {
 
 
             $i = 0;
             foreach ($no_pembelian as $nop) {
-                $no_purchase = "PO/$nop/$tgl_exploade[0]/$tgl_exploade[1]/$tgl_exploade[2]";
+                $no_purchase = "PO/$nop[no_pembelian]/$tgl_exploade[0]/$tgl_exploade[1]/$tgl_exploade[2]";
                 array_push($array_no_pembelian, $no_purchase);
                 $i++;
             }
-        } elseif (count(array_flip($id_pemasok)) == 1) {
+        } elseif (count(array_unique($id_pemasok)) == 1) {
             // dd($no_pembelian);
             $no_purchase = "PO/$no_pembelian[0]/$tgl_exploade[0]/$tgl_exploade[1]/$tgl_exploade[2]";
             array_push($array_no_pembelian, $no_purchase);
         }
 
-
-
+        // dump(count(array_unique($id_pemasok)));
+        // dump($arr_produk);
 
         // dd($array_no_pembelian);
 
@@ -377,7 +380,7 @@ class PurchaseController extends Controller
         // c. N supplier dengan custom data dari table
         if (gettype($id_pemasok) == 'array') {
 
-            $array_pemasok = count(array_flip($id_pemasok));
+            $array_pemasok = count(array_unique($id_pemasok));
         }
 
 

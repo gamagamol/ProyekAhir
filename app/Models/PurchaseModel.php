@@ -157,7 +157,7 @@ class PurchaseModel extends Model
 
         $arr_pembelian = [];
 
-        if (count(array_flip($id_pemasok)) > 1) {
+        if (count(array_unique($id_pemasok)) > 1) {
             // vendor nya bisa jadi ada yang beda
             // dd('masuk sini');
             foreach ($id_pemasok as $i => $ip) {
@@ -171,18 +171,37 @@ class PurchaseModel extends Model
                     } else {
                         $no_pembelian = 1;
                     }
-                    array_push($arr_pembelian, (int)$no_pembelian);
+                    array_push($arr_pembelian, [
+                        'id_pemasok' => $ip,
+                        'no_pembelian' => $no_pembelian
+                    ]);
                 } else {
 
                     // check kesamaan vendor
 
-                    if ($id_pemasok[$i - 1] == $ip) {
+                    $ip_sudah_ada = false;
 
-                        array_push($arr_pembelian, $arr_pembelian[$i - 1]);
-                    } else {
-
-                        array_push($arr_pembelian, $arr_pembelian[$i - 1] + 1);
+                    // dd($arr_pembelian);
+                    foreach ($arr_pembelian as $arp) {
+                        if (in_array($ip, $arp)) {
+                            array_push($arr_pembelian, $arp);
+                            $ip_sudah_ada = true;
+                        }
                     }
+
+                    if ($ip_sudah_ada == false) {
+                        array_push($arr_pembelian, [
+                            'id_pemasok' => $ip,
+                            'no_pembelian' => $arr_pembelian[$i - 1]['no_pembelian'] + 1
+                        ]);
+                    }
+                    // if (in_array($ip,$arr_pembelian['id_pemasok'])) {
+                    //     dd('test');
+                    //     array_push($arr_pembelian, $arr_pembelian);
+                    // } else {
+
+                    //     array_push($arr_pembelian, $arr_pembelian[$i - 1] + 1);
+                    // }
                 }
             }
 
@@ -200,7 +219,7 @@ class PurchaseModel extends Model
             }
             array_push($arr_pembelian, (int)$no_pembelian);
         }
-
+       
         return $arr_pembelian;
     }
 
