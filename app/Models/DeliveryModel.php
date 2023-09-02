@@ -164,7 +164,7 @@ class DeliveryModel extends Model
         // } catch (Exception $e) {
         //     dd($e);
         // }
-            // dd('test');
+        // dd('test');
         return DB::select("SELECT
                 *,no_penerimaan,
                 no_pengiriman,
@@ -221,21 +221,16 @@ class DeliveryModel extends Model
     public function no_delivery($tgl_pengiriman, $unit)
     {
         //  menentukan no delivery
-        $bulan_tgl = explode("-", $tgl_pengiriman)[1];
+        $bulan_tgl = explode("-", $tgl_pengiriman);
 
         if ($unit) {
             $arr_no_pengiriman = [];
             for ($i = 0; $i < count($unit); $i++) {
 
-                // $no_pengiriman =
-                //     DB::table('pengiriman')
-                //     ->selectRaw("ifnull(max(CONVERT(substring(no_pengiriman,4,2),SIGNED))+1,1) as no_pengiriman")
-                //     ->whereMonth("tgl_pengiriman", "=", $bulan_tgl)
-                //     ->first();
-                // $no_pengiriman = (int)$no_pengiriman->no_pengiriman;
+
                 $no_pengiriman = DB::select("
                     select * from pengiriman where id_pengiriman =(select max(id_pengiriman) from pengiriman 
-                    where month(tgl_pengiriman)='$bulan_tgl')");
+                    where month(tgl_pengiriman)='$bulan_tgl[1]' and YEAR(tgl_pengiriman)='$bulan_tgl[0]')");
 
                 if ($no_pengiriman != null) {
 
@@ -249,15 +244,10 @@ class DeliveryModel extends Model
 
             return $arr_no_pengiriman;
         } else {
-            // $no_pengiriman =
-            //     DB::table('pengiriman')
-            //     ->selectRaw("DISTINCT ifnull(max(substring(no_pengiriman,4,1)),0) +1 as no_pengiriman")
-            //     ->where("tgl_pengiriman", "=", $tgl_pengiriman)
-            //     ->first();
-            // $no_pengiriman = (int)$no_pengiriman->no_pengiriman;
+
             $no_pengiriman = DB::select("
                     select * from pengiriman where id_pengiriman =(select max(id_pengiriman) from pengiriman 
-                    where month(tgl_pengiriman)='$bulan_tgl')");
+                    where month(tgl_pengiriman)='$bulan_tgl[1]'and YEAR(tgl_pengiriman)='$bulan_tgl[0]')");
 
             if ($no_pengiriman != null) {
 

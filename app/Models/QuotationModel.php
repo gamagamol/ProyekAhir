@@ -71,20 +71,10 @@ class QuotationModel extends Model
 
 
 
-        $bulan_tgl = explode("-", $tgl_penawaran)[1];
-        // dd($bulan_tgl);
-        // $no_penawaran =
-        //     DB::table('penawaran')
-        //     ->selectRaw("select * from penawaran where id_penawaran =(select max(id_penawaran) from penawaran where month(tgl_penawaran)='08')")
-        //     ->whereMonth("tgl_penawaran", "=", $bulan_tgl)
-        //     ->first();
-        // $no_penawaran =
-        //     DB::table('penawaran')
-        //     ->selectRaw("ifnull(max(CONVERT(substring(no_penawaran,5,2),SIGNED))+1,1) as no_penawaran")
-        //     ->whereMonth("tgl_penawaran", "=", $bulan_tgl)
-        //     ->first();
-        $no_penawaran=DB::select("select * from penawaran where id_penawaran =(select max(id_penawaran) from penawaran 
-        where month(tgl_penawaran)='$bulan_tgl')");
+        $bulan_tgl = explode("-", $tgl_penawaran);
+
+        $no_penawaran = DB::select("select * from penawaran where id_penawaran =(select max(id_penawaran) from penawaran 
+        where month(tgl_penawaran)='$bulan_tgl[1]'and YEAR(tgl_penawaran)='$bulan_tgl[0]')");
 
         if ($no_penawaran != null) {
 
@@ -92,11 +82,11 @@ class QuotationModel extends Model
         } else {
             $no_penawaran = 1;
         }
-   
+
 
 
         $no_penawaran = (int)$no_penawaran;
-     
+
 
 
 
@@ -200,7 +190,7 @@ class QuotationModel extends Model
     {
 
         $query = '';
-       
+
 
         $month = '';
         $year = '';

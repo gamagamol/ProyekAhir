@@ -221,17 +221,12 @@ class PaymentModel extends Model
 
     public function no_pembayaran($tgl_pembayaran)
     {
-        $bulan_tgl = explode("-", $tgl_pembayaran)[1];
+        $bulan_tgl = explode("-", $tgl_pembayaran);
 
-        // $no_pembayaran =
-        //     DB::table('pembayaran')
-        //     ->selectRaw("ifnull(max(CONVERT(substring(no_pembayaran,5,2),SIGNED))+1,1) as no_pembayaran")
-        //     ->whereMonth("tgl_pembayaran", "=", $bulan_tgl)
-        //     ->first();
-        // $no_pembayaran = (int)$no_pembayaran->no_pembayaran;
+       
         $no_pembayaran = DB::select("
            select * from pembayaran where id_pembayaran =(select max(id_pembayaran) from pembayaran 
-           where month(tgl_pembayaran)='$bulan_tgl')");
+           where month(tgl_pembayaran)='$bulan_tgl[1]' and YEAR(tgl_pembayaran)='$bulan_tgl[0]')");
 
         if ($no_pembayaran != null) {
 

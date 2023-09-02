@@ -79,21 +79,10 @@ class PaymentVendorModel extends Model
 
     public function no_penjualan($tgl_penjualan)
     {
-        // $no_penjualan =
-        //     DB::table('pembayaranvendor')
-        //     ->selectRaw("DISTINCT ifnull(max(substring(no_penjualan,4,1)),0)+1 as no_penjualan")
-        //     ->where("tgl_penjualan", "=", $tgl_penjualan)
-        //     ->first();
-        // $no_penjualan = (int)$no_penjualan->no_penjualan;
-        // $no_pembayaran_vendor =
-        //     DB::table('max(no_pembayaran_vendor) as no_pembayaran_vendor')
-        //     ->selectRaw("no_pembayaran_vendor")
-        //     ->where("tgl_penjualan", "=", $tgl_penjualan)
-        //     ->first();
+
         $no_pembayaran_vendor = DB::select("
            select * from pembayaranvendor where idpembayaranvendor =(select max(idpembayaranvendor) from pembayaranvendor 
-           where month(tgl_pembayaran_vendor)='$tgl_penjualan')");
-        // $no_pembayaran_vendor = (int)$no_pembayaran_vendor->no_pembayaran_vendor;
+           where month(tgl_pembayaran_vendor)='$tgl_penjualan' and YEAR(tgl_pembayaran_vendor)='$tgl_penjualan' )");
         if ($no_pembayaran_vendor != null) {
 
             $no_pembayaran_vendor = no_transaksi($no_pembayaran_vendor[0]->no_pembayaran_vendor);

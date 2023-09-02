@@ -15,7 +15,8 @@
         "maatwebsite/excel": "^3.1",
         "mpdf/mpdf": "^8.1",
         "phpoffice/phpword": "^1.1",
-        "riskihajar/terbilang": "^1.2"
+        "riskihajar/terbilang": "^1.2",
+        "yajra/laravel-datatables-oracle": "^9.21"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

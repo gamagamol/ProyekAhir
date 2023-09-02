@@ -86,21 +86,12 @@ class SalesModel extends Model
 
      public function no_penjualan($tgl_penjualan)
      {
-          $bulan_tgl = explode("-", $tgl_penjualan)[1];
-          // $no_penjualan =
-          //      DB::table('penjualan')
-          //      ->selectRaw("ifnull(max(CONVERT(substring(no_penjualan,4,2),SIGNED))+1,1) as no_penjualan")
-          //      ->whereMonth("tgl_penjualan", "=", $bulan_tgl)
-          //      ->first();
-          // $no_penjualan = (int)$no_penjualan->no_penjualan;
-          // $no_penjualan =
-          //      DB::table('penjualan')
-          //      ->selectRaw("max(no_penjualan) as no_penjualan")
-          //      ->whereMonth("tgl_penjualan", "=", $bulan_tgl)
-          //      ->first();
+          $bulan_tgl = explode("-", $tgl_penjualan);
+         
+
            $no_penjualan = DB::select("
            select * from penjualan where id_penjualan =(select max(id_penjualan) from penjualan 
-           where month(tgl_penjualan)='$bulan_tgl')");
+           where month(tgl_penjualan)='$bulan_tgl[1]' and YEAR(tgl_penjualan)='$bulan_tgl[0]')");
 
           if ($no_penjualan != null) {
 
@@ -108,7 +99,7 @@ class SalesModel extends Model
           } else {
                $no_penjualan = 1;
           }
-
+         
 
           return $no_penjualan;
      }
