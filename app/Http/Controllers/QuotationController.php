@@ -205,13 +205,13 @@ class QuotationController extends Controller
                 'lebar_pembantu' => $request->input("lebar_transaksi"),
                 'panjang_pembantu' => $request->input("panjang_transaksi"),
                 'jumlah_pembantu' => $request->input("jumlah"),
-                'layanan_pembantu' => $request->input("layanan"),
+                'layanan_pembantu' => str_replace("_", " ", $request->input("layanan")),
                 'harga_pembantu' => str_replace('.', "", $request->input('harga')),
                 'ongkir_pembantu' => str_replace('.', "", $request->input('ongkir')),
                 'id_user' => $request->input("id"),
-                'tebal_penawaran' => ($layanan == 'MILLING'||$layanan=='NF_MILLING') ? $tebal_transaksi + 5 : $tebal_transaksi,
-                'lebar_penawaran' => ($layanan =='MILLING' && $bentuk_produk == 'FLAT'||$layanan=='NF_MILLING' && $bentuk_produk == 'FLAT') ? $lebar_transaksi + 5 : $lebar_transaksi,
-                'panjang_penawaran' => ($layanan == 'MILLING'||$layanan=='NF_MILLING') ? $panjang_transaksi + 5 : $panjang_transaksi,
+                'tebal_penawaran' => ($layanan == 'MILLING' || $layanan == 'NF_MILLING') ? $tebal_transaksi + 5 : $tebal_transaksi,
+                'lebar_penawaran' => ($layanan == 'MILLING' && $bentuk_produk == 'FLAT' || $layanan == 'NF_MILLING' && $bentuk_produk == 'FLAT') ? $lebar_transaksi + 5 : $lebar_transaksi,
+                'panjang_penawaran' => ($layanan == 'MILLING' || $layanan == 'NF_MILLING') ? $panjang_transaksi + 5 : $panjang_transaksi,
                 'berat_pembantu' => (float)$berat,
                 'bentuk_pembantu' => $bentuk_produk,
                 'subtotal' => $subtotal,
@@ -454,6 +454,9 @@ class QuotationController extends Controller
 
     public function CalculateWeight($bentuk_produk, $layanan, $tebal_transaksi, $lebar_transaksi, $panjang_transaksi, $jumlah)
     {
+
+        // dd($layanan);
+
         switch ($bentuk_produk) {
             case "FLAT":
                 if ($layanan == "CUTTING") {
@@ -490,7 +493,7 @@ class QuotationController extends Controller
                     return (float)number_format((float)$berat, 1, '.', '');
                 }
 
-                if ($layanan == "NF MILLING") {
+                if ($layanan == "NF_MILLING" || $layanan == "NF MILLING") {
                     //    membuat ukuran dan berat pxl 0,00008
                     $tebal_penawaran = $tebal_transaksi + 5;
                     $lebar_penawaran =  $lebar_transaksi + 5;
@@ -539,7 +542,7 @@ class QuotationController extends Controller
                     // return ($berat > 0) ? round($berat) : $berat;
                     return (float)number_format((float)$berat, 1, '.', '');
                 }
-                if ($layanan == "NF MILLING") {
+                if ($layanan == "NF_MILLING" || $layanan == "NF MILLING") {
                     //    membuat ukuran dan berat pxl 0,00008
                     $tebal_penawaran = $tebal_transaksi + 5;
                     $lebar_penawaran = 0;

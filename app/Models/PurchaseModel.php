@@ -78,7 +78,7 @@ class PurchaseModel extends Model
         ");
     }
 
-   
+
     public function no_pembelian($tgl_pembelian, $id_pemasok)
     {
 
@@ -88,6 +88,7 @@ class PurchaseModel extends Model
         $arr_pembelian = [];
 
         if (count(array_unique($id_pemasok)) > 1) {
+            // dd("masuk sini");
             // vendor nya bisa jadi ada yang beda
             foreach ($id_pemasok as $i => $ip) {
                 if ($i == 0) {
@@ -107,12 +108,13 @@ class PurchaseModel extends Model
                 } else {
 
                     // check kesamaan vendor
-
+                    // dd("masuk sini");
                     $ip_sudah_ada = false;
 
                     // dd($arr_pembelian);
                     foreach ($arr_pembelian as $arp) {
-                        if (in_array($ip, $arp)) {
+                        if ((int)$ip == (int)$arp['id_pemasok']) {
+                            // dump($arp);
                             array_push($arr_pembelian, $arp);
                             $ip_sudah_ada = true;
                         }
@@ -124,13 +126,6 @@ class PurchaseModel extends Model
                             'no_pembelian' => $arr_pembelian[$i - 1]['no_pembelian'] + 1
                         ]);
                     }
-                    // if (in_array($ip,$arr_pembelian['id_pemasok'])) {
-                    //     dd('test');
-                    //     array_push($arr_pembelian, $arr_pembelian);
-                    // } else {
-
-                    //     array_push($arr_pembelian, $arr_pembelian[$i - 1] + 1);
-                    // }
                 }
             }
 
@@ -148,7 +143,7 @@ class PurchaseModel extends Model
             }
             array_push($arr_pembelian, (int)$no_pembelian);
         }
-       
+
         return $arr_pembelian;
     }
 

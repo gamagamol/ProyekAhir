@@ -212,7 +212,7 @@ class BillPaymentController extends Controller
             $worksheet->setCellValue("K$tambahan_baris", $panjang);
             $worksheet->setCellValue("L$tambahan_baris", $data[$i]->jumlah);
             $worksheet->setCellValue("M$tambahan_baris", $data[$i]->berat);
-            $worksheet->setCellValue("N$tambahan_baris", "Rp" . number_format($data[$i]->harga, '2', ',', '.'));
+            $worksheet->setCellValue("N$tambahan_baris", "Rp" . number_format($data[$i]->harga));
             $worksheet->setCellValue("O$tambahan_baris", $data[$i]->subtotal);
             $worksheet->mergeCells("O$tambahan_baris:P$tambahan_baris");
 

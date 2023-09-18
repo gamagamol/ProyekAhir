@@ -89,7 +89,7 @@ class DeliveryController extends Controller
                 foreach ($penerimaan as $quoi) {
                     if ($quoi->id_produk == $id_produk[$ipo]) {
                         if ($quoi->id_penawaran == $id_penawaran[$ipo]) {
-
+                            // dd("masuk sini");
                             $produk[$ipo] = [
                                 'id_penawaran' => $quoi->id_penawaran,
                                 'id_produk' => $id_produk[$ipo],
@@ -106,7 +106,10 @@ class DeliveryController extends Controller
                                 'harga' => $quoi->harga
 
 
+
                             ];
+
+                            // dd($produk[$ipo]);
                         }
                     }
                 }
@@ -177,7 +180,6 @@ class DeliveryController extends Controller
 
 
         // check isi produk dan array produk
-        // dump($produk);
         // dd($arr_produk);
 
 
@@ -248,10 +250,10 @@ class DeliveryController extends Controller
 
 
 
-
+        // dump($produk);
 
         if ($unit) {
-
+            // echo "masuk unit";
             for ($i = 0; $i < count($unit); $i++) {
                 foreach ($penerimaan as $pcsss) {
                     if ($pcsss->id_produk == $produk[$i]['id_produk']) {
@@ -361,23 +363,24 @@ class DeliveryController extends Controller
                             $berat_item = $berat;
                         } else {
 
-
+                            // echo "masuk sini";
+                            // dd($pcss);
                             $data_detail_pengiriman[$i] = [
                                 'id_pengiriman' => 0,
                                 'id_produk' => $pcss->id_produk,
                                 'jumlah_detail_pengiriman' => (int) $pcss->jumlah_detail_penerimaan,
                                 'sisa_detail_pengiriman' => 0,
                                 // perhitungan berat
-                                'berat_detail_pengiriman' => $pcss->berat_detail_pembelian,
-                                'ppn_detail_pengiriman' => ($pcss->harga * $pcss->berat_detail_pembelian) * 0.11,
-                                'subtotal_detail_pengiriman' => $pcss->harga * $pcss->berat_detail_pembelian,
-                                'total_detail_pengiriman' => ($pcss->harga * $pcss->berat_detail_pembelian) + (($pcss->harga * $pcss->berat_detail_pembelian) * 0.11)
+                                'berat_detail_pengiriman' => $pcss->berat,
+                                'ppn_detail_pengiriman' => ($pcss->harga * $pcss->berat) * 0.11,
+                                'subtotal_detail_pengiriman' => $pcss->harga * $pcss->berat,
+                                'total_detail_pengiriman' => ($pcss->harga * $pcss->berat) + (($pcss->harga * $pcss->berat) * 0.11)
 
 
                             ];
 
                             $jumlah_item = $pcss->jumlah_detail_penerimaan;
-                            $berat_item = $pcss->berat_detail_pembelian;
+                            $berat_item = $pcss->berat;
                         }
 
                         $data[$i] = [
@@ -405,8 +408,8 @@ class DeliveryController extends Controller
         // check isi data yang mau di insert
         // dump($id_transaksi);
         // dump($penerimaan);
-        // dump($data_pengiriman);
-        // dd($data_detail_pengiriman);
+        dump($data_pengiriman);
+        dd($data_detail_pengiriman);
         // dd($data_pengiriman);
 
 
@@ -544,46 +547,47 @@ class DeliveryController extends Controller
     public function printStiker($no_transaksi)
     {
         $data = $this->model->detail(str_replace('-', '/', $no_transaksi));
-        $zip = new ZipArchive();
-        $zipFileName = 'stiker.zip';
-        // print_r($data);die;
 
-        if ($zip->open(public_path("stiker/$zipFileName"), ZipArchive::CREATE) === TRUE) {
-            foreach ($data as $i => $d) {
+        // dd($data);
+        // Load template Excel
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/stiker.xlsx');
 
-                $template = new \PhpOffice\PhpWord\TemplateProcessor(public_path('template_report/stiker.docx'));
-                $template->setValue('nama_pelanggan', $d->nama_pelanggan);
-                $template->setValue('no_pengiriman', $d->no_pengiriman);
-                $no_penjualan = ($d->no_po_customer = '-' || $d->no_po_customer = '') ? $d->no_penjualan : $d->no_po_customer;
-                $template->setValue('no_penjualan', $no_penjualan);
-                $template->setValue('nomor_pekerjaan', $d->nomor_pekerjaan);
-                $template->setValue('layanan', $d->layanan);
-                $template->setValue('nama_produk', $d->nama_produk);
+        // Remove the default 'Sheet1'
 
-                $template->setValue('nama_produk', $d->nama_produk);
-                $material_size = "$d->tebal_transaksi x $d->lebar_transaksi x $d->panjang_transaksi";
-                $template->setValue('material_size', $material_size);
-                $template->setValue('jumlah_pengiriman', $d-> jumlah_detail_pengiriman . ' ' . 'PCS');
-                $template->setValue('berat_pengiriman', $d->berat_detail_pengiriman.' '.'Kg');
-
-                // $newWordFileName = 'stiker item ke-' . $i + 1 . '.docx';
-                // $template->saveAs(public_path('stiker/' . $newWordFileName));
-                // $zip->addFile(public_path('stiker/' . $newWordFileName));
-                // // unlink(public_path('stiker/' . $newWordFileName));
-
-                $newWordFileName = "stiker_item_$d->nama_produk.docx";
-                $template->saveAs(public_path('stiker/' . $newWordFileName));
-                $zip->addFile(public_path('stiker/' . $newWordFileName), $newWordFileName); // Menggunakan $newWordFileName sebagai nama dalam ZIP
-            }
-            $zip->close();
-        }
         foreach ($data as $i => $d) {
-            $newWordFileName = 'stiker item ke-' . ($i + 1) . '.docx';
-            $newWordFileName = "stiker_item_$d->nama_produk.docx";
+            // Clone lembar kerja pertama
+            $worksheet = clone $spreadsheet->getSheet(0);
 
-            unlink(public_path('stiker/' . $newWordFileName));
+            // Set judul lembar kerja
+            $worksheet->setTitle(str_replace(' ', '_', $d->nama_produk));
+
+            // Set data pada lembar kerja baru
+            $worksheet->setCellValue('D2', $d->nama_pelanggan);
+            $worksheet->setCellValue('D3', $d->no_pengiriman);
+            $no_penjualan = ($d->no_po_customer == '-' || $d->no_po_customer == '') ? $d->no_penjualan : $d->no_po_customer;
+            $worksheet->setCellValue('D4', $no_penjualan);
+            $worksheet->setCellValue('D6', $d->nomor_pekerjaan);
+            $worksheet->setCellValue('D7', $d->layanan);
+            $worksheet->setCellValue('D8', $d->nama_produk);
+            $material_size = "$d->tebal_transaksi x $d->lebar_transaksi x $d->panjang_transaksi";
+            $worksheet->setCellValue('D9', $material_size);
+            $worksheet->setCellValue('D10', $d->jumlah_detail_pengiriman . ' PCS');
+            $worksheet->setCellValue('D11', $d->berat_detail_pengiriman . ' Kg');
+
+
+
+            // Add the worksheet to the workbook
+            $spreadsheet->addSheet($worksheet);
         }
+        $spreadsheet->removeSheetByIndex(0);
 
-        return response()->download("stiker/$zipFileName")->deleteFileAfterSend();
+        $namaFile = $data[0]->no_pengiriman;
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header("Content-Disposition: attachment; filename=$namaFile.xlsx"); // Set nama file excel nya
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
     }
 }
