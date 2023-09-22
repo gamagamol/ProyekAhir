@@ -347,7 +347,7 @@ class PurchaseController extends Controller
         //     $array_no_pembelian = $no_purchase;
         // }
 
-            // dd($id_pemasok);
+        // dump($id_pemasok);
 
         $no_pembelian = $this->PurchaseModel->no_pembelian($tgl_pembelian, $id_pemasok);
         $tgl_exploade = explode('-', $tgl_pembelian);
@@ -359,7 +359,11 @@ class PurchaseController extends Controller
             $i = 0;
             foreach ($no_pembelian as $nop) {
                 $no_purchase = "PO/$nop[no_pembelian]/$tgl_exploade[0]/$tgl_exploade[1]/$tgl_exploade[2]";
-                array_push($array_no_pembelian, $no_purchase);
+                array_push($array_no_pembelian, [
+                    'id_pemasok' => $nop['id_pemasok'],
+                    'no_pembelian' => $no_purchase
+
+                ]);
                 $i++;
             }
         } elseif (count(array_unique($id_pemasok)) == 1) {
@@ -369,7 +373,7 @@ class PurchaseController extends Controller
         }
 
         // dump(count(array_unique($id_pemasok)));
-        // dump($arr_produk);
+        // dd($arr_produk);
 
         // dd($array_no_pembelian);
 
@@ -463,7 +467,7 @@ class PurchaseController extends Controller
                 $data_pembelian[$i] = [
                     'id_penjualan' => $ap['id_penjualan'],
                     'id_transaksi' => $ap['id_transaksi'],
-                    'no_pembelian' => $array_no_pembelian[$i],
+                    'no_pembelian' => $this->findPurchaseNumber($array_no_pembelian, $ap['id_pemasok']),
                     'tgl_pembelian' => $tgl_pembelian,
                     'id_pemasok' => $ap['id_pemasok']
 
@@ -624,5 +628,17 @@ class PurchaseController extends Controller
         return empty(array_filter($input, function ($a) {
             return $a !== null;
         }));
+    }
+
+
+
+    function findPurchaseNumber($no_pembelian, $id_pemasok)
+    {
+        foreach ($no_pembelian as $np) {
+            if ((int)$np['id_pemasok'] == (int)$id_pemasok) {
+                // dd($np['no_pembelian']);
+                return $np['no_pembelian'];
+            }
+        }
     }
 }

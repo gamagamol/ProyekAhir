@@ -88,9 +88,8 @@ class PurchaseModel extends Model
         $arr_pembelian = [];
 
         if (count(array_unique($id_pemasok)) > 1) {
-            // dd("masuk sini");
             // vendor nya bisa jadi ada yang beda
-            foreach ($id_pemasok as $i => $ip) {
+            foreach (array_unique($id_pemasok) as $i => $ip) {
                 if ($i == 0) {
                     $no_pembelian = DB::select("
                     select * from pembelian where id_pembelian =(select max(id_pembelian) from pembelian 
@@ -107,28 +106,28 @@ class PurchaseModel extends Model
                     ]);
                 } else {
 
-                    // check kesamaan vendor
-                    // dd("masuk sini");
+                    // Cek apakah id_pemasok sudah ada dalam $arr_pembelian
                     $ip_sudah_ada = false;
 
-                    // dd($arr_pembelian);
-                    foreach ($arr_pembelian as $arp) {
+                    foreach ($arr_pembelian as $key => $arp) {
                         if ((int)$ip == (int)$arp['id_pemasok']) {
-                            // dump($arp);
-                            array_push($arr_pembelian, $arp);
+                            $arr_pembelian[$key]['no_pembelian']++; // Tambahkan nomor pembelian jika pemasok sudah ada
                             $ip_sudah_ada = true;
+                            break;
                         }
                     }
 
-                    if ($ip_sudah_ada == false) {
+                    if (!$ip_sudah_ada) {
+                        $nomor_pembelian_terakhir = end($arr_pembelian)['no_pembelian'];
                         array_push($arr_pembelian, [
                             'id_pemasok' => $ip,
-                            'no_pembelian' => $arr_pembelian[$i - 1]['no_pembelian'] + 1
+                            'no_pembelian' => $nomor_pembelian_terakhir + 1
                         ]);
                     }
                 }
             }
 
+            // dd($arr_pembelian);
 
             return $arr_pembelian;
         } else {
