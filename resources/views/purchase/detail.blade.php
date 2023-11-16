@@ -22,7 +22,7 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <tr>
                                 <td colspan="8">Quotation</td>
-                                <td colspan="13">Purchase</td>
+                                <td colspan="14">Purchase</td>
                             </tr>
                             <tr>
                                 <td>Date</td>
@@ -42,6 +42,7 @@
                                 <td>Processing</td>
                                 <td>Custumor</td>
                                 <td>Supplier</td>
+                                <td>Delete</td>
 
                             </tr>
                             <?php
@@ -52,7 +53,7 @@
                             $total = 0;
                             ?>
                             @foreach ($data as $p)
-                                <tr>
+                                <tr id="row-{{ $p->id_pembelian }}">
 
                                     <td style="min-width:120px">
                                         {{ $p->tgl_pembelian }}
@@ -124,7 +125,10 @@
                                         {{ $p->nama_pemasok }}
                                     </td>
 
-
+                                    <td {{$p->status_transaksi != 'purchase' ?'hidden' : ''}}>
+                                        <i class="fa fa-trash" aria-hidden="true" style="color:red"
+                                            onclick="deleteItem({{ $p->id_pembelian }},'row-{{ $p->id_pembelian }}')"></i>
+                                    </td>
 
                                 </tr>
                                 <?php
@@ -169,6 +173,26 @@
     </div>
     </div>
 
+
+    <div id="modal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sales</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure to delete this item? </p>
+                    <button type=button id=submit_delete class="btn btn-primary ">submit</button>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $('#harga').mask('000.000.000.000.000', {
             reverse: true
@@ -203,6 +227,33 @@
             }
 
 
+
+        }
+
+        function deleteItem(id_pembelian, row) {
+            $('#modal').modal('show')
+
+            $('#submit_delete').click(() => {
+                let baseUrl = `{{ url('/') }}`
+
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name=csrf-token]').attr('content')
+                    },
+                    url: `${baseUrl}/purchase/detail_delete`,
+                    type: 'POST',
+                    data: {
+                        id_pembelian
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        $('#modal').modal('hide')
+
+                    }
+                })
+
+                $(`#${row}`).remove()
+            })
 
         }
     </script>

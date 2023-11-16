@@ -126,7 +126,7 @@
 
                                                     
                                                     )"
-                                            id={{ "IconClickCreateSupplier$i" }}></i>
+                                            id="IconClickCreateSupplier"></i>
 
                                     </td>
 
@@ -205,11 +205,11 @@
 
         function CreateSupplier(IdProduk, NamaProduk, NoPenerimaan, IdTransaksi, IdPenawaran, IdPenerimaanBarang,
             TebalTransaksi, LebarTransaksi, PanjangTransaksi, BentukProduk, Layanan, JumlahDetailPenerimaan) {
-            let click = 1;
+            let click = $('.countRowDelivery').length+1;
 
 
             let html = ``
-            html += `<tr>`
+            html += `<tr class='countRowDelivery'>`
             html += `<td>${click}</td>`
             html +=
                 `<td> <input type="text" name="no_penerimaan" class="form-control" value='${NoPenerimaan}' readonly  style="border-width:0px;background-color:white;"></td>`
@@ -263,5 +263,9 @@
         function MoveCreate() {
             $('#modal').modal('show');
         }
+
+        $('#dataTable').on('click', '#IconClickCreateSupplier', function() {
+            $(this).parent().parent().remove()
+        })
     </script>
 @endsection()

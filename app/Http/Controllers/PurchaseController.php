@@ -641,4 +641,12 @@ class PurchaseController extends Controller
             }
         }
     }
+
+
+    public function delete_detail(Request $request)
+    {
+        $id_pembelian = (int)$request->input('id_pembelian');
+        $this->PurchaseModel->delete_detail($id_pembelian);
+        return response()->json(['message' => 'success']);
+    }
 }

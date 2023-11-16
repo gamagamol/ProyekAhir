@@ -50,13 +50,13 @@
                      <td>{{ $d->tgl_tagihan ? $d->tgl_tagihan : '-' }}</td>
                      <td>{{ $d->no_pembayaran ? $d->no_pembayaran : '-' }}</td>
                      <td>{{ $d->tgl_pembayaran ? $d->tgl_pembayaran : '-' }}</td>
-                     <td>{{ $d->subtotal ? number_format($d->subtotal) : 0 }}</td>
-                     <td>{{ $d->ppn ? number_format($d->ppn) : 0 }}</td>
-                     <td>{{ $d->total ? number_format($d->total) : 0 }}</td>
-                     <td>{{ $d->subtotal_detail_pembelian ? number_format($d->subtotal_detail_pembelian) : 0 }}
+                     <td>{{ $d->subtotal ? number_format($d->subtotal,0,',','.') : 0 }}</td>
+                     <td>{{ $d->ppn ? number_format($d->ppn,0,',','.') : 0 }}</td>
+                     <td>{{ $d->total ? number_format($d->total,0,',','.') : 0 }}</td>
+                     <td>{{ $d->subtotal_detail_pembelian ? number_format($d->subtotal_detail_pembelian,0,',','.') : 0 }}
                      </td>
-                     <td>{{ $d->subtotal_detail_pembelian ? number_format($d->ppn_detail_pembelian) : 0 }}</td>
-                     <td>{{ $d->subtotal_detail_pembelian ? number_format($d->total_detail_pembelian) : 0 }}</td>
+                     <td>{{ $d->subtotal_detail_pembelian ? number_format($d->ppn_detail_pembelian,0,',','.') : 0 }}</td>
+                     <td>{{ $d->subtotal_detail_pembelian ? number_format($d->total_detail_pembelian,0,',','.') : 0 }}</td>
 
                      @php
                          $total = $d->total ? $d->total : 0;
@@ -67,7 +67,7 @@
                      <td>{{ '-' }}</td>
                      <td>{{ '-' }}</td>
                      <td>{{ '-' }}</td>
-                     <td>{{ $d->subtotal_detail_pembelian ? number_format($omzet) : 0 }}</td>
+                     <td>{{ $d->subtotal_detail_pembelian ? number_format($omzet,0,',','.') : 0 }}</td>
                      @php
                          $total_omzet += $omzet;
                      @endphp

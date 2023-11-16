@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Illuminate\Support\Facades\Auth;
 
 class QuotationController extends Controller
 {
@@ -60,7 +61,7 @@ class QuotationController extends Controller
 
 
 
-        $pembantu = DB::table('pembantu_penawaran')->get();
+        $pembantu = DB::table('pembantu_penawaran')->where('id_user', (int)Auth::user()->id)->get();
         // dd($pembantu);
         // nama pelanggan
         if (count($pembantu)) {
@@ -92,12 +93,7 @@ class QuotationController extends Controller
         }
 
 
-        // Transaction code 
 
-        $transaction_code =
-            DB::table('transaksi')
-            ->selectRaw("DISTINCT concat('PJ',ifnull(MAX(cast( substr(kode_transaksi,3,3) AS FLOAT)),0)+1) AS kode_transaksi")
-            ->first();
 
 
         $data = [
@@ -109,13 +105,11 @@ class QuotationController extends Controller
             'nama_pegawai' => $nama_pegawai,
             'nomor_pekerjaan' => $nomor_pekerjaan,
             'history' => $history,
-            'kode_transaksi' => $transaction_code->kode_transaksi,
+            'kode_transaksi' => $this->QuotationModel->TransactionCode(),
             'services' => DB::table('layanan')->get(),
             'pegawai' => $this->pegawai->getEmployee('SALES'),
 
         ];
-        // print_r($data);
-        // dd($data);
         return view('quotation.insert', $data);
     }
 

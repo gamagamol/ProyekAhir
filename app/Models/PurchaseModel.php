@@ -313,4 +313,29 @@ class PurchaseModel extends Model
             ->whereNotIn('status_transaksi', ['bill', 'payment'])
             ->get();
     }
+
+    public function delete_detail($id_pembelian)
+    {
+        // hapus detail_pembelian
+        // dd($id_pembelian);
+        DB::table('detail_transaksi_pembelian')->where('id_pembelian', '=', $id_pembelian)->delete();
+        return  DB::table('pembelian')->where('id_pembelian', '=', $id_pembelian)->delete();
+    }
+
+    public function itemCanDelete($no_pembelian)
+    {
+        $id_pembelian = DB::table('pembelian')
+            ->select('pembelian.id_pembelian')
+            ->where('no_pembelian', $no_pembelian)
+            ->get()
+            ->pluck('id_pembelian')
+            ->toArray();
+
+        $result = DB::table('penerimaan_barang')
+            ->select('id_penerimaan_barang', 'id_pembelian')
+            ->whereIn('id_pembelian', $id_pembelian)
+            ->get();
+
+        //    return $reslt
+    }
 }

@@ -4,12 +4,44 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use function app\helper\no_transaksi;
 
 class QuotationModel extends Model
 {
     use HasFactory;
+    public function TransactionCode()
+    {
+        // check contion table
+        // check apakah dia udh melakukan transa
+        $id_user = (int) Auth::user()->id;
+        $QuotationHelper = DB::table('pembantu_penawaran')->select('kode_transaksi')->where('id_user', $id_user)->first();
+        // dd($QuotationHelper);
+
+        if ($QuotationHelper != null) {
+            return $QuotationHelper->kode_transaksi;
+        } else {
+
+            $QuotationHelpers = DB::table('pembantu_penawaran')->get();
+            if (count($QuotationHelpers) == 0) {
+                return  DB::table('transaksi')
+                    ->selectRaw("DISTINCT concat('PJ',ifnull(MAX(cast( substr(kode_transaksi,3,3) AS FLOAT)),0)+1) AS kode_transaksi")
+                    ->first()->kode_transaksi;
+            } else {
+                // dd('masuk sini');
+                return DB::table('pembantu_penawaran')
+                    ->selectRaw("DISTINCT concat('PJ',ifnull(MAX(cast( substr(kode_transaksi,3,3) AS FLOAT)),0)+1) AS kode_transaksi")
+                    ->first()->kode_transaksi;
+            }
+        }
+
+
+
+        // dd($QuotationHelper);
+
+    }
+
     public function index($id = null)
     {
         if ($id == 'ALL') {

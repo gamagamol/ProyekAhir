@@ -116,9 +116,9 @@
                                 <tr>
 
                                     @php
-                                        $tebal=($d->tebal_penawaran) ? $d->tebal_penawaran : $d->tebal_transaksi;
-                                        $lebar=($d->lebar_penawaran) ? $d->lebar_penawaran : $d->lebar_transaksi;
-                                        $panjang=($d->panjang_penawaran) ? $d->panjang_penawaran : $d->panjang_transaksi;
+                                        $tebal = $d->tebal_penawaran ? $d->tebal_penawaran : $d->tebal_transaksi;
+                                        $lebar = $d->lebar_penawaran ? $d->lebar_penawaran : $d->lebar_transaksi;
+                                        $panjang = $d->panjang_penawaran ? $d->panjang_penawaran : $d->panjang_transaksi;
                                     @endphp
 
                                     <td>{{ $loop->iteration }}</td>
@@ -139,7 +139,8 @@
                                     <td>{{ $d->nama_pelanggan }}</td>
                                     <td id="CTS">
                                         <i class="fa fa-plus-circle" aria-hidden="true"
-                                            onclick="CreateSupplier('{{ $d->id_produk }}','{{ $d->nama_produk }}','{{ $d->no_penjualan }}','{{ $d->id_transaksi }}','{{ $tebal }}','{{ $lebar }}','{{ $panjang }}','{{ $d->bentuk_produk }}','{{ $d->layanan }}','{{ $jumlah }}','{{ $d->id_penawaran }}','{{ $d->berat }}')"></i>
+                                            onclick="CreateSupplier('{{ $d->id_produk }}','{{ $d->nama_produk }}','{{ $d->no_penjualan }}','{{ $d->id_transaksi }}','{{ $tebal }}','{{ $lebar }}','{{ $panjang }}','{{ $d->bentuk_produk }}','{{ $d->layanan }}','{{ $jumlah }}','{{ $d->id_penawaran }}','{{ $d->berat }}')"
+                                            id="btn-CreateSupplier"></i>
 
                                     </td>
 
@@ -272,5 +273,10 @@
         function MoveCreate() {
             $('#modal').modal('show');
         }
+
+
+        $('#dataTable').on('click', '#btn-CreateSupplier', function() {
+            $(this).parent().parent().remove()
+        })
     </script>
 @endsection()

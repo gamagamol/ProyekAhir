@@ -184,7 +184,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
                         left join produk pd on pd.id_produk=dtp.id_produk
 						join pelanggan on pelanggan.id_pelanggan=t.id_pelanggan
                         $where
-						) b order by b.tgl_penawaran asc";
+						) b GROUP by b.no_penawaran order by b.tgl_penawaran,b.no_penawaran asc";
         } else if ($this->type == 'customer_omzet') {
 
 
