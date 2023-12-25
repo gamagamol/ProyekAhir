@@ -211,6 +211,43 @@ class QuotationModel extends Model
             ->get();
     }
 
+    public function print($kode_transaksi)
+    {
+        $data = DB::table('transaksi')
+            ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
+            ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', '=', 'penawaran.id_penawaran')
+            ->join('produk', 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')
+            ->join('pelanggan', 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
+            ->join('pengguna', 'transaksi.id', '=', 'pengguna.id')
+            ->join('pegawai', 'transaksi.id_pegawai', '=', 'pegawai.id_pegawai')
+            ->where([
+                ['kode_transaksi', '=', $kode_transaksi],
+                ['type', '=', 1],
+            ])
+            ->get();
+
+        $data1 = DB::table('transaksi')
+            ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
+            ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', '=', 'penawaran.id_penawaran')
+            ->join('produk', 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')
+            ->join('pelanggan', 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
+            ->join('pengguna', 'transaksi.id', '=', 'pengguna.id')
+            ->join('pegawai', 'transaksi.id_pegawai', '=', 'pegawai.id_pegawai')
+            ->where([
+                ['kode_transaksi', '=', $kode_transaksi],
+                ['type', '=', 2],
+            ])
+            ->get();
+
+        $nama_penawaran = DB::table('transaksi')
+            ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
+            ->where('kode_transaksi', '=', $kode_transaksi)
+            ->first("no_penawaran")->no_penawaran;
+
+
+        return ["goods" => $data, "service" => $data1, "no_penawaran" => $nama_penawaran];
+    }
+
     public function updateIdTidakTerpakai($id_transaksi, $data)
     {
 
@@ -338,7 +375,7 @@ class QuotationModel extends Model
 						t.tebal_transaksi,t.panjang_transaksi,lebar_transaksi,t.berat,
 						t.jumlah,t.harga,t.total,t.layanan,pemasok.nama_pemasok ,tebal_penawaran,
                         lebar_penawaran,
-                        panjang_penawaran,nama_pelanggan,nomor_pekerjaan,nama_produk
+                        panjang_penawaran,nama_pelanggan,nomor_pekerjaan,nama_produk,nama_pegawai
                          FROM transaksi t
 						join penawaran p on t.id_transaksi = p.id_transaksi
 						left join penjualan pj on p.id_transaksi = pj.id_transaksi
@@ -346,6 +383,7 @@ class QuotationModel extends Model
 						left join penerimaan_barang pb on pb.id_pembelian=pm.id_pembelian
 						left join pengiriman pg on pg.id_penerimaan_barang = pb.id_penerimaan_barang
                         left join pemasok on pemasok.id_pemasok=pm.id_pemasok
+                        left join pegawai on pegawai.id_pegawai=t.id_pegawai
                         left join detail_transaksi_penawaran dtp on dtp.id_penawaran=p.id_penawaran
                         left join produk pd on pd.id_produk=dtp.id_produk
 						join pelanggan on pelanggan.id_pelanggan=t.id_pelanggan
@@ -616,5 +654,15 @@ class QuotationModel extends Model
                         where jabatan_pegawai='SALES' $query
                         )b
                         group by b.no_penawaran ");
+    }
+
+
+    public function getServices($id_service)
+    {
+        return DB::table('layanan')->select("nama_layanan", "type")->where("id_layanan", (int)$id_service)->first();
+    }
+    public function getIdServices($nama_layanan)
+    {
+        return DB::table('layanan')->select("id_layanan")->where("nama_layanan", $nama_layanan)->first();
     }
 }

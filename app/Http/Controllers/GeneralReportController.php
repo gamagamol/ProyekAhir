@@ -33,7 +33,7 @@ class GeneralReportController extends Controller
     {
         // dd(request()->input('month'));
         $data = $this->GeneralReportModel->omzetReport(request()->input('month'), request()->input('date'), request()->input('date_to'));
-
+        // dd($data);
         // echo json_encode([
         //     'data' => $data,
         //     'draw' => count($data)

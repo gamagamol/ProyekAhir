@@ -76,6 +76,7 @@
                             <th>NO SALES</th>
                             <th>TGL SALES</th>
                             <th>NAMA CUSTOMER</th>
+                            <th>NAMA SALES</th>
                             <th>NO PEMBELIAN</th>
                             <th>TGL PEMBELIAN</th>
                             <th>NAMA SUPPLIER</th>
@@ -176,6 +177,13 @@
                     mData: null,
                     mRender: function(d) {
                         return (d.nama_pelanggan) ? d.nama_pelanggan : '-'
+
+                    }
+                },
+                {
+                    mData: null,
+                    mRender: function(d) {
+                        return (d.nama_pegawai) ? d.nama_pegawai : '-'
 
                     }
                 },

@@ -10,6 +10,8 @@ use Terbilang;
 use function app\helper\penyebut;
 use App\Http\Controllers\QuotationController;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use App\Models\QuotationModel;
+use App\Models\TransaksiModel;
 
 
 class PurchaseController extends Controller
@@ -17,9 +19,13 @@ class PurchaseController extends Controller
     protected $PurchaseModel;
     protected $SupplierModel;
     protected $qc;
+    protected $QuotationModel;
+    protected $TransaksiModel;
     public function __construct()
     {
         $this->PurchaseModel = new PurchaseModel();
+        $this->QuotationModel = new QuotationModel();
+        $this->TransaksiModel = new TransaksiModel();
         $this->qc = new QuotationController;
     }
     public function index()
@@ -185,14 +191,28 @@ class PurchaseController extends Controller
                             if ($berat_asli[$ipo] != null) {
                                 $berat_produk = (float)$berat_asli[$ipo];
                             } else {
-                                $berat_produk = (float) $this->qc->CalculateWeight(
-                                    $bentuk_produk[$ipo],
-                                    $layanan[$ipo],
-                                    $tebal_transaksi[$ipo],
-                                    $lebar_transaksi[$ipo],
-                                    $panjang_transaksi[$ipo],
-                                    (int) $unit[$ipo]
-                                );
+
+                                // // $id_layanan=$this->QuotationModel->getIdServices($layanan[$ipo]);
+
+                                $transaksi  = $this->TransaksiModel->getTransaksi((int)$id_transaksi[$ipo]);
+                                $id_layanan = $transaksi->id_layanan;
+                                $type_transaksi = $transaksi->type;
+                                $type_layanan = $this->QuotationModel->getServices((int)$id_layanan)->type;
+
+                                if ($type_transaksi == 1) {
+
+
+                                    $berat_produk = (float) $this->qc->CalculateWeight(
+                                        $bentuk_produk[$ipo],
+                                        $type_layanan,
+                                        $tebal_transaksi[$ipo],
+                                        $lebar_transaksi[$ipo],
+                                        $panjang_transaksi[$ipo],
+                                        (int) $unit[$ipo]
+                                    );
+                                } else {
+                                    $berat_produk = $transaksi->berat;
+                                }
                             }
 
 
@@ -233,6 +253,18 @@ class PurchaseController extends Controller
                 foreach ($produk as $prdk) {
                     if ($prdk['id_produk'] == $quo->id_produk) {
                         if ($prdk['id_penawaran'] == $quo->id_penawaran) {
+
+                            $transaksi  = $this->TransaksiModel->getTransaksi((int)$quo->id_transaksi);
+                            $type_transaksi = $transaksi->type;
+
+                            if ($type_transaksi == 1) {
+                                $total_detail_pembelian
+                                    = $prdk['harga'] * $prdk['berat'] + (($prdk['harga'] * $prdk['berat']) * 0.11);
+                            } else {
+                                $total_detail_pembelian =
+                                    $prdk['harga'] * $prdk['berat'] + (($prdk['harga'] * $prdk['berat']) * 0.11) + (($prdk['harga'] * $prdk['berat']) * 0.12);
+                            }
+
                             $produk_penawaran = [
                                 'id_penjualan' => $quo->id_penjualan,
                                 'id_transaksi' => $quo->id_transaksi,
@@ -244,7 +276,7 @@ class PurchaseController extends Controller
                                 'berat' => $prdk['berat'],
                                 'subtotal' => $prdk['harga'] * $prdk['berat'],
                                 'ppn' => ($prdk['harga'] * $prdk['berat']) * 0.11,
-                                'total' => $prdk['harga'] * $prdk['berat'] + (($prdk['harga'] * $prdk['berat']) * 0.11),
+                                'total' => $total_detail_pembelian,
                                 'sisa_detail_penjualan' => $prdk['jumlah_unit'] - $prdk['unit'],
                                 'panjang_detail_pembelian' => $prdk['panjang_detail_pembelian'],
                                 'lebar_detail_pembelian' => $prdk['lebar_detail_pembelian'],
@@ -402,13 +434,21 @@ class PurchaseController extends Controller
                 ];
 
 
+                $transaksi  = $this->TransaksiModel->getTransaksi((int)$quo->id_transaksi);
+                $type_transaksi = $transaksi->type;
+                if ($type_transaksi == 1) {
+                    $total_detail_pembelian = ($quo->harga * $quo->berat) + (($quo->harga * $quo->berat) * 0.11);
+                } else {
+                    $total_detail_pembelian = ($quo->harga * $quo->berat) + (($quo->harga * $quo->berat) * 0.11) + (($quo->harga * $quo->berat) * 0.12);
+                }
+
 
                 $data_detail_pembelian[$i] = [
                     'id_pembelian' => 0,
                     'id_produk' => $quo->id_produk,
                     'jumlah_detail_pembelian' => $quo->jumlah_unit,
                     'harga_detail_pembelian' => $quo->harga,
-                    'total_detail_pembelian' => ($quo->harga * $quo->berat) + (($quo->harga * $quo->berat) * 0.11),
+                    'total_detail_pembelian' => $total_detail_pembelian,
                     'berat_detail_pembelian' => $quo->berat,
                     'subtotal_detail_pembelian' => $quo->harga * $quo->berat,
                     'ppn_detail_pembelian' => ($quo->harga * $quo->berat) * 0.11,
@@ -435,7 +475,6 @@ class PurchaseController extends Controller
                     'id_pemasok' => $ap['id_pemasok']
                 ];
 
-                // dump($ap);
 
                 $data_detail_pembelian[$i] = [
                     'id_pembelian' => 0,
@@ -498,7 +537,7 @@ class PurchaseController extends Controller
         }
 
 
-        // check isi array
+        // check isi array9
         // dump($kemungkinan);
         // dump($produk);
         // dump($arr_produk);
@@ -525,103 +564,162 @@ class PurchaseController extends Controller
             'tittle' => "Detail purchase Order",
             'data' => $data
         ];
-        // dd($data);
         return view('purchase.detail', $data);
     }
 
     public function print($no_transaksi)
     {
-        $data = $this->PurchaseModel->detail(str_replace("-", "/", $no_transaksi));
-
-
-        // dd($data);
-
-        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/purchase_template.xlsx');
-
-        $worksheet = $spreadsheet->getActiveSheet();
-
-        $worksheet->getCell('J4')->setValue($data[0]->tgl_pembelian);
-        $worksheet->getCell('J5')->setValue($data[0]->no_pembelian);
-        $worksheet->mergeCells("J5:K5");
-        // $no_ref_qtn = ($data[0]->no_po_customer == '' || $data[0]->no_po_customer == '-') ? $data[0]->no_penawaran : $data[0]->no_po_customer;
-        $worksheet->getCell('J6')->setValue($data[0]->no_penawaran);
-        $worksheet->getCell('A12')->setValue($data[0]->perwakilan_pemasok);
-        $worksheet->getCell('A13')->setValue($data[0]->nama_pemasok);
-        $worksheet->getCell('A14')->setValue($data[0]->alamat_pemasok);
-        $worksheet->getCell('D17')->setValue($data[0]->layanan);
+        $data = $this->PurchaseModel->print(str_replace("-", "/", $no_transaksi));
+        $goods = (count($data["goods"]) > 0) ? $data["goods"] : null;
+        $service = (count($data["service"]) > 0) ? $data["service"] : null;
+        $namaFile = $data["namaFile"];
 
 
 
+        if ($goods != null) {
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/purchase_template.xlsx');
+            $worksheet = $spreadsheet->getActiveSheet();
+            $worksheet->getCell('J4')->setValue($goods[0]->tgl_pembelian);
+            $worksheet->getCell('J5')->setValue($goods[0]->no_pembelian);
+            $worksheet->mergeCells("J5:K5");
+            $worksheet->getCell('J6')->setValue($goods[0]->no_penawaran);
+            $worksheet->getCell('J7')->setValue($goods[0]->nomor_transaksi);
+            $worksheet->getCell('A12')->setValue($goods[0]->perwakilan_pemasok);
+            $worksheet->getCell('A13')->setValue($goods[0]->nama_pemasok);
+            $worksheet->getCell('A14')->setValue($goods[0]->alamat_pemasok);
+            $worksheet->getCell('D17')->setValue($goods[0]->layanan);
 
-        $baris_awal = 19;
-        $subtotal = 0;
-        $total = 0;
-        $ongkir = 0;
-        $worksheet->insertNewRowBefore(20, count($data));
-        for ($i = 0; $i < count($data); $i++) {
-
-
-            $tambahan_baris = $baris_awal + 1;
-
-            $worksheet->setCellValue("A$tambahan_baris", ($i + 1));
-            $worksheet->setCellValue("B$tambahan_baris", $data[$i]->nomor_pekerjaan);
-            $worksheet->MergeCells("B$tambahan_baris:C$tambahan_baris");
-
-            $worksheet->setCellValue("D$tambahan_baris", $data[$i]->nama_produk);
-            $tebal = ((int)$data[$i]->tebal_detail_pembelian != 0) ? $data[$i]->tebal_detail_pembelian : $data[$i]->tebal_transaksi;
-            $lebar = ((int)$data[$i]->lebar_detail_pembelian != 0) ? $data[$i]->lebar_detail_pembelian : $data[$i]->lebar_transaksi;
-            $panjang = ((int)$data[$i]->panjang_detail_pembelian != 0) ? $data[$i]->panjang_detail_pembelian : $data[$i]->panjang_transaksi;
-
-            $worksheet->setCellValue("E$tambahan_baris", $tebal);
-            $worksheet->setCellValue("F$tambahan_baris", $lebar);
-            $worksheet->setCellValue("G$tambahan_baris", $panjang);
-            $worksheet->setCellValue("H$tambahan_baris", $data[$i]->jumlah_detail_pembelian);
-            $worksheet->setCellValue("I$tambahan_baris", $data[$i]->berat_detail_pembelian);
-            $worksheet->setCellValue("J$tambahan_baris", $data[$i]->harga_detail_pembelian);
-            $worksheet->setCellValue("K$tambahan_baris", $data[$i]->subtotal_detail_pembelian);
-            $worksheet->mergeCells("K$tambahan_baris:L$tambahan_baris");
+            $baris_awal = 19;
+            $subtotal = 0;
+            $total = 0;
+            $ongkir = 0;
+            $worksheet->insertNewRowBefore(20, count($goods));
+            for ($i = 0; $i < count($goods); $i++) {
 
 
+                $tambahan_baris = $baris_awal + 1;
 
-            $subtotal += $data[$i]->subtotal_detail_pembelian;
-            $ongkir += $data[$i]->ongkir;
-            $total += $data[$i]->total_detail_pembelian;
-            $baris_awal = $tambahan_baris;
+                $worksheet->setCellValue("A$tambahan_baris", ($i + 1));
+                $worksheet->setCellValue("B$tambahan_baris", $goods[$i]->nomor_pekerjaan);
+                $worksheet->MergeCells("B$tambahan_baris:C$tambahan_baris");
+
+                $worksheet->setCellValue("D$tambahan_baris", $goods[$i]->nama_produk);
+                $tebal = ((int)$goods[$i]->tebal_detail_pembelian != 0) ? $goods[$i]->tebal_detail_pembelian : $goods[$i]->tebal_transaksi;
+                $lebar = ((int)$goods[$i]->lebar_detail_pembelian != 0) ? $goods[$i]->lebar_detail_pembelian : $goods[$i]->lebar_transaksi;
+                $panjang = ((int)$goods[$i]->panjang_detail_pembelian != 0) ? $goods[$i]->panjang_detail_pembelian : $goods[$i]->panjang_transaksi;
+
+                $worksheet->setCellValue("E$tambahan_baris", $tebal);
+                $worksheet->setCellValue("F$tambahan_baris", $lebar);
+                $worksheet->setCellValue("G$tambahan_baris", $panjang);
+                $worksheet->setCellValue("H$tambahan_baris", $goods[$i]->jumlah_detail_pembelian);
+                $worksheet->setCellValue("I$tambahan_baris", $goods[$i]->berat_detail_pembelian);
+                $worksheet->setCellValue("J$tambahan_baris", $goods[$i]->harga_detail_pembelian);
+                $worksheet->setCellValue("K$tambahan_baris", $goods[$i]->subtotal_detail_pembelian);
+                $worksheet->mergeCells("K$tambahan_baris:L$tambahan_baris");
+
+                $subtotal += $goods[$i]->subtotal_detail_pembelian;
+                $ongkir += $goods[$i]->ongkir;
+                $total += $goods[$i]->total_detail_pembelian;
+                $baris_awal = $tambahan_baris;
+            }
+            $baris_setelah = $baris_awal + 2;
+            $worksheet->setCellValue("K$baris_setelah", $subtotal);
+            $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
+
+            $baris_setelah += 1;
+            $worksheet->setCellValue("K$baris_setelah", $subtotal * 0.11);
+            $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
+
+            $baris_setelah += 1;
+            $worksheet->setCellValue("K$baris_setelah", $total);
+            $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
+
+            $baris_setelah += 9;
+            $worksheet->setCellValue("H$baris_setelah", $goods[0]->nama_pengguna);
         }
-        $baris_setelah = $baris_awal + 2;
-        $worksheet->setCellValue("K$baris_setelah", $subtotal);
-        $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
-
-        $baris_setelah += 1;
-        $worksheet->setCellValue("K$baris_setelah", $subtotal * 0.11);
-        $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
-
-        $baris_setelah += 1;
-        $worksheet->setCellValue("K$baris_setelah", $total);
-        $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
-
-        $baris_setelah += 9;
-        $worksheet->setCellValue("H$baris_setelah", $data[0]->nama_pengguna);
 
 
 
+        if ($service != null) {
+            $spreadsheet1 = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/purchase_template_2.xlsx');
+            $worksheet1 = $spreadsheet1->getActiveSheet();
+            $worksheet1->getCell('J4')->setValue($service[0]->tgl_pembelian);
+            $worksheet1->getCell('J5')->setValue($service[0]->no_pembelian);
+            $worksheet1->mergeCells("J5:K5");
+            $worksheet1->getCell('J6')->setValue($service[0]->no_penawaran);
+            $worksheet1->getCell('J7')->setValue($service[0]->nomor_transaksi);
+            $worksheet1->getCell('A12')->setValue($service[0]->perwakilan_pemasok);
+            $worksheet1->getCell('A13')->setValue($service[0]->nama_pemasok);
+            $worksheet1->getCell('A14')->setValue($service[0]->alamat_pemasok);
+            $worksheet1->getCell('D17')->setValue($service[0]->layanan);
+
+            $baris_awal = 19;
+            $subtotal = 0;
+            $total = 0;
+            $ongkir = 0;
+            $worksheet1->insertNewRowBefore(20, count($service));
+            for ($i = 0; $i < count($service); $i++) {
+
+
+                $tambahan_baris = $baris_awal + 1;
+
+                $worksheet1->setCellValue("A$tambahan_baris", ($i + 1));
+                $worksheet1->setCellValue("B$tambahan_baris", $service[$i]->nomor_pekerjaan);
+                $worksheet1->MergeCells("B$tambahan_baris:C$tambahan_baris");
+
+                $worksheet1->setCellValue("D$tambahan_baris", $service[$i]->nama_produk);
+                $tebal = ((int)$service[$i]->tebal_detail_pembelian != 0) ? $service[$i]->tebal_detail_pembelian : $service[$i]->tebal_transaksi;
+                $lebar = ((int)$service[$i]->lebar_detail_pembelian != 0) ? $service[$i]->lebar_detail_pembelian : $service[$i]->lebar_transaksi;
+                $panjang = ((int)$service[$i]->panjang_detail_pembelian != 0) ? $service[$i]->panjang_detail_pembelian : $service[$i]->panjang_transaksi;
+
+                $worksheet1->setCellValue("E$tambahan_baris", $tebal);
+                $worksheet1->setCellValue("F$tambahan_baris", $lebar);
+                $worksheet1->setCellValue("G$tambahan_baris", $panjang);
+                $worksheet1->setCellValue("H$tambahan_baris", $service[$i]->jumlah_detail_pembelian);
+                $worksheet1->setCellValue("I$tambahan_baris", $service[$i]->berat_detail_pembelian);
+                $worksheet1->setCellValue("J$tambahan_baris", $service[$i]->harga_detail_pembelian);
+                $worksheet1->setCellValue("K$tambahan_baris", $service[$i]->subtotal_detail_pembelian);
+                $worksheet1->mergeCells("K$tambahan_baris:L$tambahan_baris");
 
 
 
+                $subtotal += $service[$i]->subtotal_detail_pembelian;
+                $ongkir += $service[$i]->ongkir;
+                $total += $service[$i]->total_detail_pembelian;
+                $baris_awal = $tambahan_baris;
+            }
+            $baris_setelah = $baris_awal + 2;
+            $worksheet1->setCellValue("K$baris_setelah", $subtotal);
+            $worksheet1->MergeCells("K$baris_setelah:L$baris_setelah");
 
-        $namaFile = $data[0]->no_pembelian;
+            $baris_setelah += 1;
+            $worksheet1->setCellValue("K$baris_setelah", $subtotal * 0.11);
+            $worksheet1->MergeCells("K$baris_setelah:L$baris_setelah");
+            $baris_setelah += 1;
+            $worksheet1->setCellValue("K$baris_setelah", $subtotal * 0.12);
+            $worksheet1->MergeCells("K$baris_setelah:L$baris_setelah");
 
-        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header("Content-Disposition: attachment; filename=$namaFile.xlsx"); // Set nama file excel nya
-        header('Cache-Control: max-age=0');
+            $baris_setelah += 1;
+            $worksheet1->setCellValue("K$baris_setelah", $total);
+            $worksheet1->MergeCells("K$baris_setelah:L$baris_setelah");
 
-        $writer = new Xlsx($spreadsheet);
-        $writer->save('php://output');
-        // $writer->save('report/quotation.xls');
+            $baris_setelah += 9;
+            $worksheet1->setCellValue("H$baris_setelah", $service[0]->nama_pengguna);
+        }
 
 
+
+        if ($goods != null && $service != null) {
+            $this->qc->printAll($spreadsheet, $spreadsheet1, $namaFile);
+        } else if ($goods != null) {
+
+            $this->qc->printAll($spreadsheet, null, $namaFile);
+        } else if ($service != null) {
+            $this->qc->printAll(null, $spreadsheet1, $namaFile);
+        }
     }
+
+
 
     function containsOnlyNull($input)
     {

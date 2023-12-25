@@ -1,10 +1,15 @@
 @extends('template.index')
 @section('content')
 
+    <style>
+        .tab-content {
+            border-left: 1px solid #ddd;
+            padding-left: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 15px;
+        }
+    </style>
     <link rel="stylesheet" href="{{ asset('css/CustomStyleselect2.css') }}">
-
-
-
     @if (session()->has('failed'))
         <div class="alert alert-danger" role="alert">
             {{ session('failed') }}
@@ -24,6 +29,48 @@
                 <div id="table_atas">
                     <form action="{{ url('quotation') }}" method="POST">
                         @csrf
+
+                        <div class="row">
+                            <div class="col-md-3 d-flex justify-content-start">
+                                <div class="form-group mt-2 rounded">
+                                    <label for="example1" class="mt-2">Transaction Number </label>
+                                    <input type="text"
+                                        class="form-control @error('nomor_transaksi') is-invalid @enderror"
+                                        name="nomor_transaksi" id="nomor_transaksi"
+                                        @if (count($pembantu) > 0) readonly value={{ $pembantu[0]->nomor_transaksi }} @else value={{ old('nomor_transaksi') }} @endif>
+
+                                    @error('nomor_transaksi')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+
+                                </div>
+
+
+
+                            </div>
+
+
+
+                            {{-- {{ old('type') }} --}}
+                            <div class="col-md-2 d-flex justify-content-center">
+                                <div class="form-check form-check-inline">
+                                    <label class="form-check-label mr-1" for="goods">Goods</label>
+                                    <input type="radio" name="type" id="goods" value="1"
+                                        class="form-check-input" {{ old('type') == '1' ? 'checked' : '' }}>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <label class="form-check-label mr-1" for="service">Service</label>
+                                    <input type="radio" name="type" id="service" value="2"
+                                        class="form-check-input" {{ old('type') == '2' ? 'checked' : '' }}>
+                                </div>
+
+
+
+                            </div>
+
+                        </div>
 
                         <div class="row">
                             <div class="col-md-3 ">
@@ -219,8 +266,8 @@
                                         name="layanan">
 
                                         @foreach ($services as $service)
-                                            <option value={{ str_replace(' ','_',$service->nama_layanan) }}>
-                                                {{ $service->nama_layanan }}
+                                            <option value={{ $service->id_layanan }}>
+                                                {{ str_replace('_', '+', $service->nama_layanan) }}
                                             </option>
                                         @endforeach
 
@@ -250,7 +297,8 @@
                             </div>
 
                             <div class="col-md-3">
-                                <div class="form-group mt-2 rounded">
+
+                                <div class="form-group mt-2 rounded" id="row-ongkir">
                                     <label for="example1" class="mt-2">Shipment</label>
                                     <input type="text" class="form-control @error('ongkir') is-invalid @enderror"
                                         name="ongkir" id="ongkir"
@@ -262,6 +310,25 @@
                                         </div>
                                     @enderror
                                 </div>
+
+
+
+                                <div class="form-group mt-2 rounded" id="row-berat" hidden>
+                                    <label for="example1" class="mt-2">Weight</label>
+                                    <input type="text" class="form-control @error('berat') is-invalid @enderror"
+                                        name="berat" id="berat" value="{{ old('berat') }}" min="0">
+                                    @error('berat')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+
+
+
+
+
                             </div>
                         </div>
                         <div class="row">
@@ -288,146 +355,317 @@
     </div>
 
 
-
     <h4 class="text-start mt-2 mb-2">Data Inputan</h4>
 
-    <form action={{ url('quotation_insert') }} method="POST">
-        <div class="table-responsive text-center mt-2">
+
+    <div class="container mt-4">
+        <form action={{ url('quotation_insert') }} method="POST">
             @csrf
+            <?php $element = 1; ?>
 
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <tr>
-                    <td colspan="7">Inquiry</td>
-                    <td colspan="15">Inquiry</td>
-                </tr>
-                <tr>
-                    <td>No</td>
-                    <td>Date</td>
-                    <td>Job number</td>
-                    <td>Grade</td>
-                    <td colspan="3">Material Size</td>
-                    <td>QTY</td>
-                    <td>Grade</td>
-                    <td colspan="3">Material Size</td>
-                    <td>QTY</td>
-                    <td>Weight(Kg)</td>
-                    <td>Unit Price</td>
-                    <td>Shipment</td>
-                    <td>Amount</td>
-                    <td>VAT 11%</td>
-                    <td>Total Amount</td>
-                    <td>Processing</td>
-                    <td>Customer</td>
-                    <td>Delete</td>
+            <ul class="nav nav-tabs" id="myTabs">
+                <li class="nav-item">
+                    <a class="nav-link active" id="tab1-tab" data-toggle="tab" href="#tab1">Goods</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="tab2-tab" data-toggle="tab" href="#tab2">Service</a>
+                </li>
 
-                </tr>
-                @if ($pembantu)
-                    <?php $i = 1;
-                    $total = 0; ?>
-                    @foreach ($pembantu as $p)
-                        {{-- @dd($p) --}}
-                        <tr>
+            </ul>
 
-                            <input type="text"
-                                value="{{ "$p->kode_transaksi|$p->tgl_pembantu|$p->nomor_pekerjaan|$p->nama_produk|$p->tebal_pembantu |$p->lebar_pembantu| $p->panjang_pembantu|$p->jumlah_pembantu|$p->nama_produk|$p->tebal_penawaran|$p->lebar_penawaran|$p->panjang_penawaran|$p->jumlah_pembantu|$p->berat_pembantu|$p->harga_pembantu|$p->ongkir_pembantu|$p->subtotal|$p->ppn|$p->total|$p->layanan_pembantu|$p->id_pelanggan|$p->id_user|$p->id_pegawai" }}"
-                                name={{ "elemen$i" }} hidden>
+            <div class="tab-content mt-2">
+                <div class="tab-pane fade show active" id="tab1">
+                    <div class="table-responsive text-center mt-2">
 
-                            <td>
-                                {{ $loop->iteration }}
-                            </td>
-                            <td style="min-width:120px">
-                                {{ $p->tgl_pembantu }}
-                            </td>
-                            <td>
-                                {{ $p->nomor_pekerjaan }}
-                            </td>
-                            <td>
-                                {{ $p->nama_produk }}
-                            </td>
-                            <td>
-                                {{ $p->tebal_pembantu }}
-                            </td>
-                            <td>
-                                {{ $p->lebar_pembantu }}
-                            </td>
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <tr>
+                                <td colspan="7">Inquiry</td>
+                                <td colspan="15">Inquiry</td>
+                            </tr>
+                            <tr>
+                                <td>No</td>
+                                <td>Date</td>
+                                <td>Job number</td>
+                                <td>Grade</td>
+                                <td colspan="3">Material Size</td>
+                                <td>QTY</td>
+                                <td>Grade</td>
+                                <td colspan="3">Material Size</td>
+                                <td>QTY</td>
+                                <td>Weight(Kg)</td>
+                                <td>Unit Price</td>
+                                <td>Shipment</td>
+                                <td>Amount</td>
+                                <td>VAT 11%</td>
+                                <td>Total Amount</td>
+                                <td>Processing</td>
+                                <td>Customer</td>
+                                <td>Delete</td>
 
-                            <td>
-                                {{ $p->panjang_pembantu }}
-                            </td>
-                            <td>
-                                {{ $p->jumlah_pembantu }}
-                            </td>
+                            </tr>
+                            @if ($pembantu)
+                                <?php $i = 1;
+                                $total = 0; ?>
+                                @foreach ($pembantu as $p)
+                                    {{-- @dd($p) --}}
+                                    @if ($p->type == 1)
+                                        <tr>
 
-                            <td>
-                                {{ $p->nama_produk }}
-                            </td>
-                            <td>
-                                {{ $p->tebal_penawaran }}
-                            </td>
-                            <td>
-                                {{ $p->lebar_penawaran }}
-                            </td>
-                            <td>
-                                {{ $p->panjang_penawaran }}
-                            </td>
-                            <td>
-                                {{ $p->jumlah_pembantu }}
-                            </td>
-                            <td>
-                                {{ $p->berat_pembantu }}
-                            </td>
-                            <td>
-                                {{ 'Rp' . number_format($p->harga_pembantu) }}
-                            </td>
-                            <td>
-                                {{ 'Rp' . number_format($p->ongkir_pembantu) }}
-                            </td>
-                            <td>
-                                {{ 'Rp' . number_format($p->subtotal) }}
-                            </td>
-                            <td>
-                                {{ 'Rp' . number_format($p->ppn) }}
+                                            <input type="text"
+                                                value="{{ "$p->kode_transaksi|$p->tgl_pembantu|$p->nomor_pekerjaan|$p->nama_produk|$p->tebal_pembantu |$p->lebar_pembantu| $p->panjang_pembantu|$p->jumlah_pembantu|$p->nama_produk|$p->tebal_penawaran|$p->lebar_penawaran|$p->panjang_penawaran|$p->jumlah_pembantu|$p->berat_pembantu|$p->harga_pembantu|$p->ongkir_pembantu|$p->subtotal|$p->ppn|$p->total|$p->layanan_pembantu|$p->id_pelanggan|$p->id_user|$p->id_pegawai|$p->nomor_transaksi|$p->id_layanan|$p->type" }}"
+                                                name={{ "elemen$element" }} hidden>
 
-                            </td>
-                            <td>
-                                {{ 'Rp' . number_format($p->total) }}
-                            </td>
-                            <td>
-                                {{ $p->layanan_pembantu }}
-                            </td>
-                            <td>
-                                {{ $nama_pelanggan }}
-                            </td>
+                                            <td>
+                                                {{ $loop->iteration }}
+                                            </td>
+                                            <td style="min-width:120px">
+                                                {{ $p->tgl_pembantu }}
+                                            </td>
+                                            <td>
+                                                {{ $p->nomor_pekerjaan }}
+                                            </td>
+                                            <td>
+                                                {{ $p->nama_produk }}
+                                            </td>
+                                            <td>
+                                                {{ $p->tebal_pembantu }}
+                                            </td>
+                                            <td>
+                                                {{ $p->lebar_pembantu }}
+                                            </td>
 
-                            <td>
-                                <button type="button" id="btn_edit_penawaran" class="btn btn-warning"
-                                    onclick="editPenawaran(<?= $p->id_pembantu ?>,<?= $p->tebal_pembantu ?>,<?= $p->lebar_pembantu ?>,<?= $p->panjang_pembantu ?>,'<?= $p->bentuk_pembantu ?>','<?= $p->layanan_pembantu ?>',<?= $p->jumlah_pembantu ?>,<?= $p->harga_pembantu?>)">
-                                    Edit</button>
-                                <a href={{ url('deleteq', $p->id_pembantu) }} class="btn btn-danger">Delete</a>
-                            </td>
+                                            <td>
+                                                {{ $p->panjang_pembantu }}
+                                            </td>
+                                            <td>
+                                                {{ $p->jumlah_pembantu }}
+                                            </td>
+
+                                            <td>
+                                                {{ $p->nama_produk }}
+                                            </td>
+                                            <td>
+                                                {{ $p->tebal_penawaran }}
+                                            </td>
+                                            <td>
+                                                {{ $p->lebar_penawaran }}
+                                            </td>
+                                            <td>
+                                                {{ $p->panjang_penawaran }}
+                                            </td>
+                                            <td>
+                                                {{ $p->jumlah_pembantu }}
+                                            </td>
+                                            <td>
+                                                {{ $p->berat_pembantu }}
+                                            </td>
+                                            <td>
+                                                {{ 'Rp' . number_format($p->harga_pembantu) }}
+                                            </td>
+                                            <td>
+                                                {{ 'Rp' . number_format($p->ongkir_pembantu) }}
+                                            </td>
+                                            <td>
+                                                {{ 'Rp' . number_format($p->subtotal) }}
+                                            </td>
+                                            <td>
+                                                {{ 'Rp' . number_format($p->ppn) }}
+
+                                            </td>
+                                            <td>
+                                                {{ 'Rp' . number_format($p->total) }}
+                                            </td>
+                                            <td>
+                                                {{ $p->layanan_pembantu }}
+                                            </td>
+                                            <td>
+                                                {{ $nama_pelanggan }}
+                                            </td>
+
+                                            <td>
+                                                <button type="button" id="btn_edit_penawaran" class="btn btn-warning"
+                                                    onclick="editPenawaran(<?= $p->id_pembantu ?>,<?= $p->tebal_pembantu ?>,<?= $p->lebar_pembantu ?>,<?= $p->panjang_pembantu ?>,'<?= $p->bentuk_pembantu ?>','<?= $p->layanan_pembantu ?>',<?= $p->jumlah_pembantu ?>,<?= $p->harga_pembantu ?>)">
+                                                    Edit</button>
+                                                <a href={{ url('deleteq', $p->id_pembantu) }}
+                                                    class="btn btn-danger">Delete</a>
+                                            </td>
 
 
 
-                        </tr>
-                        <?php $i++; ?>
-                        <?php $total = $total + $p->total; ?>
-                    @endforeach
-                    @if (count($pembantu) > 0)
-                        <?php $total += $pembantu[0]->ongkir_pembantu; ?>
-                    @endif
+                                        </tr>
+                                        <?php $element++; ?>
+                                        <?php $i++; ?>
+                                        <?php $total = $total + $p->total; ?>
+                                    @endif
+                                @endforeach
+                                @if (count($pembantu) > 0)
+                                    <?php $total += $pembantu[0]->ongkir_pembantu; ?>
+                                @endif
 
-                    <tr>
-                        <td colspan='18'>Total Quotation</td>
-                        <td>{{ 'Rp' . number_format($total) }}</td>
-                    </tr>
-                @endif
+                                <tr>
+                                    <td colspan='18'>Total Quotation</td>
+                                    <td>{{ 'Rp' . number_format($total) }}</td>
+                                </tr>
+                            @endif
 
-            </table>
-        </div>
-        <a href="{{ url('quotation') }}" class="btn btn-primary  mb-4 ml-3" style="margin-top: 30px">Back</a>
-        <button class="btn btn-primary text-start mt-2" name="submit" id="submit" hidden data-toggle="modal"
-            data-target="#sales">submit</button>
-    </form>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="tab-pane fade" id="tab2">
+
+                    <div class="table-responsive text-center mt-2">
+                        @csrf
+
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <tr>
+                                <td colspan="7">Inquiry</td>
+                                <td colspan="16">Inquiry</td>
+                            </tr>
+                            <tr>
+                                <td>No</td>
+                                <td>Date</td>
+                                <td>Job number</td>
+                                <td>Grade</td>
+                                <td colspan="3">Material Size</td>
+                                <td>QTY</td>
+                                <td>Grade</td>
+                                <td colspan="3">Material Size</td>
+                                <td>QTY</td>
+                                <td>Weight(Kg)</td>
+                                <td>Unit Price</td>
+                                <td>Amount</td>
+                                <td>VAT 11%</td>
+                                <td>VAT 12%</td>
+                                <td>Total Amount</td>
+                                <td>Processing</td>
+                                <td>Customer</td>
+                                <td>Delete</td>
+
+                            </tr>
+                            @if ($pembantu)
+                                <?php $i = 1;
+                                $total = 0; ?>
+                                @foreach ($pembantu as $p)
+                                    {{-- @dd($p) --}}
+                                    @if ($p->type == 2)
+                                        <tr>
+
+                                            <input type="text"
+                                                value="{{ "$p->kode_transaksi|$p->tgl_pembantu|$p->nomor_pekerjaan|$p->nama_produk|$p->tebal_pembantu |$p->lebar_pembantu| $p->panjang_pembantu|$p->jumlah_pembantu|$p->nama_produk|$p->tebal_penawaran|$p->lebar_penawaran|$p->panjang_penawaran|$p->jumlah_pembantu|$p->berat_pembantu|$p->harga_pembantu|$p->ongkir_pembantu|$p->subtotal|$p->ppn|$p->total|$p->layanan_pembantu|$p->id_pelanggan|$p->id_user|$p->id_pegawai|$p->nomor_transaksi|$p->id_layanan|$p->type" }}"
+                                                name={{ "elemen$element" }} hidden>
+
+                                            <td>
+                                                {{ $loop->iteration }}
+                                            </td>
+                                            <td style="min-width:120px">
+                                                {{ $p->tgl_pembantu }}
+                                            </td>
+                                            <td>
+                                                {{ $p->nomor_pekerjaan }}
+                                            </td>
+                                            <td>
+                                                {{ $p->nama_produk }}
+                                            </td>
+                                            <td>
+                                                {{ $p->tebal_pembantu }}
+                                            </td>
+                                            <td>
+                                                {{ $p->lebar_pembantu }}
+                                            </td>
+
+                                            <td>
+                                                {{ $p->panjang_pembantu }}
+                                            </td>
+                                            <td>
+                                                {{ $p->jumlah_pembantu }}
+                                            </td>
+
+                                            <td>
+                                                {{ $p->nama_produk }}
+                                            </td>
+                                            <td>
+                                                {{ $p->tebal_penawaran }}
+                                            </td>
+                                            <td>
+                                                {{ $p->lebar_penawaran }}
+                                            </td>
+                                            <td>
+                                                {{ $p->panjang_penawaran }}
+                                            </td>
+                                            <td>
+                                                {{ $p->jumlah_pembantu }}
+                                            </td>
+                                            <td>
+                                                {{ $p->berat_pembantu }}
+                                            </td>
+                                            <td>
+                                                {{ 'Rp' . number_format($p->harga_pembantu) }}
+                                            </td>
+                                            <td>
+                                                {{ 'Rp' . number_format($p->subtotal) }}
+                                            </td>
+                                            <td>
+                                                {{ 'Rp' . number_format($p->ppn) }}
+
+                                            </td>
+                                            <td>
+                                                {{ 'Rp' . number_format($p->subtotal * 0.12) }}
+
+                                            </td>
+                                            <td>
+                                                {{ 'Rp' . number_format($p->total) }}
+                                            </td>
+                                            <td>
+                                                {{ $p->layanan_pembantu }}
+                                            </td>
+                                            <td>
+                                                {{ $nama_pelanggan }}
+                                            </td>
+
+                                            <td>
+                                                <button type="button" id="btn_edit_penawaran" class="btn btn-warning"
+                                                    onclick="editPenawaran(<?= $p->id_pembantu ?>,<?= $p->tebal_pembantu ?>,<?= $p->lebar_pembantu ?>,<?= $p->panjang_pembantu ?>,'<?= $p->bentuk_pembantu ?>','<?= $p->layanan_pembantu ?>',<?= $p->jumlah_pembantu ?>,<?= $p->harga_pembantu ?>)">
+                                                    Edit</button>
+                                                <a href={{ url('deleteq', $p->id_pembantu) }}
+                                                    class="btn btn-danger">Delete</a>
+                                            </td>
+
+
+
+                                        </tr>
+                                        <?php $element++; ?>
+                                        <?php $i++; ?>
+                                        <?php $total = $total + $p->total; ?>
+                                    @endif
+                                @endforeach
+                                @if (count($pembantu) > 0)
+                                    <?php $total += $pembantu[0]->ongkir_pembantu; ?>
+                                @endif
+
+                                <tr>
+                                    <td colspan='18'>Total Quotation</td>
+                                    <td>{{ 'Rp' . number_format($total) }}</td>
+                                </tr>
+                            @endif
+
+                        </table>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+            <a href="{{ url('quotation') }}" class="btn btn-primary  mb-4 ml-3" style="margin-top: 30px">Back</a>
+            <button class="btn btn-primary text-start mt-2" name="submit" id="submit" hidden data-toggle="modal"
+                data-target="#sales">submit</button>
+        </form>
+
+    </div>
+
+
+
 
     {{-- modal --}}
     <div class="modal" tabindex="-1" role="dialog" id="modal">
@@ -505,6 +743,31 @@
 
         $('.select2').select2();
 
+        $(document).ready(function() {
+            $("#goods").click(() => {
+                $("#row-ongkir").removeAttr("hidden");
+                $("#row-berat").attr("hidden", true);
+                $("#berat").val("")
+            });
+
+            $("#service").click(() => {
+
+                $("#row-ongkir").attr("hidden", true);
+                $("#row-berat").removeAttr("hidden");
+                let ongkir = $("#ongkir").val()
+                // $("#ongkir").val("")
+                console.log(ongkir);
+                if (ongkir == "" || ongkir == null) {
+                    $("#ongkir").val("")
+
+                }
+
+            });
+
+
+
+        })
+
         let baseUrl = '<?= url('/') ?>'
 
 
@@ -532,7 +795,8 @@
 
         }
 
-        function editPenawaran(id_pembantu, tebal_penawaran, lebar_penawaran, panjang_penawaran, bentuk, layanan, jumlah,harga) {
+        function editPenawaran(id_pembantu, tebal_penawaran, lebar_penawaran, panjang_penawaran, bentuk, layanan, jumlah,
+            harga) {
 
             $('#id_edit_penawaran').val(id_pembantu)
 

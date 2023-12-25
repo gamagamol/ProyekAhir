@@ -22,7 +22,7 @@ class PurchaseModel extends Model
 
 
         return DB::select(
-            "SELECT p.*,t.nomor_pekerjaan,pe.nama_pelanggan,pm.nama_pemasok,pg.nama_pengguna,dtp.jumlah_detail_penerimaan,no_penjualan from pembelian p
+            "SELECT p.*,t.nomor_pekerjaan,pe.nama_pelanggan,pm.nama_pemasok,pg.nama_pengguna,dtp.jumlah_detail_penerimaan,no_penjualan,t.nomor_transaksi from pembelian p
             join transaksi t on p.id_transaksi = t.id_transaksi
             join pelanggan pe on pe.id_pelanggan=t.id_pelanggan
             join pemasok pm on pm.id_pemasok = p.id_pemasok
@@ -298,6 +298,43 @@ class PurchaseModel extends Model
         join pengguna on pengguna.id = transaksi.id
         where no_pembelian='$no_pembelian' 
         ");
+    }
+
+    public function print($no_pembelian)
+    {
+
+        $goods = DB::select("SELECT * FROM pembelian 
+        join detail_transaksi_pembelian on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
+        join penjualan on penjualan.id_penjualan=pembelian.id_penjualan
+        join detail_transaksi_penjualan on penjualan.id_penjualan = detail_transaksi_penjualan.id_penjualan
+        join transaksi on transaksi.id_transaksi=pembelian.id_transaksi
+        join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
+        join pelanggan on pelanggan.id_pelanggan = transaksi.id_pelanggan
+        join pemasok on pemasok.id_pemasok = pembelian.id_pemasok
+        join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
+        join pegawai on pegawai.id_pegawai = transaksi.id_pegawai
+        join pengguna on pengguna.id = transaksi.id
+        where no_pembelian='$no_pembelian' and transaksi.type=1
+        ");
+        $service = DB::select("SELECT * FROM pembelian 
+        join detail_transaksi_pembelian on pembelian.id_pembelian=detail_transaksi_pembelian.id_pembelian
+        join penjualan on penjualan.id_penjualan=pembelian.id_penjualan
+        join detail_transaksi_penjualan on penjualan.id_penjualan = detail_transaksi_penjualan.id_penjualan
+        join transaksi on transaksi.id_transaksi=pembelian.id_transaksi
+        join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
+        join pelanggan on pelanggan.id_pelanggan = transaksi.id_pelanggan
+        join pemasok on pemasok.id_pemasok = pembelian.id_pemasok
+        join produk on detail_transaksi_pembelian.id_produk=produk.id_produk
+        join pegawai on pegawai.id_pegawai = transaksi.id_pegawai
+        join pengguna on pengguna.id = transaksi.id
+        where no_pembelian='$no_pembelian' and transaksi.type=2
+        ");
+
+        return [
+            "goods" => $goods,
+            "service" => $service,
+            "namaFile" => str_replace("/", "_", $no_pembelian)
+        ];
     }
 
     public function getNoPurchase()

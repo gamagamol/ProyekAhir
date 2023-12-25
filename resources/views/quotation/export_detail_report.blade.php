@@ -23,12 +23,12 @@
                  <th>Date Sales</th>
                  <th>No Sales</th>
                  <th>Supplier</th>
+                 <th>Sales</th>
                  <th>Status</th>
              </tr>
          </thead>
          <tbody id="Tbody">
              @foreach ($data as $d)
-          
                  <tr>
                      <td>{{ $d->tgl_penawaran }}</td>
                      <td>{{ $d->no_penawaran }}</td>
@@ -48,10 +48,11 @@
                      <td>{{ number_format($d->harga) }}</td>
                      <td>{{ number_format($d->total) }}</td>
                      <td>{{ $d->layanan }}</td>
-                     <td>{{ ($d->tgl_penjualan) ? $d->tgl_penjualan : '-' }}</td>
-                     <td>{{ ($d->no_penjualan) ? $d->no_penjualan : '-' }}</td>
-                     <td>{{ ($d->nama_pemasok) ? $d->nama_pemasok : '-' }}</td>
-                
+                     <td>{{ $d->tgl_penjualan ? $d->tgl_penjualan : '-' }}</td>
+                     <td>{{ $d->no_penjualan ? $d->no_penjualan : '-' }}</td>
+                     <td>{{ $d->nama_pemasok ? $d->nama_pemasok : '-' }}</td>
+                     <td>{{ $d->nama_pegawai ? $d->nama_pegawai : '-' }}</td>
+
                      @if ($d->no_penjualan)
                          <td>CLOSE</td>
                      @else

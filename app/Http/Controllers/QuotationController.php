@@ -8,22 +8,29 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\QuotationModel;
 use Illuminate\Support\Facades\DB;
 use App\Exports\QuotationExport;
+use App\Imports\QuotationImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Illuminate\Support\Facades\Auth;
+use App\Models\ProductModel;
+use App\Models\CustumorModel;
 
 class QuotationController extends Controller
 {
     public $QuotationModel;
     public $pegawai;
     public $pdf;
+    public $ProductModel;
+    public $CustumorModel;
 
 
     public function __construct()
     {
         $this->QuotationModel = new QuotationModel();
+        $this->ProductModel = new ProductModel();
+        $this->CustumorModel = new CustumorModel();
         $this->pegawai = new pegawaiModel();
     }
     public function index()
@@ -118,7 +125,6 @@ class QuotationController extends Controller
 
 
 
-
         $rules = [
             'kode_transaksi' => "required|unique:transaksi,kode_transaksi",
             'nomor_pekerjaan' => 'required',
@@ -130,9 +136,9 @@ class QuotationController extends Controller
             'panjang_transaksi' => "required|regex:/^\d*(\.\d{2})?$/",
             'jumlah' => "required",
             'harga' => "required",
-            'ongkir' => "required",
             'tgl_penawaran' => "required",
             'id_pegawai' => "required",
+            'nomor_transaksi' => "required",
 
         ];
         $message = [
@@ -144,23 +150,35 @@ class QuotationController extends Controller
             'panjang_transaksi.required' => "The LENGTH INQUIRY field is required",
             'jumlah.required' => "The QTY field is required",
             'harga.required' => "The PRICE field is required",
-            'ongkir.required' => "The SHIPPMENT field is required",
             'id_produk.required' => "The PRODUCT field is required!",
             'id_pelanggan.required' => "The CUSTUMOR field is required!",
             'tgl_penawaran.required' => "The Date field is required!",
             'id_pegawai.required' => "The Employee field is required!",
+            'nomor_transaksi.required' => "The Transaction Number field is required!",
 
 
         ];
+
+
+        $type = $request->input("type");
+        $type = ($type == null) ? 1 : $type;
+        if ($type == 1) {
+            $rules["ongkir"] = "required";
+            $message["ongkir.required"] = "The SHIPPMENT field is required";
+        } else {
+            $rules["berat"] = "required";
+            $message["berat.required"] = "The Weight field is required";
+        }
+
         $validated = Validator::make($request->all(), $rules, $message);
+
 
         if ($validated->fails()) {
             return redirect('quotation/create')->withErrors($validated)->withInput();
         } else {
 
 
-            // print_r($_POST);
-            // die;
+
             $produk = $request->input("id_produk");
             $produk = explode("|", $request->input('id_produk'));
             $nama_produk = $produk[0];
@@ -171,7 +189,11 @@ class QuotationController extends Controller
             $lebar_transaksi = $request->input("lebar_transaksi");
             $panjang_transaksi = $request->input("panjang_transaksi");
             $jumlah = $request->input("jumlah");
-            $layanan = $request->input("layanan");
+            $layanan = $this->QuotationModel->getServices($request->input("layanan"));
+            $type_layanan = $layanan->type;
+
+            $type = $request->input("type");
+            $type = ($type == null) ? 1 : $type;
 
             if ((int)$lebar_transaksi <= 0 && $bentuk_produk == 'FLAT') {
                 return redirect()->back()->withErrors(['lebar_transaksi' => 'Fill Width more then 0'])->withInput();
@@ -179,15 +201,48 @@ class QuotationController extends Controller
 
             // Logika penentuan berat
             // deklarasi
+            // dd($layanan);
 
-            $berat = $this->CalculateWeight($bentuk_produk, $layanan, $tebal_transaksi, $lebar_transaksi, $panjang_transaksi, $jumlah);
+            if ($type == 1) {
 
-            // dump($berat);
+                $berat = $this->CalculateWeight($bentuk_produk, $type_layanan, $tebal_transaksi, $lebar_transaksi, $panjang_transaksi, $jumlah);
+            } else {
+                $berat = $request->berat;
+            }
+
+            // dd($berat);
             $subtotal = (float) $berat * (int) str_replace('.', "", $request->input('harga'));
 
             // dd($subtotal);
+
+
+            // nama layanan
+            // dd($layanan->nama_layanan);
+            if (str_contains($layanan->nama_layanan, "_")) {
+                // dd("sini");
+                $nama_layanan = strtoupper(str_replace("_", "+", $layanan->nama_layanan));
+            } else {
+                $nama_layanan = $layanan->nama_layanan;
+            }
+
+            // dd($nama_layanan);
+
             $ppn = $subtotal * 0.11;
-            $total = $subtotal + $ppn;
+            $ppn12 = $subtotal * 0.12;
+
+            if ($type == 1) {
+                $total = $subtotal + $ppn;
+            } else {
+                $total = $subtotal + $ppn + $ppn12;
+            }
+
+
+            // dump($subtotal);
+            // dump($ppn);
+            // dump($ppn12 + $ppn);
+            // dump($total);
+
+
             $data = [
                 'kode_transaksi' => strtoupper($request->input("kode_transaksi")),
                 'tgl_pembantu' => $request->input("tgl_penawaran"),
@@ -199,23 +254,26 @@ class QuotationController extends Controller
                 'lebar_pembantu' => $request->input("lebar_transaksi"),
                 'panjang_pembantu' => $request->input("panjang_transaksi"),
                 'jumlah_pembantu' => $request->input("jumlah"),
-                'layanan_pembantu' => str_replace("_", " ", $request->input("layanan")),
+                'layanan_pembantu' => $nama_layanan,
                 'harga_pembantu' => str_replace('.', "", $request->input('harga')),
-                'ongkir_pembantu' => str_replace('.', "", $request->input('ongkir')),
+                'ongkir_pembantu' => str_replace('.', "", ($request->input('ongkir') == "") ? 0 : $request->input('ongkir')),
                 'id_user' => $request->input("id"),
-                'tebal_penawaran' => ($layanan == 'MILLING' || $layanan == 'NF_MILLING') ? $tebal_transaksi + 5 : $tebal_transaksi,
-                'lebar_penawaran' => ($layanan == 'MILLING' && $bentuk_produk == 'FLAT' || $layanan == 'NF_MILLING' && $bentuk_produk == 'FLAT') ? $lebar_transaksi + 5 : $lebar_transaksi,
-                'panjang_penawaran' => ($layanan == 'MILLING' || $layanan == 'NF_MILLING') ? $panjang_transaksi + 5 : $panjang_transaksi,
+                'tebal_penawaran' => ($type_layanan == 'MILLING' || $type_layanan == 'NF_MILLING') ? $tebal_transaksi + 5 : $tebal_transaksi,
+                'lebar_penawaran' => ($type_layanan == 'MILLING' && $bentuk_produk == 'FLAT' || $type_layanan == 'NF_MILLING' && $bentuk_produk == 'FLAT') ? $lebar_transaksi + 5 : $lebar_transaksi,
+                'panjang_penawaran' => ($type_layanan == 'MILLING' || $type_layanan == 'NF_MILLING') ? $panjang_transaksi + 5 : $panjang_transaksi,
                 'berat_pembantu' => (float)$berat,
                 'bentuk_pembantu' => $bentuk_produk,
                 'subtotal' => $subtotal,
                 'ppn' => $ppn,
                 'total' => $total,
-
+                'nomor_transaksi' => $request->input("nomor_transaksi"),
+                "id_layanan" => $request->input("layanan"),
+                "type" => $type
 
             ];
 
             // dd($data);
+
 
 
             $this->QuotationModel->insert_pembantu($data);
@@ -234,7 +292,8 @@ class QuotationController extends Controller
 
 
             $array = $request->all();
-            // dump($array);
+            // dd($array);
+
             unset($array["submit"]);
             unset($array["_token"]);
             $data_transaksi = [];
@@ -261,6 +320,9 @@ class QuotationController extends Controller
                     'ppn' => (float)${"array$i"}[17],
                     'ongkir' => (float) ${"array$i"}[15],
                     'id_pegawai' => (int) ${"array$i"}[22],
+                    'nomor_transaksi' => ${"array$i"}[23],
+                    'id_layanan' => ${"array$i"}[24],
+                    "type" => (int)${"array$i"}[25]
                 ];
 
 
@@ -293,6 +355,7 @@ class QuotationController extends Controller
             $tgl_penawaran = explode("|", $tgl_penawaran);
             $tgl_penawaran = $tgl_penawaran[1];
             // dd($data_transaksi);
+            // dd($request->all());
             $no_quotation = $this->QuotationModel->insert($data_transaksi, $data_penawaran, $data_detail_penawaran, $tgl_penawaran);
 
             return redirect("quotation")->with("success", "Data Entered Successfully, You Quotation number $no_quotation");
@@ -336,115 +399,281 @@ class QuotationController extends Controller
 
     public function print($no_transaksi)
     {
-        $data = $this->QuotationModel->show($no_transaksi);
+        $data = $this->QuotationModel->print($no_transaksi);
+
+        // goods
+
+        $goods = (count($data["goods"]) > 0) ? $data["goods"] : null;
+        $service = (count($data["service"]) > 0) ? $data["service"] : null;
 
 
 
 
-        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/qtn_template.xlsx');
+        if ($goods != null) {
 
-        $worksheet = $spreadsheet->getActiveSheet();
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/qtn_template.xlsx');
+            $worksheet = $spreadsheet->getActiveSheet();
+            $worksheet->getCell('O4')->setValue($goods[0]->tgl_penawaran);
+            $worksheet->getCell('O5')->setValue($goods[0]->no_penawaran);
+            $worksheet->getCell('O6')->setValue($goods[0]->nama_pelanggan);
+            $worksheet->getCell('O7')->setValue($goods[0]->nomor_transaksi);
+            $worksheet->getCell('Q11')->setValue(date('Y-m-d', strtotime($goods[0]->tgl_penawaran . ' + 3 days')));
+            $worksheet->getCell('Q12')->setValue($goods[0]->nama_pegawai);
+            $worksheet->getCell('E16')->setValue($goods[0]->layanan);
 
-        $worksheet->getCell('O4')->setValue($data[0]->tgl_penawaran);
-        $worksheet->getCell('O5')->setValue($data[0]->no_penawaran);
-        $worksheet->getCell('P6')->setValue($data[0]->nama_pelanggan);
-        $worksheet->getCell('Q11')->setValue(date('Y-m-d', strtotime($data[0]->tgl_penawaran . ' + 3 days')));
-        $worksheet->getCell('Q12')->setValue($data[0]->nama_pegawai);
-        $worksheet->getCell('E16')->setValue($data[0]->layanan);
+            // alamat
+            $worksheet->getCell('A12')->setValue($goods[0]->perwakilan);
+            $worksheet->getCell('A13')->setValue($goods[0]->nama_pelanggan);
+            $worksheet->getCell('A14')->setValue($goods[0]->alamat_pelanggan);
+            $baris_awal = 19;
+            $subtotal = 0;
+            $total = 0;
+            $ongkir = 0;
+            $worksheet->insertNewRowBefore(20, count($goods));
+            for ($i = 0; $i < count($goods); $i++) {
 
-        // alamat
-        $worksheet->getCell('A12')->setValue($data[0]->perwakilan);
-        $worksheet->getCell('A13')->setValue($data[0]->nama_pelanggan);
-        $worksheet->getCell('A14')->setValue($data[0]->alamat_pelanggan);
-
-        // border style
-        $border = [
-            'borders' => [
-                'outline' => [
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
-                    'color' => ['argb' => 'FFFF0000'],
-                ],
-            ],
-        ];
-
+                if ($goods[$i]->type == 1) {
 
 
-        $baris_awal = 19;
-        $subtotal = 0;
-        $total = 0;
-        $ongkir = 0;
-        $worksheet->insertNewRowBefore(20, count($data));
-        for ($i = 0; $i < count($data); $i++) {
+                    $tambahan_baris = $baris_awal + 1;
+                    $worksheet->setCellValue("A$tambahan_baris", ($i + 1));
+                    $worksheet->setCellValue("B$tambahan_baris", $goods[$i]->nomor_pekerjaan);
+                    $worksheet->MergeCells("B$tambahan_baris:C$tambahan_baris");
+                    $worksheet->setCellValue("D$tambahan_baris", $goods[$i]->nama_produk);
+                    $worksheet->setCellValue("E$tambahan_baris", $goods[$i]->tebal_transaksi);
+                    $worksheet->setCellValue("F$tambahan_baris", $goods[$i]->lebar_transaksi);
+                    $worksheet->setCellValue("G$tambahan_baris", $goods[$i]->panjang_transaksi);
+                    $worksheet->setCellValue("H$tambahan_baris", $goods[$i]->jumlah);
+                    $worksheet->setCellValue("I$tambahan_baris", $goods[$i]->nama_produk);
+                    $worksheet->setCellValue("J$tambahan_baris", $goods[$i]->tebal_penawaran);
+                    $worksheet->setCellValue("K$tambahan_baris", $goods[$i]->lebar_penawaran);
+                    $worksheet->setCellValue("L$tambahan_baris", $goods[$i]->panjang_penawaran);
+                    $worksheet->setCellValue("M$tambahan_baris", $goods[$i]->jumlah);
+                    $worksheet->setCellValue("N$tambahan_baris", $goods[$i]->berat);
+                    $worksheet->setCellValue("O$tambahan_baris", number_format($goods[$i]->harga));
+                    $worksheet->setCellValue("P$tambahan_baris", number_format($goods[$i]->subtotal));
+                    $worksheet->MergeCells("P$tambahan_baris:Q$tambahan_baris");
 
 
-            $tambahan_baris = $baris_awal + 1;
+                    $subtotal += $goods[$i]->subtotal;
+                    $ongkir += $goods[$i]->ongkir;
+                    $total += $goods[$i]->total;
+                    $baris_awal = $tambahan_baris;
+                }
+            }
+            $baris_setelah = $baris_awal + 2;
+            $worksheet->setCellValue("P$baris_setelah", $subtotal);
+            $worksheet->MergeCells("P$baris_setelah:Q$baris_setelah");
 
-            $worksheet->setCellValue("A$tambahan_baris", ($i + 1));
-            $worksheet->setCellValue("B$tambahan_baris", $data[$i]->nomor_pekerjaan);
-            $worksheet->MergeCells("B$tambahan_baris:C$tambahan_baris");
+            $baris_setelah += 1;
+            $worksheet->setCellValue("P$baris_setelah", $subtotal * 0.11);
+            $worksheet->MergeCells("P$baris_setelah:Q$baris_setelah");
 
-            $worksheet->setCellValue("D$tambahan_baris", $data[$i]->nama_produk);
-            $worksheet->setCellValue("E$tambahan_baris", $data[$i]->tebal_transaksi);
-            $worksheet->setCellValue("F$tambahan_baris", $data[$i]->lebar_transaksi);
-            $worksheet->setCellValue("G$tambahan_baris", $data[$i]->panjang_transaksi);
-            $worksheet->setCellValue("H$tambahan_baris", $data[$i]->jumlah);
-            $worksheet->setCellValue("I$tambahan_baris", $data[$i]->nama_produk);
-            $worksheet->setCellValue("J$tambahan_baris", $data[$i]->tebal_penawaran);
-            $worksheet->setCellValue("K$tambahan_baris", $data[$i]->lebar_penawaran);
-            $worksheet->setCellValue("L$tambahan_baris", $data[$i]->panjang_penawaran);
-            $worksheet->setCellValue("M$tambahan_baris", $data[$i]->jumlah);
-            $worksheet->setCellValue("N$tambahan_baris", $data[$i]->berat);
-            $worksheet->setCellValue("O$tambahan_baris", number_format($data[$i]->harga));
-            $worksheet->setCellValue("P$tambahan_baris", number_format($data[$i]->subtotal));
-            $worksheet->MergeCells("P$tambahan_baris:Q$tambahan_baris");
+            $baris_setelah += 1;
+            $worksheet->setCellValue("P$baris_setelah", $total);
+            $worksheet->MergeCells("P$baris_setelah:Q$baris_setelah");
 
+            $baris_setelah += 6;
+            $worksheet->setCellValue("D$baris_setelah", "ASD");
+            // $worksheet->MergeCells("C$baris_setelah:D$baris_setelah");
 
-            $subtotal += $data[$i]->subtotal;
-            $ongkir += $data[$i]->ongkir;
-            $total += $data[$i]->total;
-            $baris_awal = $tambahan_baris;
+            $baris_setelah += 2;
+            $worksheet->setCellValue("E$baris_setelah", $goods[0]->nama_pelanggan);
+            $worksheet->MergeCells("E$baris_setelah:I$baris_setelah");
         }
-        $baris_setelah = $baris_awal + 2;
-        $worksheet->setCellValue("P$baris_setelah", $subtotal);
-        $worksheet->MergeCells("P$baris_setelah:Q$baris_setelah");
-
-        $baris_setelah += 1;
-        $worksheet->setCellValue("P$baris_setelah", $subtotal * 0.11);
-        $worksheet->MergeCells("P$baris_setelah:Q$baris_setelah");
-
-        $baris_setelah += 1;
-        $worksheet->setCellValue("P$baris_setelah", $total);
-        $worksheet->MergeCells("P$baris_setelah:Q$baris_setelah");
-
-        $baris_setelah += 6;
-        $worksheet->setCellValue("E$baris_setelah", $data[0]->nama_pelanggan);
-        $worksheet->MergeCells("E$baris_setelah:I$baris_setelah");
-
-
-        $baris_setelah += 12;
-        $worksheet->setCellValue("P$baris_setelah", $data[0]->nama_pengguna);
-        $worksheet->setCellValue("E$baris_setelah", $data[0]->perwakilan);
 
 
 
+        if ($service != null) {
+            // ini untuk qtn dengan type 2 (service) bukan file copy!
+            $spreadsheet1 = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/qtn_template_2.xlsx');
+            $worksheet1 = $spreadsheet1->getActiveSheet();
+            $worksheet1->getCell('O4')->setValue($service[0]->tgl_penawaran);
+            $worksheet1->getCell('O5')->setValue($service[0]->no_penawaran);
+            $worksheet1->getCell('O6')->setValue($service[0]->nama_pelanggan);
+            $worksheet1->getCell('O7')->setValue($service[0]->nomor_transaksi);
+            $worksheet1->getCell('Q11')->setValue(date('Y-m-d', strtotime($service[0]->tgl_penawaran . ' + 3 days')));
+            $worksheet1->getCell('Q12')->setValue($service[0]->nama_pegawai);
+            $worksheet1->getCell('E16')->setValue($service[0]->layanan);
+
+            // alamat
+            $worksheet1->getCell('A12')->setValue($service[0]->perwakilan);
+            $worksheet1->getCell('A13')->setValue($service[0]->nama_pelanggan);
+            $worksheet1->getCell('A14')->setValue($service[0]->alamat_pelanggan);
+            $baris_awal = 19;
+            $subtotal = 0;
+            $total = 0;
+            $ongkir = 0;
+            $worksheet1->insertNewRowBefore(20, count($service));
+            for ($i = 0; $i < count($service); $i++) {
+                if ($service[$i]->type == 2) {
 
 
-        $namaFile = $data[0]->no_penawaran;
+                    $tambahan_baris = $baris_awal + 1;
 
-        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header("Content-Disposition: attachment; filename=$namaFile.xlsx"); // Set nama file excel nya
-        header('Cache-Control: max-age=0');
+                    $worksheet1->setCellValue("A$tambahan_baris", ($i + 1));
+                    $worksheet1->setCellValue("B$tambahan_baris", $service[$i]->nomor_pekerjaan);
+                    $worksheet1->MergeCells("B$tambahan_baris:C$tambahan_baris");
 
-        $writer = new Xlsx($spreadsheet);
-        $writer->save('php://output');
-        // $writer->save('report/quotation.xls');
+                    $worksheet1->setCellValue("D$tambahan_baris", $service[$i]->nama_produk);
+                    $worksheet1->setCellValue("E$tambahan_baris", $service[$i]->tebal_transaksi);
+                    $worksheet1->setCellValue("F$tambahan_baris", $service[$i]->lebar_transaksi);
+                    $worksheet1->setCellValue("G$tambahan_baris", $service[$i]->panjang_transaksi);
+                    $worksheet1->setCellValue("H$tambahan_baris", $service[$i]->jumlah);
+                    $worksheet1->setCellValue("I$tambahan_baris", $service[$i]->nama_produk);
+                    $worksheet1->setCellValue("J$tambahan_baris", $service[$i]->tebal_penawaran);
+                    $worksheet1->setCellValue("K$tambahan_baris", $service[$i]->lebar_penawaran);
+                    $worksheet1->setCellValue("L$tambahan_baris", $service[$i]->panjang_penawaran);
+                    $worksheet1->setCellValue("M$tambahan_baris", $service[$i]->jumlah);
+                    $worksheet1->setCellValue("N$tambahan_baris", $service[$i]->berat);
+                    $worksheet1->setCellValue("O$tambahan_baris", number_format($service[$i]->harga));
+                    $worksheet1->setCellValue("P$tambahan_baris", number_format($service[$i]->subtotal));
+                    $worksheet1->MergeCells("P$tambahan_baris:Q$tambahan_baris");
 
 
+                    $subtotal += $service[$i]->subtotal;
+                    $ongkir += $service[$i]->ongkir;
+                    $total += $service[$i]->total;
+                    $baris_awal = $tambahan_baris;
+                }
+            }
+            $baris_setelah = $baris_awal + 2;
+            $worksheet1->setCellValue("P$baris_setelah", $subtotal);
+            $worksheet1->MergeCells("P$baris_setelah:Q$baris_setelah");
+
+            // ppn 11%
+            $baris_setelah += 1;
+            $worksheet1->setCellValue("P$baris_setelah", $subtotal * 0.11);
+            $worksheet1->MergeCells("P$baris_setelah:Q$baris_setelah");
+
+            // ppn 12%
+            $baris_setelah += 1;
+            $worksheet1->setCellValue("P$baris_setelah", $subtotal * 0.12);
+            $worksheet1->MergeCells("P$baris_setelah:Q$baris_setelah");
+
+            $baris_setelah += 1;
+            $worksheet1->setCellValue("P$baris_setelah", $total);
+            $worksheet1->MergeCells("P$baris_setelah:Q$baris_setelah");
+
+            $baris_setelah += 6;
+            $worksheet1->setCellValue("D$baris_setelah", "ASD");
+            // $worksheet1->MergeCells("C$baris_setelah:D$baris_setelah");
+
+            $baris_setelah += 2;
+            $worksheet1->setCellValue("E$baris_setelah", $service[0]->nama_pelanggan);
+            $worksheet1->MergeCells("E$baris_setelah:I$baris_setelah");
+        }
+
+
+        // service
+
+
+
+
+
+        $namaFile = str_replace("/", "_", $data["no_penawaran"]);
+
+
+        if ($goods != null && $service != null) {
+            $this->printAll($spreadsheet, $spreadsheet1, $namaFile);
+        } else if ($goods != null) {
+            $this->printAll($spreadsheet, null, $namaFile);
+        } else if ($service != null) {
+            $this->printAll(null, $spreadsheet1, $namaFile);
+        }
+    }
+
+
+    public function printAll($spreadsheet, $spreadsheet1, $namaFile)
+    {
+        if ($spreadsheet != null && $spreadsheet1 != null) {
+
+            $zipFile = $namaFile . ".zip";
+
+            $zip = new \ZipArchive();
+            if ($zip->open($zipFile, \ZipArchive::CREATE) === true) {
+                if ($spreadsheet != null) {
+
+
+                    $tempFileGoods = public_path('assets/temp/') . "Goods-" . date("Y-m-d") . '.xlsx';
+                    $writerGoods = new Xlsx($spreadsheet);
+                    $writerGoods->save($tempFileGoods);
+
+                    // Add the stream content to the zip file
+                    $zip->addFromString(basename($tempFileGoods), file_get_contents($tempFileGoods));
+
+                    // Optionally, delete the temporary file
+                    unlink($tempFileGoods);
+                }
+
+                if ($spreadsheet1 != null) {
+
+                    $tempFileService = public_path('assets/temp/') .  "Service-" . date("Y-m-d") . '.xlsx';
+                    $writerService = new Xlsx($spreadsheet1);
+                    $writerService->save($tempFileService);
+
+                    // Add the stream content to the zip file
+                    $zip->addFromString(basename($tempFileService), file_get_contents($tempFileService));
+
+                    // Optionally, delete the temporary file
+                    unlink($tempFileService);
+                }
+                // dd("");
+                $zip->close();
+
+                // Set headers for the zip file
+                header('Content-Type: application/zip');
+                header("Content-Disposition: attachment; filename=$zipFile");
+                header('Content-Length: ' . filesize($zipFile));
+
+                // Read and output the zip file
+                readfile($zipFile);
+
+                // Optionally, delete the temporary zip file
+                unlink($zipFile);
+            }
+        } else if ($spreadsheet != null) {
+
+            $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header("Content-Disposition: attachment; filename=$namaFile.xlsx"); // Set nama file excel nya
+            header('Cache-Control: max-age=0');
+
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+        } else if ($spreadsheet1 != null) {
+            // dd("masuk sini");
+            $writer1 = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet1, 'Xls');
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header("Content-Disposition: attachment; filename=$namaFile.xlsx"); // Set nama file excel nya
+            header('Cache-Control: max-age=0');
+
+            $writer1 = new Xlsx($spreadsheet1);
+            $writer1->save('php://output');
+        }
     }
 
 
 
+
+
+    public function addSpreadsheetToZip($zip, $spreadsheet, $filename)
+    {
+        $tempFile = public_path('assets/temp/') . uniqid($filename) . '.xlsx';
+        dd($tempFile);
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($tempFile);
+
+        // Add the stream content to the zip file
+        $zip->addFromString($filename, file_get_contents($tempFile));
+
+        // Close the temporary stream
+        fclose(fopen($tempFile, 'r'));
+
+        // Optionally, delete the temporary file
+        unlink($tempFile);
+    }
 
     public function CalculateWeight($bentuk_produk, $layanan, $tebal_transaksi, $lebar_transaksi, $panjang_transaksi, $jumlah)
     {
@@ -461,7 +690,8 @@ class QuotationController extends Controller
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.000008;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
-                    return (float)number_format((float)$berat, 1, '.', '');
+                    $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
+                    return $berat;
                 }
 
                 if ($layanan == "NF") {
@@ -472,7 +702,8 @@ class QuotationController extends Controller
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
-                    return (float)number_format((float)$berat, 1, '.', '');
+                    $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
+                    return $berat;
                 }
 
                 if ($layanan == "MILLING") {
@@ -484,7 +715,8 @@ class QuotationController extends Controller
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.000008;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
-                    return (float)number_format((float)$berat, 1, '.', '');
+                    $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
+                    return $berat;
                 }
 
                 if ($layanan == "NF_MILLING" || $layanan == "NF MILLING") {
@@ -496,7 +728,8 @@ class QuotationController extends Controller
                     $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
-                    return (float)number_format((float)$berat, 1, '.', '');
+                    $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
+                    return $berat;
                 }
 
 
@@ -513,7 +746,8 @@ class QuotationController extends Controller
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
-                    return (float)number_format((float)$berat, 1, '.', '');
+                    $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
+                    return $berat;
                 }
                 if ($layanan == "NF") {
                     $tebal_penawaran = $tebal_transaksi;
@@ -523,7 +757,8 @@ class QuotationController extends Controller
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
-                    return (float)number_format((float)$berat, 1, '.', '');
+                    $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
+                    return $berat;
                 }
                 if ($layanan == "MILLING") {
                     //    membuat ukuran dan berat pxl 0,00008
@@ -534,7 +769,8 @@ class QuotationController extends Controller
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
-                    return (float)number_format((float)$berat, 1, '.', '');
+                    $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
+                    return $berat;
                 }
                 if ($layanan == "NF_MILLING" || $layanan == "NF MILLING") {
                     //    membuat ukuran dan berat pxl 0,00008
@@ -545,7 +781,8 @@ class QuotationController extends Controller
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
-                    return (float)number_format((float)$berat, 1, '.', '');
+                    $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
+                    return $berat;
                 }
                 break;
         }
@@ -555,30 +792,8 @@ class QuotationController extends Controller
 
     public function quotationReportDetail()
     {
-
-        // $data = '';
-
-        // if (request()->input('month')) {
-        //     $month = explode('-', request()->input('month'))[1];
-
-        //     $data = $this->QuotationModel->quotationDetailReport($month);
-        // } elseif (request()->input('date')) {
-        //     $date = explode('-', request()->input('date'))[2];
-
-        //     $data = $this->QuotationModel->quotationDetailReport(null, $date);
-        // } elseif (request()->input('date') && request()->input('month')) {
-        //     $month = explode('-', request()->input('month'))[1];
-        //     $date = explode('-', request()->input('date'))[2];
-
-        //     $data = $this->QuotationModel->quotationDetailReport($month, $date);
-        // } else {
-        //     $data = $this->QuotationModel->quotationDetailReport();
-        // }
-
         $data = [
             'tittle' => 'Quotation Report Detail',
-            // 'data' => $data
-
         ];
 
         return view('quotation.report_detail', $data);
@@ -819,5 +1034,227 @@ class QuotationController extends Controller
         ]);
 
         return back()->with("success", "Data Quotation Has been successfully Updated ");
+    }
+
+
+    public function import_quotation(Request $request)
+    {
+        $file = $request->file('quotation-import');
+
+        $import = new QuotationImport;
+        $data = Excel::toArray($import, $file);
+
+
+        if (count($data[0]) == 3) {
+            return response()->json(["message" => "fail", "errors" => ["Please Insert New Row and Fill The Cloumn"]]);
+        }
+
+
+
+        $kode_transaksi = $this->QuotationModel->TransactionCode();
+        $errors = [];
+        $error = [];
+
+
+        for ($i = 0; $i < count($data[0]); $i++) {
+            // dump($i);
+            if ($i > 2) {
+
+                // dd("sini");
+                // validate
+                $error =  $this->import_validation($data[0][$i], $i);
+
+                foreach ($error as $err) {
+
+                    array_push($errors, $err);
+                }
+
+
+                if (count($error) == 0) {
+                    $nomor_pekerjaan = $data[0][$i][0];
+                    $id_pegawai = $this->pegawai->getEmployeeByCode(strtoupper($data[0][$i][1]))->id_pegawai;
+                    $id_pelanggan = strtoupper($data[0][$i][2]);
+                    $produk = $this->ProductModel->getProductByCode(strtoupper($data[0][$i][3]));
+                    $bentuk_produk = $produk->bentuk_produk;
+                    $panjang_transaksi = $data[0][$i][4];
+                    $lebar_transaksi = $data[0][$i][5];
+                    $tebal_transaksi = $data[0][$i][6];
+                    $jumlah = $data[0][$i][7];
+                    $layanan = $data[0][$i][8];
+                    $berat = $data[0][$i][11];
+
+
+                    if (str_contains($layanan, "_")) {
+                        $layanan = strtoupper(str_replace("_", " ", $layanan));
+                    } else if (str_contains($layanan, "+")) {
+                        $layanan = strtoupper(str_replace("+", "_", $layanan));
+                    }
+
+
+                    $id_layanan = $this->QuotationModel->getIdServices($layanan)->id_layanan;
+
+                    $layanan = $this->QuotationModel->getServices($id_layanan);
+                    $type_layanan = $layanan->type;
+
+                    $harga = (float) $data[0][$i][9];
+                    $nomor_transaksi = $data[0][$i][10];
+
+                    /**
+                     * type 1 goods (normal quotation)
+                     * type 2 service (only service quotation)
+                     */
+
+                    if ($berat != null || $berat != "") {
+                        $berat = $berat;
+                        $type = 2;
+                    } else {
+
+                        $berat = $this->CalculateWeight($bentuk_produk, $type_layanan, $tebal_transaksi, $lebar_transaksi, $panjang_transaksi, $jumlah);
+                        $type = 1;
+                    }
+
+
+                    $subtotal = (float) $berat * (int) $harga;
+                    $ppn = $subtotal * 0.11;
+
+                    $total = $subtotal + $ppn;
+
+                    if($type==2){
+                        $total+=$subtotal * 0.12;
+                    }
+
+
+
+                    $data_transaksi_pembantu = [
+                        "kode_transaksi" => $kode_transaksi,
+                        "tgl_pembantu" => date("Y-m-d"),
+                        "nomor_pekerjaan" => $nomor_pekerjaan,
+                        "id_pelanggan" => $id_pelanggan,
+                        "nama_produk" => $produk->nama_produk,
+                        "id_pegawai" => $id_pegawai,
+                        "panjang_pembantu" => $panjang_transaksi,
+                        "lebar_pembantu" => $lebar_transaksi,
+                        "tebal_pembantu" => $tebal_transaksi,
+                        "jumlah_pembantu" => $jumlah,
+                        "layanan_pembantu" => $layanan->nama_layanan,
+                        "harga_pembantu" => $harga,
+                        "ongkir_pembantu" => 0,
+                        "id_user" => Auth::user()->id,
+                        'tebal_penawaran' => ($type_layanan == 'MILLING' || $type_layanan == 'NF_MILLING') ? $tebal_transaksi + 5 : $tebal_transaksi,
+                        'lebar_penawaran' => ($type_layanan == 'MILLING' && $bentuk_produk == 'FLAT' || $type_layanan == 'NF_MILLING' && $bentuk_produk == 'FLAT') ? $lebar_transaksi + 5 : $lebar_transaksi,
+                        'panjang_penawaran' => ($type_layanan == 'MILLING' || $type_layanan == 'NF_MILLING') ? $panjang_transaksi + 5 : $panjang_transaksi,
+                        'berat_pembantu' => (float)$berat,
+                        'bentuk_pembantu' => $bentuk_produk,
+                        'subtotal' => $subtotal,
+                        'ppn' => $ppn,
+                        'total' => $total,
+                        'nomor_transaksi' => $nomor_transaksi,
+                        "id_layanan" => $id_layanan,
+                        "type" => $type
+
+
+                    ];
+                    // dump($data_transaksi_pembantu);
+                    $this->QuotationModel->insert_pembantu($data_transaksi_pembantu);
+                }
+            }
+        }
+
+       
+
+        if (count($errors) == 0) {
+            return response()->json(["message" => "success"]);
+        } else {
+
+            return response()->json(["message" => "fail", "errors" => $errors]);
+        }
+    }
+
+
+
+    public function import_validation($data, $i)
+    {
+
+
+        /**
+         * Require (done)
+         * type data
+         * koma
+         * is exist
+         */
+        // dd("masuk sini");
+        $errors = [];
+        $id_pegawai = $data[1];
+        $id_pelanggan = $data[2];
+        $produk = strtoupper($data[3]);
+        $panjang_transaksi = $data[4];
+        $lebar_transaksi = $data[5];
+        $tebal_transaksi = $data[6];
+        $jumlah = $data[7];
+        $layanan = strtoupper($data[8]);
+        $harga = $data[9];
+        $nomor_transaksi = $data[10];
+        // dd($data);
+
+
+
+
+        $fieldsToCheck = [
+            'id_pegawai' => 'Employee Id',
+            'id_pelanggan' => 'Customer Id',
+            'produk' => 'Product',
+            'panjang_transaksi' => 'Transaction Length',
+            'lebar_transaksi' => 'Transaction Width',
+            'tebal_transaksi' => 'Transaction Thickness',
+            'jumlah' => 'Quantity',
+            'layanan' => 'Processing',
+            'harga' => 'Price',
+            'nomor_transaksi' => 'Transaction Number',
+        ];
+
+        // Melakukan pengujian untuk setiap variabel
+        foreach ($fieldsToCheck as $field => $fieldName) {
+            if (empty($$field)) {
+                array_push($errors, "Please insert $fieldName in row - $i");
+            }
+        }
+
+
+
+        if (str_contains($layanan, "_")) {
+            $layanan = strtoupper(str_replace("_", " ", $layanan));
+        } else if (str_contains($layanan, "+")) {
+            $layanan = strtoupper(str_replace("+", "_", $layanan));
+        }
+
+
+        // check is exist
+
+
+        if ((int)$lebar_transaksi <= 0 && $bentuk_produk == 'FLAT') {
+            return redirect()->back()->withErrors(['lebar_transaksi' => 'Fill Width more then 0'])->withInput();
+        }
+
+
+
+        if ($this->pegawai->getEmployeeByCode(strtoupper($id_pegawai)) == null) {
+            array_push($errors, "Sales Not Found Please Fill With The Right Code! in row - $i");
+        }
+
+        if ($this->CustumorModel->getCustomerByCode($id_pelanggan) == null) {
+            array_push($errors, "Customer Not Found Please Fill With The Right Code! in row - $i ");
+        }
+
+        if ($this->ProductModel->getProductByCode($produk) == null) {
+            array_push($errors, "Product Not Found Please Fill With The Right Code! in row - $i ");
+        }
+
+        if ($this->QuotationModel->getIdServices($layanan) == null) {
+            array_push($errors, "Service Not Found Please Fill With The Right Code! in row - $i ");
+        }
+
+
+
+        return $errors;
     }
 }

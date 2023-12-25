@@ -35,7 +35,7 @@ class SalesModel extends Model
                on penjualan.id_penjualan = detail_transaksi_penjualan.id_penjualan
                where no_penjualan=b.no_penjualan
                group by b.no_penjualan) as jumlah_detail_penjualan 
-               from (SELECT  tgl_penjualan,no_penjualan,nomor_pekerjaan,nama_pelanggan,nama_pengguna,kode_transaksi,sum(jumlah_detail_pembelian) as jumlah_detail_pembelian from transaksi 
+               from (SELECT  tgl_penjualan,no_penjualan,nomor_pekerjaan,nama_pelanggan,nama_pengguna,kode_transaksi,sum(jumlah_detail_pembelian) as jumlah_detail_pembelian,nomor_transaksi from transaksi 
                join penawaran on penawaran.id_transaksi=transaksi.id_transaksi
                join detail_transaksi_penawaran on detail_transaksi_penawaran.id_penawaran=penawaran.id_penawaran
                join penjualan on penjualan.id_transaksi=transaksi.id_transaksi
@@ -87,9 +87,9 @@ class SalesModel extends Model
      public function no_penjualan($tgl_penjualan)
      {
           $bulan_tgl = explode("-", $tgl_penjualan);
-         
 
-           $no_penjualan = DB::select("
+
+          $no_penjualan = DB::select("
            select * from penjualan where id_penjualan =(select max(id_penjualan) from penjualan 
            where month(tgl_penjualan)='$bulan_tgl[1]' and YEAR(tgl_penjualan)='$bulan_tgl[0]')");
 
@@ -99,7 +99,7 @@ class SalesModel extends Model
           } else {
                $no_penjualan = 1;
           }
-         
+
 
           return $no_penjualan;
      }
@@ -142,10 +142,7 @@ class SalesModel extends Model
      public function detail($no_penjualan)
      {
 
-
-
-
-          return DB::table('transaksi')
+          return  DB::table('transaksi')
                ->distinct('no_penjualan')
                ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
                ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', '=', 'penawaran.id_penawaran')
@@ -154,8 +151,50 @@ class SalesModel extends Model
                ->join("pengguna", 'transaksi.id', '=', 'pengguna.id')
                ->join('penjualan', "penjualan.id_transaksi", "transaksi.id_transaksi")
                ->join('pegawai', 'pegawai.id_pegawai', '=', 'transaksi.id_pegawai')
-               ->where('no_penjualan', "=", $no_penjualan)
-               // ->where('transaksi.tidak_terpakai', '=', 0)
+               ->where([
+                    ['no_penjualan', "=", $no_penjualan],
+
+               ])
                ->get();
+     }
+     public function print($no_penjualan)
+     {
+
+          $goods = DB::table('transaksi')
+               ->distinct('no_penjualan')
+               ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
+               ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', '=', 'penawaran.id_penawaran')
+               ->join("produk", 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')
+               ->join("pelanggan", 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
+               ->join("pengguna", 'transaksi.id', '=', 'pengguna.id')
+               ->join('penjualan', "penjualan.id_transaksi", "transaksi.id_transaksi")
+               ->join('pegawai', 'pegawai.id_pegawai', '=', 'transaksi.id_pegawai')
+               ->where([
+                    ['no_penjualan', "=", $no_penjualan],
+                    ['type', "=", 1]
+               ])
+               ->get();
+
+          $service
+               = DB::table('transaksi')
+               ->distinct('no_penjualan')
+               ->join('penawaran', 'penawaran.id_transaksi', '=', 'transaksi.id_transaksi')
+               ->join('detail_transaksi_penawaran', 'detail_transaksi_penawaran.id_penawaran', '=', 'penawaran.id_penawaran')
+               ->join("produk", 'detail_transaksi_penawaran.id_produk', '=', 'produk.id_produk')
+               ->join("pelanggan", 'transaksi.id_pelanggan', '=', 'pelanggan.id_pelanggan')
+               ->join("pengguna", 'transaksi.id', '=', 'pengguna.id')
+               ->join('penjualan', "penjualan.id_transaksi", "transaksi.id_transaksi")
+               ->join('pegawai', 'pegawai.id_pegawai', '=', 'transaksi.id_pegawai')
+               ->where([
+                    ['no_penjualan', "=", $no_penjualan],
+                    ['type', "=", 2]
+               ])
+               ->get();
+
+          return [
+               "goods" => $goods,
+               "service" => $service,
+               "namaFile" => $no_penjualan,
+          ];
      }
 }

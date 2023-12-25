@@ -1,6 +1,22 @@
 @extends('template.index')
 @section('content')
     {{-- @dd($data); --}}
+
+    <style>
+        .table-wrapper {
+            position: relative;
+            overflow: auto;
+            max-height: 300px;
+            /* Sesuaikan dengan kebutuhan tinggi tabel */
+        }
+
+        .table-wrapper thead th {
+            position: sticky;
+            top: 0;
+            background-color: #ffffff;
+            /* Warna latar belakang header */
+        }
+    </style>
     <div class="container">
         @if (session()->has('success'))
             <div class="alert alert-success" role="alert">
@@ -39,7 +55,7 @@
                                 <td>Purchase Date</td>
                                 <td>No Sales</td>
                                 <td>No Purchase</td>
-                                <td>Job number</td>
+                                <td>Transaction number</td>
                                 <td>Customer</td>
                                 <td>Supplier</td>
                                 <td>Prepared</td>
@@ -55,7 +71,7 @@
                                     <td style="min-width:120px">{{ $d->tgl_pembelian }}</td>
                                     <td>{{ $d->no_penjualan }}</td>
                                     <td>{{ $d->no_pembelian }}</td>
-                                    <td>{{ $d->nomor_pekerjaan }}</td>
+                                    <td>{{ $d->nomor_transaksi }}</td>
                                     <td>{{ $d->nama_pelanggan }}</td>
                                     <td>{{ $d->nama_pemasok }}</td>
                                     <td>{{ $d->nama_pengguna }}</td>
@@ -89,7 +105,18 @@
     </div>
     <script>
         $(document).ready(function() {
-            let table = new DataTable('#dataTable');
+            let table = new DataTable('#dataTable', {
+                "scrollY": "300px",
+                "scrollX": "300px",
+
+            });
+
+            // let table = new DataTable('#dataTable', {
+            //     "scrollY": "300px",
+            //     "scrollCollapse": true,
+            //     "paging": true,
+            //     "stickyHeader": true // Enable stickyHeader
+            // });
         })
     </script>
 @endsection()

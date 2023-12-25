@@ -11,7 +11,7 @@
                 <h6 class="m-0 font-weight-bold text-primary">Goods Recipt</h6>
             </div>
 
-           
+
             <div class="card-body">
 
                 <div class="table-responsive text-center">
@@ -23,7 +23,7 @@
                                 <td>Goods Date</td>
                                 <td>No Purchase</td>
                                 <td>No Goods Recipt </td>
-                                <td>Job number</td>
+                                <td>Transaction Number</td>
                                 <td>customer</td>
                                 <td>Prepared</td>
                                 <td>Action</td>
@@ -41,7 +41,7 @@
                                     <td style="min-width:120px">{{ $d->tgl_penerimaan }}</td>
                                     <td>{{ $d->no_pembelian }}</td>
                                     <td>{{ $d->no_penerimaan }}</td>
-                                    <td>{{ $d->nomor_pekerjaan }}</td>
+                                    <td>{{ $d->nomor_transaksi }}</td>
                                     <td>{{ $d->nama_pelanggan }}</td>
                                     <td>{{ $d->nama_pengguna }}</td>
                                     <td>

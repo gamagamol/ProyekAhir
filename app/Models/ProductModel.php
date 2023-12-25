@@ -16,7 +16,7 @@ class ProductModel extends Model
         if ($kode) {
             return DB::table('produk')->where('nama_produk', 'like', "%$kode%")->get();
         }
-        return DB::table('produk')->paginate(5);
+        return DB::table('produk')->get();
     }
     public function insert($data)
     {
@@ -31,4 +31,10 @@ class ProductModel extends Model
         $id_produk = $data['id_produk'];
         DB::table('produk')->where('id_produk', $id_produk)->update($data);
     }
+    public function getProductByCode($nama_produk)
+    {
+        return DB::table('produk')->where("nama_produk", $nama_produk)->first();
+    }
+
+  
 }

@@ -7,6 +7,7 @@
                  <th>NO SALES</th>
                  <th>TGL SALES</th>
                  <th>NAMA CUSTOMER</th>
+                 <th>NAMA SALES</th>
                  <th>NO PEMBELIAN</th>
                  <th>TGL PEMBELIAN</th>
                  <th>NAMA SUPPLIER</th>
@@ -41,6 +42,7 @@
                      <td>{{ $d->no_penjualan ? $d->no_penjualan : '-' }}</td>
                      <td>{{ $d->tgl_penjualan ? $d->tgl_penjualan : '-' }}</td>
                      <td>{{ $d->nama_pelanggan ? $d->nama_pelanggan : '-' }}</td>
+                     <td>{{ $d->nama_pegawai ? $d->nama_pegawai : '-' }}</td>
                      <td>{{ $d->no_pembelian ? $d->no_pembelian : '-' }}</td>
                      <td>{{ $d->tgl_pembelian ? $d->tgl_pembelian : '-' }}</td>
                      <td>{{ $d->nama_pemasok ? $d->nama_pemasok : '-' }}</td>

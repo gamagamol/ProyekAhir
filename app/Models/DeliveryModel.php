@@ -23,7 +23,7 @@ class DeliveryModel extends Model
             $query = "";
         }
         return DB::select("
-        select pi.tgl_pengiriman,pi.no_pengiriman,t.nomor_pekerjaan,nama_pelanggan,nama_pengguna,t.status_transaksi,no_penjualan from pengiriman pi
+        select pi.tgl_pengiriman,pi.no_pengiriman,t.nomor_pekerjaan,nama_pelanggan,nama_pengguna,t.status_transaksi,no_penjualan,t.nomor_transaksi from pengiriman pi
         join transaksi t on t.id_transaksi = pi.id_transaksi
         left join penjualan pj on t.id_transaksi=pj.id_transaksi
         join penerimaan_barang pb on pb.id_penerimaan_barang = pi.id_penerimaan_barang
@@ -220,6 +220,11 @@ class DeliveryModel extends Model
 
     public function no_delivery($tgl_pengiriman, $unit)
     {
+
+        // check appakah punya penjualan yang sama  untuk di delivery
+
+
+
         //  menentukan no delivery
         $bulan_tgl = explode("-", $tgl_pengiriman);
 
@@ -258,6 +263,26 @@ class DeliveryModel extends Model
             return $no_pengiriman;
         }
     }
+
+    /**
+     * This function for check are so number, if have so number same no delivery
+     */
+    public function so_delivery($kode_transaksi)
+    {
+
+        $delivery = DB::table("transaksi")
+            ->join("penjualan", "transaksi.id_transaksi", "=", "penjualan.id_transaksi")
+            ->leftJoin("pengiriman", "pengiriman.id_transaksi", "=", "transaksi.id_transaksi")
+            ->where("kode_transaksi", $kode_transaksi)
+            ->get();
+
+        if ($delivery[0]->no_pengiriman != null || $delivery[0]->no_pengiriman != "") {
+            return $delivery[0]->no_pengiriman;
+        } else {
+            return null;
+        }
+    }
+
 
     public function insert_delivery($id_transaksi, $data_pengirimian, $data_detail_pengiriman, $unit)
     {
@@ -332,6 +357,46 @@ class DeliveryModel extends Model
 
         );
     }
+    public function print($no_pengiriman)
+    {
+
+
+        $goods =  DB::select(
+            "SELECT * FROM transaksi
+             join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+            join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
+            join pembelian on pembelian.id_penjualan=penjualan.id_penjualan
+			join penerimaan_barang on penerimaan_barang.id_pembelian=pembelian.id_pembelian
+            join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+            join pengiriman on penerimaan_barang.id_penerimaan_barang=pengiriman.id_penerimaan_barang
+            join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman
+            join produk on detail_penerimaan_barang.id_produk = produk.id_produk
+			join pelanggan on transaksi.id_pelanggan = pelanggan.id_pelanggan
+            join pemasok on pembelian.id_pemasok = pemasok.id_pemasok
+            where no_pengiriman ='$no_pengiriman' and transaksi.tidak_terpakai=0 and transaksi.type=1
+            Order BY tgl_pengiriman asc,no_pengiriman asc"
+        );
+
+        $service =  DB::select(
+            "SELECT * FROM transaksi
+             join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+            join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
+            join pembelian on pembelian.id_penjualan=penjualan.id_penjualan
+			join penerimaan_barang on penerimaan_barang.id_pembelian=pembelian.id_pembelian
+            join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+            join pengiriman on penerimaan_barang.id_penerimaan_barang=pengiriman.id_penerimaan_barang
+            join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman
+            join produk on detail_penerimaan_barang.id_produk = produk.id_produk
+			join pelanggan on transaksi.id_pelanggan = pelanggan.id_pelanggan
+            join pemasok on pembelian.id_pemasok = pemasok.id_pemasok
+            where no_pengiriman ='$no_pengiriman' and transaksi.tidak_terpakai=0 and transaksi.type=2
+            Order BY tgl_pengiriman asc,no_pengiriman asc"
+        );
+
+
+        return ["goods" => $goods, "service" => $service, "namaFile" => str_replace('/', '_', $no_pengiriman)];
+    }
+
 
 
     public function edit($no_penerimaan)
@@ -372,30 +437,6 @@ class DeliveryModel extends Model
         join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
         where no_penerimaan='$no_penerimaan' $query
          "
-        );
-    }
-
-
-    public function print($no_pengiriman)
-    {
-
-
-
-        return  DB::select(
-            "SELECT * FROM transaksi
-             join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
-            join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
-            join pembelian on pembelian.id_penjualan=penjualan.id_penjualan
-			join penerimaan_barang on penerimaan_barang.id_pembelian=pembelian.id_pembelian
-            join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
-            join pengiriman on penerimaan_barang.id_penerimaan_barang=pengiriman.id_penerimaan_barang
-            join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman
-            join produk on detail_penerimaan_barang.id_produk = produk.id_produk
-			join pelanggan on transaksi.id_pelanggan = pelanggan.id_pelanggan
-            join pemasok on pembelian.id_pemasok = pemasok.id_pemasok
-            where no_pengiriman ='$no_pengiriman' and transaksi.tidak_terpakai=0
-            Order BY tgl_pengiriman asc,no_pengiriman asc
-        "
         );
     }
 }

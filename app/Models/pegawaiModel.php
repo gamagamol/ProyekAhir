@@ -20,11 +20,11 @@ class pegawaiModel extends Model
             return DB::table('pegawai')
                 ->where('kode_pegawai', 'like', "%$search%")
                 ->whereNull('deleted_at')
-                ->paginate(5);
+                ->get();
         } else {
             return DB::table('pegawai')
                 ->whereNull('deleted_at')
-                ->paginate(5);
+                ->get();
         }
     }
 
@@ -69,5 +69,11 @@ class pegawaiModel extends Model
             return DB::table('pegawai')->select('jabatan_pegawai')->where('jabatan_pegawai', $position)->first();
         }
         return DB::table('pegawai')->select('jabatan_pegawai')->distinct()->get();
+    }
+
+
+    public function getEmployeeByCode($employeeCode)
+    {
+        return DB::table("pegawai")->select("id_pegawai")->where("kode_pegawai", "$employeeCode")->first();
     }
 }

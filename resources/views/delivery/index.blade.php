@@ -11,7 +11,7 @@
                 <h6 class="m-0 font-weight-bold text-primary">Delivery Order</h6>
             </div>
 
-          
+
             <div class="card-body">
 
                 <div class="table-responsive text-center">
@@ -23,7 +23,7 @@
                                 <td>Delivery Date</td>
                                 <td>No Sales </td>
                                 <td>No Delivery </td>
-                                <td>Job number</td>
+                                <td>Transaction Number</td>
                                 <td>Customer</td>
                                 <td>Prepared</td>
                                 <td>Action</td>
@@ -42,7 +42,7 @@
                                     <td style="min-width:120px">{{ $d->tgl_pengiriman }}</td>
                                     <td>{{ $d->no_penjualan }}</td>
                                     <td>{{ $d->no_pengiriman }}</td>
-                                    <td>{{ $d->nomor_pekerjaan }}</td>
+                                    <td>{{ $d->nomor_transaksi }}</td>
                                     <td>{{ $d->nama_pelanggan }}</td>
                                     <td>{{ $d->nama_pengguna }}</td>
                                     <td>
@@ -67,7 +67,11 @@
     </div>
     <script>
         $(document).ready(function() {
-            let table = new DataTable('#dataTable');
+            let table = new DataTable('#dataTable', {
+                "scrollY": "300px",
+                "scrollX": "300px",
+
+            });
         })
     </script>
 @endsection()

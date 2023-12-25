@@ -14,7 +14,7 @@ class SupplierModel extends Model
         if ($kode) {
             return DB::table('pemasok')->where('nama_pemasok', 'like', "%$kode%")->get();
         }
-        return DB::table('pemasok')->paginate(5);
+        return DB::table('pemasok')->get();
     }
     public function insert($data)
     {

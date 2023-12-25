@@ -14,9 +14,9 @@ class CustumorModel extends Model
     {
         if ($kode) {
             return DB::table('pelanggan')->where('nama_pelanggan', 'like', "%$kode%")->get();
-        }else{
+        } else {
 
-            return DB::table('pelanggan')->paginate(5);
+            return DB::table('pelanggan')->get();
         }
     }
     public function insert($data)
@@ -31,5 +31,10 @@ class CustumorModel extends Model
     {
         $id_pelanggan = $data['id_pelanggan'];
         DB::table('pelanggan')->where('id_pelanggan', $id_pelanggan)->update($data);
+    }
+
+    public function getCustomerByCode($customerCode)
+    {
+        return DB::table("pelanggan")->select("*")->where("id_pelanggan", $customerCode)->first();
     }
 }

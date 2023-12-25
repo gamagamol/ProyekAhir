@@ -53,6 +53,8 @@ Route::resource('quotation', QuotationController::class)->middleware(['auth', 'r
 Route::post('quotation_insert', [QuotationController::class, "insert"]);
 Route::get('quotationReportDetail', [QuotationController::class, 'quotationReportDetail']);
 Route::post('quotation/editPembantuPenawaran', [QuotationController::class, 'editPembantuPenawaran']);
+Route::post('quotation/import', [QuotationController::class, 'import_quotation']);
+
 
 // report quotation Detail
 Route::get('quotationReportDetailAjax', [QuotationController::class, 'quotationReportDetailAjax']);
@@ -88,7 +90,7 @@ Route::post('purchase_insert', [PurchaseController::class, "insert"]);
 Route::get('purchase/detail/{no_tagihan}', [PurchaseController::class, "detail"]);
 Route::get('purchase/print/{no_tagihan}', [PurchaseController::class, "print"]);
 
-Route::post('purchase/detail_delete',[PurchaseController::class,'delete_detail']);
+Route::post('purchase/detail_delete', [PurchaseController::class, 'delete_detail']);
 
 Route::resource('goods', GoodsController::class)->middleware(['auth', 'revalidate']);
 Route::post('goods_insert', [GoodsController::class, "insert"]);
@@ -150,9 +152,3 @@ Route::get('getTransactionNumberByDate/{date}', [TransaksiController::class, 'ge
 Route::get('omzetReport', [GeneralReportController::class, 'omzetReport']);
 Route::get('omzetReportAjax', [GeneralReportController::class, 'omzetReportAjax']);
 Route::get('omzetReportExport/{month?}/{date?}/{date_to?}', [GeneralReportController::class, 'omzetReportExport']);
-
-
-
-Route::get('phpinfo', function () {
-    phpinfo();
-});

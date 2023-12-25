@@ -73,6 +73,58 @@ class PaymentModel extends Model
 			where no_pembayaran='$no_transaksi'  
               group by transaksi.id_transaksi ");
     }
+    public function print($no_transaksi)
+    {
+        $goods =  DB::select("SELECT *,no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan , penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,jumlah_detail_penerimaan,
+            case 
+            when jumlah_detail_pengiriman > 0 then sum(jumlah_detail_pengiriman)
+            end as
+            sudah_terkirim,
+            jumlah_detail_pengiriman,
+            sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM transaksi 
+            join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
+            join penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
+            join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+            join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+            join pembelian on pembelian.id_transaksi = transaksi.id_transaksi
+			join pembayaran on pembayaran.id_transaksi = transaksi.id_transaksi
+            left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
+            left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
+            join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+            join pengguna on pengguna.id=transaksi.id
+            join produk on detail_penerimaan_barang.id_produk=produk.id_produk
+            join tagihan on tagihan.id_pengiriman=pengiriman.id_pengiriman
+			where no_pembayaran='$no_transaksi'  and transaksi.type=1
+              group by transaksi.id_transaksi ");
+
+        $service =  DB::select("SELECT *,no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan , penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,jumlah_detail_penerimaan,
+            case 
+            when jumlah_detail_pengiriman > 0 then sum(jumlah_detail_pengiriman)
+            end as
+            sudah_terkirim,
+            jumlah_detail_pengiriman,
+            sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM transaksi 
+            join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
+            join penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
+            join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+            join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+            join pembelian on pembelian.id_transaksi = transaksi.id_transaksi
+			join pembayaran on pembayaran.id_transaksi = transaksi.id_transaksi
+            left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
+            left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
+            join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+            join pengguna on pengguna.id=transaksi.id
+            join produk on detail_penerimaan_barang.id_produk=produk.id_produk
+            join tagihan on tagihan.id_pengiriman=pengiriman.id_pengiriman
+			where no_pembayaran='$no_transaksi' and transaksi.type=2
+              group by transaksi.id_transaksi ");
+
+        return [
+            "goods" => $goods,
+            "service" => $service,
+            "namaFile" => str_replace("/", "_", $no_transaksi),
+        ];
+    }
 
     public function create($no_tagihan, $tgl_tagihan)
     {
@@ -223,7 +275,7 @@ class PaymentModel extends Model
     {
         $bulan_tgl = explode("-", $tgl_pembayaran);
 
-       
+
         $no_pembayaran = DB::select("
            select * from pembayaran where id_pembayaran =(select max(id_pembayaran) from pembayaran 
            where month(tgl_pembayaran)='$bulan_tgl[1]' and YEAR(tgl_pembayaran)='$bulan_tgl[0]')");

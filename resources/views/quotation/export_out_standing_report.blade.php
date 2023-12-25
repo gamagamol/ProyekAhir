@@ -18,6 +18,7 @@
                  <th>Processing</th>
                  <th>Customer</th>
                  <th>Supplier</th>
+                 <th>Sales</th>
              
              </tr>
          </thead>
@@ -38,6 +39,7 @@
                      <td>{{ $d->layanan }}</td>
                      <td>{{ $d->nama_pelanggan }}</td>
                      <td>{{ $d->nama_pemasok }}</td>
+                     <td>{{ $d->nama_pegawai }}</td>
              @endforeach
          </tbody>
 

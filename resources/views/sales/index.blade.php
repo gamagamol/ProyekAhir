@@ -36,7 +36,7 @@
                                 <td>No</td>
                                 <td>Date</td>
                                 <td>No Sales</td>
-                                <td>Job number</td>
+                                <td>Transaction number</td>
                                 <td>Customer</td>
                                 <td>Prepared</td>
                                 <td>Action</td>
@@ -53,7 +53,7 @@
                                     <td> {{ $loop->iteration }}</td>
                                     <td style="min-width:120px">{{ $d->tgl_penjualan }}</td>
                                     <td>{{ $d->no_penjualan }}</td>
-                                    <td>{{ $d->nomor_pekerjaan }}</td>
+                                    <td>{{ $d->nomor_transaksi }}</td>
                                     <td>{{ $d->nama_pelanggan }}</td>
                                     <td>{{ $d->nama_pengguna }}</td>
                                     <td>

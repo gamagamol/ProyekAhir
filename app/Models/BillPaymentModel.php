@@ -16,7 +16,7 @@ class BillPaymentModel extends Model
     {
         if ($id) {
             return DB::table('transaksi')
-                ->selectRaw("tgl_tagihan,nama_pelanggan,no_tagihan,berat,total,layanan,nama_pengguna, DATE_ADD(tgl_tagihan, INTERVAL 31 DAY) AS DUE_DATE,no_pengiriman,kode_transaksi,no_penerimaan,status_transaksi")
+                ->selectRaw("tgl_tagihan,nama_pelanggan,no_tagihan,berat,total,layanan,nama_pengguna, DATE_ADD(tgl_tagihan, INTERVAL 31 DAY) AS DUE_DATE,no_pengiriman,kode_transaksi,no_penerimaan,status_transaksi,nomor_transaksi")
                 ->join("pelanggan", "transaksi.id_pelanggan", "=", "pelanggan.id_pelanggan")
                 ->join("pengguna", "transaksi.id", "=", "pengguna.id")
                 ->join('penawaran', "penawaran.id_transaksi", "=", "transaksi.id_transaksi")
@@ -33,7 +33,7 @@ class BillPaymentModel extends Model
         } else {
 
 
-            return DB::select("SELECT b.no_penjualan,b.no_tagihan,b.nama_pelanggan,b.tgl_tagihan,b.nama_pengguna,DATE_ADD(b.tgl_tagihan, INTERVAL 31 DAY) AS DUE_DATE,b.status_transaksi,
+            return DB::select("SELECT b.no_penjualan,b.nomor_transaksi,b.no_tagihan,b.nama_pelanggan,b.tgl_tagihan,b.nama_pengguna,DATE_ADD(b.tgl_tagihan, INTERVAL 31 DAY) AS DUE_DATE,b.status_transaksi,
                 (select sum( jumlah_detail_pengiriman) from penerimaan_barang 
                 join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
                 join transaksi on penerimaan_barang.id_transaksi = transaksi.id_transaksi
@@ -66,7 +66,7 @@ class BillPaymentModel extends Model
             SELECT distinct transaksi.id_transaksi,nomor_pekerjaan, no_penerimaan,no_pengiriman, 
             pengiriman.id_penerimaan_barang, jumlah_detail_penerimaan,
             sum(jumlah_detail_pengiriman) as jumlah_detail_pengiriman,sisa_detail_pengiriman,
-            nama_pelanggan,nama_pengguna,tgl_penerimaan,no_pembelian,no_penjualan,no_tagihan,tgl_tagihan ,status_transaksi FROM transaksi
+            nama_pelanggan,nama_pengguna,tgl_penerimaan,no_pembelian,no_penjualan,no_tagihan,tgl_tagihan ,status_transaksi,nomor_transaksi FROM transaksi
             join penerimaan_barang on penerimaan_barang.id_transaksi = transaksi.id_transaksi
             join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang=penerimaan_barang.id_penerimaan_barang
             left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
@@ -127,7 +127,7 @@ class BillPaymentModel extends Model
             // dd($daa)
             // array_push($data,$dataa[0]);
         }
-        print_r($data);
+        // print_r($data);
         $array = [
             'data' => $data,
             'id_transaksi' => $id_transaksi1
@@ -257,6 +257,66 @@ class BillPaymentModel extends Model
             group by transaksi.id_transaksi"
         );
     }
+    public function print($no_tagihan)
+    {
+
+
+        $goods =  DB::select(
+            "SELECT *,penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan , penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,jumlah_detail_penerimaan,
+            case 
+            when jumlah_detail_pengiriman > 0 then sum(jumlah_detail_pengiriman)
+            end as
+            sudah_terkirim,
+            jumlah_detail_pengiriman,
+            sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM transaksi 
+            join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
+            join penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
+            join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+            join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+            left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
+            left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
+            join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+            join pengguna on pengguna.id=transaksi.id
+            join produk on detail_penerimaan_barang.id_produk=produk.id_produk
+            join tagihan on tagihan.id_transaksi=transaksi.id_transaksi
+            join pembelian on pembelian.id_transaksi=transaksi.id_transaksi
+            join pegawai on pegawai.id_pegawai = transaksi.id_pegawai
+			where no_tagihan='$no_tagihan' and transaksi.tidak_terpakai=0 and transaksi.type=1
+            group by transaksi.id_transaksi"
+        );
+        $service =  DB::select(
+            "SELECT *,penerimaan_barang.no_penerimaan,no_pengiriman, transaksi.id_transaksi , penjualan.id_penjualan , penerimaan_barang.id_penerimaan_barang ,penawaran.id_penawaran,jumlah_detail_penerimaan,
+            case 
+            when jumlah_detail_pengiriman > 0 then sum(jumlah_detail_pengiriman)
+            end as
+            sudah_terkirim,
+            jumlah_detail_pengiriman,
+            sisa_detail_pengiriman ,detail_penerimaan_barang.id_produk FROM transaksi 
+            join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
+            join penerimaan_barang on penerimaan_barang.id_transaksi=transaksi.id_transaksi
+            join detail_penerimaan_barang on detail_penerimaan_barang.id_penerimaan_barang = penerimaan_barang.id_penerimaan_barang
+            join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
+            left join pengiriman on pengiriman.id_transaksi = transaksi.id_transaksi
+            left join detail_transaksi_pengiriman on detail_transaksi_pengiriman.id_pengiriman=pengiriman.id_pengiriman 
+            join pelanggan on pelanggan.id_pelanggan=transaksi.id_pelanggan
+            join pengguna on pengguna.id=transaksi.id
+            join produk on detail_penerimaan_barang.id_produk=produk.id_produk
+            join tagihan on tagihan.id_transaksi=transaksi.id_transaksi
+            join pembelian on pembelian.id_transaksi=transaksi.id_transaksi
+            join pegawai on pegawai.id_pegawai = transaksi.id_pegawai
+			where no_tagihan='$no_tagihan' and transaksi.tidak_terpakai=0 and transaksi.type=2
+            group by transaksi.id_transaksi"
+        );
+
+
+        return [
+            "goods" => $goods,
+            "service" => $service,
+            "namaFile" => str_replace("/", "_", $no_tagihan),
+
+        ];
+    }
+
 
     public function show($no_penjualan)
     {

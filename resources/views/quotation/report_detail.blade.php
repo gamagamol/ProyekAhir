@@ -85,6 +85,7 @@
                                 <th>Date Sales</th>
                                 <th>No Sales</th>
                                 <th>Supplier</th>
+                                <th>Sales</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -308,7 +309,7 @@
 
                     }
                 },
-                 {
+                {
                     mData: null,
                     mRender: function(d) {
                         return (d.nama_produk) ? d.nama_produk : '-'
@@ -355,14 +356,18 @@
                 {
                     mData: null,
                     mRender: function(d) {
-                        return (d.harga) ? Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format( d.harga)  : 0
+                        return (d.harga) ? Intl.NumberFormat('en-IN', {
+                            maximumSignificantDigits: 3
+                        }).format(d.harga) : 0
 
                     }
                 },
                 {
                     mData: null,
                     mRender: function(d) {
-                        return (d.total) ? Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format( d.total)  : 0
+                        return (d.total) ? Intl.NumberFormat('en-IN', {
+                            maximumSignificantDigits: 3
+                        }).format(d.total) : 0
 
                     }
                 },
@@ -372,8 +377,7 @@
                         return (d.layanan) ? d.layanan : 0
 
                     }
-                }
-                ,{
+                }, {
                     mData: null,
                     mRender: function(d) {
                         return (d.tgl_penjualan) ? d.tgl_penjualan : '-'
@@ -397,11 +401,18 @@
                 {
                     mData: null,
                     mRender: function(d) {
+                        return (d.nama_pegawai) ? d.nama_pegawai : '-'
+
+                    }
+                },
+                {
+                    mData: null,
+                    mRender: function(d) {
                         return (d.no_penjualan) ? 'CLOSE' : 'OPEN'
 
                     }
                 },
-               
+
 
             ]
         })

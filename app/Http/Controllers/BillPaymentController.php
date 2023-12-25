@@ -13,7 +13,7 @@ use Symfony\Component\Console\Helper\FormatterHelper;
 use Terbilang;
 use App\Models\pegawaiModel;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-
+use App\Http\Controllers\QuotationController;
 
 use function app\helper\penyebut;
 
@@ -22,11 +22,13 @@ class BillPaymentController extends Controller
     protected $model;
     protected $pembelianModel;
     protected $pegawaiModel;
+    protected $QuotationController;
     public function __construct()
     {
         $this->model = new BillPaymentModel();
         $this->pembelianModel = new PurchaseModel();
         $this->pegawaiModel = new pegawaiModel();
+        $this->QuotationController = new QuotationController();
     }
     public function index()
     {
@@ -42,6 +44,7 @@ class BillPaymentController extends Controller
             $data = $this->model->index();
         }
 
+        // dd($data);
 
         $data = [
             'tittle' => "Bill Payment ",
@@ -72,6 +75,7 @@ class BillPaymentController extends Controller
     {
         // prepare data
 
+        // dd($request->all());
         $id_transaksi = $request->input('id_transaksi');
         $id_pengiriman = $request->input('id_pengiriman');
         $no_pengiriman = $request->input('no_pengiriman');
@@ -155,115 +159,198 @@ class BillPaymentController extends Controller
 
     public function print($no_transaksi)
     {
-        $data = $this->model->detail(str_replace("-", "/", $no_transaksi));
+        $data = $this->model->print(str_replace("-", "/", $no_transaksi));
         $dueDate = $this->model->index(str_replace("-", "/", $no_transaksi));
 
-        // dd($data);
+        $goods = (count($data["goods"]) > 0) ? $data["goods"] : null;
+        $service = (count($data["service"]) > 0) ? $data["service"] : null;
+        $namaFile = $data["namaFile"];
 
-        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/bill_template.xlsx');
+        if ($goods != null) {
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/bill_template.xlsx');
 
-        $worksheet = $spreadsheet->getActiveSheet();
+            $worksheet = $spreadsheet->getActiveSheet();
 
-        $worksheet->getCell('J4')->setValue($data[0]->tgl_tagihan);
-        $worksheet->getCell('J5')->setValue($dueDate[0]->DUE_DATE);
-        $worksheet->mergeCells("J5:K5");
-        $worksheet->getCell('J6')->setValue($data[0]->no_tagihan);
-        $worksheet->mergeCells("J6:K6");
-        $worksheet->getCell('J7')->setValue($data[0]->no_penjualan);
-        $worksheet->mergeCells("J7:K7");
-        $no_ref_qtn = ($data[0]->no_po_customer == '' || $data[0]->no_po_customer == '-') ? $data[0]->no_penawaran : $data[0]->no_po_customer;
+            $worksheet->getCell('J4')->setValue($goods[0]->tgl_tagihan);
+            $worksheet->getCell('J5')->setValue($dueDate[0]->DUE_DATE);
+            $worksheet->mergeCells("J5:K5");
+            $worksheet->getCell('J6')->setValue($goods[0]->no_tagihan);
+            $worksheet->mergeCells("J6:K6");
+            $worksheet->getCell('J7')->setValue($goods[0]->no_penjualan);
+            $worksheet->mergeCells("J7:K7");
+            $no_ref_qtn = ($goods[0]->no_po_customer == '' || $goods[0]->no_po_customer == '-') ? $goods[0]->no_penawaran : $goods[0]->no_po_customer;
 
-        $worksheet->getCell('J8')->setValue($no_ref_qtn);
+            $worksheet->getCell('J8')->setValue($no_ref_qtn);
+            $worksheet->getCell('J9')->setValue($goods[0]->nomor_transaksi);
 
-        $worksheet->getCell('A12')->setValue($data[0]->perwakilan);
-        $worksheet->getCell('A13')->setValue($data[0]->nama_pelanggan);
-        $worksheet->getCell('A14')->setValue($data[0]->alamat_pelanggan);
-
-
-
-
-        $baris_awal = 19;
-        $subtotal = 0;
-        $total = 0;
-        $ongkir = 0;
-        $worksheet->insertNewRowBefore(20, count($data));
-        for ($i = 0; $i < count($data); $i++) {
-
-
-            $tambahan_baris = $baris_awal + 1;
-
-            $worksheet->setCellValue("A$tambahan_baris", ($i + 1));
-            $worksheet->setCellValue("B$tambahan_baris", $data[$i]->nomor_pekerjaan);
-            $worksheet->MergeCells("B$tambahan_baris:C$tambahan_baris");
-            // penawaran
-
-            $worksheet->setCellValue("D$tambahan_baris", $data[$i]->nama_produk);
-            $worksheet->setCellValue("E$tambahan_baris", $data[$i]->tebal_transaksi);
-            $worksheet->setCellValue("F$tambahan_baris", $data[$i]->lebar_transaksi);
-            $worksheet->setCellValue("G$tambahan_baris", $data[$i]->panjang_transaksi);
-            // bill
-            $worksheet->setCellValue("H$tambahan_baris", $data[$i]->nama_produk);
-            $tebal =  $data[$i]->tebal_penawaran;
-            $lebar =  $data[$i]->lebar_penawaran;
-            $panjang =  $data[$i]->panjang_penawaran;
-
-            $worksheet->setCellValue("I$tambahan_baris", $tebal);
-            $worksheet->setCellValue("J$tambahan_baris", $lebar);
-            $worksheet->setCellValue("K$tambahan_baris", $panjang);
-            $worksheet->setCellValue("L$tambahan_baris", $data[$i]->jumlah);
-            $worksheet->setCellValue("M$tambahan_baris", $data[$i]->berat);
-            $worksheet->setCellValue("N$tambahan_baris", "Rp" . number_format($data[$i]->harga));
-            $worksheet->setCellValue("O$tambahan_baris", $data[$i]->subtotal);
-            $worksheet->mergeCells("O$tambahan_baris:P$tambahan_baris");
+            $worksheet->getCell('A12')->setValue($goods[0]->perwakilan);
+            $worksheet->getCell('A13')->setValue($goods[0]->nama_pelanggan);
+            $worksheet->getCell('A14')->setValue($goods[0]->alamat_pelanggan);
 
 
 
-            $subtotal += $data[$i]->subtotal;
-            $ongkir += $data[$i]->ongkir;
-            $total += $data[$i]->total;
-            $baris_awal = $tambahan_baris;
+
+            $baris_awal = 19;
+            $subtotal = 0;
+            $total = 0;
+            $ongkir = 0;
+            $worksheet->insertNewRowBefore(20, count($goods));
+            for ($i = 0; $i < count($goods); $i++) {
+
+
+                $tambahan_baris = $baris_awal + 1;
+
+                $worksheet->setCellValue("A$tambahan_baris", ($i + 1));
+                $worksheet->setCellValue("B$tambahan_baris", $goods[$i]->nomor_pekerjaan);
+                $worksheet->MergeCells("B$tambahan_baris:C$tambahan_baris");
+                // penawaran
+
+                $worksheet->setCellValue("D$tambahan_baris", $goods[$i]->nama_produk);
+                $worksheet->setCellValue("E$tambahan_baris", $goods[$i]->tebal_transaksi);
+                $worksheet->setCellValue("F$tambahan_baris", $goods[$i]->lebar_transaksi);
+                $worksheet->setCellValue("G$tambahan_baris", $goods[$i]->panjang_transaksi);
+                // bill
+                $worksheet->setCellValue("H$tambahan_baris", $goods[$i]->nama_produk);
+                $tebal =  $goods[$i]->tebal_penawaran;
+                $lebar =  $goods[$i]->lebar_penawaran;
+                $panjang =  $goods[$i]->panjang_penawaran;
+
+                $worksheet->setCellValue("I$tambahan_baris", $tebal);
+                $worksheet->setCellValue("J$tambahan_baris", $lebar);
+                $worksheet->setCellValue("K$tambahan_baris", $panjang);
+                $worksheet->setCellValue("L$tambahan_baris", $goods[$i]->jumlah);
+                $worksheet->setCellValue("M$tambahan_baris", $goods[$i]->berat);
+                $worksheet->setCellValue("N$tambahan_baris", "Rp" . number_format($goods[$i]->harga));
+                $worksheet->setCellValue("O$tambahan_baris", $goods[$i]->subtotal);
+                $worksheet->mergeCells("O$tambahan_baris:P$tambahan_baris");
+
+
+
+                $subtotal += $goods[$i]->subtotal;
+                $ongkir += $goods[$i]->ongkir;
+                $total += $goods[$i]->total;
+                $baris_awal = $tambahan_baris;
+            }
+            $baris_setelah = $baris_awal + 2;
+            $worksheet->setCellValue("O$baris_setelah", "Rp" . number_format($subtotal, '2', ',', '.'));
+            $worksheet->MergeCells("O$baris_setelah:P$baris_setelah");
+
+            $baris_setelah += 1;
+            $worksheet->setCellValue("O$baris_setelah", "Rp" . number_format($subtotal * 0.11, '2', ',', '.'));
+            $worksheet->MergeCells("O$baris_setelah:P$baris_setelah");
+
+            $baris_setelah += 1;
+            $worksheet->setCellValue("O$baris_setelah", "Rp" . number_format($total, '2', ',', '.'));
+            $worksheet->MergeCells("O$baris_setelah:P$baris_setelah");
+
+            $baris_setelah += 2;
+            $worksheet->setCellValue("A$baris_setelah", penyebut($total));
+            $worksheet->MergeCells("A$baris_setelah:H$baris_setelah");
+
+            $baris_setelah += 2;
+            $worksheet->setCellValue("J$baris_setelah", "Bekasi," . ' ' . $goods[0]->tgl_tagihan);
+            $worksheet->MergeCells("J$baris_setelah:L$baris_setelah");
         }
-        $baris_setelah = $baris_awal + 2;
-        $worksheet->setCellValue("O$baris_setelah", "Rp" . number_format($subtotal, '2', ',', '.'));
-        $worksheet->MergeCells("O$baris_setelah:P$baris_setelah");
 
-        $baris_setelah += 1;
-        $worksheet->setCellValue("O$baris_setelah", "Rp" . number_format($subtotal * 0.11, '2', ',', '.'));
-        $worksheet->MergeCells("O$baris_setelah:P$baris_setelah");
+        if ($service != null) {
+            $spreadsheet1 = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/bill_template_2.xlsx');
 
-        $baris_setelah += 1;
-        $worksheet->setCellValue("O$baris_setelah", "Rp" . number_format($total, '2', ',', '.'));
-        $worksheet->MergeCells("O$baris_setelah:P$baris_setelah");
+            $worksheet1 = $spreadsheet1->getActiveSheet();
 
-        $baris_setelah += 2;
-        $worksheet->setCellValue("A$baris_setelah", penyebut($total));
-        $worksheet->MergeCells("A$baris_setelah:H$baris_setelah");
+            $worksheet1->getCell('J4')->setValue($service[0]->tgl_tagihan);
+            $worksheet1->getCell('J5')->setValue($dueDate[0]->DUE_DATE);
+            $worksheet1->mergeCells("J5:K5");
+            $worksheet1->getCell('J6')->setValue($service[0]->no_tagihan);
+            $worksheet1->mergeCells("J6:K6");
+            $worksheet1->getCell('J7')->setValue($service[0]->no_penjualan);
+            $worksheet1->mergeCells("J7:K7");
+            $no_ref_qtn = ($service[0]->no_po_customer == '' || $service[0]->no_po_customer == '-') ? $service[0]->no_penawaran : $service[0]->no_po_customer;
 
-        $baris_setelah += 2;
-        $worksheet->setCellValue("J$baris_setelah", "Bekasi," . ' ' . $data[0]->tgl_tagihan);
-        $worksheet->MergeCells("J$baris_setelah:L$baris_setelah");
+            $worksheet1->getCell('J8')->setValue($no_ref_qtn);
+            $worksheet1->getCell('J9')->setValue($service[0]->nomor_transaksi);
 
-
-
-
+            $worksheet1->getCell('A12')->setValue($service[0]->perwakilan);
+            $worksheet1->getCell('A13')->setValue($service[0]->nama_pelanggan);
+            $worksheet1->getCell('A14')->setValue($service[0]->alamat_pelanggan);
 
 
 
 
+            $baris_awal = 19;
+            $subtotal = 0;
+            $total = 0;
+            $ongkir = 0;
+            $worksheet1->insertNewRowBefore(20, count($service));
+            for ($i = 0; $i < count($service); $i++) {
 
 
-        $namaFile = $data[0]->no_tagihan;
+                $tambahan_baris = $baris_awal + 1;
 
-        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header("Content-Disposition: attachment; filename=$namaFile.xlsx"); // Set nama file excel nya
-        header('Cache-Control: max-age=0');
+                $worksheet1->setCellValue("A$tambahan_baris", ($i + 1));
+                $worksheet1->setCellValue("B$tambahan_baris", $service[$i]->nomor_pekerjaan);
+                $worksheet1->MergeCells("B$tambahan_baris:C$tambahan_baris");
+                // penawaran
 
-        $writer = new Xlsx($spreadsheet);
-        $writer->save('php://output');
-        // $writer->save('report/quotation.xls');
+                $worksheet1->setCellValue("D$tambahan_baris", $service[$i]->nama_produk);
+                $worksheet1->setCellValue("E$tambahan_baris", $service[$i]->tebal_transaksi);
+                $worksheet1->setCellValue("F$tambahan_baris", $service[$i]->lebar_transaksi);
+                $worksheet1->setCellValue("G$tambahan_baris", $service[$i]->panjang_transaksi);
+                // bill
+                $worksheet1->setCellValue("H$tambahan_baris", $service[$i]->nama_produk);
+                $tebal =  $service[$i]->tebal_penawaran;
+                $lebar =  $service[$i]->lebar_penawaran;
+                $panjang =  $service[$i]->panjang_penawaran;
+
+                $worksheet1->setCellValue("I$tambahan_baris", $tebal);
+                $worksheet1->setCellValue("J$tambahan_baris", $lebar);
+                $worksheet1->setCellValue("K$tambahan_baris", $panjang);
+                $worksheet1->setCellValue("L$tambahan_baris", $service[$i]->jumlah);
+                $worksheet1->setCellValue("M$tambahan_baris", $service[$i]->berat);
+                $worksheet1->setCellValue("N$tambahan_baris", "Rp" . number_format($service[$i]->harga));
+                $worksheet1->setCellValue("O$tambahan_baris", $service[$i]->subtotal);
+                $worksheet1->mergeCells("O$tambahan_baris:P$tambahan_baris");
 
 
+
+                $subtotal += $service[$i]->subtotal;
+                $ongkir += $service[$i]->ongkir;
+                $total += $service[$i]->total;
+                $baris_awal = $tambahan_baris;
+            }
+            $baris_setelah = $baris_awal + 2;
+            $worksheet1->setCellValue("O$baris_setelah", "Rp" . number_format($subtotal, '2', ',', '.'));
+            $worksheet1->MergeCells("O$baris_setelah:P$baris_setelah");
+
+            $baris_setelah += 1;
+            $worksheet1->setCellValue("O$baris_setelah", "Rp" . number_format($subtotal * 0.11, '2', ',', '.'));
+            $worksheet1->MergeCells("O$baris_setelah:P$baris_setelah");
+
+            $baris_setelah += 1;
+            $worksheet1->setCellValue("O$baris_setelah", "Rp" . number_format($subtotal * 0.12, '2', ',', '.'));
+            $worksheet1->MergeCells("O$baris_setelah:P$baris_setelah");
+
+            $baris_setelah += 1;
+            $worksheet1->setCellValue("O$baris_setelah", "Rp" . number_format($total, '2', ',', '.'));
+            $worksheet1->MergeCells("O$baris_setelah:P$baris_setelah");
+
+            $baris_setelah += 2;
+            $worksheet1->setCellValue("A$baris_setelah", penyebut($total));
+            $worksheet1->MergeCells("A$baris_setelah:H$baris_setelah");
+
+            $baris_setelah += 2;
+            $worksheet1->setCellValue("J$baris_setelah", "Bekasi," . ' ' . $service[0]->tgl_tagihan);
+            $worksheet1->MergeCells("J$baris_setelah:L$baris_setelah");
+        }
+
+
+        if ($goods != null && $service != null) {
+            $this->QuotationController->printAll($spreadsheet, $spreadsheet1, $namaFile);
+        } else if ($goods != null) {
+
+            $this->QuotationController->printAll($spreadsheet, null, $namaFile);
+        } else if ($service != null) {
+            $this->QuotationController->printAll(null, $spreadsheet1, $namaFile);
+        }
     }
 
 

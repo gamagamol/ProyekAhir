@@ -48,12 +48,12 @@
                                 <td>Grade</td>
                                 <td colspan="3">Material Size</td>
                                 <td>QTY</td>
-
                                 <td>Weight(Kg)</td>
                                 <td>Unit Price</td>
                                 <td>Shipment</td>
                                 <td>Amount</td>
                                 <td>VAT 11%</td>
+                                <td>VAT 12%</td>
                                 <td>Total Amount</td>
                                 <td>Processing</td>
                                 <td>customer</td>
@@ -67,6 +67,7 @@
                             $i = 1;
                             $subtotal = 0;
                             $ppn = 0;
+                            $ppn12 = 0;
                             $total = 0;
                             ?>
                             @foreach ($data as $d)
@@ -87,15 +88,14 @@
                                     <td>{{ 'Rp.' . number_format($d->ongkir) }}</td>
                                     <td>{{ 'Rp.' . number_format($d->subtotal) }}</td>
                                     <td>{{ 'Rp.' . number_format($d->ppn) }}</td>
+                                    <td> <?= ($d->type==1) ? 0 : 'Rp.' . number_format($d->subtotal * 0.12) ?> </td>
                                     <td>{{ 'Rp.' . number_format($d->total) }}</td>
                                     <td>{{ $d->layanan }}</td>
                                     <td>{{ $d->nama_pelanggan }}</td>
-
-
-
                                 </tr>
                                 <?php
                                 $subtotal += $d->subtotal;
+                                $ppn12 += ($d->type==1) ? 0:$d->subtotal * 0.12;
                                 $ppn += $d->ppn;
                                 $total += $d->total;
                                 
@@ -106,6 +106,7 @@
                                 <td colspan='12'>TOTAL</td>
                                 <td>{{ 'Rp.' . number_format($subtotal) }}</td>
                                 <td>{{ 'Rp.' . number_format($ppn) }}</td>
+                                <td>{{ 'Rp.' . number_format($ppn12) }}</td>
                                 <td>{{ 'Rp.' . number_format($total + $data[0]->ongkir) }}</td>
                             </tr>
                         </table>
@@ -115,9 +116,9 @@
                             <div class="col">
 
 
+                                <a href="{{ url('quotation') }}" class="btn btn-primary">back</a>
                                 <p href="" class="btn btn-primary mt-3" onclick="MoveCreate()">submit</p>
 
-                                <a href="{{ url('quotation') }}" class="btn btn-primary">back</a>
                             </div>
                         </div>
                     </div>
@@ -137,9 +138,9 @@
                 </div>
                 <div class="modal-body">
                     <p>Are you sure to continue the transaction? please check the details first! </p>
-                    <button type=submit name=submit class="btn btn-primary ">submit</button>
                     <a href="{{ url('quotation', $d->kode_transaksi) }}" class="btn btn-info mt-1">
                         Detail </a>
+                    <button type=submit name=submit class="btn btn-primary ">submit</button>
 
                 </div>
             </div>

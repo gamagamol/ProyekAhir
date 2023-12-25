@@ -155,9 +155,9 @@
                             <div class="col">
                                 {{-- <button type=submit name=submit class="btn btn-primary">submit</button> --}}
 
+                                <a href=" {{ url('sales') }}" class="btn btn-primary">back</a>
                                 <p href="" class="btn btn-primary mt-3" onclick="MoveCreate()">Submit</p>
 
-                                <a href=" {{ url('sales') }}" class="btn btn-primary">back</a>
                             </div>
                         </div>
                     </div>
@@ -173,10 +173,10 @@
                                 </div>
                                 <div class="modal-body">
                                     <p>Are you sure to continue the transaction? please check the details first! </p>
-                                    <button type=submit name=submit class="btn btn-primary ">submit</button>
                                     <a href="{{ url('sales/detail', str_replace('/', '-', $d->no_penjualan)) }}"
                                         class="btn btn-info mt-1">
                                         Detail </a>
+                                    <button type=submit name=submit class="btn btn-primary ">submit</button>
 
                                 </div>
                             </div>

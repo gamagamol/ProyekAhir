@@ -9,6 +9,7 @@ use App\Http\Controllers\GoodsController;
 use App\Models\SalesModel;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use ZipArchive;
+use App\Models\TransaksiModel;
 
 class DeliveryController extends Controller
 {
@@ -17,12 +18,15 @@ class DeliveryController extends Controller
     public $QuotationController;
     public $GoodsController;
     public $SalesModel;
+    public $TransaksiModel;
+
     public function __construct()
     {
         $this->model = new DeliveryModel();
         $this->QuotationController = new QuotationController;
         $this->GoodsController = new GoodsController;
         $this->SalesModel = new SalesModel();
+        $this->TransaksiModel = new TransaksiModel();
     }
     public function index()
     {
@@ -57,6 +61,9 @@ class DeliveryController extends Controller
 
     public function store(Request $request)
     {
+
+        // dd($request->all());
+
         // perispan Variable
         $tgl_pengiriman = $request->post('tgl_pengiriman');
         $id_transaksi = $request->post('id_transaksi');
@@ -74,6 +81,11 @@ class DeliveryController extends Controller
         $panjang_transaksi = $request->input('panjang_transaksi');
         $bentuk_produk = $request->input('bentuk_produk');
         $layanan = $request->input('layanan');
+
+        // get kode transaksi
+        // dd($id_transaksi);
+        $kode_transaksi = $this->TransaksiModel->getTransaksi($id_transaksi[0])->kode_transaksi;
+
 
         // dd($request->input());
         // persiapan array
@@ -218,19 +230,32 @@ class DeliveryController extends Controller
 
 
 
+        // check kesamaan so
+        $so_delivery = $this->model->so_delivery($kode_transaksi);
+        if ($so_delivery != null) {
+            array_push($arr_no_pengiriman, $so_delivery);
+        } else {
+            $no_pengiriman = $this->model->no_delivery($tgl_pengiriman, $unit);
+            if ($request->select_all != 'select_all') {
+                if (gettype($no_pengiriman) == 'array') {
 
+                    foreach ($no_pengiriman as $anp) {
 
-        $no_pengiriman = $this->model->no_delivery($tgl_pengiriman, $unit);
-        if ($request->select_all != 'select_all') {
-            if (gettype($no_pengiriman) == 'array') {
-
-                foreach ($no_pengiriman as $anp) {
-
-                    $no_purchase = explode('-', $tgl_pengiriman);
-                    $pengiriman = "DO/$anp/$no_purchase[0]/$no_purchase[1]/$no_purchase[2]";
+                        $no_purchase = explode('-', $tgl_pengiriman);
+                        $pengiriman = "DO/$anp/$no_purchase[0]/$no_purchase[1]/$no_purchase[2]";
+                        array_push($arr_no_pengiriman, $pengiriman);
+                    }
+                } else {
+                    $no_purchase = explode(
+                        '-',
+                        $tgl_pengiriman
+                    );
+                    $pengiriman = "DO/$no_pengiriman/$no_purchase[0]/$no_purchase[1]/$no_purchase[2]";
                     array_push($arr_no_pengiriman, $pengiriman);
                 }
             } else {
+
+
                 $no_purchase = explode(
                     '-',
                     $tgl_pengiriman
@@ -238,19 +263,11 @@ class DeliveryController extends Controller
                 $pengiriman = "DO/$no_pengiriman/$no_purchase[0]/$no_purchase[1]/$no_purchase[2]";
                 array_push($arr_no_pengiriman, $pengiriman);
             }
-        } else {
-            $no_purchase = explode(
-                '-',
-                $tgl_pengiriman
-            );
-            $pengiriman = "DO/$no_pengiriman/$no_purchase[0]/$no_purchase[1]/$no_purchase[2]";
-            array_push($arr_no_pengiriman, $pengiriman);
         }
 
 
 
-
-        // dump($produk);
+        // dd("");
 
         if ($unit) {
             // echo "masuk unit";
@@ -408,8 +425,8 @@ class DeliveryController extends Controller
         // check isi data yang mau di insert
         // dump($id_transaksi);
         // dump($penerimaan);
-        dump($data_pengiriman);
-        dd($data_detail_pengiriman);
+        // dump($data_pengiriman);
+        // dump($data_detail_pengiriman);
         // dd($data_pengiriman);
 
 
@@ -443,122 +460,191 @@ class DeliveryController extends Controller
 
     public function print($no_transaksi)
     {
-        $data = $this->model->detail(str_replace('-', '/', $no_transaksi));
-
+        $data = $this->model->print(str_replace('-', '/', $no_transaksi));
         // dd($data);
-
-        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/delivery_template.xlsx');
-
-        $worksheet = $spreadsheet->getActiveSheet();
-
-        $worksheet->getCell('J4')->setValue($data[0]->tgl_pengiriman);
-        $worksheet->getCell('J5')->setValue($data[0]->no_pengiriman);
-        $worksheet->mergeCells("J5:K5");
-        $no_ref_qtn = ($data[0]->no_po_customer == '' || $data[0]->no_po_customer == '-') ? $data[0]->no_penjualan
-            : $data[0]->no_po_customer;
-        $worksheet->getCell('J6')->setValue($no_ref_qtn);
-        // $worksheet->getCell('J6')->setValue($data[0]->no_penjualan);
-        $worksheet->getCell('A12')->setValue($data[0]->perwakilan);
-        $worksheet->getCell('A13')->setValue($data[0]->nama_pelanggan);
-        $worksheet->getCell('A14')->setValue($data[0]->alamat_pelanggan);
-        // $worksheet->getCell('D17')->setValue($data[0]->layanan);
+        $goods = (count($data["goods"]) > 0) ? $data["goods"] : null;
+        $service = (count($data["service"]) > 0) ? $data["service"] : null;
+        $namaFile = $data["namaFile"];
 
 
-        $baris_awal = 18;
-        $total_berat = 0;
-        $total_jumlah = 0;
-
-        $worksheet->insertNewRowBefore(20, count($data));
-        for ($i = 0; $i < count($data); $i++) {
 
 
-            $tambahan_baris = $baris_awal + 1;
-
-            $worksheet->setCellValue("C$tambahan_baris", ($i + 1));
-            $worksheet->setCellValue("D$tambahan_baris", $data[$i]->nomor_pekerjaan);
-            $worksheet->MergeCells("D$tambahan_baris:E$tambahan_baris");
-            // data penawaran awal
-            $worksheet->setCellValue("F$tambahan_baris", $data[$i]->nama_produk);
-            $worksheet->setCellValue("G$tambahan_baris", $data[$i]->tebal_transaksi);
-            $worksheet->setCellValue("H$tambahan_baris", $data[$i]->lebar_transaksi);
-            $worksheet->setCellValue("I$tambahan_baris", $data[$i]->panjang_transaksi);
-
-            // data pengiriman
-            $worksheet->setCellValue("J$tambahan_baris", $data[$i]->nama_produk);
+        if ($goods != null) {
 
 
-            $tebal = $data[$i]->tebal_penawaran;
-            $lebar = $data[$i]->lebar_penawaran;
-            $panjang =  $data[$i]->panjang_penawaran;
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/delivery_template.xlsx');
 
-            $worksheet->setCellValue("K$tambahan_baris", $tebal);
-            $worksheet->setCellValue("L$tambahan_baris", $lebar);
-            $worksheet->setCellValue("M$tambahan_baris", $panjang);
-            $worksheet->setCellValue("N$tambahan_baris", $data[$i]->jumlah_detail_pengiriman);
-            $worksheet->setCellValue("O$tambahan_baris", $data[$i]->berat_detail_pengiriman);
-            // $worksheet->MergeCells("K$tambahan_baris:L$tambahan_baris");
+            $worksheet = $spreadsheet->getActiveSheet();
 
-            $total_berat += $data[$i]->berat_detail_pengiriman;
-            $total_jumlah += $data[$i]->jumlah_detail_pengiriman;
+            $worksheet->getCell('J4')->setValue($goods[0]->tgl_pengiriman);
+            $worksheet->getCell('J5')->setValue($goods[0]->no_pengiriman);
+            $worksheet->mergeCells("J5:K5");
+            $no_ref_qtn = ($goods[0]->no_po_customer == '' || $goods[0]->no_po_customer == '-') ? $goods[0]->no_penjualan
+                : $goods[0]->no_po_customer;
+            $worksheet->getCell('J6')->setValue($no_ref_qtn);
+            $worksheet->getCell('J7')->setValue($goods[0]->nomor_transaksi);
+
+            // $worksheet->getCell('J6')->setValue($goods[0]->no_penjualan);
+            $worksheet->getCell('A12')->setValue($goods[0]->perwakilan);
+            $worksheet->getCell('A13')->setValue($goods[0]->nama_pelanggan);
+            $worksheet->getCell('A14')->setValue($goods[0]->alamat_pelanggan);
+            // $worksheet->getCell('D17')->setValue($goods[0]->layanan);
 
 
-            $baris_awal = $tambahan_baris;
+            $baris_awal = 18;
+            $total_berat = 0;
+            $total_jumlah = 0;
+
+            $worksheet->insertNewRowBefore(20, count($goods));
+            for ($i = 0; $i < count($goods); $i++) {
+
+
+                $tambahan_baris = $baris_awal + 1;
+
+                $worksheet->setCellValue("C$tambahan_baris", ($i + 1));
+                $worksheet->setCellValue("D$tambahan_baris", $goods[$i]->nomor_pekerjaan);
+                $worksheet->MergeCells("D$tambahan_baris:E$tambahan_baris");
+                // goods penawaran awal
+                $worksheet->setCellValue("F$tambahan_baris", $goods[$i]->nama_produk);
+                $worksheet->setCellValue("G$tambahan_baris", $goods[$i]->tebal_transaksi);
+                $worksheet->setCellValue("H$tambahan_baris", $goods[$i]->lebar_transaksi);
+                $worksheet->setCellValue("I$tambahan_baris", $goods[$i]->panjang_transaksi);
+
+                // goods pengiriman
+                $worksheet->setCellValue("J$tambahan_baris", $goods[$i]->nama_produk);
+
+
+                $tebal = $goods[$i]->tebal_penawaran;
+                $lebar = $goods[$i]->lebar_penawaran;
+                $panjang =  $goods[$i]->panjang_penawaran;
+
+                $worksheet->setCellValue("K$tambahan_baris", $tebal);
+                $worksheet->setCellValue("L$tambahan_baris", $lebar);
+                $worksheet->setCellValue("M$tambahan_baris", $panjang);
+                $worksheet->setCellValue("N$tambahan_baris", $goods[$i]->jumlah_detail_pengiriman);
+                $worksheet->setCellValue("O$tambahan_baris", $goods[$i]->berat_detail_pengiriman);
+                // $worksheet->MergeCells("K$tambahan_baris:L$tambahan_baris");
+
+                $total_berat += $goods[$i]->berat_detail_pengiriman;
+                $total_jumlah += $goods[$i]->jumlah_detail_pengiriman;
+
+
+                $baris_awal = $tambahan_baris;
+            }
+            // dd($baris_awal);
+            $baris_setelah = $baris_awal + 1;
+
+
+            $worksheet->setCellValue("C$baris_setelah", "TOTAL");
+            $worksheet->MergeCells("C$baris_setelah:M$baris_setelah");
+            $worksheet->setCellValue("N$baris_setelah", $total_jumlah);
+            $worksheet->setCellValue("O$baris_setelah", $total_berat);
+            $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
+
+            $baris_setelah += 3;
+            $worksheet->setCellValue("G$baris_setelah", $goods[0]->layanan);
+            $worksheet->MergeCells("G$baris_setelah:H$baris_setelah");
+            $baris_setelah += 3;
+            $worksheet->setCellValue("G$baris_setelah", $goods[0]->note_khusus);
+            $worksheet->MergeCells("G$baris_setelah:H$baris_setelah");
+
+            $baris_setelah += 5;
+            $worksheet->setCellValue("E$baris_setelah", "/" . date('m-Y'));
+            $worksheet->setCellValue("I$baris_setelah", "/" . date('m-Y'));
+            $worksheet->setCellValue("M$baris_setelah", "/" . date('m-Y'));
         }
-        // dd($baris_awal);
-        $baris_setelah = $baris_awal + 1;
+
+        if ($service != null) {
 
 
-        $worksheet->setCellValue("C$baris_setelah", "TOTAL");
-        $worksheet->MergeCells("C$baris_setelah:M$baris_setelah");
-        $worksheet->setCellValue("N$baris_setelah", $total_jumlah);
-        $worksheet->setCellValue("O$baris_setelah", $total_berat);
-        $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
+            $spreadsheet1 = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/delivery_template_2.xlsx');
 
-        $baris_setelah += 3;
-        $worksheet->setCellValue("G$baris_setelah", $data[0]->layanan);
-        $worksheet->MergeCells("G$baris_setelah:H$baris_setelah");
+            $worksheet1 = $spreadsheet1->getActiveSheet();
 
-        $baris_setelah += 7;
-        $worksheet->setCellValue("E$baris_setelah", "/" . date('m-Y'));
-        $worksheet->setCellValue("I$baris_setelah", "/" . date('m-Y'));
-        $worksheet->setCellValue("M$baris_setelah", "/" . date('m-Y'));
-
-
+            $worksheet1->getCell('J4')->setValue($service[0]->tgl_pengiriman);
+            $worksheet1->getCell('J5')->setValue($service[0]->no_pengiriman);
+            $worksheet1->mergeCells("J5:K5");
+            $no_ref_qtn = ($service[0]->no_po_customer == '' || $service[0]->no_po_customer == '-') ? $service[0]->no_penjualan
+                : $service[0]->no_po_customer;
+            $worksheet1->getCell('J6')->setValue($no_ref_qtn);
+            $worksheet1->getCell('J7')->setValue($service[0]->nomor_transaksi);
+            $worksheet1->getCell('A12')->setValue($service[0]->perwakilan);
+            $worksheet1->getCell('A13')->setValue($service[0]->nama_pelanggan);
+            $worksheet1->getCell('A14')->setValue($service[0]->alamat_pelanggan);
 
 
+            $baris_awal = 18;
+            $total_berat = 0;
+            $total_jumlah = 0;
+
+            $worksheet1->insertNewRowBefore(20, count($service));
+            for ($i = 0; $i < count($service); $i++) {
 
 
+                $tambahan_baris = $baris_awal + 1;
+
+                $worksheet1->setCellValue("C$tambahan_baris", ($i + 1));
+                $worksheet1->setCellValue("D$tambahan_baris", $service[$i]->nomor_pekerjaan);
+                $worksheet1->MergeCells("D$tambahan_baris:E$tambahan_baris");
+                // service penawaran awal
+                $worksheet1->setCellValue("F$tambahan_baris", $service[$i]->nama_produk);
+                $worksheet1->setCellValue("G$tambahan_baris", $service[$i]->nomor_pekerjaan);
+                $worksheet1->MergeCells("G$tambahan_baris:H$tambahan_baris");
+                // service pengiriman
+                $worksheet1->setCellValue("I$tambahan_baris", $service[$i]->layanan);
+                $worksheet1->setCellValue("J$tambahan_baris", $service[$i]->jumlah_detail_pengiriman);
+                $worksheet1->setCellValue("K$tambahan_baris", $service[$i]->berat_detail_pengiriman);
+                $worksheet1->MergeCells("K$tambahan_baris:L$tambahan_baris");
+
+                // $worksheet1->MergeCells("K$tambahan_baris:L$tambahan_baris");
+
+                $total_berat += $service[$i]->berat_detail_pengiriman;
+                $total_jumlah += $service[$i]->jumlah_detail_pengiriman;
+                $baris_awal = $tambahan_baris;
+            }
+            $baris_setelah = $baris_awal + 1;
 
 
-        $namaFile = $data[0]->no_pengiriman;
+            $worksheet1->setCellValue("C$baris_setelah", "TOTAL");
+            $worksheet1->MergeCells("C$baris_setelah:I$baris_setelah");
+            $worksheet1->setCellValue("J$baris_setelah", $total_jumlah);
+            $worksheet1->setCellValue("K$baris_setelah", $total_berat);
+            $worksheet1->MergeCells("K$baris_setelah:L$baris_setelah");
 
-        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls');
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header("Content-Disposition: attachment; filename=$namaFile.xlsx"); // Set nama file excel nya
-        header('Cache-Control: max-age=0');
+            $baris_setelah += 3;
+            $worksheet1->setCellValue("G$baris_setelah", $service[0]->layanan);
+            $worksheet1->MergeCells("G$baris_setelah:H$baris_setelah");
+            $baris_setelah += 3;
+            $worksheet1->setCellValue("G$baris_setelah", $service[0]->note_khusus);
+            $worksheet1->MergeCells("G$baris_setelah:H$baris_setelah");
 
-        $writer = new Xlsx($spreadsheet);
-        $writer->save('php://output');
-        // $writer->save('report/quotation.xls');
+            $baris_setelah += 5;
+            $worksheet1->setCellValue("E$baris_setelah", "/" . date('m-Y'));
+            $worksheet1->setCellValue("I$baris_setelah", "/" . date('m-Y'));
+            $worksheet1->setCellValue("M$baris_setelah", "/" . date('m-Y'));
+        }
 
+        if ($goods != null && $service != null) {
+            $this->QuotationController->printAll($spreadsheet, $spreadsheet1, $namaFile);
+        } else if ($goods != null) {
 
+            $this->QuotationController->printAll($spreadsheet, null, $namaFile);
+        } else if ($service != null) {
+            $this->QuotationController->printAll(null, $spreadsheet1, $namaFile);
+        }
     }
 
     public function printStiker($no_transaksi)
     {
         $data = $this->model->detail(str_replace('-', '/', $no_transaksi));
 
-        // dd($data);
         // Load template Excel
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/stiker.xlsx');
 
-        // Remove the default 'Sheet1'
 
         foreach ($data as $i => $d) {
-            // Clone lembar kerja pertama
             $worksheet = clone $spreadsheet->getSheet(0);
 
-            // Set judul lembar kerja
             $worksheet->setTitle(str_replace(' ', '_', $d->nama_produk));
 
             // Set data pada lembar kerja baru

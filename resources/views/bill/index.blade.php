@@ -37,7 +37,7 @@
 
 
             <div class="card-body">
-{{-- 
+                {{-- 
                 <a href="{{ url('show') }}" class="btn btn-primary mb-3">Create
                     Bill Payment</a> --}}
                 <div class="table-responsive text-center">
@@ -52,6 +52,7 @@
                                 <td>Due Date</td>
                                 <td>No Invoice </td>
                                 <td>Prepared</td>
+                                <td>Transaction Number</td>
                                 <td>Action</td>
                                 <td>Document</td>
 
@@ -73,13 +74,15 @@
                                     <td style="min-width:120px">{{ $d->DUE_DATE }}</td>
                                     <td>{{ $d->no_tagihan }}</td>
                                     <td>{{ $d->nama_pengguna }}</td>
+                                    <td>{{ $d->nomor_transaksi }}</td>
                                     <td>
                                         @if ($d->status_transaksi == 'bill')
                                             <a href="{{ url('payment/show', str_replace('/', '-', $d->no_tagihan)) }}"
                                                 class="btn btn-primary mt-1"> Payment</a>
                                         @endif
                                         @if ($d->status_transaksi == 'delivery')
-                                            <a href="{{ url('bill/show', str_replace('/', '-', $d->no_penjualan)) }}" class="btn btn-primary mt-1"> Bill</a>
+                                            <a href="{{ url('bill/show', str_replace('/', '-', $d->no_penjualan)) }}"
+                                                class="btn btn-primary mt-1"> Bill</a>
                                         @endif
 
                                         <a href="{{ url('bill/detail', str_replace('/', '-', $d->no_tagihan)) }}"
@@ -111,7 +114,11 @@
     </div>
     <script>
         $(document).ready(function() {
-            let table = new DataTable('#dataTable');
+            let table = new DataTable('#dataTable', {
+                "scrollY": "300px",
+                "scrollX": "300px",
+
+            });
         })
     </script>
 @endsection()

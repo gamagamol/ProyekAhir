@@ -71,7 +71,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
 
         $panjang_kolom = '';
         if ($this->type == 'detail') {
-            $panjang_kolom = 'V';
+            $panjang_kolom = 'W';
         } else if ($this->type == 'customer_omzet') {
 
             $panjang_kolom = 'F';
@@ -172,7 +172,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
 						t.tebal_transaksi,t.panjang_transaksi,lebar_transaksi,t.berat,
 						t.jumlah,t.harga,t.total,t.layanan,pemasok.nama_pemasok ,tebal_penawaran,
                         lebar_penawaran,
-                        panjang_penawaran,nama_pelanggan,nomor_pekerjaan,nama_produk
+                        panjang_penawaran,nama_pelanggan,nomor_pekerjaan,nama_produk,nama_pegawai
                          FROM transaksi t
 						join penawaran p on t.id_transaksi = p.id_transaksi
 						left join penjualan pj on p.id_transaksi = pj.id_transaksi
@@ -180,6 +180,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
 						left join penerimaan_barang pb on pb.id_pembelian=pm.id_pembelian
 						left join pengiriman pg on pg.id_penerimaan_barang = pb.id_penerimaan_barang
                         left join pemasok on pemasok.id_pemasok=pm.id_pemasok
+                        left join pegawai on pegawai.id_pegawai=t.id_pegawai
                         left join detail_transaksi_penawaran dtp on dtp.id_penawaran=p.id_penawaran
                         left join produk pd on pd.id_produk=dtp.id_produk
 						join pelanggan on pelanggan.id_pelanggan=t.id_pelanggan
@@ -359,7 +360,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
 
             $query = "SELECT transaksi.id_transaksi, no_penawaran,tgl_penawaran,no_penjualan,tgl_penjualan,nama_pelanggan,
             no_pembelian,tgl_pembelian,nama_pemasok,no_pengiriman,tgl_pengiriman,no_tagihan,tgl_tagihan,
-            no_pembayaran,tgl_pembayaran,transaksi.subtotal ,transaksi.ppn,transaksi.total,subtotal_detail_pembelian,ppn_detail_pembelian,total_detail_pembelian
+            no_pembayaran,tgl_pembayaran,transaksi.subtotal ,transaksi.ppn,transaksi.total,subtotal_detail_pembelian,ppn_detail_pembelian,total_detail_pembelian,nama_pegawai
             FROM transaksi
 			join penawaran on penawaran.id_transaksi = transaksi.id_transaksi
             join penjualan on  penjualan.id_transaksi=transaksi.id_transaksi
@@ -370,6 +371,7 @@ class QuotationExport implements FromView, ShouldAutoSize, WithStyles
 			left join tagihan on tagihan.id_pengiriman=pengiriman.id_pengiriman
             left join pembayaran on pembayaran.id_transaksi=transaksi.id_transaksi
             join pelanggan on transaksi.id_pelanggan = pelanggan.id_pelanggan
+            join pegawai on transaksi.id_pegawai = pegawai.id_pegawai
             join pemasok on pembelian.id_pemasok = pemasok.id_pemasok
             where penawaran.tidak_terpakai=0 $where
             order by tgl_penawaran desc";

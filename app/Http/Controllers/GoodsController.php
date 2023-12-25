@@ -226,7 +226,7 @@ class GoodsController extends Controller
     {
 
         $data = $this->goods->detail(str_replace("-", "/", $no_pembelian), str_replace("-", "/", $no_penerimaan));
-        // dd($data);
+       
         $data = [
             'tittle' => "Detail Goods Receipt",
             'data' => $data
