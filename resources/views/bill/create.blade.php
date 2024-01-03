@@ -104,7 +104,7 @@
                                             <td>Shipment</td>
                                             <td>Amount</td>
                                             <td>VAT 11%</td>
-                                            <td>VAT 12%</td>
+                                            <td>VAT 2%</td>
                                             <td>Total Amount</td>
                                             <td>Processing</td>
                                             <td>customer</td>
@@ -231,7 +231,7 @@
                             html2 +=
                                 `<td>${ 'Rp.' + new Intl.NumberFormat('en-DE').format(d.ppn )}</td>`
                             html2 +=
-                                `<td>${ 'Rp.' + new Intl.NumberFormat('en-DE').format(d.subtotal * 0.12 )}</td>`
+                                `<td>${ 'Rp.' + new Intl.NumberFormat('en-DE').format(d.harga *0.02 )}</td>`
                             html2 +=
                                 `<td>${ 'Rp.' + new Intl.NumberFormat('en-DE').format(d.total )}</td>`
                             html2 += `<td>${ d.layanan }</td>`

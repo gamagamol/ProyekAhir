@@ -184,6 +184,7 @@ class SalesController extends Controller
             $subtotal = 0;
             $total = 0;
             $ongkir = 0;
+            $harga = 0;
             $worksheet->insertNewRowBefore(20, count($goods));
             for ($i = 0; $i < count($goods); $i++) {
 
@@ -212,6 +213,7 @@ class SalesController extends Controller
 
                 $subtotal += $goods[$i]->subtotal;
                 $ongkir += $goods[$i]->ongkir;
+                $harga += $goods[$i]->harga;
                 $total += $goods[$i]->total;
                 $baris_awal = $tambahan_baris;
             }
@@ -220,7 +222,7 @@ class SalesController extends Controller
             $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
 
             $baris_setelah += 1;
-            $worksheet->setCellValue("K$baris_setelah", $subtotal * 0.11);
+            $worksheet->setCellValue("K$baris_setelah", $harga * 0.11);
             $worksheet->MergeCells("K$baris_setelah:L$baris_setelah");
 
             $baris_setelah += 1;
@@ -255,6 +257,7 @@ class SalesController extends Controller
             $subtotal = 0;
             $total = 0;
             $ongkir = 0;
+            $harga = 0;
             $worksheet1->insertNewRowBefore(20, count($service));
             for ($i = 0; $i < count($service); $i++) {
 
@@ -283,6 +286,7 @@ class SalesController extends Controller
 
                 $subtotal += $service[$i]->subtotal;
                 $ongkir += $service[$i]->ongkir;
+                $harga += $service[$i]->harga;
                 $total += $service[$i]->total;
                 $baris_awal = $tambahan_baris;
             }
@@ -295,7 +299,7 @@ class SalesController extends Controller
             $worksheet1->MergeCells("K$baris_setelah:L$baris_setelah");
 
             $baris_setelah += 1;
-            $worksheet1->setCellValue("K$baris_setelah", $subtotal * 0.12);
+            $worksheet1->setCellValue("K$baris_setelah", $harga * 0.02);
             $worksheet1->MergeCells("K$baris_setelah:L$baris_setelah");
 
             $baris_setelah += 1;

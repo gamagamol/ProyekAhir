@@ -191,6 +191,8 @@ class QuotationController extends Controller
             $jumlah = $request->input("jumlah");
             $layanan = $this->QuotationModel->getServices($request->input("layanan"));
             $type_layanan = $layanan->type;
+            $harga = (int) str_replace('.', "", $request->input('harga'));
+
 
             $type = $request->input("type");
             $type = ($type == null) ? 1 : $type;
@@ -228,19 +230,19 @@ class QuotationController extends Controller
             // dd($nama_layanan);
 
             $ppn = $subtotal * 0.11;
-            $ppn12 = $subtotal * 0.12;
+            $ppn12 = $harga * 0.02;
 
             if ($type == 1) {
                 $total = $subtotal + $ppn;
             } else {
-                $total = $subtotal + $ppn + $ppn12;
+                $total = ($subtotal + $ppn) - $ppn12;
             }
-
 
             // dump($subtotal);
             // dump($ppn);
-            // dump($ppn12 + $ppn);
+            // dump($ppn12);
             // dump($total);
+            // dd($total);
 
 
             $data = [
@@ -504,6 +506,7 @@ class QuotationController extends Controller
             $subtotal = 0;
             $total = 0;
             $ongkir = 0;
+            $harga = 0;
             $worksheet1->insertNewRowBefore(20, count($service));
             for ($i = 0; $i < count($service); $i++) {
                 if ($service[$i]->type == 2) {
@@ -526,13 +529,14 @@ class QuotationController extends Controller
                     $worksheet1->setCellValue("L$tambahan_baris", $service[$i]->panjang_penawaran);
                     $worksheet1->setCellValue("M$tambahan_baris", $service[$i]->jumlah);
                     $worksheet1->setCellValue("N$tambahan_baris", $service[$i]->berat);
-                    $worksheet1->setCellValue("O$tambahan_baris", number_format($service[$i]->harga));
-                    $worksheet1->setCellValue("P$tambahan_baris", number_format($service[$i]->subtotal));
+                    $worksheet1->setCellValue("O$tambahan_baris", number_format($service[$i]->harga, 2, ',', '.'));
+                    $worksheet1->setCellValue("P$tambahan_baris", number_format($service[$i]->subtotal, 2, ',', '.'));
                     $worksheet1->MergeCells("P$tambahan_baris:Q$tambahan_baris");
 
 
                     $subtotal += $service[$i]->subtotal;
                     $ongkir += $service[$i]->ongkir;
+                    $harga += $service[$i]->harga;
                     $total += $service[$i]->total;
                     $baris_awal = $tambahan_baris;
                 }
@@ -546,9 +550,9 @@ class QuotationController extends Controller
             $worksheet1->setCellValue("P$baris_setelah", $subtotal * 0.11);
             $worksheet1->MergeCells("P$baris_setelah:Q$baris_setelah");
 
-            // ppn 12%
+            // ppn 2%
             $baris_setelah += 1;
-            $worksheet1->setCellValue("P$baris_setelah", $subtotal * 0.12);
+            $worksheet1->setCellValue("P$baris_setelah", $harga * 0.02);
             $worksheet1->MergeCells("P$baris_setelah:Q$baris_setelah");
 
             $baris_setelah += 1;
@@ -691,7 +695,7 @@ class QuotationController extends Controller
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
-                    return $berat;
+                    return number_format($berat, 1, ".", "");
                 }
 
                 if ($layanan == "NF") {
@@ -703,7 +707,7 @@ class QuotationController extends Controller
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
-                    return $berat;
+                    return number_format($berat, 1, ".", "");
                 }
 
                 if ($layanan == "MILLING") {
@@ -716,7 +720,7 @@ class QuotationController extends Controller
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
-                    return $berat;
+                    return number_format($berat, 1, ".", "");
                 }
 
                 if ($layanan == "NF_MILLING" || $layanan == "NF MILLING") {
@@ -729,7 +733,7 @@ class QuotationController extends Controller
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
-                    return $berat;
+                    return number_format($berat, 1, ".", "");
                 }
 
 
@@ -747,7 +751,7 @@ class QuotationController extends Controller
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
-                    return $berat;
+                    return number_format($berat, 1, ".", "");
                 }
                 if ($layanan == "NF") {
                     $tebal_penawaran = $tebal_transaksi;
@@ -758,7 +762,7 @@ class QuotationController extends Controller
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
-                    return $berat;
+                    return number_format($berat, 1, ".", "");
                 }
                 if ($layanan == "MILLING") {
                     //    membuat ukuran dan berat pxl 0,00008
@@ -770,7 +774,7 @@ class QuotationController extends Controller
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
-                    return $berat;
+                    return number_format($berat, 1, ".", "");
                 }
                 if ($layanan == "NF_MILLING" || $layanan == "NF MILLING") {
                     //    membuat ukuran dan berat pxl 0,00008
@@ -782,7 +786,7 @@ class QuotationController extends Controller
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
-                    return $berat;
+                    return number_format($berat, 1, ".", "");
                 }
                 break;
         }
@@ -1119,8 +1123,8 @@ class QuotationController extends Controller
 
                     $total = $subtotal + $ppn;
 
-                    if($type==2){
-                        $total+=$subtotal * 0.12;
+                    if ($type == 2) {
+                        $total -= (int) $harga * 0.02;
                     }
 
 
@@ -1160,7 +1164,7 @@ class QuotationController extends Controller
             }
         }
 
-       
+
 
         if (count($errors) == 0) {
             return response()->json(["message" => "success"]);

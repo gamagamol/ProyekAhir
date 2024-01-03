@@ -192,7 +192,6 @@ class DeliveryController extends Controller
 
 
         // check isi produk dan array produk
-        // dd($arr_produk);
 
 
 
@@ -201,16 +200,7 @@ class DeliveryController extends Controller
         if ($id_transaksi == null) {
             return back()->with("failed", "Please select the item you want to send first!");
         }
-        // $rules = [
-        //     'tgl_pengiriman' => " after_or_equal:$tgl_penerimaan",
-        // ];
-        // $message = [
-        //     "tgl_pengiriman.after_or_equal" => "Choose a date after the goods receipt date or equal"
-        // ];
-        // $validated = Validator::make($request->all(), $rules, $message);
-        // if ($validated->fails()) {
-        //     return redirect()->back()->with("failed", "Choose a date after the goods receipt date or equal");
-        // }
+
 
         //    kumpulan array data penjualan
         $data_pengiriman = [];
@@ -268,6 +258,8 @@ class DeliveryController extends Controller
 
 
         // dd("");
+        // dd($penerimaan);
+
 
         if ($unit) {
             // echo "masuk unit";
@@ -285,6 +277,13 @@ class DeliveryController extends Controller
                             ];
 
                             if ($pcsss->sisa_detail_penerimaan) {
+
+                                if ($pcsss->type == 1) {
+                                    $total_detail_pengiriman = ($produk[$i]['harga'] * $produk[$i]['berat']) + (($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11);
+                                } else {
+                                    $total_detail_pengiriman = ($produk[$i]['harga'] * $produk[$i]['berat']) + (($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11) - ($produk[$i]['harga'] * 0.02);
+                                }
+
                                 $data_detail_pengiriman[$i] = [
                                     'id_pengiriman' => 0,
                                     'id_produk' => $id_produk[$i],
@@ -293,7 +292,7 @@ class DeliveryController extends Controller
                                     'berat_detail_pengiriman' => $produk[$i]['berat'],
                                     'ppn_detail_pengiriman' => ($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11,
                                     'subtotal_detail_pengiriman' => $produk[$i]['harga'] * $produk[$i]['berat'],
-                                    'total_detail_pengiriman' => ($produk[$i]['harga'] * $produk[$i]['berat']) + (($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11)
+                                    'total_detail_pengiriman' => $total_detail_pengiriman,
 
 
 
@@ -302,6 +301,13 @@ class DeliveryController extends Controller
                                 $jumlah_item = (int) $unit[$i];
                                 $berat_item = $produk[$i]['berat'];
                             } else {
+
+
+                                if ($pcsss->type == 1) {
+                                    $total_detail_pengiriman = ($produk[$i]['harga'] * $produk[$i]['berat']) + (($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11);
+                                } else {
+                                    $total_detail_pengiriman = ($produk[$i]['harga'] * $produk[$i]['berat']) + (($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11) - ($produk[$i]['harga'] * 0.02);
+                                }
                                 $data_detail_pengiriman[$i] = [
                                     'id_pengiriman' => 0,
                                     'id_produk' => $id_produk[$i],
@@ -309,9 +315,8 @@ class DeliveryController extends Controller
                                     'sisa_detail_pengiriman' => (int) $pcsss->jumlah_detail_penerimaan - $unit[$i],
                                     'berat_detail_pengiriman' => $produk[$i]['berat'],
                                     'ppn_detail_pengiriman' => ($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11,
-
                                     'subtotal_detail_pengiriman' => $produk[$i]['harga'] * $produk[$i]['berat'],
-                                    'total_detail_pengiriman' => ($produk[$i]['harga'] * $produk[$i]['berat']) + (($produk[$i]['harga'] * $produk[$i]['berat']) * 0.11)
+                                    'total_detail_pengiriman' => $total_detail_pengiriman,
                                 ];
                                 $jumlah_item = (int) $unit[$i];
                                 $berat_item = $produk[$i]['berat'];
@@ -354,15 +359,25 @@ class DeliveryController extends Controller
 
 
                         if ($pcss->sisa_detail_penerimaan) {
-                            $berat = $this->QuotationController->CalculateWeight(
-                                $pcss->bentuk_produk,
-                                $pcss->layanan,
-                                $pcss->tebal_penawaran,
-                                $pcss->lebar_penawaran,
-                                $pcss->panjang_penawaran,
-                                $pcss->sisa_detail_penerimaan,
+                            if ($pcss->type == 1) {
 
-                            );
+                                $berat = $this->QuotationController->CalculateWeight(
+                                    $pcss->bentuk_produk,
+                                    $pcss->layanan,
+                                    $pcss->tebal_penawaran,
+                                    $pcss->lebar_penawaran,
+                                    $pcss->panjang_penawaran,
+                                    $pcss->sisa_detail_penerimaan,
+
+                                );
+
+
+                                $total_detail_pengiriman = ($pcss->harga * $berat) + (($pcss->harga * $berat) * 0.11);
+                            } else {
+                                $berat = $pcss->berat_detail_pembelian;
+                                $total_detail_pengiriman = ($pcss->harga * $berat) + (($pcss->harga * $berat) * 0.11) - ($pcss->harga * 0.02);
+                            }
+
 
                             $data_detail_pengiriman[$i] = [
                                 'id_pengiriman' => 0,
@@ -372,7 +387,7 @@ class DeliveryController extends Controller
                                 'berat_detail_pengiriman' => $berat,
                                 'ppn_detail_pengiriman' => ($pcss->harga * $berat) * 0.11,
                                 'subtotal_detail_pengiriman' => $pcss->harga * $berat,
-                                'total_detail_pengiriman' => ($pcss->harga * $berat) + (($pcss->harga * $berat) * 0.11)
+                                'total_detail_pengiriman' => $total_detail_pengiriman,
 
 
                             ];
@@ -382,6 +397,12 @@ class DeliveryController extends Controller
 
                             // echo "masuk sini";
                             // dd($pcss);
+                            if ($pcss->type == 1) {
+                                $total_detail_pengiriman = ($pcss->harga * $pcss->berat) + (($pcss->harga * $pcss->berat) * 0.11);
+                            } else {
+                                $total_detail_pengiriman = ($pcss->harga * $pcss->berat) + (($pcss->harga * $pcss->berat) * 0.11) - ($pcss->harga * 0.02);
+                            }
+
                             $data_detail_pengiriman[$i] = [
                                 'id_pengiriman' => 0,
                                 'id_produk' => $pcss->id_produk,
@@ -391,7 +412,7 @@ class DeliveryController extends Controller
                                 'berat_detail_pengiriman' => $pcss->berat,
                                 'ppn_detail_pengiriman' => ($pcss->harga * $pcss->berat) * 0.11,
                                 'subtotal_detail_pengiriman' => $pcss->harga * $pcss->berat,
-                                'total_detail_pengiriman' => ($pcss->harga * $pcss->berat) + (($pcss->harga * $pcss->berat) * 0.11)
+                                'total_detail_pengiriman' => $total_detail_pengiriman
 
 
                             ];

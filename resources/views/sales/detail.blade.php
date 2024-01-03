@@ -180,7 +180,7 @@
                                     <td>Unit Price</td>
                                     <td>Amount</td>
                                     <td>VAT 11%</td>
-                                    <td>VAT 12%</td>
+                                    <td>VAT 2%</td>
                                     <td>Total Amount</td>
                                     <td>Processing</td>
                                     <td>Custumor</td>
@@ -255,7 +255,7 @@
 
                                             </td>
                                             <td>
-                                                {{ 'Rp' . number_format($p->subtotal * 0.12) }}
+                                                {{ 'Rp' . number_format($p->harga * 0.02) }}
 
                                             </td>
                                             <td>
@@ -272,7 +272,7 @@
                                         <?php
                                         $subtotal += $p->subtotal;
                                         
-                                        $ppn12 += $p->subtotal * 0.12;
+                                        $ppn12 += $p->harga * 0.02;
                                         $ppn += $p->ppn;
                                         $total += $p->total;
                                         ?>
@@ -309,7 +309,7 @@
 
 
 
-    
+
 
     <script>
         $('#harga').mask('000.000.000.000.000', {

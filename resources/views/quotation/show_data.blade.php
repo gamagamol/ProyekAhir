@@ -52,6 +52,7 @@
                                         <td>Shipment</td>
                                         <td>Amount</td>
                                         <td>VAT 11%</td>
+                                        <td>VAT 2%</td>
                                         <td>Total Amount</td>
                                         <td>Processing</td>
                                         <td>Custumor</td>
@@ -123,6 +124,7 @@
                                                     {{ 'Rp' . number_format($p->ppn) }}
 
                                                 </td>
+
                                                 <td>
                                                     {{ 'Rp' . number_format($p->total) }}
                                                 </td>
@@ -185,6 +187,7 @@
                                         <td>Shipment</td>
                                         <td>Amount</td>
                                         <td>VAT 11%</td>
+                                        <td>VAT 2%</td>
                                         <td>Total Amount</td>
                                         <td>Processing</td>
                                         <td>Custumor</td>
@@ -197,6 +200,7 @@
                                     $total = 0;
                                     $ongkir = 0;
                                     $ppn = 0;
+                                    $ppn2 = 0;
                                     ?>
                                     @foreach ($data as $p)
                                         @if ($p->type == 2)
@@ -257,6 +261,9 @@
 
                                                 </td>
                                                 <td>
+                                                    {{ 'Rp' . number_format($p->harga * 0.02) }}
+                                                </td>
+                                                <td>
                                                     {{ 'Rp' . number_format($p->total) }}
                                                 </td>
                                                 <td>
@@ -280,6 +287,7 @@
                                             </tr>
                                             <?php
                                             $subtotal += $p->subtotal;
+                                            $ppn2 += $p->harga * 0.02;
                                             $ongkir += $p->ongkir;
                                             $ppn += $p->ppn;
                                             $total += $p->total;
@@ -292,6 +300,7 @@
                                         <td colspan='15'>TOTAL</td>
                                         <td>{{ 'Rp.' . number_format($subtotal) }}</td>
                                         <td>{{ 'Rp.' . number_format($ppn) }}</td>
+                                        <td>{{ 'Rp.' . number_format($ppn2) }}</td>
                                         <td>{{ 'Rp.' . number_format($total + $data[0]->ongkir) }}</td>
                                     </tr>
 

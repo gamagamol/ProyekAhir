@@ -70,6 +70,7 @@
                                 <td>Unit Price</td>
                                 <td>Amount</td>
                                 <td>VAT 11%</td>
+                                <td>VAT 2%</td>
                                 <td>Total Amount</td>
                                 <td>Processing</td>
                                 <td>Custumor</td>
@@ -144,6 +145,10 @@
                                     </td>
                                     <td>
                                         {{ 'Rp' . number_format($p->ppn_detail_pembelian) }}
+
+                                    </td>
+                                    <td>
+                                        <?=($p->type ==2) ?'Rp' . number_format($p->harga_detail_pembelian * 0.02) :0 ?>
 
                                     </td>
                                     <td>

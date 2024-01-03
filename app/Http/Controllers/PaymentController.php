@@ -259,6 +259,7 @@ class PaymentController extends Controller
             $subtotal = 0;
             $total = 0;
             $ongkir = 0;
+            $harga = 0;
             $worksheet1->insertNewRowBefore(20, count($service));
             for ($i = 0; $i < count($service); $i++) {
 
@@ -287,6 +288,7 @@ class PaymentController extends Controller
 
                 $subtotal += $service[$i]->subtotal;
                 $ongkir += $service[$i]->ongkir;
+                $harga += $service[$i]->harga;
                 $total += $service[$i]->total;
                 $baris_awal = $tambahan_baris;
             }
@@ -298,7 +300,7 @@ class PaymentController extends Controller
             $worksheet1->setCellValue("K$baris_setelah", $subtotal * 0.11);
             $worksheet1->MergeCells("K$baris_setelah:L$baris_setelah");
             $baris_setelah += 1;
-            $worksheet1->setCellValue("K$baris_setelah", $subtotal * 0.12);
+            $worksheet1->setCellValue("K$baris_setelah", $harga * 0.02);
             $worksheet1->MergeCells("K$baris_setelah:L$baris_setelah");
 
             $baris_setelah += 1;

@@ -22,7 +22,7 @@
     <div class="container  ">
         <div class="card shadow mb-4 ml-4 mr-4">
             <div class="card-header py-3 mb-2 ">
-                <h6 class="m-0 font-weight-bold text-primary">Show Data Quotation</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Show Data Delivery</h6>
             </div>
 
 
@@ -173,7 +173,7 @@
                                     <td>Shipment</td>
                                     <td>Amount</td>
                                     <td>VAT 11%</td>
-                                    <td>VAT 12%</td>
+                                    <td>VAT 2%</td>
                                     <td>Total Amount</td>
                                     <td>Processing</td>
                                     <td>Custumor</td>
@@ -234,7 +234,7 @@
 
                                             </td>
                                             <td>
-                                                {{ 'Rp' . number_format($p->subtotal_detail_pengiriman *0.12) }}
+                                                {{ 'Rp' . number_format($p->harga * 0.02) }}
                                             </td>
                                             <td>
                                                 {{ 'Rp' . number_format($p->total_detail_pengiriman) }}
@@ -253,7 +253,7 @@
                                             <?php $jumlah += $p->jumlah_detail_pengiriman; ?>
                                             <?php $ppn += $p->ppn_detail_pengiriman; ?>
                                             <?php $subtotal += $p->subtotal_detail_pengiriman; ?>
-                                            <?php $ppn12 += $p->subtotal_detail_pengiriman * 0.12; ?>
+                                            <?php $ppn12 += $p->harga * 0.02; ?>
                                             <?php $total += $p->total_detail_pengiriman; ?>
 
                                         </tr>

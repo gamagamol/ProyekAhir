@@ -53,7 +53,7 @@
                                 <td>Shipment</td>
                                 <td>Amount</td>
                                 <td>VAT 11%</td>
-                                <td>VAT 12%</td>
+                                <td>VAT 2%</td>
                                 <td>Total Amount</td>
                                 <td>Processing</td>
                                 <td>customer</td>
@@ -73,8 +73,9 @@
                             @foreach ($data as $d)
                                 <tr>
 
-                                    <td><input type="checkbox" name="id_transaksi[]" id='id_transaksi'
-                                            value="{{ $d->id_transaksi }}"></td>
+                                    <td>
+                                        <input type="checkbox" name="id_transaksi[]" id='id_transaksi' value="{{ $d->id_transaksi }}">
+                                    </td>
                                     <td style="min-width:120px">{{ $d->tgl_penawaran }}</td>
                                     <td>{{ $d->no_penawaran }}</td>
                                     <td>{{ $d->nomor_pekerjaan }}</td>
@@ -88,14 +89,14 @@
                                     <td>{{ 'Rp.' . number_format($d->ongkir) }}</td>
                                     <td>{{ 'Rp.' . number_format($d->subtotal) }}</td>
                                     <td>{{ 'Rp.' . number_format($d->ppn) }}</td>
-                                    <td> <?= ($d->type==1) ? 0 : 'Rp.' . number_format($d->subtotal * 0.12) ?> </td>
+                                    <td> <?= $d->type == 1 ? 0 : 'Rp.' . number_format($d->harga * 0.02) ?> </td>
                                     <td>{{ 'Rp.' . number_format($d->total) }}</td>
                                     <td>{{ $d->layanan }}</td>
                                     <td>{{ $d->nama_pelanggan }}</td>
                                 </tr>
                                 <?php
                                 $subtotal += $d->subtotal;
-                                $ppn12 += ($d->type==1) ? 0:$d->subtotal * 0.12;
+                                $ppn12 += $d->type == 1 ? 0 : $d->harga * 0.02;
                                 $ppn += $d->ppn;
                                 $total += $d->total;
                                 

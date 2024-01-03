@@ -125,7 +125,7 @@
                                         <td>Shipment</td>
                                         <td>Amount</td>
                                         <td>VAT 11%</td>
-                                        <td>VAT 12%</td>
+                                        <td>VAT 2%</td>
                                         <td>Total Amount</td>
                                         <td>Processing</td>
                                         <td>customer</td>
@@ -163,7 +163,7 @@
                                                 <td>{{ 'Rp.' . number_format($d->ongkir) }}</td>
                                                 <td>{{ 'Rp.' . number_format($d->subtotal) }}</td>
                                                 <td>{{ 'Rp.' . number_format($d->ppn) }}</td>
-                                                <td>{{ 'Rp.' . number_format($d->subtotal * 0.12) }}</td>
+                                                <td>{{ 'Rp.' . number_format($d->harga * 0.02) }}</td>
                                                 <td>{{ 'Rp.' . number_format($d->total) }}</td>
                                                 <td>{{ $d->layanan }}</td>
                                                 <td>{{ $d->nama_pelanggan }}</td>

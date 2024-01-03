@@ -262,7 +262,7 @@ class PurchaseController extends Controller
                                     = $prdk['harga'] * $prdk['berat'] + (($prdk['harga'] * $prdk['berat']) * 0.11);
                             } else {
                                 $total_detail_pembelian =
-                                    $prdk['harga'] * $prdk['berat'] + (($prdk['harga'] * $prdk['berat']) * 0.11) + (($prdk['harga'] * $prdk['berat']) * 0.12);
+                                    $prdk['harga'] * $prdk['berat'] + (($prdk['harga'] * $prdk['berat']) * 0.11) - ($prdk['harga']  * 0.02);
                             }
 
                             $produk_penawaran = [
@@ -439,7 +439,7 @@ class PurchaseController extends Controller
                 if ($type_transaksi == 1) {
                     $total_detail_pembelian = ($quo->harga * $quo->berat) + (($quo->harga * $quo->berat) * 0.11);
                 } else {
-                    $total_detail_pembelian = ($quo->harga * $quo->berat) + (($quo->harga * $quo->berat) * 0.11) + (($quo->harga * $quo->berat) * 0.12);
+                    $total_detail_pembelian = ($quo->harga * $quo->berat) + (($quo->harga * $quo->berat) * 0.11) - ($quo->harga * 0.02);
                 }
 
 
@@ -657,6 +657,7 @@ class PurchaseController extends Controller
             $subtotal = 0;
             $total = 0;
             $ongkir = 0;
+            $harga = 0;
             $worksheet1->insertNewRowBefore(20, count($service));
             for ($i = 0; $i < count($service); $i++) {
 
@@ -685,6 +686,7 @@ class PurchaseController extends Controller
 
                 $subtotal += $service[$i]->subtotal_detail_pembelian;
                 $ongkir += $service[$i]->ongkir;
+                $harga += $service[$i]->harga;
                 $total += $service[$i]->total_detail_pembelian;
                 $baris_awal = $tambahan_baris;
             }
@@ -696,7 +698,7 @@ class PurchaseController extends Controller
             $worksheet1->setCellValue("K$baris_setelah", $subtotal * 0.11);
             $worksheet1->MergeCells("K$baris_setelah:L$baris_setelah");
             $baris_setelah += 1;
-            $worksheet1->setCellValue("K$baris_setelah", $subtotal * 0.12);
+            $worksheet1->setCellValue("K$baris_setelah", $harga * 0.02);
             $worksheet1->MergeCells("K$baris_setelah:L$baris_setelah");
 
             $baris_setelah += 1;

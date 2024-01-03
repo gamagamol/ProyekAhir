@@ -14,7 +14,7 @@
             {{ session('success') }}
         </div>
     @endif
-    
+
 
     <div class="container  ">
         <div class="card shadow mb-4 ml-4 mr-4">
@@ -162,7 +162,7 @@
                                     <td>Shipment</td>
                                     <td>Amount</td>
                                     <td>VAT 11%</td>
-                                    <td>VAT 12%</td>
+                                    <td>VAT 2%</td>
                                     <td>Total Amount</td>
                                     <td>Processing</td>
                                     <td>Custumor</td>
@@ -222,7 +222,7 @@
                                                 {{ 'Rp' . number_format($p->ppn) }}
                                             </td>
                                             <td>
-                                                {{ 'Rp' . number_format($p->subtotal * 0.12) }}
+                                                {{ 'Rp' . number_format($p->harga * 0.02) }}
                                             </td>
                                             <td>
                                                 {{ 'Rp' . number_format($p->total) }}
@@ -241,7 +241,7 @@
                                         <?php $berat += $p->berat; ?>
                                         <?php $jumlah += $p->jumlah; ?>
                                         <?php $ppn += $p->ppn; ?>
-                                        <?php $ppn12 += $p->subtotal * 0.12; ?>
+                                        <?php $ppn12 += $p->harga * 0.02; ?>
                                         <?php $subtotal += $p->subtotal; ?>
                                         <?php $total += $p->total; ?>
                                     @endif
@@ -255,7 +255,7 @@
                                     <td> </td>
                                     <td> {{ 'Rp' . number_format($subtotal) }} </td>
                                     <td> {{ 'Rp' . number_format($ppn) }} </td>
-                                    <td> {{ 'Rp' . number_format($subtotal * 0.12) }} </td>
+                                    <td> {{ 'Rp' . number_format($subtotal * 0.02) }} </td>
                                     <td> {{ 'Rp' . number_format($total + $data[0]->ongkir) }} </td>
                                 </tr>
                             </table>
