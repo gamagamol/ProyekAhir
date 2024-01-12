@@ -484,7 +484,7 @@
 
                                             <td>
                                                 <button type="button" id="btn_edit_penawaran" class="btn btn-warning"
-                                                    onclick="editPenawaran(<?= $p->id_pembantu ?>,<?= $p->tebal_pembantu ?>,<?= $p->lebar_pembantu ?>,<?= $p->panjang_pembantu ?>,'<?= $p->bentuk_pembantu ?>','<?= $p->layanan_pembantu ?>',<?= $p->jumlah_pembantu ?>,<?= $p->harga_pembantu ?>)">
+                                                    onclick="editPenawaran(<?= $p->id_pembantu ?>,<?= $p->tebal_pembantu ?>,<?= $p->lebar_pembantu ?>,<?= $p->panjang_pembantu ?>,'<?= $p->bentuk_pembantu ?>','<?= $p->id_layanan ?>',<?= $p->jumlah_pembantu ?>,<?= $p->harga_pembantu ?>)">
                                                     Edit</button>
                                                 <a href={{ url('deleteq', $p->id_pembantu) }}
                                                     class="btn btn-danger">Delete</a>
@@ -625,7 +625,7 @@
 
                                             <td>
                                                 <button type="button" id="btn_edit_penawaran" class="btn btn-warning"
-                                                    onclick="editPenawaran(<?= $p->id_pembantu ?>,<?= $p->tebal_pembantu ?>,<?= $p->lebar_pembantu ?>,<?= $p->panjang_pembantu ?>,'<?= $p->bentuk_pembantu ?>','<?= $p->layanan_pembantu ?>',<?= $p->jumlah_pembantu ?>,<?= $p->harga_pembantu ?>)">
+                                                    onclick="editPenawaran(<?= $p->id_pembantu ?>,<?= $p->tebal_pembantu ?>,<?= $p->lebar_pembantu ?>,<?= $p->panjang_pembantu ?>,'<?= $p->bentuk_pembantu ?>','<?= $p->id_layanan ?>',<?= $p->jumlah_pembantu ?>,<?= $p->harga_pembantu ?>)">
                                                     Edit</button>
                                                 <a href={{ url('deleteq', $p->id_pembantu) }}
                                                     class="btn btn-danger">Delete</a>

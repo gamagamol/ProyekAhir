@@ -117,6 +117,8 @@ class QuotationController extends Controller
             'pegawai' => $this->pegawai->getEmployee('SALES'),
 
         ];
+
+        // dd($data);
         return view('quotation.insert', $data);
     }
 
@@ -691,10 +693,11 @@ class QuotationController extends Controller
                     $lebar_penawaran = $lebar_transaksi;
                     $panjang_penawaran = $panjang_transaksi;
 
-                    $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.000008;
+                    $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * 0.000008;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
+                    $berat *= $jumlah;
                     return number_format($berat, 1, ".", "");
                 }
 
@@ -703,10 +706,12 @@ class QuotationController extends Controller
                     $lebar_penawaran = $lebar_transaksi;
                     $panjang_penawaran =  $panjang_transaksi;
 
-                    $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
+                    $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran  * 0.00000785;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
+                    $berat *= $jumlah;
+
                     return number_format($berat, 1, ".", "");
                 }
 
@@ -716,10 +721,12 @@ class QuotationController extends Controller
                     $lebar_penawaran =  $lebar_transaksi + 5;
                     $panjang_penawaran =  $panjang_transaksi + 5;
 
-                    $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.000008;
+                    $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran  * 0.000008;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
+                    $berat *= $jumlah;
+
                     return number_format($berat, 1, ".", "");
                 }
 
@@ -729,10 +736,12 @@ class QuotationController extends Controller
                     $lebar_penawaran =  $lebar_transaksi + 5;
                     $panjang_penawaran =  $panjang_transaksi + 5;
 
-                    $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
+                    $berat = $tebal_penawaran * $lebar_penawaran * $panjang_penawaran * 0.00000785;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
+                    $berat *= $jumlah;
+
                     return number_format($berat, 1, ".", "");
                 }
 
@@ -747,10 +756,12 @@ class QuotationController extends Controller
                     $lebar_penawaran = 0;
                     $panjang_penawaran =  $panjang_transaksi;
 
-                    $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
+                    $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran  * 0.00000625;
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
+                    $berat *= $jumlah;
+
                     return number_format($berat, 1, ".", "");
                 }
                 if ($layanan == "NF") {
@@ -758,10 +769,13 @@ class QuotationController extends Controller
                     $lebar_penawaran = 0;
                     $panjang_penawaran = $panjang_transaksi;
 
-                    $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
+                    $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran  * 0.00000785;
+                    $berat *= $jumlah;
+
                     // $berat = number_format($berat, 2, '.', '');
                     // return ($berat > 0) ? round($berat) : $berat;
                     $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
+
                     return number_format($berat, 1, ".", "");
                 }
                 if ($layanan == "MILLING") {
@@ -770,9 +784,9 @@ class QuotationController extends Controller
                     $lebar_penawaran = 0;
                     $panjang_penawaran =  $panjang_transaksi + 5;
 
-                    $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000625;
-                    // $berat = number_format($berat, 2, '.', '');
-                    // return ($berat > 0) ? round($berat) : $berat;
+                    $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran  * 0.00000625;
+                    $berat *= $jumlah;
+
                     $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
                     return number_format($berat, 1, ".", "");
                 }
@@ -782,9 +796,9 @@ class QuotationController extends Controller
                     $lebar_penawaran = 0;
                     $panjang_penawaran =  $panjang_transaksi + 5;
 
-                    $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran * $jumlah * 0.00000785;
-                    // $berat = number_format($berat, 2, '.', '');
-                    // return ($berat > 0) ? round($berat) : $berat;
+                    $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran  * 0.00000785;
+                    $berat *= $jumlah;
+                   
                     $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
                     return number_format($berat, 1, ".", "");
                 }
@@ -1003,30 +1017,22 @@ class QuotationController extends Controller
 
     public function editPembantuPenawaran(Request $request)
     {
-
+        $layanan = $this->QuotationModel->getServices($request->layanan_edit_penawaran);
+        $type_layanan = $layanan->type;
         $harga_penawaran = $request->harga_edit_penawaran;
         $berat = $this->CalculateWeight(
             $request->bentuk_edit_penawaran,
-            $request->layanan_edit_penawaran,
+            $type_layanan,
             $request->tebal_edit_penawaran,
             $request->lebar_edit_penawaran,
             $request->panjang_edit_penawaran,
             $request->jumlah_edit_penawaran,
         );
 
-
-        // dump($berat);
         $subtotal = (float) $berat * (int) str_replace('.', "", $harga_penawaran);
 
-        // dd($subtotal);
         $ppn = $subtotal * 0.11;
         $total = $subtotal + $ppn;
-
-        // dump($subtotal);
-        // dump($be);
-        // dump($ppn);
-        // dd($total);
-
         DB::table('pembantu_penawaran')->where('id_pembantu', $request->id_edit_penawaran)->update([
             'tebal_penawaran' => $request->tebal_edit_penawaran,
             'lebar_penawaran' => $request->lebar_edit_penawaran,
@@ -1047,6 +1053,8 @@ class QuotationController extends Controller
 
         $import = new QuotationImport;
         $data = Excel::toArray($import, $file);
+
+        // dd($data);
 
 
         if (count($data[0]) == 3) {
@@ -1193,6 +1201,7 @@ class QuotationController extends Controller
         $produk = strtoupper($data[3]);
         $panjang_transaksi = $data[4];
         $lebar_transaksi = $data[5];
+        // $bentuk_produk = ((int)$data[5] > 0) ? "FLAT"
         $tebal_transaksi = $data[6];
         $jumlah = $data[7];
         $layanan = strtoupper($data[8]);
@@ -1208,7 +1217,7 @@ class QuotationController extends Controller
             'id_pelanggan' => 'Customer Id',
             'produk' => 'Product',
             'panjang_transaksi' => 'Transaction Length',
-            'lebar_transaksi' => 'Transaction Width',
+            // 'lebar_transaksi' => 'Transaction Width',
             'tebal_transaksi' => 'Transaction Thickness',
             'jumlah' => 'Quantity',
             'layanan' => 'Processing',
@@ -1235,9 +1244,9 @@ class QuotationController extends Controller
         // check is exist
 
 
-        if ((int)$lebar_transaksi <= 0 && $bentuk_produk == 'FLAT') {
-            return redirect()->back()->withErrors(['lebar_transaksi' => 'Fill Width more then 0'])->withInput();
-        }
+        // if ((int)$lebar_transaksi <= 0 && $bentuk_produk == 'FLAT') {
+        //     return redirect()->back()->withErrors(['lebar_transaksi' => 'Fill Width more then 0'])->withInput();
+        // }
 
 
 

@@ -91,12 +91,16 @@ class PurchaseModel extends Model
             // vendor nya bisa jadi ada yang beda
             foreach (array_unique($id_pemasok) as $i => $ip) {
                 if ($i == 0) {
-                    $no_pembelian = DB::select("
-                    select * from pembelian where id_pembelian =(select max(id_pembelian) from pembelian 
-                    where month(tgl_pembelian)='$bulan_tgl[1]' and YEAR(tgl_pembelian)='$bulan_tgl[0]')");
+                    // $no_pembelian = DB::select("
+                    // select * from pembelian where id_pembelian =(select max(id_pembelian) from pembelian 
+                    // where month(tgl_pembelian)='$bulan_tgl[1]' and YEAR(tgl_pembelian)='$bulan_tgl[0]')");
+
+                    $no_pembelian = DB::select(" SELECT max(substr(no_pembelian,4,1)) as no_pembelian from pembelian where month(tgl_pembelian)='$bulan_tgl[1]'
+                    and YEAR(tgl_pembelian)='$bulan_tgl[0]'");
                     if ($no_pembelian != null) {
 
-                        $no_pembelian = no_transaksi($no_pembelian[0]->no_pembelian);
+                        // $no_pembelian = no_transaksi($no_pembelian[0]->no_pembelian);
+                        $no_pembelian = (int)$no_pembelian[0]->no_pembelian + 1;
                     } else {
                         $no_pembelian = 1;
                     }
