@@ -569,7 +569,7 @@ class DeliveryController extends Controller
             $worksheet->setCellValue("G$baris_setelah", $goods[0]->note_khusus);
             $worksheet->MergeCells("G$baris_setelah:H$baris_setelah");
 
-            $baris_setelah += 5;
+            $baris_setelah += 6;
             $worksheet->setCellValue("E$baris_setelah", "/" . date('m-Y'));
             $worksheet->setCellValue("I$baris_setelah", "/" . date('m-Y'));
             $worksheet->setCellValue("M$baris_setelah", "/" . date('m-Y'));
@@ -639,7 +639,7 @@ class DeliveryController extends Controller
             $worksheet1->setCellValue("G$baris_setelah", $service[0]->note_khusus);
             $worksheet1->MergeCells("G$baris_setelah:H$baris_setelah");
 
-            $baris_setelah += 5;
+            $baris_setelah += 6;
             $worksheet1->setCellValue("E$baris_setelah", "/" . date('m-Y'));
             $worksheet1->setCellValue("I$baris_setelah", "/" . date('m-Y'));
             $worksheet1->setCellValue("M$baris_setelah", "/" . date('m-Y'));

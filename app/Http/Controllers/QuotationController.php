@@ -458,6 +458,7 @@ class QuotationController extends Controller
                     $worksheet->setCellValue("P$tambahan_baris", number_format($goods[$i]->subtotal));
                     $worksheet->MergeCells("P$tambahan_baris:Q$tambahan_baris");
 
+                    
 
                     $subtotal += $goods[$i]->subtotal;
                     $ongkir += $goods[$i]->ongkir;
@@ -798,7 +799,7 @@ class QuotationController extends Controller
 
                     $berat = $tebal_penawaran * $tebal_penawaran * $panjang_penawaran  * 0.00000785;
                     $berat *= $jumlah;
-                   
+
                     $berat = ((float)number_format((float)$berat, 1, '.', '') < 1.0) ? 1.0 : $berat;
                     return number_format($berat, 1, ".", "");
                 }
@@ -1088,12 +1089,14 @@ class QuotationController extends Controller
                     $id_pelanggan = strtoupper($data[0][$i][2]);
                     $produk = $this->ProductModel->getProductByCode(strtoupper($data[0][$i][3]));
                     $bentuk_produk = $produk->bentuk_produk;
-                    $panjang_transaksi = $data[0][$i][4];
+                    $tebal_transaksi = $data[0][$i][4];
                     $lebar_transaksi = $data[0][$i][5];
-                    $tebal_transaksi = $data[0][$i][6];
+                    $panjang_transaksi = $data[0][$i][6];
                     $jumlah = $data[0][$i][7];
                     $layanan = $data[0][$i][8];
                     $berat = $data[0][$i][11];
+
+                    // dd($data);
 
 
                     if (str_contains($layanan, "_")) {
@@ -1167,11 +1170,13 @@ class QuotationController extends Controller
 
                     ];
                     // dump($data_transaksi_pembantu);
+                    // array_push($arr_pembantu_transaksi,$data_transaksi_pembantu);
                     $this->QuotationModel->insert_pembantu($data_transaksi_pembantu);
                 }
             }
         }
 
+        
 
 
         if (count($errors) == 0) {
