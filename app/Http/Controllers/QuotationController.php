@@ -454,11 +454,36 @@ class QuotationController extends Controller
                     $worksheet->setCellValue("L$tambahan_baris", $goods[$i]->panjang_penawaran);
                     $worksheet->setCellValue("M$tambahan_baris", $goods[$i]->jumlah);
                     $worksheet->setCellValue("N$tambahan_baris", $goods[$i]->berat);
-                    $worksheet->setCellValue("O$tambahan_baris", number_format($goods[$i]->harga));
-                    $worksheet->setCellValue("P$tambahan_baris", number_format($goods[$i]->subtotal));
-                    $worksheet->MergeCells("P$tambahan_baris:Q$tambahan_baris");
 
-                    
+                    // $worksheet->setCellValue("O$tambahan_baris", number_format($goods[$i]->harga));
+                    // $worksheet->setCellValue("P$tambahan_baris", number_format($goods[$i]->subtotal));
+
+
+                    // $worksheet->MergeCells("P$tambahan_baris:Q$tambahan_baris");
+
+                    $cell = $worksheet->getCell("O$tambahan_baris");
+
+                    // Set nilai sel
+                    $cell->setValue($goods[$i]->harga);
+
+                    // Ambil objek gaya dari sel
+                    $style = $cell->getStyle();
+
+                    // Set format mata uang pada sel
+                    $style->getNumberFormat()->setFormatCode('#,##0');
+
+                    $worksheet->MergeCells("P$tambahan_baris:Q$tambahan_baris");
+                    $cell1 = $worksheet->getCell("P$tambahan_baris");
+                    $cell1->setValue($goods[$i]->subtotal);
+
+                    $style1 = $cell1->getStyle();
+
+                    $style1->getNumberFormat()->setFormatCode('#,##0');
+
+
+
+
+
 
                     $subtotal += $goods[$i]->subtotal;
                     $ongkir += $goods[$i]->ongkir;
@@ -532,9 +557,29 @@ class QuotationController extends Controller
                     $worksheet1->setCellValue("L$tambahan_baris", $service[$i]->panjang_penawaran);
                     $worksheet1->setCellValue("M$tambahan_baris", $service[$i]->jumlah);
                     $worksheet1->setCellValue("N$tambahan_baris", $service[$i]->berat);
-                    $worksheet1->setCellValue("O$tambahan_baris", number_format($service[$i]->harga, 2, ',', '.'));
-                    $worksheet1->setCellValue("P$tambahan_baris", number_format($service[$i]->subtotal, 2, ',', '.'));
+
+                    // $worksheet1->setCellValue("O$tambahan_baris", number_format($service[$i]->harga, 2, ',', '.'));
+
+                    $cell = $worksheet1->getCell("O$tambahan_baris");
+
+                    // Set nilai sel
+                    $cell->setValue($service[$i]->harga);
+
+                    // Ambil objek gaya dari sel
+                    $style = $cell->getStyle();
+
+                    // Set format mata uang pada sel
+                    $style->getNumberFormat()->setFormatCode('#,##0');
+
+                    // $worksheet1->setCellValue("P$tambahan_baris", number_format($service[$i]->subtotal, 2, ',', '.'));
                     $worksheet1->MergeCells("P$tambahan_baris:Q$tambahan_baris");
+                    $cell1 = $worksheet1->getCell("P$tambahan_baris");
+                    $cell1->setValue($service[$i]->subtotal);
+
+                    $style1 = $cell1->getStyle();
+
+                    $style1->getNumberFormat()->setFormatCode('#,##0');
+
 
 
                     $subtotal += $service[$i]->subtotal;
@@ -1176,7 +1221,7 @@ class QuotationController extends Controller
             }
         }
 
-        
+
 
 
         if (count($errors) == 0) {

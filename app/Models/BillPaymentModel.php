@@ -80,7 +80,7 @@ class BillPaymentModel extends Model
            group by no_penjualan
            ) b
           group by b.no_penjualan
-		  having total_jumlah = jumlah_detail_pengiriman
+		  having jumlah_detail_pembelian = jumlah_detail_pengiriman
            ORDER BY CASE WHEN b.tgl_tagihan IS NULL THEN 0 ELSE 1 END, b.tgl_tagihan DESC, b.no_penjualan DESC
           ");
         }
