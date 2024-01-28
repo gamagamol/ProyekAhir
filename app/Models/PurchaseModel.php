@@ -11,6 +11,9 @@ use Exception;
 class PurchaseModel extends Model
 {
     use HasFactory;
+
+    public  $p_no_pembelian;
+
     public function index($id = null)
     {
         if ($id) {
@@ -79,212 +82,340 @@ class PurchaseModel extends Model
     }
 
 
+    // public function no_pembelian($tgl_pembelian, $id_pemasok)
+    // {
+
+
+
+    //     $bulan_tgl = explode("-", $tgl_pembelian);
+
+    //     $arr_pembelian = [];
+
+    //     if (count(array_unique($id_pemasok)) > 1) {
+    //         // vendor nya bisa jadi ada yang beda
+    //         foreach (array_unique($id_pemasok) as $i => $ip) {
+    //             if ($i == 0) {
+    //                 $no_pembelian = DB::select(" SELECT max(substr(no_pembelian,4,1)) as no_pembelian from pembelian where month(tgl_pembelian)='$bulan_tgl[1]'
+    //                 and YEAR(tgl_pembelian)='$bulan_tgl[0]'");
+    //                 if ($no_pembelian != null) {
+
+    //                     $no_pembelian = (int)$no_pembelian[0]->no_pembelian + 1;
+    //                 } else {
+    //                     $no_pembelian = 1;
+    //                 }
+    //                 array_push($arr_pembelian, [
+    //                     'id_pemasok' => $ip,
+    //                     'no_pembelian' => $no_pembelian
+    //                 ]);
+    //             } else {
+
+    //                 // Cek apakah id_pemasok sudah ada dalam $arr_pembelian
+    //                 $ip_sudah_ada = false;
+
+    //                 foreach ($arr_pembelian as $key => $arp) {
+    //                     if ((int)$ip == (int)$arp['id_pemasok']) {
+    //                         $arr_pembelian[$key]['no_pembelian']++; // Tambahkan nomor pembelian jika pemasok sudah ada
+    //                         $ip_sudah_ada = true;
+    //                         break;
+    //                     }
+    //                 }
+
+    //                 if (!$ip_sudah_ada) {
+    //                     $nomor_pembelian_terakhir = end($arr_pembelian)['no_pembelian'];
+    //                     array_push($arr_pembelian, [
+    //                         'id_pemasok' => $ip,
+    //                         'no_pembelian' => $nomor_pembelian_terakhir + 1
+    //                     ]);
+    //                 }
+    //             }
+    //         }
+
+
+    //         return $arr_pembelian;
+    //     } else {
+    //         $no_pembelian = DB::select("select * from pembelian where id_pembelian =(select max(id_pembelian) from pembelian 
+    //                 where month(tgl_pembelian)=$bulan_tgl[1] and YEAR(tgl_pembelian)=$bulan_tgl[0]) ");
+
+    //         if ($no_pembelian != null) {
+
+    //             $no_pembelian = no_transaksi($no_pembelian[0]->no_pembelian);
+    //         } else {
+    //             $no_pembelian = 1;
+    //         }
+    //         array_push($arr_pembelian, (int)$no_pembelian);
+    //     }
+
+
+    //     return $arr_pembelian;
+    // }
     public function no_pembelian($tgl_pembelian, $id_pemasok)
     {
+        DB::beginTransaction();
+
+        try {
+            $bulan_tgl = explode("-", $tgl_pembelian);
+            $arr_pembelian = [];
+            $count_table_tmp = (DB::table('pembelian_temp')->count('id') > 0) ? "pembelian_temp" : "pembelian";
+            if (count(array_unique($id_pemasok)) > 1) {
+                foreach (array_unique($id_pemasok) as $i => $ip) {
+                    if ($i == 0) {
+                        // Menggunakan locking di level database
+                        $no_pembelian = DB::table($count_table_tmp)
+                            ->lockForUpdate()
+                            ->whereMonth('tgl_pembelian', $bulan_tgl[1])
+                            ->whereYear('tgl_pembelian', $bulan_tgl[0])
+                            ->max(DB::raw('CAST(SUBSTRING(no_pembelian, 4, 1) AS SIGNED)'));
+
+                        $no_pembelian = $no_pembelian !== null ? (int)$no_pembelian + 1 : 1;
 
 
-        $bulan_tgl = explode("-", $tgl_pembelian);
+                        $no_purchase = "PO/$no_pembelian/$bulan_tgl[0]/$bulan_tgl[1]/$bulan_tgl[2]";
 
-        $arr_pembelian = [];
+                        DB::table('pembelian_temp')->insert([
+                            'no_pembelian' => $no_purchase,
+                            'tgl_pembelian' => date('Y-m-d')
+                        ]);
 
-        if (count(array_unique($id_pemasok)) > 1) {
-            // vendor nya bisa jadi ada yang beda
-            foreach (array_unique($id_pemasok) as $i => $ip) {
-                if ($i == 0) {
-                    // $no_pembelian = DB::select("
-                    // select * from pembelian where id_pembelian =(select max(id_pembelian) from pembelian 
-                    // where month(tgl_pembelian)='$bulan_tgl[1]' and YEAR(tgl_pembelian)='$bulan_tgl[0]')");
-
-                    $no_pembelian = DB::select(" SELECT max(substr(no_pembelian,4,1)) as no_pembelian from pembelian where month(tgl_pembelian)='$bulan_tgl[1]'
-                    and YEAR(tgl_pembelian)='$bulan_tgl[0]'");
-                    if ($no_pembelian != null) {
-
-                        // $no_pembelian = no_transaksi($no_pembelian[0]->no_pembelian);
-                        $no_pembelian = (int)$no_pembelian[0]->no_pembelian + 1;
-                    } else {
-                        $no_pembelian = 1;
-                    }
-                    array_push($arr_pembelian, [
-                        'id_pemasok' => $ip,
-                        'no_pembelian' => $no_pembelian
-                    ]);
-                } else {
-
-                    // Cek apakah id_pemasok sudah ada dalam $arr_pembelian
-                    $ip_sudah_ada = false;
-
-                    foreach ($arr_pembelian as $key => $arp) {
-                        if ((int)$ip == (int)$arp['id_pemasok']) {
-                            $arr_pembelian[$key]['no_pembelian']++; // Tambahkan nomor pembelian jika pemasok sudah ada
-                            $ip_sudah_ada = true;
-                            break;
-                        }
-                    }
-
-                    if (!$ip_sudah_ada) {
-                        $nomor_pembelian_terakhir = end($arr_pembelian)['no_pembelian'];
                         array_push($arr_pembelian, [
                             'id_pemasok' => $ip,
-                            'no_pembelian' => $nomor_pembelian_terakhir + 1
+                            'no_pembelian' => $no_pembelian
                         ]);
+                    } else {
+                        $ip_sudah_ada = false;
+
+                        foreach ($arr_pembelian as $key => $arp) {
+                            if ((int)$ip == (int)$arp['id_pemasok']) {
+                                $arr_pembelian[$key]['no_pembelian']++;
+                                $ip_sudah_ada = true;
+                                break;
+                            }
+                        }
+
+                        if (!$ip_sudah_ada) {
+                            $nomor_pembelian_terakhir = end($arr_pembelian)['no_pembelian'];
+                            $nomor_pembelian_terakhir += 1;
+
+                            $no_purchase = "PO/$nomor_pembelian_terakhir/$bulan_tgl[0]/$bulan_tgl[1]/$bulan_tgl[2]";
+
+                            DB::table('pembelian_temp')->insert([
+                                'no_pembelian' => $no_purchase,
+                                'tgl_pembelian' => date('Y-m-d')
+                            ]);
+                            array_push($arr_pembelian, [
+                                'id_pemasok' => $ip,
+                                'no_pembelian' => $nomor_pembelian_terakhir
+                            ]);
+                        }
                     }
                 }
+            } else {
+                // Menggunakan locking di level database
+                $no_pembelian = DB::table($count_table_tmp)
+                    ->lockForUpdate()
+                    ->whereMonth('tgl_pembelian', $bulan_tgl[1])
+                    ->whereYear('tgl_pembelian', $bulan_tgl[0])
+                    ->max('no_pembelian');
+
+                $no_pembelian = $no_pembelian !== null ? no_transaksi($no_pembelian) : 1;
+                $no_purchase = "PO/$no_pembelian/$bulan_tgl[0]/$bulan_tgl[1]/$bulan_tgl[2]";
+
+                DB::table('pembelian_temp')->insert([
+                    'no_pembelian' => $no_purchase,
+                    'tgl_pembelian' => date('Y-m-d')
+                ]);
+
+                array_push($arr_pembelian, (int)$no_pembelian);
             }
 
-            // dd($arr_pembelian);
+            DB::commit();
 
             return $arr_pembelian;
-        } else {
-            $no_pembelian = DB::select("select * from pembelian where id_pembelian =(select max(id_pembelian) from pembelian 
-                    where month(tgl_pembelian)=$bulan_tgl[1] and YEAR(tgl_pembelian)=$bulan_tgl[0]) ");
-
-            if ($no_pembelian != null) {
-
-                $no_pembelian = no_transaksi($no_pembelian[0]->no_pembelian);
-            } else {
-                $no_pembelian = 1;
-            }
-            array_push($arr_pembelian, (int)$no_pembelian);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
         }
-
-        return $arr_pembelian;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+    // public function insert_penjualan1($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok, $kemungkinan, $nominal = null)
+    // {
+
+    //     DB::commit();
+
+    //     try {
+
+    //         if (gettype($id_pemasok) == 'array') {
+    //             $update_data_transaksi = [];
+    //             for ($i = 0; $i < count($id_pemasok); $i++) {
+    //                 $update_data_transaksi[$i] = [
+    //                     'status_transaksi' => 'purchase',
+    //                     // 'id_pemasok' => $id_pemasok[$i]
+    //                 ];
+    //             }
+    //         } else {
+    //             $update_data_transaksi = [
+    //                 'status_transaksi' => 'purchase',
+    //                 // 'id_pemasok' => $id_pemasok
+    //             ];
+    //         }
+
+
+
+    //         if (count($id_transaksi) >= 1 && gettype($id_pemasok) == 'string') {
+
+    //             for ($i = 0; $i < count($id_transaksi); $i++) {
+
+    //                 DB::table('transaksi')
+    //                     ->where('id_transaksi', $id_transaksi[$i])
+    //                     ->update($update_data_transaksi);
+    //             }
+    //         } elseif (count($id_transaksi) > 1 && gettype($id_pemasok) == 'array') {
+
+    //             for ($i = 0; $i < count($id_transaksi); $i++) {
+
+    //                 DB::table('transaksi')
+    //                     ->where('id_transaksi', $id_transaksi[$i])
+    //                     ->update($update_data_transaksi[$i]);
+    //             }
+    //         } else if (count($id_transaksi) < 1 && gettype($id_pemasok) == 'string') {
+
+    //             DB::table('transaksi')->where('id_transaksi', $id_transaksi[0])->update($update_data_transaksi);
+    //         }
+
+
+
+
+
+
+
+    //         // insert pembelian dan detail pembelian
+
+    //         for ($i = 0; $i < count($data_pembelian); $i++) {
+    //             $id_pembelian = DB::table('pembelian')->insertGetId($data_pembelian[$i]);
+    //             $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
+    //             DB::table('detail_transaksi_pembelian')->insert($data_detail_pembelian[$i]);
+    //         }
+
+
+
+    //         // kodingan jurnal pembelian utang
+
+
+    //         // dd($data_detail_pembelian);
+
+    //         $total_pembelian = 0;
+    //         foreach ($data_detail_pembelian as $ddp) {
+    //             // dump($ddp['total_detail_pembelian']);
+    //             $total_pembelian += $ddp['subtotal_detail_pembelian'];
+    //         }
+
+
+
+
+    //         $jurnal = [
+    //             [
+    //                 "id_transaksi" => $id_transaksi[0],
+    //                 'kode_akun' => 500,
+    //                 'tgl_jurnal' => $data_pembelian[0]['tgl_pembelian'],
+    //                 'nominal' => (int)$total_pembelian,
+    //                 'posisi_db_cr' => "debit"
+    //             ],
+    //             [
+    //                 "id_transaksi" => $id_transaksi[0],
+    //                 'kode_akun' => 200,
+    //                 'tgl_jurnal' => $data_pembelian[0]['tgl_pembelian'],
+    //                 'nominal' => (int)$total_pembelian,
+    //                 'posisi_db_cr' => "kredit"
+    //             ],
+    //         ];
+
+    //         DB::table('pembelian_temp')->where([
+    //             'tgl_pembelian' => date('Y-m-d')
+    //         ])->delete();
+
+    //         DB::table('jurnal')->insert($jurnal);
+    //         DB::commit();
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         throw $e;
+    //     }
+    // }
 
 
 
     public function insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok, $kemungkinan, $nominal = null)
     {
+        DB::beginTransaction();
 
-
-        if (gettype($id_pemasok) == 'array') {
-            $update_data_transaksi = [];
-            for ($i = 0; $i < count($id_pemasok); $i++) {
-                $update_data_transaksi[$i] = [
-                    'status_transaksi' => 'purchase',
-                    // 'id_pemasok' => $id_pemasok[$i]
-                ];
-            }
-        } else {
+        try {
+            // Update status transaksi
             $update_data_transaksi = [
                 'status_transaksi' => 'purchase',
-                // 'id_pemasok' => $id_pemasok
             ];
-        }
 
-
-
-        if (count($id_transaksi) >= 1 && gettype($id_pemasok) == 'string') {
-
-            for ($i = 0; $i < count($id_transaksi); $i++) {
-
+            if (is_array($id_pemasok)) {
+                foreach ($id_transaksi as $i => $transaksiId) {
+                    DB::table('transaksi')
+                        ->where('id_transaksi', $transaksiId)
+                        ->update($update_data_transaksi);
+                }
+            } else {
                 DB::table('transaksi')
-                    ->where('id_transaksi', $id_transaksi[$i])
+                    ->whereIn('id_transaksi', $id_transaksi)
                     ->update($update_data_transaksi);
             }
-        } elseif (count($id_transaksi) > 1 && gettype($id_pemasok) == 'array') {
 
-            for ($i = 0; $i < count($id_transaksi); $i++) {
-
-                DB::table('transaksi')
-                    ->where('id_transaksi', $id_transaksi[$i])
-                    ->update($update_data_transaksi[$i]);
+            // Insert pembelian dan detail pembelian
+            foreach ($data_pembelian as $i => $pembelianData) {
+                $id_pembelian = DB::table('pembelian')->insertGetId($pembelianData);
+                $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
+                DB::table('detail_transaksi_pembelian')->insert($data_detail_pembelian[$i]);
             }
-        } else if (count($id_transaksi) < 1 && gettype($id_pemasok) == 'string') {
 
-            DB::table('transaksi')->where('id_transaksi', $id_transaksi[0])->update($update_data_transaksi);
+            // Hitung total pembelian
+            $total_pembelian = array_sum(array_column($data_detail_pembelian, 'subtotal_detail_pembelian'));
+
+            // Jurnal pembelian utang
+            $jurnal = [
+                [
+                    "id_transaksi" => $id_transaksi[0],
+                    'kode_akun' => 500,
+                    'tgl_jurnal' => $data_pembelian[0]['tgl_pembelian'],
+                    'nominal' => (int)$total_pembelian,
+                    'posisi_db_cr' => "debit"
+                ],
+                [
+                    "id_transaksi" => $id_transaksi[0],
+                    'kode_akun' => 200,
+                    'tgl_jurnal' => $data_pembelian[0]['tgl_pembelian'],
+                    'nominal' => (int)$total_pembelian,
+                    'posisi_db_cr' => "kredit"
+                ],
+            ];
+            DB::table('jurnal')->insert($jurnal);
+
+            // Hapus data pembelian_temp
+            DB::table('pembelian_temp')->where('tgl_pembelian', date('Y-m-d'))->delete();
+
+            // Commit transaksi
+            DB::commit();
+        } catch (\Exception $e) {
+            // Rollback transaksi jika terjadi kesalahan
+            DB::rollBack();
+            throw $e;
         }
-
-
-
-
-
-        // DB::table('pembelian')->insert($data_pembelian);
-
-
-        // if ($kemungkinan == 'A') {
-
-
-        //     // ambil id pembelian
-        //     if (count($data_pembelian) > 1) {
-
-
-        //         for ($i = 0; $i < count($data_pembelian); $i++) {
-        //             $id_pembelian = DB::table('pembelian')
-        //                 ->where('id_penjualan', $data_pembelian[$i]['id_penjualan'])
-        //                 ->max('id_pembelian');
-
-        //             $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
-        //         }
-        //     } else {
-
-        //         $id_pembelian = DB::table('pembelian')->max('id_pembelian');
-        //         for ($i = 0; $i < count($data_detail_pembelian); $i++) {
-        //             $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
-        //         }
-        //     }
-        // } elseif ($kemungkinan == 'B' || $kemungkinan == 'C') {
-
-        //     // dd($data_pembelian);
-
-        //     for ($i = 0; $i < count($data_pembelian); $i++) {
-        //         $id_pembelian = DB::table('')
-        //             ->where('id_penjualan', $data_pembelian[$i]['id_penjualan'])
-        //             ->first();
-
-        //         $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian->id_pembelian;
-        //     }
-        // }
-
-
-
-        // DB::table('detail_transaksi_pembelian')->insert($data_detail_pembelian);
-
-
-        // insert pembelian dan detail pembelian
-
-        for ($i = 0; $i < count($data_pembelian); $i++) {
-            $id_pembelian = DB::table('pembelian')->insertGetId($data_pembelian[$i]);
-            $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
-            DB::table('detail_transaksi_pembelian')->insert($data_detail_pembelian[$i]);
-        }
-
-
-
-        // kodingan jurnal pembelian utang
-
-
-        // dd($data_detail_pembelian);
-
-        $total_pembelian = 0;
-        foreach ($data_detail_pembelian as $ddp) {
-            // dump($ddp['total_detail_pembelian']);
-            $total_pembelian += $ddp['subtotal_detail_pembelian'];
-        }
-
-
-
-
-        $jurnal = [
-            [
-                "id_transaksi" => $id_transaksi[0],
-                'kode_akun' => 500,
-                'tgl_jurnal' => $data_pembelian[0]['tgl_pembelian'],
-                'nominal' => (int)$total_pembelian,
-                'posisi_db_cr' => "debit"
-            ],
-            [
-                "id_transaksi" => $id_transaksi[0],
-                'kode_akun' => 200,
-                'tgl_jurnal' => $data_pembelian[0]['tgl_pembelian'],
-                'nominal' => (int)$total_pembelian,
-                'posisi_db_cr' => "kredit"
-            ],
-        ];
-        // dump($data_detail_pembelian);
-        // dd($jurnal);
-
-        DB::table('jurnal')->insert($jurnal);
     }
+
 
     public function detail($no_pembelian)
     {

@@ -93,29 +93,6 @@ class PurchaseController extends Controller
         $produk = [];
         $arr_produk = [];
 
-        // echo    $this->containsOnlyNull($request->input('tebal_transaksi_asli'));
-        // die;
-
-        // if (
-        //     $tebal_transaksi_asli != null ||  $tebal_transaksi_asli != '' ||
-        //     $lebar_transaksi_asli != null ||  $lebar_transaksi_asli != '' ||
-        //     $panjang_transaksi_asli != null ||  $panjang_transaksi_asli != ''
-        // ) {
-        //     echo "masuk sini";
-        //     dd($tebal_transaksi_asli);
-
-        //     $validator = Validator::make($request->all(), [
-
-        //         "tebal_transaksi_asli.*"  => "regex:/^\d*(\.\d{2})?$/",
-        //         "lebar_transaksi_asli.*"  => "regex:/^\d*(\.\d{2})?$/",
-        //         "panjang_transaksi_asli.*"  => "regex:/^\d*(\.\d{2})?$/",
-        //     ]);
-
-        //     if ($validator->fails()) {
-        //         return redirect()->back()->with("failed", "if your transaction has a comma please use it '.'");
-        //     }
-        // }
-
 
         //    check array apa bukan
         if (is_array($unit)) {
@@ -325,63 +302,15 @@ class PurchaseController extends Controller
         }
 
 
-        // dd('end');
-
-
-        // $rules = [
-        //     'tgl_pembelian' => " after_or_equal:$tgl_penjualan",
-
-
-        // ];
-        // $message = [
-        //     "tgl_pembelian.after_or_equal" => "Choose a date after the quotation date or equal",
-
-        // ];
-        // $validated = Validator::make($request->all(), $rules, $message);
-        // if ($validated->fails()) {
-        //     return redirect()->back()->with("failed", "Choose a date after the sales date or equal");
-        // }
-
+  
         //    kumpulan array data penjualan
         $data_pembelian = [];
         $data_detail_pembelian = [];
         $array_no_pembelian = [];
 
-        // Persiapan no penjualan
-        // Dasar pembentukan no pembelian
-
-
-
-
-
-        // check apakah dari 1 pemasok
-
-        // $sameVendor = $this->areAllValuesSame($id_pemasok);
-        // // dump($sameVendor);
-
-        // $no_pembelian = $this->PurchaseModel->no_pembelian($tgl_pembelian, $id_pemasok, $sameVendor);
-        // $tgl_exploade = explode('-', $tgl_pembelian);
-
-
-
-        // if (!$sameVendor) {
-
-
-        //     foreach ($no_pembelian as $nop) {
-
-        //         $no_purchase = "PO/$nop/$tgl_exploade[0]/$tgl_exploade[1]/$tgl_exploade[2]";
-        //         array_push($array_no_pembelian, $no_purchase);
-        //     }
-        // } else {
-
-        //     $no_purchase = "PO/$no_pembelian/$tgl_exploade[0]/$tgl_exploade[1]/$tgl_exploade[2]";
-        //     // array_push($array_no_pembelian, $no_purchase);
-        //     $array_no_pembelian = $no_purchase;
-        // }
-
-        // dump($id_pemasok);
 
         $no_pembelian = $this->PurchaseModel->no_pembelian($tgl_pembelian, $id_pemasok);
+       
         $tgl_exploade = explode('-', $tgl_pembelian);
 
 
@@ -404,10 +333,6 @@ class PurchaseController extends Controller
             array_push($array_no_pembelian, $no_purchase);
         }
 
-        // dump(count(array_unique($id_pemasok)));
-        // dd($arr_produk);
-
-        // dd($array_no_pembelian);
 
         //    Mengisi array data pembelian dan detail pembelian
         // Kemungkinan yang bisa terjadi dalam pemebelian:
@@ -463,7 +388,6 @@ class PurchaseController extends Controller
             }
             $kemungkinan = 'A';
         } else if ($array_pemasok == 1 && $unit != null) {
-            // dd($array_no_pembelian);
 
             $i = 0;
             foreach ($arr_produk as $ap) {
@@ -498,11 +422,9 @@ class PurchaseController extends Controller
             $id_pemasok = $id_pemasok[0];
             $kemungkinan = 'B';
         } elseif ($array_pemasok > 1 && $unit != null) {
-            // echo 'masuk sini';
 
             $i = 0;
             foreach ($arr_produk as $ap) {
-                // dump($ap);
                 $data_pembelian[$i] = [
                     'id_penjualan' => $ap['id_penjualan'],
                     'id_transaksi' => $ap['id_transaksi'],
@@ -532,19 +454,12 @@ class PurchaseController extends Controller
                 $i++;
             }
 
-            // dump("kemungkinan C");
             $kemungkinan = 'C';
         }
 
 
-        // check isi array9
-        // dump($kemungkinan);
-        // dump($produk);
-        // dump($arr_produk);
-        // dump($array_no_pembelian);
-        // dump($quotation);
-        // dump($request->input());
-        // dump($id_pemasok);
+        // check isi array
+      
         // dump($data_pembelian);
         // dd($data_detail_pembelian);
 

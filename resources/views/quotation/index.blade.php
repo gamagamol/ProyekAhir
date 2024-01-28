@@ -56,7 +56,6 @@
                                     <td>{{ $d->nama_pegawai }}</td>
                                     <td>
 
-
                                         <a href="{{ url('sales', $d->kode_transaksi) }}" class="btn btn-primary mt-1"
                                             @if ($d->status_transaksi != 'quotation') {{ 'hidden' }} @endif>
                                             Sales </a>
