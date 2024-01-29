@@ -237,122 +237,6 @@ class PurchaseModel extends Model
     }
 
 
-
-
-
-
-
-
-
-
-
-
-    // public function insert_penjualan1($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok, $kemungkinan, $nominal = null)
-    // {
-
-    //     DB::commit();
-
-    //     try {
-
-    //         if (gettype($id_pemasok) == 'array') {
-    //             $update_data_transaksi = [];
-    //             for ($i = 0; $i < count($id_pemasok); $i++) {
-    //                 $update_data_transaksi[$i] = [
-    //                     'status_transaksi' => 'purchase',
-    //                     // 'id_pemasok' => $id_pemasok[$i]
-    //                 ];
-    //             }
-    //         } else {
-    //             $update_data_transaksi = [
-    //                 'status_transaksi' => 'purchase',
-    //                 // 'id_pemasok' => $id_pemasok
-    //             ];
-    //         }
-
-
-
-    //         if (count($id_transaksi) >= 1 && gettype($id_pemasok) == 'string') {
-
-    //             for ($i = 0; $i < count($id_transaksi); $i++) {
-
-    //                 DB::table('transaksi')
-    //                     ->where('id_transaksi', $id_transaksi[$i])
-    //                     ->update($update_data_transaksi);
-    //             }
-    //         } elseif (count($id_transaksi) > 1 && gettype($id_pemasok) == 'array') {
-
-    //             for ($i = 0; $i < count($id_transaksi); $i++) {
-
-    //                 DB::table('transaksi')
-    //                     ->where('id_transaksi', $id_transaksi[$i])
-    //                     ->update($update_data_transaksi[$i]);
-    //             }
-    //         } else if (count($id_transaksi) < 1 && gettype($id_pemasok) == 'string') {
-
-    //             DB::table('transaksi')->where('id_transaksi', $id_transaksi[0])->update($update_data_transaksi);
-    //         }
-
-
-
-
-
-
-
-    //         // insert pembelian dan detail pembelian
-
-    //         for ($i = 0; $i < count($data_pembelian); $i++) {
-    //             $id_pembelian = DB::table('pembelian')->insertGetId($data_pembelian[$i]);
-    //             $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
-    //             DB::table('detail_transaksi_pembelian')->insert($data_detail_pembelian[$i]);
-    //         }
-
-
-
-    //         // kodingan jurnal pembelian utang
-
-
-    //         // dd($data_detail_pembelian);
-
-    //         $total_pembelian = 0;
-    //         foreach ($data_detail_pembelian as $ddp) {
-    //             // dump($ddp['total_detail_pembelian']);
-    //             $total_pembelian += $ddp['subtotal_detail_pembelian'];
-    //         }
-
-
-
-
-    //         $jurnal = [
-    //             [
-    //                 "id_transaksi" => $id_transaksi[0],
-    //                 'kode_akun' => 500,
-    //                 'tgl_jurnal' => $data_pembelian[0]['tgl_pembelian'],
-    //                 'nominal' => (int)$total_pembelian,
-    //                 'posisi_db_cr' => "debit"
-    //             ],
-    //             [
-    //                 "id_transaksi" => $id_transaksi[0],
-    //                 'kode_akun' => 200,
-    //                 'tgl_jurnal' => $data_pembelian[0]['tgl_pembelian'],
-    //                 'nominal' => (int)$total_pembelian,
-    //                 'posisi_db_cr' => "kredit"
-    //             ],
-    //         ];
-
-    //         DB::table('pembelian_temp')->where([
-    //             'tgl_pembelian' => date('Y-m-d')
-    //         ])->delete();
-
-    //         DB::table('jurnal')->insert($jurnal);
-    //         DB::commit();
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         throw $e;
-    //     }
-    // }
-
-
-
     public function insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok, $kemungkinan, $nominal = null)
     {
         DB::beginTransaction();
@@ -380,6 +264,7 @@ class PurchaseModel extends Model
                 $id_pembelian = DB::table('pembelian')->insertGetId($pembelianData);
                 $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
                 DB::table('detail_transaksi_pembelian')->insert($data_detail_pembelian[$i]);
+                // DB::table('pembelian_temp')->where("no_pembelian", $data_pembelian[$i]['no_pembelian'])->delete();
             }
 
             // Hitung total pembelian
@@ -404,8 +289,8 @@ class PurchaseModel extends Model
             ];
             DB::table('jurnal')->insert($jurnal);
 
+
             // Hapus data pembelian_temp
-            DB::table('pembelian_temp')->where('tgl_pembelian', date('Y-m-d'))->delete();
 
             // Commit transaksi
             DB::commit();
