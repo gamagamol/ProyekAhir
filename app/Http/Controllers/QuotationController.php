@@ -117,8 +117,6 @@ class QuotationController extends Controller
             'pegawai' => $this->pegawai->getEmployee('SALES'),
 
         ];
-
-        // dd($data);
         return view('quotation.insert', $data);
     }
 
@@ -174,6 +172,7 @@ class QuotationController extends Controller
 
         $validated = Validator::make($request->all(), $rules, $message);
 
+        // dd($validated->errors());
 
         if ($validated->fails()) {
             return redirect('quotation/create')->withErrors($validated)->withInput();
@@ -412,7 +411,6 @@ class QuotationController extends Controller
 
 
 
-
         if ($goods != null) {
 
             $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('template_report/qtn_template.xlsx');
@@ -570,7 +568,6 @@ class QuotationController extends Controller
 
                     // Set format mata uang pada sel
                     $style->getNumberFormat()->setFormatCode('#,##0');
-
                     // $worksheet1->setCellValue("P$tambahan_baris", number_format($service[$i]->subtotal, 2, ',', '.'));
                     $worksheet1->MergeCells("P$tambahan_baris:Q$tambahan_baris");
                     $cell1 = $worksheet1->getCell("P$tambahan_baris");
@@ -579,7 +576,6 @@ class QuotationController extends Controller
                     $style1 = $cell1->getStyle();
 
                     $style1->getNumberFormat()->setFormatCode('#,##0');
-
 
 
                     $subtotal += $service[$i]->subtotal;
@@ -615,9 +611,6 @@ class QuotationController extends Controller
             $worksheet1->setCellValue("E$baris_setelah", $service[0]->nama_pelanggan);
             $worksheet1->MergeCells("E$baris_setelah:I$baris_setelah");
         }
-
-
-        // service
 
 
 
@@ -727,6 +720,7 @@ class QuotationController extends Controller
         unlink($tempFile);
     }
 
+
     public function CalculateWeight($bentuk_produk, $layanan, $tebal_transaksi, $lebar_transaksi, $panjang_transaksi, $jumlah)
     {
 
@@ -762,7 +756,10 @@ class QuotationController extends Controller
                 }
 
                 if ($layanan == "MILLING") {
-                    //    membuat ukuran dan berat pxl 0,00008
+                    // //    membuat ukuran dan berat pxl 0,00008
+                    // dump($tebal_transaksi);
+                    // dump($lebar_transaksi);
+                    // dump($panjang_transaksi);
                     $tebal_penawaran = $tebal_transaksi + 5;
                     $lebar_penawaran =  $lebar_transaksi + 5;
                     $panjang_penawaran =  $panjang_transaksi + 5;
@@ -1065,6 +1062,7 @@ class QuotationController extends Controller
     {
         $layanan = $this->QuotationModel->getServices($request->layanan_edit_penawaran);
         $type_layanan = $layanan->type;
+
         $harga_penawaran = $request->harga_edit_penawaran;
         $berat = $this->CalculateWeight(
             $request->bentuk_edit_penawaran,
@@ -1075,10 +1073,19 @@ class QuotationController extends Controller
             $request->jumlah_edit_penawaran,
         );
 
+
+        // dump($berat);
         $subtotal = (float) $berat * (int) str_replace('.', "", $harga_penawaran);
 
+        // dd($subtotal);
         $ppn = $subtotal * 0.11;
         $total = $subtotal + $ppn;
+
+        // dump($subtotal);
+        // dump($be);
+        // dump($ppn);
+        // dd($total);
+
         DB::table('pembantu_penawaran')->where('id_pembantu', $request->id_edit_penawaran)->update([
             'tebal_penawaran' => $request->tebal_edit_penawaran,
             'lebar_penawaran' => $request->lebar_edit_penawaran,
@@ -1100,8 +1107,6 @@ class QuotationController extends Controller
         $import = new QuotationImport;
         $data = Excel::toArray($import, $file);
 
-        // dd($data);
-
 
         if (count($data[0]) == 3) {
             return response()->json(["message" => "fail", "errors" => ["Please Insert New Row and Fill The Cloumn"]]);
@@ -1113,7 +1118,8 @@ class QuotationController extends Controller
         $errors = [];
         $error = [];
 
-
+        // dd($data);
+        $array_data_insert_pembantu = [];
         for ($i = 0; $i < count($data[0]); $i++) {
             // dump($i);
             if ($i > 2) {
@@ -1134,14 +1140,12 @@ class QuotationController extends Controller
                     $id_pelanggan = strtoupper($data[0][$i][2]);
                     $produk = $this->ProductModel->getProductByCode(strtoupper($data[0][$i][3]));
                     $bentuk_produk = $produk->bentuk_produk;
-                    $tebal_transaksi = $data[0][$i][4];
-                    $lebar_transaksi = $data[0][$i][5];
-                    $panjang_transaksi = $data[0][$i][6];
+                    $tebal_transaksi = (int)$data[0][$i][4];
+                    $lebar_transaksi = (int)$data[0][$i][5];
+                    $panjang_transaksi = (int)$data[0][$i][6];
                     $jumlah = $data[0][$i][7];
                     $layanan = $data[0][$i][8];
                     $berat = $data[0][$i][11];
-
-                    // dd($data);
 
 
                     if (str_contains($layanan, "_")) {
@@ -1174,6 +1178,7 @@ class QuotationController extends Controller
                     }
 
 
+
                     $subtotal = (float) $berat * (int) $harga;
                     $ppn = $subtotal * 0.11;
 
@@ -1192,9 +1197,9 @@ class QuotationController extends Controller
                         "id_pelanggan" => $id_pelanggan,
                         "nama_produk" => $produk->nama_produk,
                         "id_pegawai" => $id_pegawai,
-                        "panjang_pembantu" => $panjang_transaksi,
-                        "lebar_pembantu" => $lebar_transaksi,
                         "tebal_pembantu" => $tebal_transaksi,
+                        "lebar_pembantu" => $lebar_transaksi,
+                        "panjang_pembantu" => $panjang_transaksi,
                         "jumlah_pembantu" => $jumlah,
                         "layanan_pembantu" => $layanan->nama_layanan,
                         "harga_pembantu" => $harga,
@@ -1215,16 +1220,19 @@ class QuotationController extends Controller
 
                     ];
                     // dump($data_transaksi_pembantu);
-                    // array_push($arr_pembantu_transaksi,$data_transaksi_pembantu);
-                    $this->QuotationModel->insert_pembantu($data_transaksi_pembantu);
+                    array_push($array_data_insert_pembantu, $data_transaksi_pembantu);
+                    // $this->QuotationModel->insert_pembantu($data_transaksi_pembantu);
                 }
             }
         }
 
 
-
+        // dump($errors);
+        // dd($array_data_insert_pembantu);
 
         if (count($errors) == 0) {
+            $this->QuotationModel->insert_pembantu($array_data_insert_pembantu);
+
             return response()->json(["message" => "success"]);
         } else {
 
@@ -1245,14 +1253,19 @@ class QuotationController extends Controller
          * is exist
          */
         // dd("masuk sini");
+        // if (is_array($data)) {
+        //     // echo $data[0];
+        //     dump($data[0]);
+        // } else {
+        //     dd( "Not an array");
+        // }
         $errors = [];
         $id_pegawai = $data[1];
         $id_pelanggan = $data[2];
         $produk = strtoupper($data[3]);
-        $panjang_transaksi = $data[4];
+        $tebal_transaksi = $data[4];
         $lebar_transaksi = $data[5];
-        // $bentuk_produk = ((int)$data[5] > 0) ? "FLAT"
-        $tebal_transaksi = $data[6];
+        $panjang_transaksi = $data[6];
         $jumlah = $data[7];
         $layanan = strtoupper($data[8]);
         $harga = $data[9];

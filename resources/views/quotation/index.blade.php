@@ -162,7 +162,7 @@
                             $("#row-error-note").removeAttr('hidden');
                             $("#error_note").html(html)
                         } else {
-                            window.location.href = "/quotation/create"
+                            // window.location.href = "/quotation/create"
                         }
 
 

@@ -11,9 +11,6 @@ use Exception;
 class PurchaseModel extends Model
 {
     use HasFactory;
-
-    public  $p_no_pembelian;
-
     public function index($id = null)
     {
         if ($id) {
@@ -86,7 +83,6 @@ class PurchaseModel extends Model
     // {
 
 
-
     //     $bulan_tgl = explode("-", $tgl_pembelian);
 
     //     $arr_pembelian = [];
@@ -95,11 +91,20 @@ class PurchaseModel extends Model
     //         // vendor nya bisa jadi ada yang beda
     //         foreach (array_unique($id_pemasok) as $i => $ip) {
     //             if ($i == 0) {
+    //                 // $no_pembelian = DB::select("
+    //                 // select * from pembelian where id_pembelian =(select max(id_pembelian) from pembelian 
+    //                 // where month(tgl_pembelian)='$bulan_tgl[1]' and YEAR(tgl_pembelian)='$bulan_tgl[0]')");
+
     //                 $no_pembelian = DB::select(" SELECT max(substr(no_pembelian,4,1)) as no_pembelian from pembelian where month(tgl_pembelian)='$bulan_tgl[1]'
     //                 and YEAR(tgl_pembelian)='$bulan_tgl[0]'");
+
+    //                 // dd("SELECT max(substr(no_pembelian,4,1)) as no_pembelian from pembelian where month(tgl_pembelian)='$bulan_tgl[1]'
+    //                 // and YEAR(tgl_pembelian)='$bulan_tgl[0]'");
+
     //                 if ($no_pembelian != null) {
 
-    //                     $no_pembelian = (int)$no_pembelian[0]->no_pembelian + 1;
+    //                     // $no_pembelian = no_transaksi($no_pembelian[0]->no_pembelian);
+    //                     $no_pembelian = (int)$no_pembelian[0]->no_pembelian+1;
     //                 } else {
     //                     $no_pembelian = 1;
     //                 }
@@ -130,6 +135,7 @@ class PurchaseModel extends Model
     //             }
     //         }
 
+    //         // dd($arr_pembelian);
 
     //         return $arr_pembelian;
     //     } else {
@@ -145,9 +151,10 @@ class PurchaseModel extends Model
     //         array_push($arr_pembelian, (int)$no_pembelian);
     //     }
 
-
     //     return $arr_pembelian;
     // }
+
+
     public function no_pembelian($tgl_pembelian, $id_pemasok)
     {
         DB::beginTransaction();
@@ -237,6 +244,145 @@ class PurchaseModel extends Model
     }
 
 
+
+
+    // public function insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok, $kemungkinan, $nominal = null)
+    // {
+
+
+    //     if (gettype($id_pemasok) == 'array') {
+    //         $update_data_transaksi = [];
+    //         for ($i = 0; $i < count($id_pemasok); $i++) {
+    //             $update_data_transaksi[$i] = [
+    //                 'status_transaksi' => 'purchase',
+    //                 // 'id_pemasok' => $id_pemasok[$i]
+    //             ];
+    //         }
+    //     } else {
+    //         $update_data_transaksi = [
+    //             'status_transaksi' => 'purchase',
+    //             // 'id_pemasok' => $id_pemasok
+    //         ];
+    //     }
+
+
+
+    //     if (count($id_transaksi) >= 1 && gettype($id_pemasok) == 'string') {
+
+    //         for ($i = 0; $i < count($id_transaksi); $i++) {
+
+    //             DB::table('transaksi')
+    //                 ->where('id_transaksi', $id_transaksi[$i])
+    //                 ->update($update_data_transaksi);
+    //         }
+    //     } elseif (count($id_transaksi) > 1 && gettype($id_pemasok) == 'array') {
+
+    //         for ($i = 0; $i < count($id_transaksi); $i++) {
+
+    //             DB::table('transaksi')
+    //                 ->where('id_transaksi', $id_transaksi[$i])
+    //                 ->update($update_data_transaksi[$i]);
+    //         }
+    //     } else if (count($id_transaksi) < 1 && gettype($id_pemasok) == 'string') {
+
+    //         DB::table('transaksi')->where('id_transaksi', $id_transaksi[0])->update($update_data_transaksi);
+    //     }
+
+
+
+
+
+    //     // DB::table('pembelian')->insert($data_pembelian);
+
+
+    //     // if ($kemungkinan == 'A') {
+
+
+    //     //     // ambil id pembelian
+    //     //     if (count($data_pembelian) > 1) {
+
+
+    //     //         for ($i = 0; $i < count($data_pembelian); $i++) {
+    //     //             $id_pembelian = DB::table('pembelian')
+    //     //                 ->where('id_penjualan', $data_pembelian[$i]['id_penjualan'])
+    //     //                 ->max('id_pembelian');
+
+    //     //             $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
+    //     //         }
+    //     //     } else {
+
+    //     //         $id_pembelian = DB::table('pembelian')->max('id_pembelian');
+    //     //         for ($i = 0; $i < count($data_detail_pembelian); $i++) {
+    //     //             $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
+    //     //         }
+    //     //     }
+    //     // } elseif ($kemungkinan == 'B' || $kemungkinan == 'C') {
+
+    //     //     // dd($data_pembelian);
+
+    //     //     for ($i = 0; $i < count($data_pembelian); $i++) {
+    //     //         $id_pembelian = DB::table('')
+    //     //             ->where('id_penjualan', $data_pembelian[$i]['id_penjualan'])
+    //     //             ->first();
+
+    //     //         $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian->id_pembelian;
+    //     //     }
+    //     // }
+
+
+
+    //     // DB::table('detail_transaksi_pembelian')->insert($data_detail_pembelian);
+
+
+    //     // insert pembelian dan detail pembelian
+
+    //     for ($i = 0; $i < count($data_pembelian); $i++) {
+    //         $id_pembelian = DB::table('pembelian')->insertGetId($data_pembelian[$i]);
+    //         $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
+    //         DB::table('detail_transaksi_pembelian')->insert($data_detail_pembelian[$i]);
+    //     }
+
+
+
+    //     // kodingan jurnal pembelian utang
+
+
+    //     // dd($data_detail_pembelian);
+
+    //     $total_pembelian = 0;
+    //     foreach ($data_detail_pembelian as $ddp) {
+    //         // dump($ddp['total_detail_pembelian']);
+    //         $total_pembelian += $ddp['subtotal_detail_pembelian'];
+    //     }
+
+
+
+
+    //     $jurnal = [
+    //         [
+    //             "id_transaksi" => $id_transaksi[0],
+    //             'kode_akun' => 500,
+    //             'tgl_jurnal' => $data_pembelian[0]['tgl_pembelian'],
+    //             'nominal' => (int)$total_pembelian,
+    //             'posisi_db_cr' => "debit"
+    //         ],
+    //         [
+    //             "id_transaksi" => $id_transaksi[0],
+    //             'kode_akun' => 200,
+    //             'tgl_jurnal' => $data_pembelian[0]['tgl_pembelian'],
+    //             'nominal' => (int)$total_pembelian,
+    //             'posisi_db_cr' => "kredit"
+    //         ],
+    //     ];
+    //     // dump($data_detail_pembelian);
+    //     // dd($jurnal);
+
+    //     DB::table('jurnal')->insert($jurnal);
+    // }
+
+
+
+
     public function insert_penjualan($id_transaksi, $data_pembelian, $data_detail_pembelian, $id_pemasok, $kemungkinan, $nominal = null)
     {
         DB::beginTransaction();
@@ -265,6 +411,7 @@ class PurchaseModel extends Model
                 $data_detail_pembelian[$i]['id_pembelian'] = $id_pembelian;
                 DB::table('detail_transaksi_pembelian')->insert($data_detail_pembelian[$i]);
                 // DB::table('pembelian_temp')->where("no_pembelian", $data_pembelian[$i]['no_pembelian'])->delete();
+
             }
 
             // Hitung total pembelian
@@ -289,8 +436,8 @@ class PurchaseModel extends Model
             ];
             DB::table('jurnal')->insert($jurnal);
 
-
             // Hapus data pembelian_temp
+            //  DB::table('pembelian_temp')->where('tgl_pembelian', date('Y-m-d'))->delete();
 
             // Commit transaksi
             DB::commit();

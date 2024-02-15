@@ -663,6 +663,8 @@ class QuotationModel extends Model
     }
     public function getIdServices($nama_layanan)
     {
+        // dump($nama_layanan);
+        // dump(DB::table('layanan')->select("id_layanan")->where("nama_layanan", $nama_layanan)->first());
         return DB::table('layanan')->select("id_layanan")->where("nama_layanan", $nama_layanan)->first();
     }
 }
